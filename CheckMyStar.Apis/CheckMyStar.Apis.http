@@ -1,0 +1,6 @@
+@CheckMyStar.Apis_HostAddress = http://localhost:5109
+
+GET {{CheckMyStar.Apis_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

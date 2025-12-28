@@ -1,0 +1,30 @@
+<Solution>
+  <Folder Name="/00_Database/">
+    <Project Path="CheckMyStar.Data.Abstraction/CheckMyStar.Data.Abstraction.csproj" Id="7d1fc363-2215-4b93-93b1-302e76462a6f" />
+    <Project Path="CheckMyStar.Data/CheckMyStar.Data.csproj" Id="0f3c7123-a56f-4f52-ba90-1c0f52c3eacc" />
+  </Folder>
+  <Folder Name="/10_Dal/">
+    <Project Path="CheckMyStar.Dal.Abstractions/CheckMyStar.Dal.Abstractions.csproj" Id="369497de-fe71-4231-8071-ed77c1f0b5a4" />
+    <Project Path="CheckMyStar.Dal.Models/CheckMyStar.Dal.Models.csproj" Id="d122d8ff-f52a-4233-86c7-5a8765f9b000" />
+    <Project Path="CheckMyStar.Dal/CheckMyStar.Dal.csproj" />
+  </Folder>
+  <Folder Name="/20_Bll/">
+    <Project Path="CheckMyStar.Bll.Abstractions/CheckMyStar.Bll.Abstractions.csproj" Id="f633480d-f441-4f20-9f19-97d910668d20" />
+    <Project Path="CheckMyStar.Bll.Mappings/CheckMyStar.Bll.Mappings.csproj" Id="7dae9ccd-3f26-4164-b0c1-d1ce34d45dc7" />
+    <Project Path="CheckMyStar.Bll.Models/CheckMyStar.Bll.Models.csproj" Id="8b8634c6-e81e-429a-9a2f-2700dd1b48e9" />
+    <Project Path="CheckMyStar.Bll/CheckMyStar.Bll.csproj" Id="0e2f764c-03ac-4965-a164-23e09c29767b" />
+  </Folder>
+  <Folder Name="/30_Common/" />
+  <Folder Name="/40_Site/">
+    <Project Path="CheckMyStar.Apis/CheckMyStar.Apis.csproj" />
+  </Folder>
+  <Folder Name="/50_Services/">
+    <Project Path="CheckMyStar.Apis.Services.Abstractions/CheckMyStar.Apis.Services.Abstractions.csproj" Id="4764115b-c9c9-48dd-ac1f-bf82302d37fb" />
+    <Project Path="CheckMyStar.Apis.Services/CheckMyStar.Apis.Services.csproj" Id="6b85d3d4-08ed-4c16-9e89-78830ff637b5" />
+  </Folder>
+  <Folder Name="/60_Tests/">
+    <Project Path="CheckMyStar.Apis.Tests/CheckMyStar.Apis.Tests.csproj" Id="629bd1cc-a210-4953-ba17-678bf5291f5a" />
+    <Project Path="CheckMyStar.Bll.Tests/CheckMyStar.Bll.Tests.csproj" Id="3ac778ad-900f-415c-932c-b0211be10ecd" />
+    <Project Path="CheckMyStar.Dal.Tests/CheckMyStar.Dal.Tests.csproj" Id="941ddbc4-a426-4280-ad23-5367b5d933b4" />
+  </Folder>
+</Solution>
