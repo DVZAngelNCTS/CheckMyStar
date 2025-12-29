@@ -7,7 +7,7 @@
     [Society] VARCHAR(150) NULL, 
     [Email] VARCHAR(100) NOT NULL UNIQUE, 
     [Phone] VARCHAR(10) NULL, 
-    [Password] VARCHAR(50) NOT NULL, 
+    [Password] VARCHAR(64) NOT NULL, 
     [RoleIdentifier] INT NOT NULL, 
     [AddressIdentifier] INT NULL, 
     CONSTRAINT [PK_User] PRIMARY KEY ([Identifier]), 
