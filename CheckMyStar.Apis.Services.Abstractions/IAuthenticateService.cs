@@ -1,6 +1,7 @@
-using CheckMyStar.Apis.Models;
+using CheckMyStar.Bll.Models;
+using CheckMyStar.Bll.Requests;
 
-namespace CheckMyStar.Apis.Services;
+namespace CheckMyStar.Apis.Services.Abstractions;
 
 /// <summary>
 /// Defines methods for authenticating users and managing password security within an application.
@@ -8,17 +9,15 @@ namespace CheckMyStar.Apis.Services;
 /// <remarks>Implementations of this interface provide user validation and password hashing functionality. Methods
 /// are designed to support secure authentication workflows, including verifying user credentials and storing passwords
 /// safely. Thread safety and specific hashing algorithms depend on the concrete implementation.</remarks>
-public interface IAuthService
+public interface IAuthenticateService
 {
     /// <summary>
-    /// Asynchronously validates the specified user's credentials and returns the corresponding user if authentication
-    /// succeeds.
+    /// Asynchronously validates the specified user request and retrieves the corresponding user if validation succeeds.
     /// </summary>
-    /// <param name="username">The username to authenticate. Cannot be null or empty.</param>
-    /// <param name="password">The password associated with the specified username. Cannot be null or empty.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the authenticated <see cref="User"/>
-    /// if the credentials are valid; otherwise, <see langword="null"/>.</returns>
-    Task<User?> ValidateUserAsync(string username, string password);
+    /// <param name="request">The user request containing the criteria used to identify and validate the user. Cannot be null.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the request is
+    /// valid and a matching user is found; otherwise, null.</returns>
+    Task<UserModel?> ValidateUserAsync(UserGetRequest request);
     /// <summary>
     /// Generates a secure hash for the specified password.
     /// </summary>
