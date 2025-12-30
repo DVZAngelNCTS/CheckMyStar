@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/00_Database/">
-    <Project Path="CheckMyStar.Data.Abstraction/CheckMyStar.Data.Abstraction.csproj" Id="7d1fc363-2215-4b93-93b1-302e76462a6f" />
+    <Project Path="CheckMyStar.Data.Abstraction/CheckMyStar.Data.Abstractions.csproj" Id="7d1fc363-2215-4b93-93b1-302e76462a6f" />
     <Project Path="CheckMyStar.Data/CheckMyStar.Data.csproj" Id="0f3c7123-a56f-4f52-ba90-1c0f52c3eacc" />
   </Folder>
   <Folder Name="/10_Dal/">
@@ -10,8 +10,10 @@
   </Folder>
   <Folder Name="/20_Bll/">
     <Project Path="CheckMyStar.Bll.Abstractions/CheckMyStar.Bll.Abstractions.csproj" Id="f633480d-f441-4f20-9f19-97d910668d20" />
+    <Project Path="CheckMyStar.Bll.Filters/CheckMyStar.Bll.Filters.csproj" Id="84435eea-ab5c-4066-8a7f-1d39a24bd616" />
     <Project Path="CheckMyStar.Bll.Mappings/CheckMyStar.Bll.Mappings.csproj" Id="7dae9ccd-3f26-4164-b0c1-d1ce34d45dc7" />
     <Project Path="CheckMyStar.Bll.Models/CheckMyStar.Bll.Models.csproj" Id="8b8634c6-e81e-429a-9a2f-2700dd1b48e9" />
+    <Project Path="CheckMyStar.Bll.Requests/CheckMyStar.Bll.Requests.csproj" Id="410f423c-68ca-42f9-8a90-66dba8782de4" />
     <Project Path="CheckMyStar.Bll/CheckMyStar.Bll.csproj" Id="0e2f764c-03ac-4965-a164-23e09c29767b" />
   </Folder>
   <Folder Name="/30_Common/" />
@@ -20,6 +22,7 @@
   </Folder>
   <Folder Name="/50_Services/">
     <Project Path="CheckMyStar.Apis.Services.Abstractions/CheckMyStar.Apis.Services.Abstractions.csproj" Id="4764115b-c9c9-48dd-ac1f-bf82302d37fb" />
+    <Project Path="CheckMyStar.Apis.Services.Models/CheckMyStar.Apis.Services.Models.csproj" Id="6b1f8664-6a1a-4047-810a-8b00b8e9d752" />
     <Project Path="CheckMyStar.Apis.Services/CheckMyStar.Apis.Services.csproj" Id="6b85d3d4-08ed-4c16-9e89-78830ff637b5" />
   </Folder>
   <Folder Name="/60_Tests/">

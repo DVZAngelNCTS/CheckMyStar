@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CheckMyStar.Data.Abstraction\CheckMyStar.Data.Abstractions.csproj" />
-  </ItemGroup>
-
 </Project>

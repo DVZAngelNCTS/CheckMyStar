@@ -1,15 +1,20 @@
 using System.Text;
-using CheckMyStar.Apis.Services;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+
+using CheckMyStar.Apis.Services;
+using CheckMyStar.Data;
+using CheckMyStar.Dal;
+using CheckMyStar.Bll;
+using CheckMyStar.Bll.Mappings;
 
 var applicationName = $"CheckMyStar.Apis";
 var version = typeof(Program).Assembly.GetName().Version;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services provider configuration
 builder.Host.UseDefaultServiceProvider(o =>
 {
     o.ValidateOnBuild = true;
@@ -27,7 +32,6 @@ builder.WebHost.UseIIS();
 
 builder.Services
     .AddEndpointsApiExplorer();
-// End of service provider configuration
 
 // Configuration JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -46,11 +50,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-
-builder.Services.AddControllers();
+builder.Services
+    .AddAuthorization()
+    .AddServices()
+    .AddDatabase(builder.Configuration)
+    .AddDal()
+    .AddBus()
+    .AddProfile()
+    .AddControllers();
 
 // Configure OpenAPI avec les packages Microsoft natifs
 builder.Services.AddOpenApi(options =>

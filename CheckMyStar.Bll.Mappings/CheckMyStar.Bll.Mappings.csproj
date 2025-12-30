@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="CountryProfile.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CheckMyStar.Bll.Models\CheckMyStar.Bll.Models.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Data.Abstraction\CheckMyStar.Data.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

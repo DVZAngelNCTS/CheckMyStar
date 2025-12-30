@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CheckMyStar.Apis.Services.Abstractions\CheckMyStar.Apis.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Apis.Services.Models\CheckMyStar.Apis.Services.Models.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Bll\CheckMyStar.Bll.csproj" />
+  </ItemGroup>
+
 </Project>
