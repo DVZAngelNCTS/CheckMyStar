@@ -17,7 +17,7 @@ public interface IAuthenticateService
     /// <param name="request">The user request containing the criteria used to identify and validate the user. Cannot be null.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the request is
     /// valid and a matching user is found; otherwise, null.</returns>
-    Task<UserModel?> ValidateUserAsync(UserGetRequest request);
+    Task<UserModel?> ValidateUserAsync(LoginGetRequest request);
     /// <summary>
     /// Generates a secure hash for the specified password.
     /// </summary>

@@ -5,6 +5,6 @@ namespace CheckMyStar.Bll.Abstractions.ForService
 {
     public interface IUserBusForService
     {
-        Task<UserModel?> GetUser(UserGetRequest request);
+        Task<UserModel?> GetUser(LoginGetRequest request);
     }
 }
