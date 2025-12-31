@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CheckMyStar.Angular/CheckMyStar.Angular.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>
