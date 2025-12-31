@@ -29,7 +29,7 @@ public class AuthenticateController(ILogger<AuthenticateController>  logger, ICo
     /// <returns>An HTTP 200 response containing a JWT token and user information if authentication succeeds; otherwise, an HTTP
     /// 401 response indicating invalid credentials.</returns>
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserGetRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginGetRequest request)
     {
         var user = await authenticateService.ValidateUserAsync(request);
         
@@ -44,21 +44,10 @@ public class AuthenticateController(ILogger<AuthenticateController>  logger, ICo
 
         logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.LastName, user.FirstName);
         
-        return Ok(new
+        return Ok(new LoginModel
         {
-            token,
-            user = new
-            {
-                user.Identifier,
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                Role = new
-                {
-                    user.Role.Identifier,
-                    user.Role.Name
-                }
-            }
+            Token = token,
+            User = user
         });
     }
 

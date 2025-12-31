@@ -6,7 +6,7 @@ namespace CheckMyStar.Bll
 {
     public partial class UserBus : IUserBusForService
     {
-        public Task<UserModel?> GetUser(UserGetRequest request)
+        public Task<UserModel?> GetUser(LoginGetRequest request)
         {
             return this.GetUser(request.Login, request.Password);
         }
