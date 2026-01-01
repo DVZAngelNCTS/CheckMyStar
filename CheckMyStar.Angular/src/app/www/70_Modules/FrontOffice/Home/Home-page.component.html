@@ -1,0 +1,14 @@
+
+<div class="layout" [class.sidebar-open]="sidebarOpen">
+	<app-menu (openChange)="onMenuToggle($event)"></app-menu>
+
+	<main class="content">
+		<header class="page-header">
+			<h1>Bienvenue sur CheckMyStars</h1>
+		</header>
+
+		<section>
+			<p>Ceci est la page d'accueil. Ajoutez ici vos composants et vues principales.</p>
+		</section>
+	</main>
+</div>

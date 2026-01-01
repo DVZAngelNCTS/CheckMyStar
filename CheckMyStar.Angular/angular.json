@@ -33,6 +33,12 @@
                 "glob": "**/*",
                 "input": "public"
               }
+              ,
+              {
+                "glob": "**/*",
+                "input": "src/Assets",
+                "output": "Assets"
+              }
             ],
             "styles": [
               "src/styles.css"
@@ -102,5 +108,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
