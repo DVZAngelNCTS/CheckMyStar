@@ -1,0 +1,16 @@
+{
+  "translation": {
+    "selectlanguage": "Langue",
+    "language": {
+      "en": "Anglais",
+      "fr": "Français"
+    }
+  },
+  "LoginSection": {
+    "Login": "Identifiant",
+    "Password": "Mot de passe"
+  },
+  "Validation": {
+    "Required": "Ce champ est obligatoire."
+  }
+}

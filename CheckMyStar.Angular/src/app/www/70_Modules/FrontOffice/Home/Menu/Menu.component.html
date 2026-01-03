@@ -1,24 +1,21 @@
-
 <div class="sidebar" [class.collapsed]="collapsed">
-	<div class="logo">
-		<img src="/Assets/Images/logo.png" alt="CheckMyStar logo">
-	</div>
+  <div class="logo">
+    <img src="/Assets/Images/logo.png" alt="CheckMyStar logo">
+  </div>
 
-	<button class="menu-toggle" aria-label="Toggle menu" (click)="toggle()">
-		<span class="burger" [class.open]="!collapsed">
-			<span></span>
-			<span></span>
-			<span></span>
-		</span>
-	</button>
+  <button class="menu-toggle" aria-label="Toggle menu" (click)="toggle()">
+    <span class="burger" [class.open]="!collapsed">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
 
-	<nav class="menu-items">
-		<div class="menu-item">Accueil</div>
-		<div class="menu-item">Profil</div>
-		<div class="menu-item">Mes tests</div>
-		<div class="menu-item">Paramètres</div>
-		<div class="menu-item">Déconnexion</div>
-	</nav>
-
-    
+  <nav class="menu-items">
+    <div class="menu-item">Accueil</div>
+    <div class="menu-item">Profil</div>
+    <div class="menu-item">Mes tests</div>
+    <div class="menu-item">Paramètres</div>
+    <div class="menu-item" (click)="logout()">Déconnexion</div>
+  </nav>
 </div>

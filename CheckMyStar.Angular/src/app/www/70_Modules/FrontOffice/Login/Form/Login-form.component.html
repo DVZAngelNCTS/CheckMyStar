@@ -1,0 +1,13 @@
+<div class="d-flex flex-row flex-nowrap">
+    <div class="mx-auto">
+        <form [formGroup]="form" (ngSubmit)="login()" class="p-4 border rounded bg-light">
+            <app-field controlName="login" label="{{ 'LoginSection.Login' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-50">
+                <input type="text" class="form-control" formControlName="login" required>               
+            </app-field>
+            <app-field controlName="password" label="{{ 'LoginSection.Password' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-50">
+                <input type="password" class="form-control" formControlName="password" required>               
+            </app-field>        
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</div>
