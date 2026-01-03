@@ -1,0 +1,34 @@
+import { ControlContainer, FormControl, FormGroupDirective } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
+
+@Component({
+  selector: 'app-field',
+  standalone: true,
+  imports: [TranslateModule, CommonModule],
+  templateUrl: './field.component.html',
+  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
+  styleUrls: ['./field.component.css']
+})
+export class FieldComponent {
+  containerClass = input<string>('');
+  label = input.required<string>();
+  labelClass = input<string>('w-7rem');
+  labelTextPosition = input<'start' | 'end' | 'center'>('end');
+  controlClass = input<string>('w-14rem');
+
+  constructor(private controlContainer: ControlContainer) {}
+
+  controlName = input.required<string>();
+
+  get control(): FormControl {
+    return this.controlContainer.control?.get(this.controlName()) as FormControl;
+  }
+
+  get invalid(): boolean {
+    return this.control?.invalid && this.control?.touched;
+  }
+
+  labelClassStr = computed(() => `me-2 ${this.labelClass()} text-${this.labelTextPosition()}`);
+}

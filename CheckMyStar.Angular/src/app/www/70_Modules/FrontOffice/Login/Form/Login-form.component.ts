@@ -1,0 +1,35 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { TranslationModule } from '../../../../10_Common/Translation.module';
+import { AuthenticateService } from '../../../../80_Services/Authenticate.service';
+import { FieldComponent } from '../../../Components/Field/Field.component';
+
+@Component({
+  selector: 'app-login-form',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, TranslationModule, FieldComponent],
+  templateUrl: './Login-form.component.html',
+})
+export class LoginFormComponent {
+  form: FormGroup;
+
+  constructor(private authenticateService: AuthenticateService, private fb: FormBuilder) {
+      this.form = this.fb.group({
+        login: ['', Validators.required],
+        password: ['', Validators.required]
+      });
+  }
+
+  async login() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const values = this.form.value;
+
+    await this.authenticateService.login(values.login, values.password);
+  }
+}

@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { LoginDalService } from '../../50_Dal/FrontOffice/login-dal.service';
 import { LoginGetRequest } from '../../40_Requests/FrontOffice/login-get.request';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LoginBllService {
   constructor(private loginDal: LoginDalService) {
   }

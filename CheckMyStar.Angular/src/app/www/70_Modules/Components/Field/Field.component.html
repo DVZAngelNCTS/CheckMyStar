@@ -1,0 +1,11 @@
+<div class="d-flex align-items-center my-1" [ngClass]="containerClass()">
+  <label [class]="labelClassStr()">{{ label() | translate }}</label>
+
+  <div [ngClass]="controlClass()">
+    <ng-content></ng-content>
+
+    <div class="invalid-feedback d-block" *ngIf="invalid">
+      {{ 'Validation.Required' | translate }}
+    </div>
+  </div>
+</div>
