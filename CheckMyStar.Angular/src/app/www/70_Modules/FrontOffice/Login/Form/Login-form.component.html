@@ -8,7 +8,7 @@
             <app-field controlName="password" label="{{ 'LoginSection.Password' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
                 <input type="password" class="form-control" formControlName="password" required>               
             </app-field>        
-            <button type="submit" class="btn btn-primary w-100">{{ 'LoginSection.Connect' | translate }}</button>
+            <button type="submit" class="btn btn-login w-100 mt-3">{{ 'LoginSection.Connect' | translate }}</button>
             <div *ngIf="errorMessage" class="login-error text-center mt-3"> {{ errorMessage }} </div>
         </form>
     </div>
