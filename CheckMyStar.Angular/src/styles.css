@@ -36,6 +36,18 @@
 	height: auto;
 }
 
+.btn-login {
+  background-color: #FBB900;
+  border-color: #FBB900;
+  color: #000; /* noir pour un bon contraste */
+  font-weight: 600;
+}
+
+.btn-login:hover {
+  background-color: #d9a200; /* un jaune un peu plus foncé pour le hover */
+  border-color: #d9a200;
+}
+
 /* When collapsed hide logo and menu items so only the burger is visible */
 .sidebar.collapsed .logo,
 .sidebar.collapsed .menu-items {
