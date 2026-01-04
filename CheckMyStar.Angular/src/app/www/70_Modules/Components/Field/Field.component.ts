@@ -7,9 +7,9 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-field',
   standalone: true,
   imports: [TranslateModule, CommonModule],
-  templateUrl: './field.component.html',
+  templateUrl: './Field.component.html',
   viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
-  styleUrls: ['./field.component.css']
+  styleUrls: ['./Field.component.css'],
 })
 export class FieldComponent {
   containerClass = input<string>('');

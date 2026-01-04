@@ -15,6 +15,17 @@ var version = typeof(Program).Assembly.GetName().Version;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://checkmystar.site.local:50477")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 builder.Host.UseDefaultServiceProvider(o =>
 {
     o.ValidateOnBuild = true;
@@ -93,6 +104,8 @@ builder.Services.AddOpenApi(options =>
 });
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 // Utiliser le logger après la construction de l'app
 var logger = app.Services.GetRequiredService<ILogger<Program>>();

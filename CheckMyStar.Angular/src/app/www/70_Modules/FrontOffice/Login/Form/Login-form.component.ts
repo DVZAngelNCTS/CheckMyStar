@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { AuthenticateService } from '../../../../80_Services/Authenticate.service';
 import { FieldComponent } from '../../../Components/Field/Field.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
@@ -14,22 +15,36 @@ import { FieldComponent } from '../../../Components/Field/Field.component';
 })
 export class LoginFormComponent {
   form: FormGroup;
+  errorMessage: string | null = null;
 
-  constructor(private authenticateService: AuthenticateService, private fb: FormBuilder) {
+  constructor(private authenticateService: AuthenticateService, private fb: FormBuilder, private router: Router) {
       this.form = this.fb.group({
         login: ['', Validators.required],
         password: ['', Validators.required]
       });
   }
 
-  async login() {
+  login() {
+    this.errorMessage = null;
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const values = this.form.value;
+    const { login, password } = this.form.value;
 
-    await this.authenticateService.login(values.login, values.password);
+    this.authenticateService.login(login, password).subscribe({
+      next: (result) => {
+        // Stocker le token
+        localStorage.setItem('token', result.token);
+
+        // Redirection
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || "Erreur inconnue";
+      }
+    });
   }
 }

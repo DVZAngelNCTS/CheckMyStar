@@ -1,13 +1,15 @@
 <div class="d-flex flex-row flex-nowrap">
-    <div class="mx-auto">
-        <form [formGroup]="form" (ngSubmit)="login()" class="p-4 border rounded bg-light">
-            <app-field controlName="login" label="{{ 'LoginSection.Login' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-50">
+    <div class="mx-auto">        
+        <form [formGroup]="form" (ngSubmit)="login()" class="p-4 border rounded login-form">
+            <img src="../../../../../../Assets/Images/Logo 350.png" alt="Logo" class="login-logo mb-4">
+            <app-field controlName="login" label="{{ 'LoginSection.Login' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
                 <input type="text" class="form-control" formControlName="login" required>               
             </app-field>
-            <app-field controlName="password" label="{{ 'LoginSection.Password' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-50">
+            <app-field controlName="password" label="{{ 'LoginSection.Password' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
                 <input type="password" class="form-control" formControlName="password" required>               
             </app-field>        
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="submit" class="btn btn-primary w-100">{{ 'LoginSection.Connect' | translate }}</button>
+            <div *ngIf="errorMessage" class="login-error text-center mt-3"> {{ errorMessage }} </div>
         </form>
     </div>
 </div>

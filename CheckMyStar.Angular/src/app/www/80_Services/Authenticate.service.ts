@@ -5,21 +5,14 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthenticateService {
   constructor(private loginBllService: LoginBllService, private router: Router) {}
 
-  async login(login: string, password: string): Promise<boolean> {
-    try {
-      const result = await this.loginBllService.login$(login, password).toPromise();
-      if (result) {
-        localStorage.setItem('token', result.token); // Stocke le token
-        this.router.navigate(['/home']);
-        return true;
-      }
-    } catch (error) {
-      console.error('Login failed', error);
-    }
-    return false;
+  login(login: string, password: string) {
+    return this.loginBllService.login$(login, password);
   }
 
   isAuthenticated(): boolean {
