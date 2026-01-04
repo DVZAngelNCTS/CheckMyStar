@@ -1,4 +1,19 @@
 :host ::ng-deep input.ng-invalid.ng-touched {
-  border-color: #dc3545 !important;
-  box-shadow: 0 0 0 0.2rem rgba(220,53,69,.25) !important;
+  border-color: #FBB900 !important;
+  border-width: medium !important;
+  box-shadow: 0 0 0 0.2rem rgba(251,185,0,.25) !important;
+}
+
+.error-space {
+  height: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+label {
+  padding-top: 0.45rem;
+}
+
+.invalid-feedback { 
+  color: #FBB900 !important; 
 }

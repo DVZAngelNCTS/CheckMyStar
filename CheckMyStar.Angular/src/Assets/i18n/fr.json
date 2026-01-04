@@ -8,7 +8,8 @@
   },
   "LoginSection": {
     "Login": "Identifiant",
-    "Password": "Mot de passe"
+    "Password": "Mot de passe",
+    "Connect": "Se connecter"
   },
   "Validation": {
     "Required": "Ce champ est obligatoire."

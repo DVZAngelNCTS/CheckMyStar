@@ -15,6 +15,6 @@ export class LoginDalService {
   }
 
   login$(request: LoginGetRequest): Observable<LoginModel> {
-    return this.http.post<LoginModel>('${this.apiUrl}/authenticate/login', request);
+    return this.http.post<LoginModel>(`${this.apiUrl}/authenticate/login`, request);
   }
 }
