@@ -13,7 +13,7 @@ export class AuthenticateService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('user');
+    return !!localStorage.getItem('token');
   }
 
   logout(): void {

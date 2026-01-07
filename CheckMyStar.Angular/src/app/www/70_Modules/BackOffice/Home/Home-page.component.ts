@@ -4,12 +4,12 @@ import { CommonModule } from '@angular/common';
 import { MenuComponent } from './Menu/Menu.component';
 
 @Component({
-	selector: 'app-front-home-page',
+	selector: 'app-back-home-page',
 	standalone: true,
 	imports: [CommonModule, MenuComponent],
 	templateUrl: './Home-page.component.html'
 })
-export class FrontHomePageComponent {
+export class BackHomePageComponent {
 	sidebarOpen = false;
 
 	onMenuToggle(open: boolean) {

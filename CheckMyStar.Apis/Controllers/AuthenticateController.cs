@@ -61,11 +61,12 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
 
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.LastName + " " + user.FirstName),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Identifier.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Identifier.ToString()),
-            new Claim(ClaimTypes.Name, user.LastName + " " + user.FirstName)
+            new Claim(ClaimTypes.GivenName, user.FirstName),
+            new Claim(ClaimTypes.Surname, user.LastName)
         };
 
         // Ajouter les rôles comme claims

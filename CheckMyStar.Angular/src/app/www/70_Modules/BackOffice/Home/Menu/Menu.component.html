@@ -1,0 +1,26 @@
+<div class="sidebar" [class.collapsed]="collapsed">
+  <div class="logo">
+    <img src="/Assets/Images/Logo 350.png" alt="CheckMyStar logo">
+  </div>
+
+  <button class="menu-toggle" aria-label="Toggle menu" (click)="toggle()">
+    <span class="burger" [class.open]="!collapsed">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+
+  <nav class="menu-items">
+    <div class="menu-item">
+      <a routerLink="/home">Accueil</a>
+    </div>    
+    <div class="menu-item">
+      <a routerLink="/users">Utilisateurs</a>
+    </div>
+    <div class="menu-item">
+      <a routerLink="/roles">Rôles</a>
+    </div>
+    <div class="menu-item" (click)="logout()">Déconnexion</div>
+  </nav>
+</div>
