@@ -4,6 +4,7 @@ namespace CheckMyStar.Bll.Abstractions
 {
     public interface IUserBus
     {
-        public Task<UserModel?> GetUser(string login, string password);
+        Task<UserModel?> GetUser(string login, string password);
+        Task<List<UserModel>> GetUsers();
     }
 }

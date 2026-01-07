@@ -18,21 +18,25 @@ namespace CheckMyStar.Apis.Services
 
             if (user?.Identity?.IsAuthenticated == true)
             {
-                var token = accessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var identifier = user.FindFirst(ClaimTypes.NameIdentifier);
-                var firstName = user.FindFirst(ClaimTypes.GivenName);
-                var lastName = user.FindFirst(ClaimTypes.Surname);
-                var role = user.FindFirst(ClaimTypes.Role);
+                var token = accessor.HttpContext?.Request.Headers["Authorization"]
+                    .ToString()
+                    .Replace("Bearer ", "");
+
+                var identifierClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+                var firstNameClaim = user.FindFirst(ClaimTypes.GivenName);
+                var lastNameClaim = user.FindFirst(ClaimTypes.Surname);
+                var roleClaim = user.FindFirst(ClaimTypes.Role);
 
                 CurrentUser = new UserContext
                 {
-                    Token = token != null ? token : "",
-                    Identifier = identifier != null ? int.Parse(identifier.Value) : 0,
-                    FirstName = firstName != null ? firstName.Value : "",
-                    LastName = lastName != null ? lastName.Value : "",
-                    Role = role != null ? role.Value.ToEnum<EnumRole>() : EnumRole.User
+                    Token = token ?? "",
+                    Identifier = identifierClaim != null ? Convert.ToInt32(identifierClaim.Value) : 0,
+                    FirstName = firstNameClaim?.Value ?? "",
+                    LastName = lastNameClaim?.Value ?? "",
+                    Role = roleClaim != null ? roleClaim.Value.ToEnum<EnumRole>() : EnumRole.User
                 };
             }
+
         }
 
     }

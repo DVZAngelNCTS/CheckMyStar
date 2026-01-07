@@ -6,6 +6,7 @@ import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { AuthenticateService } from '../../../../80_Services/Authenticate.service';
 import { FieldComponent } from '../../../Components/Field/Field.component';
 import { Router } from '@angular/router';
+import { EnumRole } from '../../../../10_Common/Enumerations/EnumRole';
 
 @Component({
   selector: 'app-login-form',
@@ -36,8 +37,15 @@ export class LoginFormComponent {
 
     this.authenticateService.login(login, password).subscribe({
       next: (result) => {        
-        localStorage.setItem('user', JSON.stringify(result));
-        this.router.navigate(['/home']);
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('user', JSON.stringify(result.user));
+        
+        if (result.user.role === EnumRole.Administrator) {
+          this.router.navigate(['/backhome']);
+        }
+        else {
+          this.router.navigate(['/fronthome']);
+        }
       },
       error: (err) => {
         this.errorMessage = err.error?.message || "Erreur inconnue";

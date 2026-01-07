@@ -2,8 +2,8 @@
 
 namespace CheckMyStar.Apis.Services.Abstractions
 {
-    public class IUserContextService
+    public interface IUserContextService
     {
-        UserContext CurrentUser { get; } = null!;
+        UserContext CurrentUser { get; }
     }
 }

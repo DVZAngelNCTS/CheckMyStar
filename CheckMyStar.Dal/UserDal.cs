@@ -19,5 +19,12 @@ namespace CheckMyStar.Dal
 
             return user;
         }
+
+        public async Task<List<User>> GetUsers()
+        {
+            var users = await dbContext.Users.ToListAsync();
+
+            return users;
+        }
     }
 }
