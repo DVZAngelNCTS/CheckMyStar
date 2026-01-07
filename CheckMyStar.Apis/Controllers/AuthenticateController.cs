@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Models;
+using CheckMyStar.Enumerations;
 
 namespace CheckMyStar.Apis.Controllers;
 
@@ -20,7 +21,7 @@ namespace CheckMyStar.Apis.Controllers;
 /// return standard HTTP status codes such as 200 (OK) or 401 (Unauthorized) based on authentication results.</remarks>
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticateController(ILogger<AuthenticateController>  logger, IConfiguration configuration, IAuthenticateService authenticateService) : ControllerBase
+public class AuthenticateController(ILogger<AuthenticateController> logger, IConfiguration configuration, IAuthenticateService authenticateService) : ControllerBase
 {
     /// <summary>
     /// Authenticates a user based on the provided credentials and returns a JWT token if authentication is successful.
@@ -32,7 +33,7 @@ public class AuthenticateController(ILogger<AuthenticateController>  logger, ICo
     public async Task<IActionResult> Login([FromBody] LoginGetRequest request)
     {
         var user = await authenticateService.ValidateUserAsync(request);
-        
+
         if (user is null)
         {
             logger.LogWarning("Échec de connexion pour l'utilisateur: {Login}", request.Login);
@@ -43,7 +44,7 @@ public class AuthenticateController(ILogger<AuthenticateController>  logger, ICo
         var token = GenerateJwtToken(user);
 
         logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.LastName, user.FirstName);
-        
+
         return Ok(new LoginModel
         {
             Token = token,
@@ -68,7 +69,7 @@ public class AuthenticateController(ILogger<AuthenticateController>  logger, ICo
         };
 
         // Ajouter les rôles comme claims
-        claims.Add(new Claim(ClaimTypes.Role, user.Role.Name));
+        claims.Add(new Claim(ClaimTypes.Role, user.Role.ToStringValue()));
 
         var token = new JwtSecurityToken(
             issuer: configuration["Jwt:Issuer"],

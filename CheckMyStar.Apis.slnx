@@ -16,7 +16,9 @@
     <Project Path="CheckMyStar.Bll.Requests/CheckMyStar.Bll.Requests.csproj" Id="410f423c-68ca-42f9-8a90-66dba8782de4" />
     <Project Path="CheckMyStar.Bll/CheckMyStar.Bll.csproj" Id="0e2f764c-03ac-4965-a164-23e09c29767b" />
   </Folder>
-  <Folder Name="/30_Common/" />
+  <Folder Name="/30_Common/">
+    <Project Path="CheckMyStar.Enumerations/CheckMyStar.Enumerations.csproj" Id="aec2623a-8069-4012-844a-c74a9da8a09d" />
+  </Folder>
   <Folder Name="/40_Site/">
     <Project Path="CheckMyStar.Apis/CheckMyStar.Apis.csproj" />
   </Folder>

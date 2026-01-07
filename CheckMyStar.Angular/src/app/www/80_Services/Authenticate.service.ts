@@ -5,9 +5,6 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-@Injectable({
-  providedIn: 'root'
-})
 export class AuthenticateService {
   constructor(private loginBllService: LoginBllService, private router: Router) {}
 
@@ -16,11 +13,11 @@ export class AuthenticateService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('user');
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
 }
