@@ -35,11 +35,8 @@ export class LoginFormComponent {
     const { login, password } = this.form.value;
 
     this.authenticateService.login(login, password).subscribe({
-      next: (result) => {
-        // Stocker le token
-        localStorage.setItem('token', result.token);
-
-        // Redirection
+      next: (result) => {        
+        localStorage.setItem('user', JSON.stringify(result));
         this.router.navigate(['/home']);
       },
       error: (err) => {

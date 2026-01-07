@@ -3,6 +3,7 @@
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Enumerations;
 
 namespace CheckMyStar.Bll
 {
@@ -26,7 +27,7 @@ namespace CheckMyStar.Bll
                     {
                         var civility = civilites.First(c => c.Identifier == user.CivilityIdentifier);
 
-                        userModel.Civility = mapper.Map<CivilityModel>(civility);
+                        userModel.Civility = civility.Identifier.ToEnum<EnumCivility>();
                     }
 
                     var roles = await roleDal.GetRoles();
@@ -35,7 +36,7 @@ namespace CheckMyStar.Bll
                     {
                         var role = roles.First(r => r.Identifier == user.RoleIdentifier);
 
-                        userModel.Role = mapper.Map<RoleModel>(role);
+                        userModel.Role = role.Identifier.ToEnum<EnumRole>();
                     }
 
                     if (user.AddressIdentifier != null)

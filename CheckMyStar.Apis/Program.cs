@@ -42,7 +42,8 @@ builder.Logging
 builder.WebHost.UseIIS();
 
 builder.Services
-    .AddEndpointsApiExplorer();
+    .AddEndpointsApiExplorer()
+    .AddHttpContextAccessor();
 
 // Configuration JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

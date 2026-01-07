@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CheckMyStar.Enumerations\CheckMyStar.Enumerations.csproj" />
+  </ItemGroup>
+
 </Project>

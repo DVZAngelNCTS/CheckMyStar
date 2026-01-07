@@ -8,8 +8,9 @@ namespace CheckMyStar.Apis.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.
-                AddScoped<IAuthenticateService, AuthenticateService>();
+            services
+                .AddScoped<IAuthenticateService, AuthenticateService>()
+                .AddScoped<IUserContextService, UserContextService>();
 
             return services;
         }
