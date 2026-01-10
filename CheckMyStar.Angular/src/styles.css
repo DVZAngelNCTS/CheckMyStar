@@ -19,7 +19,7 @@
 	margin-left: 350px; 
  }
 
- .page-header { 
+.page-header { 
 	padding: 20px; 
 	background: #fff; 
 	border-bottom: 1px solid #ddd; 
@@ -166,6 +166,11 @@
 .page-header h1 { 
 	margin: 0 0 16px 0; 
 	color: #2b8a00; 
+}
+
+a {
+  color: inherit;        /* hérite de la couleur du parent */
+  text-decoration: none; /* enlève le souligné */
 }
 
 /* Login */

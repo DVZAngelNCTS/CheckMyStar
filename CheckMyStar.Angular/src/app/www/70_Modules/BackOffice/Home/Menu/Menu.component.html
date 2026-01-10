@@ -12,15 +12,9 @@
   </button>
 
   <nav class="menu-items">
-    <div class="menu-item">
-      <a routerLink="/backhome">Accueil</a>
-    </div>    
-    <div class="menu-item">
-      <a routerLink="/backhome/roles">Rôles</a>
-    </div>    
-    <div class="menu-item">
-      <a routerLink="/backhome/users">Utilisateurs</a>
-    </div>
+    <div class="menu-item" routerLink="/backhome">Accueil</div>
+    <div class="menu-item" routerLink="/backhome/roles">Rôles</div>
+    <div class="menu-item" routerLink="/backhome/users">Utilisateurs</div>
     <div class="menu-item" (click)="logout()">Déconnexion</div>
   </nav>
 </div>
