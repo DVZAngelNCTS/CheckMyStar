@@ -1,0 +1,19 @@
+<div class="ms-3 d-flex align-items-center" (keydown.enter)="search()">
+    <div class="d-flex flex-column" [formGroup]="form">
+        <div class="d-flex flex-row flex-nowrap align-items-center mb-3">
+            <app-field controlName="Name" label="{{ 'RoleSection.Name' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                <input type="text" class="form-control" formControlName="rolefilter" required>               
+            </app-field>
+        </div>
+    </div>
+    <div class="ms-auto">
+        <button type="button" class="btn btn-primary me-2" (click)="search()">
+            <i class="bi bi-search me-2"></i>
+            {{ 'CommonSection.Search' | translate }}
+        </button>
+        <button type="button" class="btn btn-secondary me-2" (click)="reset()">
+            <i class="bi bi-x-circle me-2"></i>
+            {{ 'CommonSection.Reset' | translate }}
+        </button>
+    </div>
+</div>

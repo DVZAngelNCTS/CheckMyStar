@@ -62,24 +62,13 @@
 	height: auto;
 }
 
-.btn-login {
-  background-color: #FBB900;
-  border-color: #FBB900;
-  color: #000; /* noir pour un bon contraste */
-  font-weight: 600;
-}
-
-.btn-login:hover {
-  background-color: #d9a200; /* un jaune un peu plus foncé pour le hover */
-  border-color: #d9a200;
-}
-
 /* When collapsed hide logo and menu items so only the burger is visible */
 .sidebar.collapsed .logo,
 .sidebar.collapsed .menu-items {
 	display: none;
 }
 
+/* Menu */
 .menu-items {
 	padding: 8px 0;
 	flex: 1 1 auto;
@@ -187,6 +176,92 @@ a {
 .login-error {
   color: #FBB900;
   font-weight: 600;
+}
+
+/* Button */
+.btn-primary {
+  background-color: #FBB900;
+  border-color: #FBB900;
+  color: #000;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background-color: #d9a200;
+  border-color: #d9a200;
+}
+
+.btn-primary:active, 
+.btn-primary:focus:active { 
+	background-color: #c48f00 !important; 
+	border-color: #c48f00 !important; 
+	color: #000 !important; 
+}
+
+.btn-secondary {
+  background-color: #2B8A00;
+  border-color: #2B8A00;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background-color: #247200; /* un peu plus foncé */
+  border-color: #247200;
+  color: #fff;
+}
+
+.btn-secondary:active,
+.btn-secondary:focus:active {
+  background-color: #1e5f00 !important; /* encore plus foncé */
+  border-color: #1e5f00 !important;
+  color: #fff !important;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  margin: 12px 0 20px 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.breadcrumb a {
+  color: #2b8a00;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .15s ease;
+}
+
+.breadcrumb a:hover {
+  color: #1f6500;
+}
+
+.breadcrumb span {
+  color: #444;
+  font-weight: 500;
+}
+
+.breadcrumb-separator {
+  color: #888;
+}
+
+.breadcrumb-icon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+  color: #2b8a00;
+}
+
+.breadcrumb-current {
+  font-weight: 700;
+  color: #2b8a00;
 }
 
 /* Marge utilities*/

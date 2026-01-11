@@ -6,12 +6,25 @@
       "fr": "Français"
     }
   },
+  "CommonSection": {
+    "Search": "Rechercher",
+    "Reset": "Effacer"
+  },
   "LoginSection": {
     "Login": "Identifiant",
     "Password": "Mot de passe",
     "Connect": "Se connecter"
   },
-  "Validation": {
+  "ValidationSection": {
     "Required": "Ce champ est obligatoire."
+  },
+  "BackOfficeMenuSection": {
+    "Home": "Accueil",
+    "Users": "Utilistateurs",
+    "Roles": "Rôles",
+    "Disconnect": "Se déconnecter"
+  },
+  "RoleSection": {
+    "Name": "Nom du rôle"
   }
 }
