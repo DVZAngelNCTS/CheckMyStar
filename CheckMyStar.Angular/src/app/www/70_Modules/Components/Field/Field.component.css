@@ -17,3 +17,13 @@ label {
 .invalid-feedback { 
   color: #FBB900 !important; 
 }
+
+:host ::ng-deep input:focus {
+  border-color: #FBB900 !important;
+  border-width: medium !important;
+  box-shadow: 0 0 0 0.2rem rgba(251,185,0,.25) !important;
+  background: rgba(255, 255, 255, 0.25); /* effet verre */
+  backdrop-filter: blur(6px);
+}
+
+

@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuComponent } from './Menu/Menu.component';
+import { BreadcrumbComponent } from '../../Components/Breadcrumb/Breadcrumb.component';
 
 @Component({
 	selector: 'app-back-home-page',
 	standalone: true,
-	imports: [CommonModule, RouterModule, MenuComponent],
+	imports: [CommonModule, RouterModule, MenuComponent, BreadcrumbComponent],
 	templateUrl: './Home-page.component.html'
 })
 export class BackHomePageComponent {

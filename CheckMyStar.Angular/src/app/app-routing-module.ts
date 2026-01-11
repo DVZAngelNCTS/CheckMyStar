@@ -11,10 +11,10 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginPageComponent },
   { path: 'fronthome', component: FrontHomePageComponent, canActivate: [AuthenticateGuardian] },
-  { path: 'backhome', component: BackHomePageComponent, canActivate: [AuthenticateGuardian],
+  { path: 'backhome', component: BackHomePageComponent, canActivate: [AuthenticateGuardian], data: { breadcrumb: 'BackOfficeMenuSection.Home' },
     children: [
-      { path : 'roles', component:  RolePageComponent},
-      { path : 'users', component:  UserPageComponent}
+      { path : 'roles', component:  RolePageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Roles' }},
+      { path : 'users', component:  UserPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Users' }}
     ]
    },
 ];
