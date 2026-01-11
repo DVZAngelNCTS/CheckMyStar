@@ -218,6 +218,26 @@ a {
   color: #fff !important;
 }
 
+.btn-delete {
+  background-color: #D32F2F; /* rouge principal */
+  border-color: #D32F2F;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-delete:hover {
+  background-color: #B71C1C; /* plus foncé */
+  border-color: #B71C1C;
+  color: #fff;
+}
+
+.btn-delete:active,
+.btn-delete:focus:active {
+  background-color: #8E0000 !important; /* encore plus foncé */
+  border-color: #8E0000 !important;
+  color: #fff !important;
+}
+
 /* Breadcrumb */
 .breadcrumb {
   display: flex;

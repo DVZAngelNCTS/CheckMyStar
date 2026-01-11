@@ -2,14 +2,18 @@
   <ng-container *ngFor="let bc of breadcrumbs; let last = last">
     <ng-container *ngIf="!last">
       <a [routerLink]="bc.url">
-        <span class="material-symbols-outlined breadcrumb-icon">chevron_right</span>
+        <span class="material-symbols-outlined breadcrumb-icon">
+          <i class="bi bi-chevron-double-right me-2"></i>
+        </span>
         {{ bc.label | translate }}
       </a>
     </ng-container>
 
     <ng-container *ngIf="last">
       <span class="breadcrumb-current">
-        <span class="material-symbols-outlined breadcrumb-icon">chevron_right</span>
+        <span class="material-symbols-outlined breadcrumb-icon">
+          <i class="bi bi-chevron-double-right me-2"></i>
+        </span>
         {{ bc.label | translate }}
       </span>
     </ng-container>
