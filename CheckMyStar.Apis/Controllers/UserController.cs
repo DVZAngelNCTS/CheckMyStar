@@ -14,14 +14,15 @@ namespace CheckMyStar.Apis.Controllers
     public class UserController(IUserService userService) : ControllerBase
     {
         /// <summary>
-        /// Get all users
+        /// Get users
         /// </summary>
+        /// <param name="ct">The cancellation token.</param>
         /// <returns></returns>
         [HttpGet("getusers")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(CancellationToken ct)
         {
-            var users = await userService.GetUsers();
+            var users = await userService.GetUsers(ct);
             
             return Ok(users);
         }

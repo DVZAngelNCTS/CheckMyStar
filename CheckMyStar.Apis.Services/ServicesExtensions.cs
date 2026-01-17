@@ -10,7 +10,9 @@ namespace CheckMyStar.Apis.Services
         {
             services
                 .AddScoped<IAuthenticateService, AuthenticateService>()
-                .AddScoped<IUserContextService, UserContextService>();
+                .AddScoped<IUserContextService, UserContextService>()
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IRoleService, RoleService>();
 
             return services;
         }
