@@ -1,0 +1,67 @@
+/* --- Overlay --- */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.loader-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- Étoile premium --- */
+.star-loader {
+  width: 70px;
+  height: 70px;
+  background: #FBB900;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+
+  animation: heartbeat 1.3s infinite;
+  filter: drop-shadow(0 0 12px rgba(251,185,0,0.7));
+}
+
+/* Battement de cœur non linéaire */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.45); /* beaucoup plus grand */
+  }
+  35% {
+    transform: scale(1.18);
+  }
+  50% {
+    transform: scale(1.55); /* battement fort, très visible */
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+

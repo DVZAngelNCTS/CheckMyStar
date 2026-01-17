@@ -7,20 +7,19 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { FrontHomePageComponent } from './www/70_Modules/FrontOffice/Home/Home-page.component';
 import { BackHomePageComponent } from './www/70_Modules/BackOffice/Home/Home-page.component';
-import { MenuComponent } from './www/70_Modules/FrontOffice/Home/Menu/Menu.component';
 import { TranslationModule } from './www/10_Common/Translation.module';
 import { TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
-import { TranslationInitService } from './www/80_Services/Translation.service';
-import { AuthenticateInterceptor } from './www/80_Services/AuthenticateInterceptor.service'
+import { TranslationInitService } from './www/80_Services/Translation/Translation.service';
+import { AuthenticateInterceptor } from './www/80_Services/Authenticate/AuthenticateInterceptor.service'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
+import { LoaderInterceptor } from './www/80_Services/Loader/Loader.interceptor'
 
 export function HttpLoaderFactory(http: HttpClient) { return new TranslateHttpLoader(); }
 
 @NgModule({
-  declarations: [
-    App
-  ],
+  declarations: [],
   imports: [
+    App,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -31,8 +30,7 @@ export function HttpLoaderFactory(http: HttpClient) { return new TranslateHttpLo
         useClass: TranslateHttpLoader
     }}),
     FrontHomePageComponent,
-    BackHomePageComponent,
-    MenuComponent
+    BackHomePageComponent
   ],
   providers: [
     {
@@ -44,7 +42,13 @@ export function HttpLoaderFactory(http: HttpClient) { return new TranslateHttpLo
     { 
       provide: HTTP_INTERCEPTORS, 
       useClass: AuthenticateInterceptor, 
-      multi: true },
+      multi: true
+    },
+    { 
+      provide: HTTP_INTERCEPTORS, 
+      useClass: LoaderInterceptor, 
+      multi: true 
+    },
     provideBrowserGlobalErrorListeners()
   ],
   bootstrap: [App]

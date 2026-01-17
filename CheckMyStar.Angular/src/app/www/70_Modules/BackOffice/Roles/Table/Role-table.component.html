@@ -1,0 +1,48 @@
+<div class="px-4 d-flex flex-column">
+    <div class="w-100 position-relative" style="z-index:1;">
+        <table class="w-100 mb-4">
+            <thead>
+                <tr>
+                    <th class="p-3">
+                        {{'RoleSection.Identifier' | translate}}
+                    </th>
+                    <th class="p-3">
+                        {{'RoleSection.Name' | translate}}
+                    </th>
+                    <th class="p-3">
+                        {{'RoleSection.Description' | translate}}
+                    </th> 
+                    <th class="p-3">
+                    </th>
+                    <th class="p-3">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-top">
+                    <td class="p-2">
+
+                    </td>
+                    <td class="p-2">
+
+                    </td>
+                    <td class="p-2">
+
+                    </td>
+                    <td class="p-2">
+                        <button type="button" class="btn btn-primary me-2" (click)="update()">
+                            <i class="bi bi-search me-2"></i>
+                            {{ 'CommonSection.Update' | translate }}
+                        </button>
+                    </td>
+                    <td class="p-2">
+                        <button type="button" class="btn btn-delete me-2" (click)="delete()">
+                            <i class="bi bi-x-circle me-2"></i>
+                            {{ 'CommonSection.Delete' | translate }}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginBllService } from '../60_Bll/FrontOffice/login-bll.service';
+import { LoginBllService } from '../../60_Bll/FrontOffice/login-bll.service';
 import { Router } from '@angular/router';
 
 @Injectable({
