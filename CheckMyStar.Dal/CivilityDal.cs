@@ -8,11 +8,11 @@ namespace CheckMyStar.Dal
 {
     public class CivilityDal(ICheckMyStarDbContext dbContext) : ICivilityDal
     {
-        public async Task<List<Civility>> GetCivilities()
+        public async Task<List<Civility>> GetCivilities(CancellationToken ct)
         {
             var civilities = await (from c in dbContext.Civilities
                                     orderby c.Name
-                                    select c).ToListAsync();
+                                    select c).ToListAsync(ct);
 
             return civilities;
         }

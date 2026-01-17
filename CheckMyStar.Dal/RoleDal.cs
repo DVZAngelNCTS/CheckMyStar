@@ -8,11 +8,13 @@ namespace CheckMyStar.Dal
 {
     public class RoleDal(ICheckMyStarDbContext dbContext) : IRoleDal
     {
-        public async Task<List<Role>> GetRoles()
+        public async Task<List<Role>> GetRoles(string? name, CancellationToken ct)
         {
             var roles = await (from r in dbContext.Roles
+                               where
+                                string.IsNullOrEmpty(name) || r.Name.Contains(name)
                                orderby r.Name
-                               select r).ToListAsync();
+                               select r).ToListAsync(ct);
 
             return roles;
         }

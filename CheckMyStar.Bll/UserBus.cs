@@ -11,29 +11,29 @@ namespace CheckMyStar.Bll
 {
     public partial class UserBus(IUserContextService userContextService, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
     {
-        public async Task<UserModel?> GetUser(string login, string password)
+        public async Task<UserModel?> GetUser(string login, string password, CancellationToken ct)
         {
             UserModel? userModel = null;
 
-            var user = await userDal.GetUser(login, password);
+            var user = await userDal.GetUser(login, password, ct);
 
             if (user != null)
             {
-                userModel = await LoadUser(user);
+                userModel = await LoadUser(user, ct);
             }
 
             return userModel;
         }
 
-        public async Task<List<UserModel>> GetUsers()
+        public async Task<List<UserModel>> GetUsers(CancellationToken ct)
         {
             List<UserModel> userModels = new List<UserModel>();
 
-            var users = await userDal.GetUsers();
+            var users = await userDal.GetUsers(ct);
 
             foreach (var user in users)
             {
-                var userModel = await LoadUser(user);
+                var userModel = await LoadUser(user, ct);
 
                 if (userModel != null)
                 {
@@ -44,13 +44,13 @@ namespace CheckMyStar.Bll
             return userModels;
         }
 
-        private async Task<UserModel?> LoadUser(User user)
+        private async Task<UserModel?> LoadUser(User user, CancellationToken ct)
         {
             var userModel = mapper.Map<UserModel>(user);
 
             if (userModel != null)
             {
-                var civilites = await civilityDal.GetCivilities();
+                var civilites = await civilityDal.GetCivilities(ct);
 
                 if (civilites != null)
                 {
@@ -59,7 +59,7 @@ namespace CheckMyStar.Bll
                     userModel.Civility = civility.Identifier.ToEnum<EnumCivility>();
                 }
 
-                var roles = await roleDal.GetRoles();
+                var roles = await roleDal.GetRoles(null, ct);
 
                 if (roles != null)
                 {
@@ -70,13 +70,13 @@ namespace CheckMyStar.Bll
 
                 if (user.AddressIdentifier != null)
                 {
-                    var address = await addressDal.GetAddress(user.AddressIdentifier.Value);
+                    var address = await addressDal.GetAddress(user.AddressIdentifier.Value, ct);
 
                     if (address != null)
                     {
                         userModel.Address = mapper.Map<AddressModel>(address);
 
-                        var countriees = await countryDal.GetCountries();
+                        var countriees = await countryDal.GetCountries(ct);
 
                         if (countriees != null)
                         {

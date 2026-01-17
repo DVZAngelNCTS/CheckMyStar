@@ -10,10 +10,12 @@ namespace CheckMyStar.Bll
         public static IServiceCollection AddBus(this IServiceCollection services)
         {
             services
-                .AddScoped<IUserBus, UserBus>();
+                .AddScoped<IUserBus, UserBus>()
+                .AddScoped<IRoleBus, RoleBus>();
 
             services
-                .AddScoped<IUserBusForService>(x => (UserBus)x.GetRequiredService<IUserBus>());
+                .AddScoped<IUserBusForService>(x => (UserBus)x.GetRequiredService<IUserBus>())
+                .AddScoped<IRoleBusForService>(x => (RoleBus)x.GetRequiredService<IRoleBus>());
 
             return services;
         }

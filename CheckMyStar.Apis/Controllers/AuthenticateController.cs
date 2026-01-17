@@ -27,12 +27,13 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
     /// Authenticates a user based on the provided credentials and returns a JWT token if authentication is successful.
     /// </summary>
     /// <param name="request">The user credentials to authenticate. Must include a valid username and password.</param>
+    /// <param name="ct">The cancellation token.</param>
     /// <returns>An HTTP 200 response containing a JWT token and user information if authentication succeeds; otherwise, an HTTP
     /// 401 response indicating invalid credentials.</returns>
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginGetRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginGetRequest request, CancellationToken ct)
     {
-        var user = await authenticateService.ValidateUserAsync(request);
+        var user = await authenticateService.ValidateUserAsync(request, ct);
 
         if (user is null)
         {

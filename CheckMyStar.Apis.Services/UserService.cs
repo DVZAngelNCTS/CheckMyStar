@@ -6,9 +6,9 @@ namespace CheckMyStar.Apis.Services
 {
     public class UserService(IUserBusForService userBusForService) : IUserService
     {
-        public async Task<List<UserModel>> GetUsers()
+        public async Task<List<UserModel>> GetUsers(CancellationToken ct)
         {
-            var users = await userBusForService.GetUsersForService();
+            var users = await userBusForService.GetUsersForService(ct);
 
             return users;
         }

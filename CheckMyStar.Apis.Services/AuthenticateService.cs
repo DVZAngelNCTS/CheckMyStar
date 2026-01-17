@@ -25,13 +25,13 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
     /// <param name="request">An object containing the user's identification and credential information to be validated. Cannot be null.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the
     /// credentials are correct; otherwise, null.</returns>
-    public async Task<UserModel?> ValidateUserAsync(LoginGetRequest request)
+    public async Task<UserModel?> ValidateUserAsync(LoginGetRequest request, CancellationToken ct)
     {
         string password = request.Password;
 
         request.Password = HashPassword(request.Password);
 
-        var user = await userBusForService.GetUser(request);
+        var user = await userBusForService.GetUser(request, ct);
 
         if (user != null)
         {

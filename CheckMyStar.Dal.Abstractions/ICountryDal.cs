@@ -4,6 +4,6 @@ namespace CheckMyStar.Dal.Abstractions
 {
     public interface ICountryDal
     {
-        Task<List<Country>> GetCountries();
+        Task<List<Country>> GetCountries(CancellationToken ct);
     }
 }

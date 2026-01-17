@@ -8,11 +8,11 @@ namespace CheckMyStar.Dal
 {
     public class AddressDal(ICheckMyStarDbContext dbContext) : IAddressDal
     {
-        public async Task<Address?> GetAddress(int addressIdentifier)
+        public async Task<Address?> GetAddress(int addressIdentifier, CancellationToken ct)
         {
             var address = await (from a in dbContext.Addresses
                                  where a.Identifier == addressIdentifier
-                                 select a).FirstOrDefaultAsync();
+                                 select a).FirstOrDefaultAsync(ct);
 
             return address;
         }
