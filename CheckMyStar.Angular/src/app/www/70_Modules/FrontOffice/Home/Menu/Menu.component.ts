@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthenticateService } from '../../../../80_Services/Authenticate.service';
+import { AuthenticateService } from '../../../../80_Services/Authenticate/Authenticate.service';
 
 @Component({
   selector: 'app-menu',

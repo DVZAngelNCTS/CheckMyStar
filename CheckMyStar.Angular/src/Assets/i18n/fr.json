@@ -8,7 +8,10 @@
   },
   "CommonSection": {
     "Search": "Rechercher",
-    "Reset": "Effacer"
+    "Reset": "Effacer",
+    "Update": "Modifier",
+    "Delete": "Supprimer",
+    "Add": "Ajouter"
   },
   "LoginSection": {
     "Login": "Identifiant",
@@ -25,6 +28,8 @@
     "Disconnect": "Se déconnecter"
   },
   "RoleSection": {
-    "Name": "Nom du rôle"
+    "Name": "Nom du rôle",
+    "Identifier": "Identifiant du rôle",
+    "Description": "Description du rôle"
   }
 }
