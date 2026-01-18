@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LoginGetRequest } from '../../40_Requests/FrontOffice/login-get.request';
-import { LoginModel } from '../../20_Models/FrontOffice/login.model';
+import { LoginGetRequest } from '../../40_Requests/FrontOffice/Login-get.request';
+import { LoginModel } from '../../20_Models/FrontOffice/Login.model';
 import { Environment } from '../../../../Environment/environment';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import { EnumCivility } from '../../10_Common/Enumerations/EnumCivility';
 import { EnumRole } from '../../10_Common/Enumerations/EnumRole';
-import { AddressModel } from './address.model';
+import { AddressModel } from './Address.model';
 
 
 export interface UserModel {

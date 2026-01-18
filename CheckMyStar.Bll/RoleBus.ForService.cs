@@ -8,7 +8,7 @@ namespace CheckMyStar.Bll
     {
         public Task<List<RoleModel>> GetRoles(RoleGetRequest request, CancellationToken ct)
         {
-            return this.GetRoles(request.Role, ct);
+            return this.GetRoles(request.Name, ct);
         }
     }
 }

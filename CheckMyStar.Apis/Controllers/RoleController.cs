@@ -20,9 +20,9 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="request">The request</param>
         /// <param name="ct">The cancellation token.</param>
         /// <returns></returns>
-        [HttpGet("getroles")]
+        [HttpPost("getroles")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> GetRoles(RoleGetRequest request, CancellationToken ct)
+        public async Task<IActionResult> GetRoles([FromBody] RoleGetRequest request, CancellationToken ct)
         {
             var roles = await roleService.GetRoles(request, ct);
 
