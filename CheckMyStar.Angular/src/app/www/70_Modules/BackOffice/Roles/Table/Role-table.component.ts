@@ -1,6 +1,7 @@
-import { Component, output } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationModule } from '../../../../10_Common/Translation.module';
+import { RoleModel } from '../../../../20_Models/BackOffice/Role.model';
 
 @Component({
 	selector: 'app-role-table',
@@ -9,12 +10,14 @@ import { TranslationModule } from '../../../../10_Common/Translation.module';
 	templateUrl: './Role-table.component.html'
 })
 export class RoleTableComponent {
+	roles = input<RoleModel[]>([]);
+
 	constructor() { 
 	}
-    update(): void {
+    update(role: RoleModel): void {
 
     }
-    delete(): void {
+    delete(identifier: number): void {
         
   }
 }

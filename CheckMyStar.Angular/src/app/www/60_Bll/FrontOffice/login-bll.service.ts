@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LoginDalService } from '../../50_Dal/FrontOffice/login-dal.service';
-import { LoginGetRequest } from '../../40_Requests/FrontOffice/login-get.request';
+import { LoginDalService } from '../../50_Dal/FrontOffice/Login-dal.service';
+import { LoginGetRequest } from '../../40_Requests/FrontOffice/Login-get.request';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,6 @@ export class LoginBllService {
   }
 
   login$(login: string, password: string) {
-    return this.loginDal.login$({ Login: login, Password: password } as LoginGetRequest);
+    return this.loginDal.login$({ login: login, password: password } as LoginGetRequest);
   }
 }

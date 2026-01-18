@@ -1,11 +1,11 @@
-import { CountryModel } from './country.model';
+import { CountryModel } from './Country.model';
 
 export interface AddressModel {
-    identifier: number;
-    number: number;
-    addressLine: string;
-    city: string;
-    zipCode: string;
-    region: string;
-    country: CountryModel;
+    identifier: number,
+    number: string,
+    addressLine: string,
+    city: string,
+    zipCode: string,
+    region?: string,
+    country: CountryModel
 }

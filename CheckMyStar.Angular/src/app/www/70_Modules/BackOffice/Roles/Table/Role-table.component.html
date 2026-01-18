@@ -19,30 +19,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="border-top">
+                <tr *ngFor="let role of roles()" class="border-top">
+                    <td class="p-2">{{ role.identifier }}</td>
+                    <td class="p-2">{{ role.name }}</td>
+                    <td class="p-2">{{ role.description }}</td>
                     <td class="p-2">
-
+                    <button type="button" class="btn btn-primary me-2" (click)="update(role)">
+                        <i class="bi bi-search me-2"></i>
+                        {{ 'CommonSection.Update' | translate }}
+                    </button>
                     </td>
                     <td class="p-2">
-
-                    </td>
-                    <td class="p-2">
-
-                    </td>
-                    <td class="p-2">
-                        <button type="button" class="btn btn-primary me-2" (click)="update()">
-                            <i class="bi bi-search me-2"></i>
-                            {{ 'CommonSection.Update' | translate }}
-                        </button>
-                    </td>
-                    <td class="p-2">
-                        <button type="button" class="btn btn-delete me-2" (click)="delete()">
-                            <i class="bi bi-x-circle me-2"></i>
-                            {{ 'CommonSection.Delete' | translate }}
-                        </button>
+                    <button type="button" class="btn btn-delete me-2" (click)="delete(role.identifier)">
+                        <i class="bi bi-x-circle me-2"></i>
+                        {{ 'CommonSection.Delete' | translate }}
+                    </button>
                     </td>
                 </tr>
-            </tbody>
+                </tbody>
         </table>
     </div>
 </div>
