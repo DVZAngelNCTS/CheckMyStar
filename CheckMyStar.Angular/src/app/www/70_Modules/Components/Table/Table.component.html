@@ -1,0 +1,52 @@
+<table class="w-100 mb-4">
+  <thead>
+    <tr>
+      <th *ngFor="let col of columns()" class="p-3" [style.width]="col.width" (click)="onSort(col)" [class.sortable]="col.sortable">
+        {{ col.header | translate }}
+        <ng-container *ngIf="col.sortable && sortField === col.field">
+          <span *ngIf="sortDirection === 'asc'">▲</span>
+          <span *ngIf="sortDirection === 'desc'">▼</span>
+        </ng-container>
+      </th>
+      <th class="p-3 action-col-update"></th>
+      <th class="p-3 action-col-delete"></th>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns()" class="p-2">
+        <input
+          *ngIf="col.filterable"
+          type="text"
+          class="form-control form-control-sm"
+          placeholder="Filtrer..."
+          (input)="onFilterChange(col, $event.target.value)"
+        />
+      </th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let row of displayData()" class="border-top">
+      <td *ngFor="let col of columns()" class="p-2">
+        <ng-container>
+          {{ row[col.field] }}
+        </ng-container>
+      </td>
+
+      <td class="p-2 action-col-update">
+        <button class="btn btn-primary me-2" (click)="update.emit(row)">
+          <i class="bi bi-search me-2"></i>
+          {{ 'CommonSection.Update' | translate }}
+        </button>
+      </td>
+
+      <td class="p-2 action-col-delete">
+        <button class="btn btn-delete me-2" (click)="delete.emit(row)">
+          <i class="bi bi-x-circle me-2"></i>
+          {{ 'CommonSection.Delete' | translate }}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
