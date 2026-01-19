@@ -1,0 +1,38 @@
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+th, td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable span {
+  cursor: pointer;
+}
+
+th input {
+  width: 100%;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.action-col-update {
+  width: 130px;
+  min-width: 130px;
+  max-width: 130px;
+}
+
+.action-col-delete {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+}
+
