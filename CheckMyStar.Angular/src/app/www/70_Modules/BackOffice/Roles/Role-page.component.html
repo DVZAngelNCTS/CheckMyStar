@@ -11,7 +11,7 @@
     <!-- Tableau extensible -->
     <div class="d-flex flex-column flex-grow-1">
       <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
-        <app-table [columns]="columns" [data]="roles" (update)="onUpdate($event)" (delete)="onDelete($event)"></app-table>
+        <app-table [columns]="columns" [data]="roles" (update)="openUpdate($event)" (delete)="openDelete($event)"></app-table>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     <div class="d-flex flex-row border-top">
       <div class="d-flex flex-column p-4 flex-grow-1 bg-secondary-light">
         <div class="ms-auto">
-          <button type="button" class="btn btn-secondary" (click)="onAdd()">
+          <button type="button" class="btn btn-secondary" (click)="openCreate()">
             <i class="bi bi-plus-lg me-2"></i>
             {{ 'CommonSection.Add' | translate }}
           </button>
@@ -28,3 +28,18 @@
     </div>
   </div>
 </div>
+
+<app-popup [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+  <!-- Contenu dynamique -->
+  <ng-container *ngIf="popupMode === 'delete'">
+    <p>Voulez-vous vraiment supprimer le rôle <strong>{{ selectedRole?.name }}</strong> ?</p>
+  </ng-container>
+  <ng-container *ngIf="popupVisible">
+    <ng-container *ngIf="popupMode === 'edit'">
+      <app-role-form [role]="selectedRole"></app-role-form>
+    </ng-container>
+    <ng-container *ngIf="popupMode === 'create'">
+      <app-role-form></app-role-form>
+    </ng-container>
+  </ng-container>
+</app-popup>
