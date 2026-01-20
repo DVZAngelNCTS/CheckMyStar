@@ -18,5 +18,30 @@ namespace CheckMyStar.Dal
 
             return roles;
         }
+
+        //public async Task<bool> SaveRole(Role role)
+        //{
+        //    if (role == null)
+        //        return false;
+
+        //    if (role.Identifier == 0)
+        //    {
+        //        await dbContext.Roles.AddAsync(role);
+        //    }
+        //    else
+        //    {
+        //        var existing = await dbContext.Roles.FirstOrDefaultAsync(r => r.Identifier == role.Identifier);
+
+        //        if (existing == null)
+        //            return false;
+
+        //        existing.Name = role.Name;
+        //    }
+
+        //    await dbContext.SaveChangesAsync();
+
+        //    return true;
+        //}
+
     }
 }

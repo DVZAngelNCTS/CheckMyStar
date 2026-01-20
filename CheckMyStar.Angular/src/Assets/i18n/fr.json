@@ -30,6 +30,13 @@
   "RoleSection": {
     "Name": "Nom du rôle",
     "Identifier": "Identifiant du rôle",
-    "Description": "Description du rôle"
+    "Description": "Description du rôle",
+    "Create": "Créer un rôle",
+    "Update": "Modifier un rôle",
+    "Delete": "Supprimer un rôle"
+  },
+  "PopupSection": {
+    "Validate": "Valider",
+    "Cancel": "Annuler"
   }
 }
