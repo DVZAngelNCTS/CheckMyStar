@@ -1,9 +1,10 @@
-﻿using CheckMyStar.Data;
+﻿using CheckMyStar.Dal.Results;
+using CheckMyStar.Data;
 
 namespace CheckMyStar.Dal.Abstractions
 {
     public interface ICivilityDal
     {
-        Task<List<Civility>> GetCivilities(CancellationToken ct);
+        Task<CivilityResult> GetCivilities(CancellationToken ct);
     }
 }

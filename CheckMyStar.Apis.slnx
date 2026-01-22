@@ -6,6 +6,7 @@
   <Folder Name="/10_Dal/">
     <Project Path="CheckMyStar.Dal.Abstractions/CheckMyStar.Dal.Abstractions.csproj" Id="369497de-fe71-4231-8071-ed77c1f0b5a4" />
     <Project Path="CheckMyStar.Dal.Models/CheckMyStar.Dal.Models.csproj" Id="d122d8ff-f52a-4233-86c7-5a8765f9b000" />
+    <Project Path="CheckMyStar.Dal.Results/CheckMyStar.Dal.Results.csproj" Id="db8c40ef-9af2-4f63-b0b4-5695ac0db06b" />
     <Project Path="CheckMyStar.Dal/CheckMyStar.Dal.csproj" />
   </Folder>
   <Folder Name="/20_Bll/">
@@ -14,6 +15,7 @@
     <Project Path="CheckMyStar.Bll.Mappings/CheckMyStar.Bll.Mappings.csproj" Id="7dae9ccd-3f26-4164-b0c1-d1ce34d45dc7" />
     <Project Path="CheckMyStar.Bll.Models/CheckMyStar.Bll.Models.csproj" Id="8b8634c6-e81e-429a-9a2f-2700dd1b48e9" />
     <Project Path="CheckMyStar.Bll.Requests/CheckMyStar.Bll.Requests.csproj" Id="410f423c-68ca-42f9-8a90-66dba8782de4" />
+    <Project Path="CheckMyStar.Bll.Responses/CheckMyStar.Bll.Responses.csproj" />
     <Project Path="CheckMyStar.Bll/CheckMyStar.Bll.csproj" Id="0e2f764c-03ac-4965-a164-23e09c29767b" />
   </Folder>
   <Folder Name="/30_Common/">

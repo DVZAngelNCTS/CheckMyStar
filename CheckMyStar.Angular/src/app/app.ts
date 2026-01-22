@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { LoaderComponent } from './www/70_Modules/Components/Loader/Loader.component';
-import { LoaderManager } from './www/80_Services/Loader/Loader-manager.service'
+import { LoaderComponent } from './www/80_Modules/Components/Loader/Loader.component';
+import { LoaderManager } from './www/90_Services/Loader/Loader-manager.service'
 
 @Component({
   selector: 'app-root',

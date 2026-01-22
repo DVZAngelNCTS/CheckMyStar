@@ -3,6 +3,7 @@
 using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
+using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
@@ -11,18 +12,21 @@ namespace CheckMyStar.Bll
 {
     public partial class UserBus(IUserContextService userContextService, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
     {
-        public async Task<UserModel?> GetUser(string login, string password, CancellationToken ct)
+        public async Task<UserResponse> GetUser(string login, string password, CancellationToken ct)
         {
-            UserModel? userModel = null;
+            UserResponse userResult = new UserResponse();
 
             var user = await userDal.GetUser(login, password, ct);
 
-            if (user != null)
+            if (user.IsSuccess && user.User != null)
             {
-                userModel = await LoadUser(user, ct);
+                userResult.User = await LoadUser(user.User, ct);
             }
 
-            return userModel;
+            userResult.IsSuccess = user.IsSuccess;
+            userResult.Message = user.Message;
+
+            return userResult;
         }
 
         public async Task<List<UserModel>> GetUsers(CancellationToken ct)
@@ -33,12 +37,12 @@ namespace CheckMyStar.Bll
 
             foreach (var user in users)
             {
-                var userModel = await LoadUser(user, ct);
+                //var userModel = await LoadUser(user, ct);
 
-                if (userModel != null)
-                {
-                    userModels.Add(userModel);
-                }
+                //if (userModel != null)
+                //{
+                //    userModels.Add(userModel);
+                //}
             }
 
             return userModels;
@@ -52,18 +56,18 @@ namespace CheckMyStar.Bll
             {
                 var civilites = await civilityDal.GetCivilities(ct);
 
-                if (civilites != null)
+                if (civilites.IsSuccess && civilites.Civilities != null)
                 {
-                    var civility = civilites.First(c => c.Identifier == user.CivilityIdentifier);
+                    var civility = civilites.Civilities.First(c => c.Identifier == user.CivilityIdentifier);
 
                     userModel.Civility = civility.Identifier.ToEnum<EnumCivility>();
                 }
 
                 var roles = await roleDal.GetRoles(null, ct);
 
-                if (roles != null)
+                if (roles.IsSuccess && roles.Roles != null)
                 {
-                    var role = roles.First(r => r.Identifier == user.RoleIdentifier);
+                    var role = roles.Roles.First(r => r.Identifier == user.RoleIdentifier);
 
                     userModel.Role = role.Identifier.ToEnum<EnumRole>();
                 }
@@ -72,15 +76,15 @@ namespace CheckMyStar.Bll
                 {
                     var address = await addressDal.GetAddress(user.AddressIdentifier.Value, ct);
 
-                    if (address != null)
+                    if (address.IsSuccess && address.Address != null)
                     {
-                        userModel.Address = mapper.Map<AddressModel>(address);
+                        userModel.Address = mapper.Map<AddressModel>(address.Address);
 
-                        var countriees = await countryDal.GetCountries(ct);
+                        var countries = await countryDal.GetCountries(ct);
 
-                        if (countriees != null)
+                        if (countries.IsSuccess && countries.Countries != null)
                         {
-                            var country = countriees.First(c => c.Identifier == address.CountryIdentifier);
+                            var country = countries.Countries.First(c => c.Identifier == address.Address.CountryIdentifier);
 
                             userModel.Address.Country = mapper.Map<CountryModel>(country);
                         }

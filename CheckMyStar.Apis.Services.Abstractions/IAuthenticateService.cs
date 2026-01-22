@@ -1,5 +1,5 @@
-using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
+using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Apis.Services.Abstractions;
 
@@ -17,7 +17,7 @@ public interface IAuthenticateService
     /// <param name="request">The user request containing the criteria used to identify and validate the user. Cannot be null.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the request is
     /// valid and a matching user is found; otherwise, null.</returns>
-    Task<UserModel?> ValidateUserAsync(LoginGetRequest request, CancellationToken ct);
+    Task<UserResponse> ValidateUserAsync(LoginGetRequest request, CancellationToken ct);
     /// <summary>
     /// Generates a secure hash for the specified password.
     /// </summary>

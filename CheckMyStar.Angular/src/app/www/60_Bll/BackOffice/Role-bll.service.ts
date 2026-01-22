@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RoleDalService } from '../../50_Dal/BackOffice/Role-dal.service';
+import { RoleDalService } from '../../70_Dal/BackOffice/Role-dal.service';
 import { RoleGetRequest } from '../../40_Requests/BackOffice/Role-get.request';
 import { RoleModel } from '../../20_Models/BackOffice/Role.model';
 import { RoleSaveRequest } from '../../40_Requests/BackOffice/Role-save.request';
@@ -18,10 +18,16 @@ export class RoleBllService {
     return this.roleDal.getRoles$(request);
   }
 
-  saveRole$(role: RoleModel) {
+  addRole$(role: RoleModel) {
     const request = { role: role } as RoleSaveRequest;
 
-    return this.roleDal.saveRole$(request);
+    return this.roleDal.addRole$(request);
+  }
+
+  updateRole$(role: RoleModel) {
+    const request = { role: role } as RoleSaveRequest;
+
+    return this.roleDal.updateRole$(request);
   }
 
   deleteRole$(identifier: number) {

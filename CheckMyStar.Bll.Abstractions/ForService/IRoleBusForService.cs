@@ -1,10 +1,13 @@
-﻿using CheckMyStar.Bll.Models;
-using CheckMyStar.Bll.Requests;
+﻿using CheckMyStar.Bll.Requests;
+using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Bll.Abstractions.ForService
 {
     public interface IRoleBusForService
     {
-        Task<List<RoleModel>> GetRoles(RoleGetRequest request, CancellationToken ct);
+        Task<RolesResponse> GetRoles(RoleGetRequest request, CancellationToken ct);
+        Task<BaseResponse> AddRole(RoleSaveRequest request, CancellationToken ct);
+        Task<BaseResponse> UpdateRole(RoleSaveRequest request, CancellationToken ct);
+        Task<BaseResponse> DeleteRole(RoleDeleteRequest request, CancellationToken ct);
     }
 }

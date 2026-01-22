@@ -9,6 +9,7 @@ using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Enumerations;
+using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Apis.Controllers;
 
@@ -35,21 +36,42 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
     {
         var user = await authenticateService.ValidateUserAsync(request, ct);
 
-        if (user is null)
+        if (!user.IsSuccess)
+        {
+            logger.LogError("Erreur lors de la tentative de connexion pour l'utilisateur: {Login}", request.Login);
+
+            return Ok(new LoginResponse
+            {
+                IsSuccess = false,
+                IsValid = false,
+                Message = $"Erreur lors de la tentative de connexion pour l'utilisateur: {request.Login}",
+                Login = new LoginModel { Token = string.Empty, User = null }
+            });
+        }
+
+        if (user.IsValid != true || user.User == null)
         {
             logger.LogWarning("Échec de connexion pour l'utilisateur: {Login}", request.Login);
 
             return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
         }
 
-        var token = GenerateJwtToken(user);
+        var token = GenerateJwtToken(user.User);
 
-        logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.LastName, user.FirstName);
+        var message = $"Connexion réussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
+        
+        logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
 
-        return Ok(new LoginModel
+        return Ok(new LoginResponse
         {
-            Token = token,
-            User = user
+            IsSuccess = true,
+            IsValid = true,
+            Message = message,
+            Login = new LoginModel
+            {
+                Token = token,
+                User = user.User
+            }
         });
     }
 

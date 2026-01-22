@@ -6,6 +6,7 @@ using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Models;
+using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Apis.Services;
 
@@ -25,7 +26,7 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
     /// <param name="request">An object containing the user's identification and credential information to be validated. Cannot be null.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the
     /// credentials are correct; otherwise, null.</returns>
-    public async Task<UserModel?> ValidateUserAsync(LoginGetRequest request, CancellationToken ct)
+    public async Task<UserResponse> ValidateUserAsync(LoginGetRequest request, CancellationToken ct)
     {
         string password = request.Password;
 
@@ -33,11 +34,9 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
 
         var user = await userBusForService.GetUser(request, ct);
 
-        if (user != null)
+        if (user.IsSuccess && user.User != null)
         {
-            var isValid = VerifyPassword(password, user.Password);
-
-            return isValid ? user : null;
+            user.IsValid = VerifyPassword(password, user.User.Password);
         }
 
         return user;
