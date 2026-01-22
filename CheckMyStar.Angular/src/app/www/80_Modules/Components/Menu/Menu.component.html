@@ -12,10 +12,17 @@
   </button>
 
   <nav class="menu-items">
-    <div class="menu-item">Accueil</div>
-    <div class="menu-item">Profil</div>
-    <div class="menu-item">Mes tests</div>
-    <div class="menu-item">Paramètres</div>
-    <div class="menu-item" (click)="logout()">Déconnexion</div>
+    <ng-container *ngFor="let item of menuItems">
+      <div class="menu-item"
+           *ngIf="item.route"
+           [routerLink]="item.route">
+        {{ item.label | translate }}
+      </div>
+      <div class="menu-item"
+           *ngIf="item.action === 'logout'"
+           (click)="logout()">
+        {{ item.label | translate }}
+      </div>
+    </ng-container>
   </nav>
 </div>

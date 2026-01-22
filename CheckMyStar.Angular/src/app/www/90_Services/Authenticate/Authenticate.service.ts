@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoginBllService } from '../../60_Bll/FrontOffice/Login-bll.service';
 import { Router } from '@angular/router';
+import { UserModel } from '../../20_Models/FrontOffice/User.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,20 @@ export class AuthenticateService {
   }
 
   logout(): void {
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.router.navigate(['/login']);
+  }
+
+  getCurrentUser(): UserModel | null {
+    const userJson = localStorage.getItem('user');
+
+    if (!userJson) return null;
+    
+    try {
+      return JSON.parse(userJson) as UserModel;
+    } catch {
+      return null;
+    }
   }
 }

@@ -1,7 +1,7 @@
 
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MenuComponent } from './Menu/Menu.component';
+import { MenuComponent } from '../../Components/Menu/Menu.component';
 
 @Component({
 	selector: 'app-front-home-page',
