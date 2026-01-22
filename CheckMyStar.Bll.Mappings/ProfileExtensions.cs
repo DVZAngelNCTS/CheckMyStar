@@ -11,7 +11,8 @@ namespace CheckMyStar.Bll.Mappings
                 .AddAutoMapper(typeof(CivilityProfile))
                 .AddAutoMapper(typeof(AddressProfile))
                 .AddAutoMapper(typeof(CountryProfile))
-                .AddAutoMapper(typeof(RoleProfile));
+                .AddAutoMapper(typeof(RoleProfile))
+                .AddAutoMapper(typeof(BaseProfile));
 
             return services;
         }

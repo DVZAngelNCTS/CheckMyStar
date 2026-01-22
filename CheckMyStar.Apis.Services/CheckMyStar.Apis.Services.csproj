@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CheckMyStar.Apis.Services.Abstractions\CheckMyStar.Apis.Services.Abstractions.csproj" />
     <ProjectReference Include="..\CheckMyStar.Apis.Services.Models\CheckMyStar.Apis.Services.Models.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Bll.Responses\CheckMyStar.Bll.Responses.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll\CheckMyStar.Bll.csproj" />
     <ProjectReference Include="..\CheckMyStar.Enumerations\CheckMyStar.Enumerations.csproj" />
   </ItemGroup>

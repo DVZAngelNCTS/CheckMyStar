@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CheckMyStar.Dal.Abstractions\CheckMyStar.Dal.Abstractions.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Dal.Results\CheckMyStar.Dal.Results.csproj" />
     <ProjectReference Include="..\CheckMyStar.Data.Abstraction\CheckMyStar.Data.Abstractions.csproj" />
   </ItemGroup>
 

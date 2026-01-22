@@ -1,9 +1,10 @@
-﻿using CheckMyStar.Data;
+﻿using CheckMyStar.Dal.Results;
+using CheckMyStar.Data;
 
 namespace CheckMyStar.Dal.Abstractions
 {
     public interface ICountryDal
     {
-        Task<List<Country>> GetCountries(CancellationToken ct);
+        Task<CountriesResult> GetCountries(CancellationToken ct);
     }
 }

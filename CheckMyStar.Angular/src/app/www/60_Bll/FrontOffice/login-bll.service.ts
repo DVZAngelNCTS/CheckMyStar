@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoginDalService } from '../../50_Dal/FrontOffice/Login-dal.service';
+import { LoginDalService } from '../../70_Dal/FrontOffice/Login-dal.service';
 import { LoginGetRequest } from '../../40_Requests/FrontOffice/Login-get.request';
 
 @Injectable({

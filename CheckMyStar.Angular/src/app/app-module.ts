@@ -5,14 +5,14 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
-import { FrontHomePageComponent } from './www/70_Modules/FrontOffice/Home/Home-page.component';
-import { BackHomePageComponent } from './www/70_Modules/BackOffice/Home/Home-page.component';
+import { FrontHomePageComponent } from './www/80_Modules/FrontOffice/Home/Home-page.component';
+import { BackHomePageComponent } from './www/80_Modules/BackOffice/Home/Home-page.component';
 import { TranslationModule } from './www/10_Common/Translation.module';
 import { TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
-import { TranslationInitService } from './www/80_Services/Translation/Translation.service';
-import { AuthenticateInterceptor } from './www/80_Services/Authenticate/AuthenticateInterceptor.service'
+import { TranslationInitService } from './www/90_Services/Translation/Translation.service';
+import { AuthenticateInterceptor } from './www/90_Services/Authenticate/AuthenticateInterceptor.service'
 import { HTTP_INTERCEPTORS } from '@angular/common/http'
-import { LoaderInterceptor } from './www/80_Services/Loader/Loader.interceptor'
+import { LoaderInterceptor } from './www/90_Services/Loader/Loader.interceptor'
 
 export function HttpLoaderFactory(http: HttpClient) { return new TranslateHttpLoader(); }
 

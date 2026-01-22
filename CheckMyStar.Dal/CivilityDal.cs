@@ -3,18 +3,34 @@
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Data.Abstractions;
 using CheckMyStar.Data;
+using CheckMyStar.Dal.Results;
 
 namespace CheckMyStar.Dal
 {
     public class CivilityDal(ICheckMyStarDbContext dbContext) : ICivilityDal
     {
-        public async Task<List<Civility>> GetCivilities(CancellationToken ct)
+        public async Task<CivilityResult> GetCivilities(CancellationToken ct)
         {
-            var civilities = await (from c in dbContext.Civilities
-                                    orderby c.Name
-                                    select c).ToListAsync(ct);
+            CivilityResult civilityResult = new CivilityResult();
 
-            return civilities;
+            try
+            {
+                var civilities = await (from c in dbContext.Civilities
+                                        orderby c.Name
+                                        select c).ToListAsync(ct);
+
+                civilityResult.Civilities = civilities;
+                civilityResult.IsSuccess = true;
+
+            }
+            catch (Exception ex)
+            {
+                civilityResult.IsSuccess = false;
+                civilityResult.Message = ex.Message;
+            }
+
+
+            return civilityResult;
         }
     }
 }
