@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MenuComponent } from './Menu/Menu.component';
+import { MenuComponent } from '../../Components/Menu/Menu.component';
 import { BreadcrumbComponent } from '../../Components/Breadcrumb/Breadcrumb.component';
 
 @Component({
