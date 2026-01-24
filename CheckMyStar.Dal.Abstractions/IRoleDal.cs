@@ -7,6 +7,7 @@ namespace CheckMyStar.Dal.Abstractions
     {
         Task<RolesResult> GetRoles(string? name, CancellationToken ct);
         Task<RoleResult> GetRole(int identifier, CancellationToken ct);
+        Task<RoleResult> GetRole(string name, CancellationToken ct);
         Task<BaseResult> AddRole(Role role, CancellationToken ct);
         Task<BaseResult> UpdateRole(Role role, CancellationToken ct);
         Task<BaseResult> DeleteRole(Role role, CancellationToken ct);

@@ -16,7 +16,7 @@ namespace CheckMyStar.Dal
             {
                 var countries = await (from c in dbContext.Countries
                                        orderby c.Name
-                                       select c).ToListAsync(ct);
+                                       select c).AsNoTracking().ToListAsync(ct);
 
                 countriesResult.IsSuccess = true;
                 countriesResult.Countries = countries;

@@ -1,14 +1,14 @@
 <div class="popup-overlay" *ngIf="visible">
   <div class="popup-box">
-
     <div class="popup-header">
       <h3>{{ title }}</h3>
     </div>
-
     <div class="popup-body">
       <ng-content></ng-content>
     </div>
-
+    <div class="error-message text-center mt-3" *ngIf="errorMessage">
+       {{ errorMessage }}
+    </div>
     <div class="popup-footer">
       <button class="btn btn-delete" (click)="onCancel()">
         {{ cancelLabel }}
@@ -18,6 +18,5 @@
         {{ confirmLabel }}
       </button>
     </div>
-
   </div>
 </div>

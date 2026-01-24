@@ -15,7 +15,8 @@ export class PopupComponent {
   @Input() title = '';
   @Input() confirmLabel = '';
   @Input() cancelLabel = '';
-
+  @Input() errorMessage: string | null = null;
+  
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 

@@ -179,7 +179,8 @@ a {
   color: #fff;
 }
 
-.login-error {
+/* Error */
+.error-message {
   color: #FBB900;
   font-weight: 600;
 }

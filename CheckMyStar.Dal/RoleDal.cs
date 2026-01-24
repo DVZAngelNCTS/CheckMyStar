@@ -21,7 +21,7 @@ namespace CheckMyStar.Dal
                                where
                                 string.IsNullOrEmpty(name) || r.Name.Contains(name)
                                orderby r.Name
-                               select r).ToListAsync(ct);
+                               select r).AsNoTracking().ToListAsync(ct);
 
                 rolesResult.Roles = roles;
                 rolesResult.IsSuccess = true;
@@ -45,7 +45,31 @@ namespace CheckMyStar.Dal
                                    where
                                     r.Identifier == identifier
                                    orderby r.Name
-                                   select r).FirstOrDefaultAsync(ct);
+                                   select r).AsNoTracking().FirstOrDefaultAsync(ct);
+
+                roleResult.Role = role;
+                roleResult.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                roleResult.IsSuccess = true;
+                roleResult.Message = ex.Message;
+            }
+
+            return roleResult;
+        }
+
+        public async Task<RoleResult> GetRole(string name, CancellationToken ct)
+        {
+            RoleResult roleResult = new RoleResult();
+
+            try
+            {
+                var role = await (from r in dbContext.Roles
+                                  where
+                                   r.Name.ToLower() == name.ToLower()
+                                  orderby r.Name
+                                  select r).AsNoTracking().FirstOrDefaultAsync(ct);
 
                 roleResult.Role = role;
                 roleResult.IsSuccess = true;

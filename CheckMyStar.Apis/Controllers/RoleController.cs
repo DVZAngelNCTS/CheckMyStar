@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-using CheckMyStar.Apis.Services.Abstractions;
+﻿using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Requests;
+using CheckMyStar.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CheckMyStar.Apis.Controllers
 {
@@ -71,9 +71,9 @@ namespace CheckMyStar.Apis.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteRole([FromBody] RoleDeleteRequest request, CancellationToken ct)
         {
-            await roleService.DeleteRole(request, ct);
+            var role = await roleService.DeleteRole(request, ct);
 
-            return Ok();
+            return Ok(role);
         }
     }
 }

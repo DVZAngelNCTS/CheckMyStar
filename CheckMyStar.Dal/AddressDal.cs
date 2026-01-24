@@ -16,7 +16,7 @@ namespace CheckMyStar.Dal
             {
                 var address = await (from a in dbContext.Addresses
                                      where a.Identifier == addressIdentifier
-                                     select a).FirstOrDefaultAsync(ct);
+                                     select a).AsNoTracking().FirstOrDefaultAsync(ct);
 
                 addressResult.IsSuccess = true;
                 addressResult.Address = address;
