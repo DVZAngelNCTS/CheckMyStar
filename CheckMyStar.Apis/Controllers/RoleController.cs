@@ -1,8 +1,8 @@
-﻿using CheckMyStar.Apis.Services.Abstractions;
-using CheckMyStar.Bll.Requests;
-using CheckMyStar.Data;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using CheckMyStar.Apis.Services.Abstractions;
+using CheckMyStar.Bll.Requests;
 
 namespace CheckMyStar.Apis.Controllers
 {
