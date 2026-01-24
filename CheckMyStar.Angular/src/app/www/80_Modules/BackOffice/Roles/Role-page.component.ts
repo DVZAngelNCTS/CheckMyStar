@@ -92,6 +92,7 @@ export class RolePageComponent {
 		return; // ❗ NE PAS FERMER LA POPUP
 		}
 		this.onCreateConfirmed();
+		return;
 	}
 
 	if (this.popupMode === 'edit') {
@@ -100,10 +101,12 @@ export class RolePageComponent {
 		return; // ❗ NE PAS FERMER LA POPUP
 		}
 		this.onEditConfirmed();
+		return;
 	}
 
 	if (this.popupMode === 'delete') {
 		this.onDeleteConfirmed();
+		return;
 	}
 
 	// 👉 Ici seulement si tout est OK
@@ -176,7 +179,7 @@ export class RolePageComponent {
 				}
 
 				this.popupError = null;
-				this.roles = this.roles!.filter(r => r.identifier !== this.selectedRole!.identifier);
+				this.loadRoles();				
 				this.popupVisible = false;
 			},
 			error: err => {

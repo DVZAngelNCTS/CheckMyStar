@@ -20,7 +20,7 @@ namespace CheckMyStar.Dal
                                       (u.Email == login
                                    || u.LastName == login)
                                    && u.Password == password
-                                  select u).FirstOrDefaultAsync(ct);
+                                  select u).AsNoTracking().FirstOrDefaultAsync(ct);
 
                 userResult.IsSuccess = true;
                 userResult.User = user;
@@ -36,7 +36,7 @@ namespace CheckMyStar.Dal
 
         public async Task<List<User>> GetUsers(CancellationToken ct)
         {
-            var users = await dbContext.Users.ToListAsync(ct);
+            var users = await dbContext.Users.AsNoTracking().ToListAsync(ct);
 
             return users;
         }

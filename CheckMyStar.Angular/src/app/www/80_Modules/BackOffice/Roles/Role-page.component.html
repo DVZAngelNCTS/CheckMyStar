@@ -27,23 +27,21 @@
       </div>
     </div>
   </div>
-
-  <div *ngIf="popupError" class="alert alert-danger mb-3">
-    {{ popupError }}
-  </div>
 </div>
 
-<app-popup [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+<app-popup [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
   <!-- Contenu dynamique -->
   <ng-container *ngIf="popupMode === 'delete'">
     <p>Voulez-vous vraiment supprimer le rôle <strong>{{ selectedRole?.name }}</strong> ?</p>
   </ng-container>
+
   <ng-container *ngIf="popupVisible">
     <ng-container *ngIf="popupMode === 'edit'">
-      <app-role-form [role]="selectedRole"></app-role-form>
+      <app-role-form [role]="selectedRole" [readonlyIdentifier]="true">></app-role-form>
     </ng-container>
     <ng-container *ngIf="popupMode === 'create'">
-      <app-role-form></app-role-form>
+      <app-role-form [readonlyIdentifier]="false">></app-role-form>
     </ng-container>
   </ng-container>
 </app-popup>
+

@@ -16,7 +16,7 @@ namespace CheckMyStar.Bll
 
             return mapper.Map<RolesResponse>(roles);
         }
-        
+
         public async Task<BaseResponse> AddRole(RoleModel roleModel, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
@@ -25,13 +25,41 @@ namespace CheckMyStar.Bll
 
             if (role.IsSuccess)
             {
-                var roleEntity = mapper.Map<Role>(role.Role);
+                if (role.Role == null)
+                {
+                    role = await roleDal.GetRole(roleModel.Name, ct);
 
-                return mapper.Map<BaseResponse>(await roleDal.AddRole(roleEntity, ct));
+                    if (role.IsSuccess)
+                    {
+                        if (role.Role == null)
+                        {
+                            var roleEntity = mapper.Map<Role>(roleModel);
+
+                            result = mapper.Map<BaseResponse>(await roleDal.AddRole(roleEntity, ct));
+                        }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "Le nom du rôle existe déjà";
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = role.Message;
+                    }
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "L'identifiant du rôle existe déjà";
+                }
             }
-
-            result.IsSuccess = false;
-            result.Message = "Le rôle existe déjà, impossible de l'ajouter";
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = role.Message;
+            }
 
             return result;
         }
@@ -44,7 +72,7 @@ namespace CheckMyStar.Bll
 
             if (role.IsSuccess)
             {
-                var roleEntity = mapper.Map<Role>(role);
+                var roleEntity = mapper.Map<Role>(roleModel);
 
                 return mapper.Map<BaseResponse>(await roleDal.UpdateRole(roleEntity, ct));
             }
@@ -63,7 +91,7 @@ namespace CheckMyStar.Bll
 
             if (role.IsSuccess)
             {
-                var roleEntity = mapper.Map<Role>(role);
+                var roleEntity = mapper.Map<Role>(role.Role);
 
                 return mapper.Map<BaseResponse>(await roleDal.DeleteRole(roleEntity, ct));
             }
