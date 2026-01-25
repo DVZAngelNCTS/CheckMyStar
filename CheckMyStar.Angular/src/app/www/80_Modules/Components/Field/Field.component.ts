@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class FieldComponent {
   containerClass = input<string>('');
   label = input.required<string>();
+  icon = input<string>('');
   labelClass = input<string>('w-7rem');
   labelTextPosition = input<'start' | 'end' | 'center'>('end');
   controlClass = input<string>('w-14rem');

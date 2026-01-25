@@ -1,5 +1,8 @@
-<div class="d-flex my-1" [ngClass]="containerClass()">
-  <label [class]="labelClassStr()">{{ label() | translate }}</label>
+<div class="d-flex my-1" [ngClass]="containerClass()">  
+  <label [class]="labelClassStr()">
+    <i *ngIf="icon()" [class]="icon()" class="me-2"></i>
+    {{ label() | translate }}
+  </label>
   <div class="d-flex flex-column" [ngClass]="controlClass()">
     <ng-content></ng-content>
     <div class="error-space">

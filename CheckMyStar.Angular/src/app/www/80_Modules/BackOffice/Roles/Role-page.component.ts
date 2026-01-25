@@ -32,9 +32,9 @@ export class RolePageComponent {
 	loadingReset = false;
 
 	columns = [
-		{ field: 'identifier', header: 'RoleSection.Identifier', sortable: true, filterable: true, width: '25%' },
-		{ field: 'name', header: 'RoleSection.Name', translate: true, sortable: true, filterable: true, width: '25%' },
-		{ field: 'description', header: 'RoleSection.Description', sortable: true, filterable: true }
+		{ icon: 'bi bi-list-ol', field: 'identifier', header: 'RoleSection.Identifier', sortable: true, filterable: true, width: '25%' },
+		{ icon: 'bi bi-shield', field: 'name', header: 'RoleSection.Name', translate: true, sortable: true, filterable: true, width: '25%' },
+		{ icon: 'bi bi-shield-exclamation', field: 'description', header: 'RoleSection.Description', sortable: true, filterable: true }
 		] as TableColumn<RoleModel>[];
 
 	constructor(private roleBll: RoleBllService, private translate: TranslateService) { 

@@ -6,6 +6,9 @@
       "fr": "Français"
     }
   },
+  "HomeSection": {
+    "BackOffice": "Bienvenue sur le back office de Check MyStars"
+  },
   "CommonSection": {
     "Search": "Rechercher",
     "Reset": "Effacer",

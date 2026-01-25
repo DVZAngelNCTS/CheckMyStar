@@ -2,6 +2,9 @@ html, body {
 	height: 100%; 
 }
 
+h1 {
+  color: #fff;
+}
 /* Layout */
 .layout {
 	display: flex;
@@ -22,8 +25,7 @@ html, body {
 /* Page */
 .page-header { 
 	padding: 20px; 
-	background: #fff; 
-	border-bottom: 1px solid #ddd; 
+	background: #2b8a00;
 }
 
 .page-content {
@@ -51,7 +53,7 @@ html, body {
 	color: #fff;
 	display: flex;
 	flex-direction: column;
-	transition: width 0.22s ease, background 0.2s;
+	transition: width 0.25s ease, background 0.2s;
 	z-index: 1000;
 	overflow: hidden;
 }
@@ -171,7 +173,7 @@ html, body {
 
 .page-header h1 { 
 	margin: 0 0 16px 0; 
-	color: #2b8a00; 
+	color: #fff; 
 }
 
 /* Link */
@@ -236,6 +238,15 @@ a {
   box-shadow: none !important;
 }
 
+/* Disabled */
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-color: #FBB900 !important;
+  border-color: #FBB900 !important;
+  color: #000 !important;
+  opacity: 0.7; /* optionnel, pour montrer le disabled */
+}
+
 /* Secondary button green */
 .btn-secondary {
   background-color: #2B8A00;
@@ -274,6 +285,15 @@ a {
 	 color: #fff !important; 
 	 box-shadow: none !important;
 }
+
+/* Disabled */ 
+.btn-secondary:disabled, 
+.btn-secondary.disabled { 
+  background-color: #2B8A00 !important; 
+  border-color: #2B8A00 !important; 
+  color: #fff !important; 
+  opacity: 0.7; 
+ }
 
 /* Tertiary button red */
 .btn-tertiary {
@@ -314,23 +334,29 @@ a {
   box-shadow: none !important;
 }
 
+/* Disabled */ 
+.btn-tertiary:disabled, 
+.btn-tertiary.disabled { 
+  background-color: #D32F2F !important; 
+  border-color: #D32F2F !important; 
+  color: #fff !important; 
+  opacity: 0.7
+}
+
 /* Breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 16px;
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(6px);
-  border-radius: 8px;
-  margin: 12px 0 20px 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #FBB900;
+  margin: 0 !important;
 }
 
 .breadcrumb a {
   color: #2b8a00;
-  font-weight: 600;
+  font-weight: bolder;
   text-decoration: none;
   transition: color .15s ease;
 }
@@ -341,7 +367,7 @@ a {
 
 .breadcrumb span {
   color: #444;
-  font-weight: 500;
+  font-weight: bolder;
 }
 
 .breadcrumb-separator {
@@ -356,8 +382,15 @@ a {
 }
 
 .breadcrumb-current {
-  font-weight: 700;
+  font-weight: bolder;
   color: #2b8a00;
+}
+
+/* Input focus style (jaune comme app-field) */
+.form-control:focus {
+  border-color: #FBB900 !important;
+  box-shadow: 0 0 0 0.2rem rgba(251, 185, 0, 0.25) !important;
+  outline: none !important;
 }
 
 /* Marge utilities*/
@@ -369,6 +402,16 @@ a {
 .w-7rem {
   width: 7rem;
   flex: 0 0 7rem;
+}
+
+.w-8rem {
+  width: 8rem;
+  flex: 0 0 8rem;
+}
+
+.w-9rem {
+  width: 9rem;
+  flex: 0 0 9rem;
 }
 
 .w-12rem {
