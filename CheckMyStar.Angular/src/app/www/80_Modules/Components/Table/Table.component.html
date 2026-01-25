@@ -35,15 +35,15 @@
       </td>
 
       <td class="p-2 action-col-update">
-        <button class="btn btn-primary me-2" (click)="update.emit(row)">
-          <i class="bi bi-search me-2"></i>
+        <button class="btn btn-primary me-2 w-12rem" (click)="update.emit(row)">
+          <i class="bi bi-pencil me-2"></i>
           {{ 'CommonSection.Update' | translate }}
         </button>
       </td>
 
       <td class="p-2 action-col-delete">
-        <button class="btn btn-delete me-2" (click)="delete.emit(row)">
-          <i class="bi bi-x-circle me-2"></i>
+        <button class="btn btn-tertiary me-2 w-12rem" (click)="delete.emit(row)">
+          <i class="bi bi-trash me-2"></i>
           {{ 'CommonSection.Delete' | translate }}
         </button>
       </td>

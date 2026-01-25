@@ -6,14 +6,20 @@
             </app-field>
         </div>
     </div>
-    <div class="ms-auto">
-        <button type="button" class="btn btn-primary me-2" (click)="search()">
-            <i class="bi bi-search me-2"></i>
-            {{ 'CommonSection.Search' | translate }}
+    <div class="ms-auto d-flex flex-nowrap">
+        <button type="button" class="btn btn-primary me-2 d-flex align-items-center justify-content-center gap-4 w-12rem" [disabled]="loadingSearch" (click)="search()">
+            <app-loader-mini *ngIf="loadingSearch"></app-loader-mini>
+            <span class="d-flex align-items-center">
+                <i class="bi bi-search me-2"></i>
+                {{ 'CommonSection.Search' | translate }}
+            </span>
         </button>
-        <button type="button" class="btn btn-delete me-2" (click)="reset()">
-            <i class="bi bi-x-circle me-2"></i>
-            {{ 'CommonSection.Reset' | translate }}
-        </button>
+        <button type="button" class="btn btn-tertiary me-2 d-flex align-items-center justify-content-center gap-4 w-12rem" [disabled]="loadingReset" (click)="reset()">
+            <app-loader-mini *ngIf="loadingReset"></app-loader-mini>
+            <span class="d-flex align-items-center">
+                <i class="bi bi-funnel me-2"></i>
+                {{ 'CommonSection.Reset' | translate }}
+            </span>
+        </button>       
     </div>
 </div>

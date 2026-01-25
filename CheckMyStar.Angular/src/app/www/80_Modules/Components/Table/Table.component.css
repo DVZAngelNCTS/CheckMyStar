@@ -25,14 +25,14 @@ th input {
 }
 
 .action-col-update {
-  width: 130px;
-  min-width: 130px;
-  max-width: 130px;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
 }
 
 .action-col-delete {
-  width: 150px;
-  min-width: 150px;
-  max-width: 150px;
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
 }
 

@@ -10,7 +10,7 @@ using CheckMyStar.Enumerations;
 
 namespace CheckMyStar.Bll
 {
-    public partial class UserBus(IUserContextService userContextService, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
+    public partial class UserBus(IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
     {
         public async Task<UserResponse> GetUser(string login, string password, CancellationToken ct)
         {
@@ -29,23 +29,11 @@ namespace CheckMyStar.Bll
             return userResult;
         }
 
-        public async Task<List<UserModel>> GetUsers(CancellationToken ct)
+        public async Task<UsersResponse> GetUsers(string lastName, string firstName, string society, string email, string phone, CancellationToken ct)
         {
-            List<UserModel> userModels = new List<UserModel>();
+            var users = await userDal.GetUsers(lastName, firstName, society, email, phone, ct);
 
-            var users = await userDal.GetUsers(ct);
-
-            foreach (var user in users)
-            {
-                //var userModel = await LoadUser(user, ct);
-
-                //if (userModel != null)
-                //{
-                //    userModels.Add(userModel);
-                //}
-            }
-
-            return userModels;
+            return mapper.Map<UsersResponse>(users); ;
         }
 
         private async Task<UserModel?> LoadUser(User user, CancellationToken ct)

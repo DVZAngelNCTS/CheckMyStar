@@ -13,14 +13,12 @@
 
   <nav class="menu-items">
     <ng-container *ngFor="let item of menuItems">
-      <div class="menu-item"
-           *ngIf="item.route"
-           [routerLink]="item.route">
+      <div class="menu-item" *ngIf="item.route" [routerLink]="item.route">
+        <i [class]="item.icon"></i>
         {{ item.label | translate }}
       </div>
-      <div class="menu-item"
-           *ngIf="item.action === 'logout'"
-           (click)="logout()">
+      <div class="menu-item" *ngIf="item.action === 'logout'" (click)="logout()">
+        <i [class]="item.icon"></i>
         {{ item.label | translate }}
       </div>
     </ng-container>

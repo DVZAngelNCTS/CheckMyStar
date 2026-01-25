@@ -10,12 +10,16 @@
        {{ errorMessage }}
     </div>
     <div class="popup-footer">
-      <button class="btn btn-delete" (click)="onCancel()">
+      <button class="btn btn-tertiary mt-3 d-flex align-items-center justify-content-center gap-2 w-12rem" (click)="onCancel()">
+        <i class="bi bi-x-circle me-2"></i>
         {{ cancelLabel }}
-      </button>
-
-      <button class="btn btn-secondary" (click)="onConfirm()">
-        {{ confirmLabel }}
+    </button>
+      <button class="btn btn-secondary mt-3 d-flex align-items-center justify-content-center gap-2 w-12rem" [disabled]="loading" (click)="onConfirm()">
+        <app-loader-mini *ngIf="loading"></app-loader-mini>
+        <span>
+          <i class="bi bi-check-lg me-2"></i>
+          {{ confirmLabel }}
+        </span>
       </button>
     </div>
   </div>

@@ -1,16 +1,18 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MiniLoaderComponent } from '../../Components/Loader/Mini/Loader-mini.component';
 
 @Component({
   selector: 'app-popup',
   standalone: true,
   templateUrl: './Popup.component.html',
   styleUrls: ['./Popup.component.css'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, MiniLoaderComponent]
 })
 export class PopupComponent {
-
+  @Input() loading = false;
+  
   @Input() visible = false;
   @Input() title = '';
   @Input() confirmLabel = '';

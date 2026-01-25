@@ -11,7 +11,7 @@ import { TranslationModule } from '../../../10_Common/Translation.module';
   templateUrl: './Breadcrumb.component.html'
 })
 export class BreadcrumbComponent {
-  breadcrumbs: Array<{ label: string, url: string }> = [];
+  breadcrumbs: Array<{ icon: string, label: string, url: string }> = [];
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.router.events
@@ -35,8 +35,11 @@ export class BreadcrumbComponent {
       }
 
       const label = child.snapshot.data['breadcrumb'];
+
+      const icon = child.snapshot.data['icon'];
+      
       if (label) {
-        breadcrumbs.push({ label, url });
+        breadcrumbs.push({ icon, label, url });
       }
 
       return this.buildBreadcrumbs(child, url, breadcrumbs);

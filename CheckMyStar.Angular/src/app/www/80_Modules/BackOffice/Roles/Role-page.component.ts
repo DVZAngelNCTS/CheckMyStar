@@ -27,6 +27,9 @@ export class RolePageComponent {
 	@ViewChild(RoleFormComponent) roleForm!: RoleFormComponent;
 	popupError: string | null = null;	
 	roles?: RoleModel[] = [];
+	loading = false;
+	loadingSearch = false; 
+	loadingReset = false;
 
 	columns = [
 		{ field: 'identifier', header: 'RoleSection.Identifier', sortable: true, filterable: true, width: '25%' },
@@ -48,14 +51,35 @@ export class RolePageComponent {
 		});
 	}
 
-	onFilter(filter: { name?: string }) {
+	onFilter(filter: any) {
+
+		if (filter.reset)
+			this.loadingReset = true;
+		else
+			this.loadingSearch = true;
+
 		this.roleBll.getRoles$(filter.name).subscribe({
-			next: roles => this.roles = roles.roles,
-			error: err => console.error(err)
+			next: roles => {
+				if (filter.reset)
+						this.loadingReset = false;
+					else
+						this.loadingSearch = false;
+				this.roles = roles.roles
+			},
+			error: err => {
+				if (filter.reset)
+						this.loadingReset = false;
+					else
+						this.loadingSearch = false;
+				console.error(err)
+			}
 		});
 	}
 
 	openCreate() {
+		this.loading = false;
+		this.loadingSearch = false;
+		this.loadingReset = false;
 		this.popupError = null;
 		this.popupMode = 'create';
 		this.popupTitle = this.translate.instant('RoleSection.Create');
@@ -65,6 +89,9 @@ export class RolePageComponent {
 	}
 
 	openUpdate(role: RoleModel) {
+		this.loading = false;
+		this.loadingSearch = false;
+		this.loadingReset = false;
 		this.popupError = null;
 		this.selectedRole = role;
 		this.popupMode = 'edit';
@@ -75,6 +102,9 @@ export class RolePageComponent {
 	}
 
 	openDelete(role: RoleModel) {
+		this.loading = false;
+		this.loadingSearch = false;
+		this.loadingReset = false;
 		this.popupError = null;
 		this.selectedRole = role;
 		this.popupMode = 'delete';
@@ -124,11 +154,14 @@ export class RolePageComponent {
 		return;
 	}
 
+	this.loading = true;
+
 	const newRole = this.roleForm.getValue();
 
 	this.roleBll.addRole$(newRole).subscribe({
 		next: response => {
 				if (!response.isSuccess) {
+					this.loading = false;
 					this.popupError = response.message;
 					return; // ❗ ne pas fermer la popup
 				}
@@ -138,6 +171,7 @@ export class RolePageComponent {
 				this.popupVisible = false;
 			},
 			error: err => {
+				this.loading = false;
 				this.popupError = err.error?.message || "Erreur inconnue";
 			}
 		});
@@ -149,11 +183,14 @@ export class RolePageComponent {
 			return;
 		}
 
+		this.loading = true;
+
 		const updatedRole = this.roleForm.getValue();
 
 		this.roleBll.updateRole$(updatedRole).subscribe({
 			next: response => {
 				if (!response.isSuccess) {
+					this.loading = false;
 					this.popupError = response.message;
 					return;
 				}
@@ -163,6 +200,7 @@ export class RolePageComponent {
 				this.popupVisible = false;
 			},
 			error: err => {
+				this.loading = false;
 				this.popupError = err.error?.message || "Erreur inconnue";
 			}
 		});
@@ -171,9 +209,12 @@ export class RolePageComponent {
 	onDeleteConfirmed() {
 		if (!this.selectedRole) return;
 
+		this.loading = true;
+
 		this.roleBll.deleteRole$(this.selectedRole.identifier).subscribe({
 			next: response => {
 				if (!response.isSuccess) {
+					this.loading = false;
 					this.popupError = response.message;
 					return;
 				}
@@ -183,6 +224,7 @@ export class RolePageComponent {
 				this.popupVisible = false;
 			},
 			error: err => {
+				this.loading = false;
 				this.popupError = err.error?.message || "Erreur inconnue";
 			}
 		});
