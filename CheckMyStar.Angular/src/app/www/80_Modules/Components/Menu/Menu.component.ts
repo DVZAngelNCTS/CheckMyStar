@@ -17,7 +17,7 @@ export class MenuComponent implements OnInit {
   collapsed = true;
   @Output() openChange = new EventEmitter<boolean>();
 
-  menuItems: { label: string, route?: string, action?: string }[] = [];
+  menuItems: { icon: string, label: string, route?: string, action?: string }[] = [];
 
   constructor(private authenticateService: AuthenticateService) {}
 

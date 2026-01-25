@@ -301,9 +301,9 @@ BEGIN
     FROM
     (
         VALUES
-            ('Administrator', 'Administrator with full access'),
-            ('User', 'Regular user with limited access'),
-            ('Inspector', 'Inspector user limted access')
+            ('Administrateur', 'Accès à l''administration du back office'),
+            ('Inspecteur', 'Accès aux fonctionnalités inspecteur du front office'),
+            ('Utilisateur', 'ccès aux fonctionnalités utilisateur du front office')
     ) AS x([Name], [Description])
     WHERE NOT EXISTS (
         SELECT 1
@@ -318,7 +318,7 @@ IF  EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
            AND TABLE_NAME = 'User')
 BEGIN
     DECLARE @AdminRoleIdentifier INT;
-    SELECT @AdminRoleIdentifier = Identifier FROM dbo.Role WHERE [Name] = 'Administrator';
+    SELECT @AdminRoleIdentifier = Identifier FROM dbo.Role WHERE [Name] = 'Administrateur';
 
     DECLARE @CivilityMrIdentifier INT;
     SELECT @CivilityMrIdentifier = Identifier FROM dbo.Civility WHERE [Name] = 'Mr.';

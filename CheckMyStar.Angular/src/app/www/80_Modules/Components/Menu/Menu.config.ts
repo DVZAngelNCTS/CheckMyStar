@@ -1,21 +1,21 @@
 import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
 
-export const MENU_CONFIG: Record<EnumRole, { label: string, route?: string, action?: string }[]> = {
+export const MENU_CONFIG: Record<EnumRole, { icon: string, label: string, route?: string, action?: string }[]> = {
 
   [EnumRole.Administrator]: [
-    { label: 'BackOfficeMenuSection.Home', route: '/backhome' },
-    { label: 'BackOfficeMenuSection.Roles', route: '/backhome/roles' },
-    { label: 'BackOfficeMenuSection.Users', route: '/backhome/users' },
-    { label: 'BackOfficeMenuSection.Disconnect', action: 'logout' }
+    { icon: 'bi bi-house', label: 'BackOfficeMenuSection.Home', route: '/backhome' },
+    { icon: 'bi bi-shield-check', label: 'BackOfficeMenuSection.Roles', route: '/backhome/roles' },
+    { icon: 'bi bi-people', label: 'BackOfficeMenuSection.Users', route: '/backhome/users' },
+    { icon: 'bi bi-door-closed', label: 'BackOfficeMenuSection.Disconnect', action: 'logout' }
   ],
 
   [EnumRole.Inspector]: [
-    { label: 'FrontOfficeMenuSection.Home', route: '/fronthome' },
-    { label: 'FrontOfficeMenuSection.Disconnect', action: 'logout' }
+    { icon: 'bi bi-house', label: 'FrontOfficeMenuSection.Home', route: '/fronthome' },
+    { icon: 'bi bi-door-closed', label: 'FrontOfficeMenuSection.Disconnect', action: 'logout' }
   ],
 
   [EnumRole.User]: [
-    { label: 'FrontOfficeMenuSection.Special', route: '/fronthome' },
-    { label: 'FrontOfficeMenuSection.Disconnect', action: 'logout' }
+    { icon: 'bi bi-house', label: 'FrontOfficeMenuSection.Special', route: '/fronthome' },
+    { icon: 'bi bi-door-closed', label: 'FrontOfficeMenuSection.Disconnect', action: 'logout' }
   ]
 };

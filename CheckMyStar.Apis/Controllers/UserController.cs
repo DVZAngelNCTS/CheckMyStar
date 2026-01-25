@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using CheckMyStar.Apis.Services.Abstractions;
+using CheckMyStar.Bll.Requests;
 
 namespace CheckMyStar.Apis.Controllers
 {
@@ -16,13 +17,14 @@ namespace CheckMyStar.Apis.Controllers
         /// <summary>
         /// Get users
         /// </summary>
-        /// <param name="ct">The cancellation token.</param>
+        /// <param name="request"></param>
+        /// <param name="ct"></param>
         /// <returns></returns>
-        [HttpGet("getusers")]
+        [HttpPost("getusers")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> GetUsers(CancellationToken ct)
+        public async Task<IActionResult> GetUsers([FromBody] UserGetRequest request, CancellationToken ct)
         {
-            var users = await userService.GetUsers(ct);
+            var users = await userService.GetUsers(request, ct);
             
             return Ok(users);
         }

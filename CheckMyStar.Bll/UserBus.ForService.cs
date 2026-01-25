@@ -1,5 +1,4 @@
 ﻿using CheckMyStar.Bll.Abstractions.ForService;
-using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 
@@ -12,11 +11,9 @@ namespace CheckMyStar.Bll
             return this.GetUser(request.Login, request.Password, ct);
         }
 
-        public Task<List<UserModel>> GetUsersForService(CancellationToken ct)
+        public Task<UsersResponse> GetUsers(UserGetRequest request, CancellationToken ct)
         {
-            var user = userContextService.CurrentUser;
-
-            return this.GetUsers(ct);
+            return this.GetUsers(request.LastName, request.FirstName, request.Society, request.Email, request.Phone, ct);
         }
     }
 }

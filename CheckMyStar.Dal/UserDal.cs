@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
@@ -34,11 +33,31 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<List<User>> GetUsers(CancellationToken ct)
+        public async Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, CancellationToken ct)
         {
-            var users = await dbContext.Users.AsNoTracking().ToListAsync(ct);
+            UsersResult userResult = new UsersResult();
 
-            return users;
+            try
+            {
+                var users = await (from u in dbContext.Users
+                                  where
+                                      (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
+                                   && (string.IsNullOrEmpty(firstName) || u.LastName.Contains(firstName))
+                                   && (string.IsNullOrEmpty(society) || u.LastName.Contains(society))
+                                   && (string.IsNullOrEmpty(email) || u.LastName.Contains(email))
+                                   && (string.IsNullOrEmpty(phone) || u.LastName.Contains(phone))
+                                  select u).AsNoTracking().ToListAsync(ct);
+
+                userResult.IsSuccess = true;
+                userResult.Users = users;
+            }
+            catch (Exception ex)
+            {
+                userResult.IsSuccess = false;
+                userResult.Message = ex.Message;
+            }
+
+            return userResult;
         }
     }
 }
