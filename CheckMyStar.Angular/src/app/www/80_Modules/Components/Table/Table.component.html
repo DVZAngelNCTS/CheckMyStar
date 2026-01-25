@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th *ngFor="let col of columns()" class="p-3" [style.width]="col.width" (click)="onSort(col)" [class.sortable]="col.sortable">
+        <i [class]="col.icon"></i>
         {{ col.header | translate }}
         <ng-container *ngIf="col.sortable && sortField === col.field">
           <span *ngIf="sortDirection === 'asc'">▲</span>
