@@ -22,8 +22,16 @@
           (input)="onFilterChange(col, $event.target.value)"
         />
       </th>
-      <th></th>
-      <th></th>
+      <th class="text-end p-2">
+      </th>
+      <th class="text-end p-2">    
+        <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()">
+          <i class="bi bi-filetype-csv"></i>
+        </button>
+        <button class="btn btn-primary btn-sm" (click)="exportXlsx()">
+          <i class="bi bi-file-earmark-excel"></i>
+        </button>    
+      </th>
     </tr>
   </thead>
 
