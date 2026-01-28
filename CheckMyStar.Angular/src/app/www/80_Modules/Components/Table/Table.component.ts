@@ -2,6 +2,8 @@ import { Component, input, output, signal, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationModule } from '../../../10_Common/Translation.module';
 import { TableColumn } from './Models/TableColumn.model';
+import { CsvExportService } from '../../../90_Services/Export/Csv-export.service';
+import { XlsxExportService } from '../../../90_Services/Export/Xlsx-export.service';
 
 @Component({ 
   selector: 'app-table', 
@@ -11,7 +13,6 @@ import { TableColumn } from './Models/TableColumn.model';
   styleUrls: ['./Table.component.css']
 })
 export class TableComponent<T> implements OnChanges {
-
   update = output<T>();
   delete = output<T>();
 
@@ -24,6 +25,10 @@ export class TableComponent<T> implements OnChanges {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   filters: Record<string, string> = {};
+
+  constructor(private csv: CsvExportService, private xlsx: XlsxExportService) {
+
+  }
 
   ngOnChanges() {
     this.displayData.set(this.data());
@@ -83,5 +88,13 @@ export class TableComponent<T> implements OnChanges {
     );
 
     this.displayData.set(filtered);
+    }
+
+    exportCsv() { 
+      this.csv.exportToCsv('export', this.displayData()); 
+    } 
+    
+    exportXlsx() { 
+      this.xlsx.exportToExcel('export', this.displayData()); 
     }
 }
