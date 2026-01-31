@@ -14,7 +14,8 @@ namespace CheckMyStar.Bll.Mappings
             CreateMap<Role, RoleModel>()
                 .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Identifier, opts => opts.MapFrom(src => src.Identifier))
-                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name)).ReverseMap();
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name)).ReverseMap()
+                .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive));
 
             CreateMap<RoleResult, RoleResponse>()
                 .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.Role ?? null));

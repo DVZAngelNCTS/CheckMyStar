@@ -14,7 +14,11 @@
     "Reset": "Effacer",
     "Update": "Modifier",
     "Delete": "Supprimer",
-    "Add": "Ajouter"
+    "Add": "Ajouter",
+    "Enabled": "Activer",
+    "Disabled": "Désactiver",
+    "Yes": "Oui",
+    "No": "Non"
   },
   "LoginSection": {
     "Login": "Identifiant",
@@ -36,7 +40,8 @@
     "Description": "Description du rôle",
     "Create": "Créer un rôle",
     "Update": "Modifier un rôle",
-    "Delete": "Supprimer un rôle"
+    "Delete": "Supprimer un rôle",
+    "Active": "Rôle actif"
   },
   "PopupSection": {
     "Validate": "Valider",

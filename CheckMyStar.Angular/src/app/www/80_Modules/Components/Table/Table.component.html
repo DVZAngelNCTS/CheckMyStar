@@ -10,6 +10,7 @@
         </ng-container>
       </th>
       <th class="p-3 action-col-update"></th>
+      <th class="p-3 action-col-enabled"></th>
       <th class="p-3 action-col-delete"></th>
     </tr>
     <tr>
@@ -21,6 +22,8 @@
           placeholder="Filtrer..."
           (input)="onFilterChange(col, $event.target.value)"
         />
+      </th>
+      <th class="text-end p-2">
       </th>
       <th class="text-end p-2">
       </th>
@@ -38,20 +41,42 @@
   <tbody>
     <tr *ngFor="let row of displayData()" class="border-top">
       <td *ngFor="let col of columns()" class="p-2">
-        <ng-container>
-          {{ row[col.field] }}
+        <ng-container [ngSwitch]="col.field">
+
+          <!-- Colonne isActive -->
+          <span *ngSwitchCase="'isActive'">
+            {{ $any(row).isActive ? ('CommonSection.Yes' | translate) : ('CommonSection.No' | translate) }}
+          </span>
+
+          <!-- Autres colonnes -->
+          <span *ngSwitchDefault>
+            {{ row[col.field] }}
+          </span>
+
         </ng-container>
       </td>
 
       <td class="p-2 action-col-update">
-        <button class="btn btn-primary me-2 w-12rem" (click)="update.emit(row)">
+        <button class="btn btn-primary me-2 w-9rem" (click)="update.emit(row)">
           <i class="bi bi-pencil me-2"></i>
           {{ 'CommonSection.Update' | translate }}
         </button>
       </td>
 
+      <td class="p-2 action-col-enabled">
+        <button class="btn btn-tertiary me-2 w-9rem" (click)="enabled.emit(row)">
+          <i class="bi"
+            [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'">
+          </i>
+
+          {{ $any(row).isActive
+              ? ('CommonSection.Disabled' | translate)
+              : ('CommonSection.Enabled' | translate) }}
+        </button>
+      </td>
+
       <td class="p-2 action-col-delete">
-        <button class="btn btn-tertiary me-2 w-12rem" (click)="delete.emit(row)">
+        <button class="btn btn-tertiary me-2 w-9rem" (click)="delete.emit(row)">
           <i class="bi bi-trash me-2"></i>
           {{ 'CommonSection.Delete' | translate }}
         </button>

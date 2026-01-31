@@ -1,5 +1,6 @@
 export interface RoleModel {
     identifier: number,
     name: string,
-    description: string
+    description: string,
+    isActive: boolean
 }

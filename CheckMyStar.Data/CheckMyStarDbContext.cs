@@ -27,7 +27,7 @@ public partial class CheckMyStarDbContext : DbContext
     {
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.Identifier).HasName("PK__Address__821FB01848F52BFB");
+            entity.HasKey(e => e.Identifier);
 
             entity.ToTable("Address");
 
@@ -51,7 +51,7 @@ public partial class CheckMyStarDbContext : DbContext
 
         modelBuilder.Entity<Civility>(entity =>
         {
-            entity.HasKey(e => e.Identifier).HasName("PK__Civility__821FB0186D0CF95B");
+            entity.HasKey(e => e.Identifier);
 
             entity.ToTable("Civility");
 
@@ -66,7 +66,7 @@ public partial class CheckMyStarDbContext : DbContext
 
         modelBuilder.Entity<Country>(entity =>
         {
-            entity.HasKey(e => e.Identifier).HasName("PK__tmp_ms_x__821FB0180D107EC7");
+            entity.HasKey(e => e.Identifier);
 
             entity.ToTable("Country");
 
@@ -81,7 +81,7 @@ public partial class CheckMyStarDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Identifier).HasName("PK__Role__821FB0180A978DE9");
+            entity.HasKey(e => e.Identifier);
 
             entity.ToTable("Role");
 
@@ -89,6 +89,7 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -99,8 +100,6 @@ public partial class CheckMyStarDbContext : DbContext
             entity.HasKey(e => e.Identifier);
 
             entity.ToTable("User");
-
-            entity.HasIndex(e => e.Email, "UQ__User__A9D105340BD84B92").IsUnique();
 
             entity.Property(e => e.Email)
                 .HasMaxLength(100)

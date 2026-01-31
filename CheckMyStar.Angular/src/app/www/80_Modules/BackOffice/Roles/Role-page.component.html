@@ -11,7 +11,7 @@
     <!-- Tableau extensible -->
     <div class="d-flex flex-column flex-grow-1">
       <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
-        <app-table [columns]="columns" [data]="roles!" (update)="openUpdate($event)" (delete)="openDelete($event)"></app-table>
+        <app-table [columns]="columns" [data]="roles!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)"></app-table>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
     <div class="d-flex flex-row border-top">
       <div class="d-flex flex-column p-4 flex-grow-1 bg-secondary-light">
         <div class="ms-auto">
-          <button type="button" class="btn btn-secondary w-12rem" (click)="openCreate()">
+          <button type="button" class="btn btn-secondary w-9rem" (click)="openCreate()">
             <i class="bi bi-plus-lg me-2"></i>
             {{ 'CommonSection.Add' | translate }}
           </button>

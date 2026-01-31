@@ -33,7 +33,8 @@ export class RoleFormComponent implements OnInit, OnChanges {
     this.form = this.fb.group({
       identifier: [this.role?.identifier ?? '', Validators.required],
       name: [this.role?.name ?? '', Validators.required],
-      description: [this.role?.description ?? '', Validators.required]
+      description: [this.role?.description ?? '', Validators.required],
+      isActive: [this.role?.isActive ?? true]
     });
    }
 
@@ -42,7 +43,8 @@ export class RoleFormComponent implements OnInit, OnChanges {
       this.form.patchValue({ 
         identifier: this.role?.identifier ?? '', 
         name: this.role?.name ?? '', 
-        description: this.role?.description ?? '' 
+        description: this.role?.description ?? '',
+        isActive: this.role?.isActive ?? true
       }); 
     }
    }

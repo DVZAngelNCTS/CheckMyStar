@@ -7,14 +7,14 @@
         </div>
     </div>
     <div class="ms-auto d-flex flex-nowrap">
-        <button type="button" class="btn btn-primary me-2 d-flex align-items-center justify-content-center gap-4 w-12rem" [disabled]="loadingSearch" (click)="search()">
+        <button type="button" class="btn btn-primary me-2 d-flex align-items-center justify-content-center gap-4 w-9rem" [disabled]="loadingSearch" (click)="search()">
             <app-loader-mini *ngIf="loadingSearch"></app-loader-mini>
             <span class="d-flex align-items-center">
                 <i class="bi bi-search me-2"></i>
                 {{ 'CommonSection.Search' | translate }}
             </span>
         </button>
-        <button type="button" class="btn btn-tertiary me-2 d-flex align-items-center justify-content-center gap-4 w-12rem" [disabled]="loadingReset" (click)="reset()">
+        <button type="button" class="btn btn-tertiary me-2 d-flex align-items-center justify-content-center gap-4 w-9rem" [disabled]="loadingReset" (click)="reset()">
             <app-loader-mini *ngIf="loadingReset"></app-loader-mini>
             <span class="d-flex align-items-center">
                 <i class="bi bi-funnel me-2"></i>
