@@ -293,18 +293,19 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
            WHERE TABLE_SCHEMA = 'dbo' 
            AND TABLE_NAME = 'Role')
 BEGIN
-    INSERT INTO dbo.[Role] (Identifier, [Name], [Description])
+    INSERT INTO dbo.[Role] (Identifier, [Name], [Description], [IsActive])
     SELECT
         ROW_NUMBER() OVER (ORDER BY x.[Name]) AS Identifier,
         x.[Name],
-        x.[Description]
+        x.[Description],
+        x.[IsActive]
     FROM
     (
         VALUES
-            ('Administrateur', 'Accès à l''administration du back office'),
-            ('Inspecteur', 'Accès aux fonctionnalités inspecteur du front office'),
-            ('Utilisateur', 'ccès aux fonctionnalités utilisateur du front office')
-    ) AS x([Name], [Description])
+            ('Administrateur', 'Accès à l''administration du back office', 1),
+            ('Inspecteur', 'Accès aux fonctionnalités inspecteur du front office', 1),
+            ('Utilisateur', 'ccès aux fonctionnalités utilisateur du front office', 1)
+    ) AS x([Name], [Description], [IsActive])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[Role] r

@@ -15,6 +15,7 @@ import { XlsxExportService } from '../../../90_Services/Export/Xlsx-export.servi
 export class TableComponent<T> implements OnChanges {
   update = output<T>();
   delete = output<T>();
+  enabled = output<T>();
 
   columns = input<TableColumn<T>[]>([]);
   data = input<T[]>([]);

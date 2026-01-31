@@ -34,7 +34,8 @@ export class RolePageComponent {
 	columns = [
 		{ icon: 'bi bi-list-ol', field: 'identifier', header: 'RoleSection.Identifier', sortable: true, filterable: true, width: '25%' },
 		{ icon: 'bi bi-shield', field: 'name', header: 'RoleSection.Name', translate: true, sortable: true, filterable: true, width: '25%' },
-		{ icon: 'bi bi-shield-exclamation', field: 'description', header: 'RoleSection.Description', sortable: true, filterable: true }
+		{ icon: 'bi bi-shield-exclamation', field: 'description', header: 'RoleSection.Description', sortable: true, filterable: true },
+		{ icon: 'bi bi-shield-check', field: 'isActive', header: 'RoleSection.Active', sortable: true, filterable: false }
 		] as TableColumn<RoleModel>[];
 
 	constructor(private roleBll: RoleBllService, private translate: TranslateService) { 
@@ -229,4 +230,34 @@ export class RolePageComponent {
 			}
 		});
 	}
+
+	toggleEnabled(role: RoleModel) {
+	this.loading = true;
+
+	const updatedRole: RoleModel = {
+		...role,
+		isActive: !role.isActive 
+	};
+
+	this.roleBll.updateRole$(updatedRole).subscribe({
+		next: response => {
+		this.loading = false;
+
+		if (!response.isSuccess) {
+			console.error(response.message);
+			return;
+		}
+
+		// Mise à jour locale
+		this.roles = this.roles?.map(r =>
+			r.identifier === role.identifier ? updatedRole : r
+		);
+		},
+		error: err => {
+		this.loading = false;
+		console.error(err);
+		}
+	});
+	}
+
 }
