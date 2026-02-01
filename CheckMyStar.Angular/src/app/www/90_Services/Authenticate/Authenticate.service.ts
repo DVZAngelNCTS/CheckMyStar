@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoginBllService } from '../../60_Bll/FrontOffice/Login-bll.service';
 import { Router } from '@angular/router';
-import { UserModel } from '../../20_Models/FrontOffice/User.model';
+import { UserModel } from '../../20_Models/Common/User.model';
 
 @Injectable({
   providedIn: 'root'

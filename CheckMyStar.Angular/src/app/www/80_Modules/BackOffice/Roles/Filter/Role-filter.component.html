@@ -1,6 +1,6 @@
 <div class="ms-3 d-flex align-items-center" (keydown.enter)="search()">
     <div class="d-flex flex-column" [formGroup]="form">
-        <div class="d-flex flex-row flex-nowrap align-items-center mb-3">
+        <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
             <app-field controlName="Name" icon="bi bi-shield" label="{{ 'RoleSection.Name' | translate }}" labelClass="w-9rem start fw-bold" labelTextPosition="start" controlClass="w-100">
                 <input type="text" class="form-control" formControlName="name">               
             </app-field>

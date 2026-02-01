@@ -14,4 +14,5 @@ export interface UserModel {
     password: string;
     role: EnumRole;
     address: AddressModel;
+    isActive: boolean;
 } 

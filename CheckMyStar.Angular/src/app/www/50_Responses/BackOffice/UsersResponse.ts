@@ -1,7 +1,7 @@
 import { UserModel } from "../../20_Models/Common/User.model";
 import { BaseResponse } from "../BaseResponse";
 
-export interface UserResponse extends BaseResponse {
+export interface UsersResponse extends BaseResponse {
     isValid: boolean,
-    user?: UserModel
+    users?: UserModel[]
 }

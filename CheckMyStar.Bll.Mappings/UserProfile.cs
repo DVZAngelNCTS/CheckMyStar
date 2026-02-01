@@ -22,6 +22,9 @@ namespace CheckMyStar.Bll.Mappings
 
             CreateMap<UserResult, UserResponse>()
                 .ForMember(dest => dest.User, opts => opts.MapFrom(src => src.User ?? null));
+
+            CreateMap<UsersResult, UsersResponse>()
+                .ForMember(dest => dest.Users, opts => opts.MapFrom(src => src.Users ?? null));
         }
     }
 }
