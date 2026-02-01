@@ -1,1 +1,47 @@
-<div style="background:red; color:white; padding:50px; font-size:40px"> PAGE USERS </div>
+<div class="d-flex flex-column flex-grow-1">
+  <!-- Filtres -->
+  <div class="d-flex flex-row">
+    <div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
+      <app-user-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (filter)="onFilter($event)"></app-user-filter>
+    </div>
+  </div>
+
+  <!-- Contenu principal extensible -->
+  <div class="d-flex flex-column flex-grow-1">
+    <!-- Tableau extensible -->
+    <div class="d-flex flex-column flex-grow-1">
+      <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
+        <app-table [columns]="columns" [data]="users!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)"></app-table>
+      </div>
+    </div>
+
+    <!-- Bouton Ajouter -->
+    <div class="d-flex flex-row border-top">
+      <div class="d-flex flex-column p-4 flex-grow-1 bg-secondary-light">
+        <div class="ms-auto">
+          <button type="button" class="btn btn-secondary w-9rem" (click)="openCreate()">
+            <i class="bi bi-plus-lg me-2"></i>
+            {{ 'CommonSection.Add' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-popup [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+  <!-- Contenu dynamique -->
+  <ng-container *ngIf="popupMode === 'delete'">
+    <p>{{ 'UserSection.DeleteAsk' | translate }} <strong>{{ selectedUser?.lastName }} {{ selectedUser?.firstName }}</strong> ?</p>
+  </ng-container>
+
+  <ng-container *ngIf="popupVisible">
+    <ng-container *ngIf="popupMode === 'edit'">
+      <app-user-form [user]="selectedUser" [readonlyIdentifier]="true">></app-user-form>
+    </ng-container>
+    <ng-container *ngIf="popupMode === 'create'">
+      <app-user-form [readonlyIdentifier]="false"></app-user-form>
+    </ng-container>
+  </ng-container>
+</app-popup>
+

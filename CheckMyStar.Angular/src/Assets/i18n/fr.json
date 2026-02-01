@@ -18,7 +18,8 @@
     "Enabled": "Activer",
     "Disabled": "Désactiver",
     "Yes": "Oui",
-    "No": "Non"
+    "No": "Non",
+    "UnknownError": "Erreur inconnue"
   },
   "LoginSection": {
     "Login": "Identifiant",
@@ -34,17 +35,34 @@
     "Roles": "Rôles",
     "Disconnect": "Se déconnecter"
   },
+    "PopupSection": {
+    "Validate": "Valider",
+    "Cancel": "Annuler"
+  },
   "RoleSection": {
     "Name": "Nom du rôle",
-    "Identifier": "Identifiant du rôle",
-    "Description": "Description du rôle",
+    "Identifier": "Identifiant",
+    "Description": "Description",
     "Create": "Créer un rôle",
     "Update": "Modifier un rôle",
     "Delete": "Supprimer un rôle",
-    "Active": "Rôle actif"
+    "Active": "Rôle actif",
+    "DeleteAsk": "Voulez-vous vraiment supprimer le rôle",
+    "Role": "Rôle"
   },
-  "PopupSection": {
-    "Validate": "Valider",
-    "Cancel": "Annuler"
+  "UserSection": {
+    "Identifier": "Identifiant",
+    "Civility": "Civilité",
+    "LastName": "Nom",
+    "FirstName": "Prénom",
+    "Email": "E-mail",
+    "Phone": "Téléphone",
+    "Society": "Société",
+    "Address": "Adresse",
+    "Create": "Créer un utilisateur",
+    "Update": "Modifier un utilisateur",
+    "Delete": "Supprimer un utilisateur",
+    "Active": "Utilisateur actif",
+    "DeleteAsk": "Voulez-vous vraiment supprimer l'utilisateur"
   }
 }

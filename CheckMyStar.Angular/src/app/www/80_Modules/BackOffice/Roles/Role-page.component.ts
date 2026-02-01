@@ -173,7 +173,7 @@ export class RolePageComponent {
 			},
 			error: err => {
 				this.loading = false;
-				this.popupError = err.error?.message || "Erreur inconnue";
+				this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
 			}
 		});
 	}
@@ -202,7 +202,7 @@ export class RolePageComponent {
 			},
 			error: err => {
 				this.loading = false;
-				this.popupError = err.error?.message || "Erreur inconnue";
+				this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
 			}
 		});
 	}

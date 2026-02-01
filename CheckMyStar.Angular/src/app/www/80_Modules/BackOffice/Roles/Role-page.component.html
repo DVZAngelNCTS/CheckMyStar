@@ -32,7 +32,7 @@
 <app-popup [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
   <!-- Contenu dynamique -->
   <ng-container *ngIf="popupMode === 'delete'">
-    <p>Voulez-vous vraiment supprimer le rôle <strong>{{ selectedRole?.name }}</strong> ?</p>
+    <p>{{ 'RoleSection.DeleteAsk' | translate }} <strong>{{ selectedRole?.name }}</strong> ?</p>
   </ng-container>
 
   <ng-container *ngIf="popupVisible">

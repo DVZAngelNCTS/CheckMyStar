@@ -1,4 +1,4 @@
-import { UserModel } from './User.model';
+import { UserModel } from '../Common/User.model';
 
 export interface LoginModel {
     token: string;
