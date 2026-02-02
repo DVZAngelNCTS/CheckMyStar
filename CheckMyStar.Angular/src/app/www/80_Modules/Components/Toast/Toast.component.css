@@ -1,0 +1,64 @@
+.toast-container {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 0.75rem 1rem !important;
+  border-radius: 6px !important;
+  color: #fff !important;
+  min-width: 220px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+  animation: fadeIn 0.8s ease, fadeOut 0.8s ease 2.2s forwards !important; /* ← fade in 0.8s + fade out 0.8s qui commence après 2.2s */
+  pointer-events: all !important;
+  border: none !important;
+  background-clip: unset !important;
+}
+
+.success { 
+  background: #2ecc71 !important; 
+  background-color: #2ecc71 !important;
+}
+
+.error { 
+  background: #e74c3c !important; 
+  background-color: #e74c3c !important;
+}
+
+.info { 
+  background: #3498db !important; 
+  background-color: #3498db !important;
+}
+
+.warning { 
+  background: #f39c12 !important; 
+  background-color: #f39c12 !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* ← Un peu plus de mouvement */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px); /* ← Descend en disparaissant */
+  }
+}

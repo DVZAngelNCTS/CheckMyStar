@@ -2,13 +2,14 @@ import { Component, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LoaderComponent } from './www/80_Modules/Components/Loader/Loader.component';
 import { LoaderManager } from './www/90_Services/Loader/Loader-manager.service'
+import { ToastComponent } from './www/80_Modules/Components/Toast/Toast.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css',
-  imports: [RouterModule, LoaderComponent]
+  imports: [RouterModule, LoaderComponent, ToastComponent]
 })
 export class App {
   protected readonly title = signal('CheckMyStar.Angular');

@@ -1,0 +1,9 @@
+<div class="toast-container">
+  <div
+    class="toast show"
+    *ngFor="let toast of toasts; trackBy: trackById"
+    [ngClass]="toast.type"
+  >
+    {{ toast.message }}
+  </div>
+</div>

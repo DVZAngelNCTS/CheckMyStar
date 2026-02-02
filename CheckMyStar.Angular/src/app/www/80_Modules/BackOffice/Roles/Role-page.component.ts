@@ -10,11 +10,12 @@ import { TranslationModule } from '../../../10_Common/Translation.module';
 import { PopupComponent } from '../../Components/Popup/Popup.component';
 import { RoleFormComponent } from '../Roles/Form/Role-form.component'
 import { TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../90_Services/Toast/Toast.service';
 
 @Component({
 	selector: 'app-role-page',
 	standalone: true,
-	imports: [CommonModule, RoleFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, RoleFormComponent],
+	imports: [CommonModule, RoleFilterComponent, FormsModule, ReactiveFormsModule, TableComponent, TranslationModule, PopupComponent, RoleFormComponent],
 	templateUrl: './Role-page.component.html'
 })
 export class RolePageComponent {
@@ -38,11 +39,11 @@ export class RolePageComponent {
 		{ icon: 'bi bi-shield-check', field: 'isActive', header: 'RoleSection.Active', sortable: true, filterable: false }
 		] as TableColumn<RoleModel>[];
 
-	constructor(private roleBll: RoleBllService, private translate: TranslateService) { 
+	constructor(private roleBll: RoleBllService, private translate: TranslateService, private toast: ToastService) { 
 	}
 
 	ngOnInit() {
-		this.loadRoles();
+	this.loadRoles();
 	}
 
 	loadRoles() {
@@ -119,8 +120,8 @@ export class RolePageComponent {
 
 	if (this.popupMode === 'create') {
 		if (this.roleForm.form.invalid) {
-		this.roleForm.form.markAllAsTouched();
-		return; // ❗ NE PAS FERMER LA POPUP
+			this.roleForm.form.markAllAsTouched();
+			return; // ❗ NE PAS FERMER LA POPUP
 		}
 		this.onCreateConfirmed();
 		return;
@@ -128,8 +129,8 @@ export class RolePageComponent {
 
 	if (this.popupMode === 'edit') {
 		if (this.roleForm.form.invalid) {
-		this.roleForm.form.markAllAsTouched();
-		return; // ❗ NE PAS FERMER LA POPUP
+			this.roleForm.form.markAllAsTouched();
+			return; // ❗ NE PAS FERMER LA POPUP
 		}
 		this.onEditConfirmed();
 		return;
@@ -163,15 +164,16 @@ export class RolePageComponent {
 		next: response => {
 				if (!response.isSuccess) {
 					this.loading = false;
-					this.popupError = response.message;
-					return; // ❗ ne pas fermer la popup
+					this.popupError = response.message;					
+					return;
 				}
 
 				this.popupError = null;
 				this.loadRoles();
+				this.toast.show(response.message, "success", 5000);
 				this.popupVisible = false;
 			},
-			error: err => {
+			error: err => {				
 				this.loading = false;
 				this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
 			}
@@ -198,6 +200,7 @@ export class RolePageComponent {
 
 				this.popupError = null;
 				this.loadRoles();
+				this.toast.show(response.message, "success", 5000);
 				this.popupVisible = false;
 			},
 			error: err => {
@@ -221,7 +224,8 @@ export class RolePageComponent {
 				}
 
 				this.popupError = null;
-				this.loadRoles();				
+				this.loadRoles();			
+				this.toast.show(response.message, "success", 5000);	
 				this.popupVisible = false;
 			},
 			error: err => {

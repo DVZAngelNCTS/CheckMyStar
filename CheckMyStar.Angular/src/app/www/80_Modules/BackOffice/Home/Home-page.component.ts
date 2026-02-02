@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -7,15 +6,15 @@ import { BreadcrumbComponent } from '../../Components/Breadcrumb/Breadcrumb.comp
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-	selector: 'app-back-home-page',
-	standalone: true,
-	imports: [CommonModule, RouterModule, MenuComponent, BreadcrumbComponent, TranslateModule],
-	templateUrl: './Home-page.component.html'
+  selector: 'app-back-home-page',
+  standalone: true,
+  imports: [CommonModule, RouterModule, MenuComponent, BreadcrumbComponent, TranslateModule],
+  templateUrl: './Home-page.component.html'
 })
 export class BackHomePageComponent {
-	sidebarOpen = false;
+  sidebarOpen = false;
 
-	onMenuToggle(open: boolean) {
-		this.sidebarOpen = open;
-	}
+  onMenuToggle(open: boolean) {
+    this.sidebarOpen = open;
+  }
 }

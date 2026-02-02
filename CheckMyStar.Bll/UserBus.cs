@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 
-using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
@@ -29,11 +28,11 @@ namespace CheckMyStar.Bll
             return userResult;
         }
 
-        public async Task<UsersResponse> GetUsers(string lastName, string firstName, string society, string email, string phone, CancellationToken ct)
+        public async Task<UsersResponse> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct)
         {
-            var users = await userDal.GetUsers(lastName, firstName, society, email, phone, ct);
+            var users = await userDal.GetUsers(lastName, firstName, society, email, phone, address, role, ct);
 
-            return mapper.Map<UsersResponse>(users); ;
+            return mapper.Map<UsersResponse>(users);
         }
 
         private async Task<UserModel?> LoadUser(User user, CancellationToken ct)
