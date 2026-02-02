@@ -1,14 +1,13 @@
-
 <div class="layout" [class.sidebar-open]="sidebarOpen">
-	<app-menu (openChange)="onMenuToggle($event)"></app-menu>
+  <app-menu (openChange)="onMenuToggle($event)"></app-menu>
 
-	<div class="main-area" [class.sidebar-open]="sidebarOpen">
-		<header class="page-header">
-			<h1>{{ 'HomeSection.BackOffice' | translate }}</h1>
-		</header>
-		<app-breadcrumb></app-breadcrumb>
-		<div class="page-content d-flex flex-column flex-grow-1">
-			<router-outlet></router-outlet>
-		</div>
-	</div>
+  <div class="main-area" [class.sidebar-open]="sidebarOpen">
+    <header class="page-header">
+      <h1>{{ 'HomeSection.BackOffice' | translate }}</h1>
+    </header>
+    <app-breadcrumb></app-breadcrumb>
+    <div class="page-content d-flex flex-column flex-grow-1">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

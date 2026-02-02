@@ -13,7 +13,7 @@ namespace CheckMyStar.Bll
 
         public Task<UsersResponse> GetUsers(UserGetRequest request, CancellationToken ct)
         {
-            return this.GetUsers(request.LastName, request.FirstName, request.Society, request.Email, request.Phone, ct);
+            return this.GetUsers(request.LastName, request.FirstName, request.Society, request.Email, request.Phone, request.Address, request.Role, ct);
         }
     }
 }

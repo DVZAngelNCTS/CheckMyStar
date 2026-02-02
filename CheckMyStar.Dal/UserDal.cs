@@ -33,20 +33,27 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, CancellationToken ct)
+        public async Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct)
         {
             UsersResult userResult = new UsersResult();
 
             try
             {
                 var users = await (from u in dbContext.Users
-                                  where
+                                   join a in dbContext.Addresses on u.AddressIdentifier equals a.Identifier into ua
+                                   from a in ua.DefaultIfEmpty()
+                                   where
                                       (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
                                    && (string.IsNullOrEmpty(firstName) || u.LastName.Contains(firstName))
                                    && (string.IsNullOrEmpty(society) || u.LastName.Contains(society))
                                    && (string.IsNullOrEmpty(email) || u.LastName.Contains(email))
                                    && (string.IsNullOrEmpty(phone) || u.LastName.Contains(phone))
-                                  select u).AsNoTracking().ToListAsync(ct);
+                                   && (role == null || u.RoleIdentifier == role)
+                                   && (string.IsNullOrEmpty(address) || a.Number.Contains(address)
+                                   || a.AddressLine.Contains(address)
+                                   || a.City.Contains(address)
+                                   || a.ZipCode.Contains(address))
+                                   select u).AsNoTracking().ToListAsync(ct);
 
                 userResult.IsSuccess = true;
                 userResult.Users = users;
