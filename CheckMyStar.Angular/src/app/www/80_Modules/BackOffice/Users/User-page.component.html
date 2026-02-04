@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<app-popup [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+<app-popup class="popup-large" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
   <!-- Contenu dynamique -->
   <ng-container *ngIf="popupMode === 'delete'">
     <p>{{ 'UserSection.DeleteAsk' | translate }} <strong>{{ selectedUser?.lastName }} {{ selectedUser?.firstName }}</strong> ?</p>
@@ -37,7 +37,7 @@
 
   <ng-container *ngIf="popupVisible">
     <ng-container *ngIf="popupMode === 'edit'">
-      <app-user-form [user]="selectedUser" [readonlyIdentifier]="true">></app-user-form>
+      <app-user-form [user]="selectedUser" [readonlyIdentifier]="true"></app-user-form>
     </ng-container>
     <ng-container *ngIf="popupMode === 'create'">
       <app-user-form [readonlyIdentifier]="false"></app-user-form>

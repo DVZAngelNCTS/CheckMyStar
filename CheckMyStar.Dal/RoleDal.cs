@@ -43,8 +43,7 @@ namespace CheckMyStar.Dal
             {
                 var role = await (from r in dbContext.Roles
                                    where
-                                    r.Identifier == identifier
-                                   orderby r.Name
+                                    r.Identifier == identifier                                   
                                    select r).AsNoTracking().FirstOrDefaultAsync(ct);
 
                 roleResult.Role = role;
@@ -68,7 +67,6 @@ namespace CheckMyStar.Dal
                 var role = await (from r in dbContext.Roles
                                   where
                                    r.Name.ToLower() == name.ToLower()
-                                  orderby r.Name
                                   select r).AsNoTracking().FirstOrDefaultAsync(ct);
 
                 roleResult.Role = role;
@@ -85,7 +83,7 @@ namespace CheckMyStar.Dal
 
         public async Task<BaseResult> AddRole(Role role, CancellationToken ct)
         {
-            BaseResult commonResult = new BaseResult();
+            BaseResult baseResult = new BaseResult();
 
             try
             {
@@ -95,27 +93,27 @@ namespace CheckMyStar.Dal
 
                 if (result)
                 {
-                    commonResult.IsSuccess = true;
-                    commonResult.Message = "Rôle ajouté avec succès";
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = "Rôle ajouté avec succès";
                 }
                 else
                 {
-                    commonResult.IsSuccess = false;
-                    commonResult.Message = "Impossible d'ajouter le rôle";
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = "Impossible d'ajouter le rôle";
                 }
             }
             catch (Exception ex)
             {
-                commonResult.IsSuccess = false;
-                commonResult.Message = "Impossible d'ajouter le rôle : " + ex.Message;
+                baseResult.IsSuccess = false;
+                baseResult.Message = "Impossible d'ajouter le rôle : " + ex.Message;
             }
 
-            return commonResult;
+            return baseResult;
         }
 
         public async Task<BaseResult> UpdateRole(Role role, CancellationToken ct)
         {
-            BaseResult commonResult = new BaseResult();
+            BaseResult baseResult = new BaseResult();
 
             try
             {
@@ -125,27 +123,27 @@ namespace CheckMyStar.Dal
 
                 if (result)
                 {
-                    commonResult.IsSuccess = true;
-                    commonResult.Message = "Rôle modifié avec succès";
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = "Rôle modifié avec succès";
                 }
                 else
                 {
-                    commonResult.IsSuccess = false;
-                    commonResult.Message = "Impossible de modifier le rôle";
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = "Impossible de modifier le rôle";
                 }
             }
             catch (Exception ex)
             {
-                commonResult.IsSuccess = false;
-                commonResult.Message = "Impossible de modifier le rôle : " + ex.Message;
+                baseResult.IsSuccess = false;
+                baseResult.Message = "Impossible de modifier le rôle : " + ex.Message;
             }
 
-            return commonResult;
+            return baseResult;
         }
 
         public async Task<BaseResult> DeleteRole(Role role, CancellationToken ct)
         {
-            BaseResult commonResult = new BaseResult();
+            BaseResult baseResult = new BaseResult();
 
             try
             {
@@ -155,22 +153,22 @@ namespace CheckMyStar.Dal
 
                 if (result)
                 {
-                    commonResult.IsSuccess = true;
-                    commonResult.Message = "Rôle supprimé avec succès";
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = "Rôle supprimé avec succès";
                 }
                 else
                 {
-                    commonResult.IsSuccess = false;
-                    commonResult.Message = "Impossible de supprimer le rôle";
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = "Impossible de supprimer le rôle";
                 }
             }
             catch (Exception ex)
             {
-                commonResult.IsSuccess = false;
-                commonResult.Message = "Impossible de supprimer le rôle : " + ex.Message;
+                baseResult.IsSuccess = false;
+                baseResult.Message = "Impossible de supprimer le rôle : " + ex.Message;
             }
 
-            return commonResult;
+            return baseResult;
         }
     }
 }

@@ -23,6 +23,8 @@ export class UserFormComponent implements OnInit, OnChanges {
   EnumCivility = EnumCivility;
   EnumRole = EnumRole;
 
+  passwordVisible = false;
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
@@ -40,11 +42,20 @@ export class UserFormComponent implements OnInit, OnChanges {
       civility: [this.user?.civility ?? EnumCivility.Mister, Validators.required],      
       lastName: [this.user?.lastName ?? '', Validators.required],
       firstName: [this.user?.firstName ?? '', Validators.required],
-      society: [this.user?.society ?? '', Validators.required],
+      society: [this.user?.society ?? ''],
       email: [this.user?.email ?? '', [Validators.required, Validators.email]],
-      phone: [this.user?.phone ?? '', Validators.required],
-      role: [this.user?.role ?? EnumRole.User, Validators.required],      
-      isActive: [this.user?.isActive ?? true]
+      phone: [this.user?.phone ?? ''],
+      role: [this.user?.role ?? EnumRole.User, Validators.required], 
+      password: [this.user?.password ?? '', Validators.required],
+      address: this.fb.group({ 
+        number: [this.user?.address?.number ?? ''], 
+        addressLine: [this.user?.address?.addressLine ?? ''], 
+        city: [this.user?.address?.city ?? ''], 
+        zipCode: [this.user?.address?.zipCode ?? ''], 
+        region: [this.user?.address?.region ?? ''], 
+        country: [this.user?.address?.country ?? ''] 
+      }),
+      isActive: [this.user?.isActive ?? true]          
     });
   }
 
@@ -59,8 +70,21 @@ export class UserFormComponent implements OnInit, OnChanges {
         email: this.user?.email ?? '',
         phone: this.user?.phone ?? '',
         role: this.user?.role ?? EnumRole.User,
+        password: this.user?.password ?? '',
+        address: { 
+          number: this.user?.address?.number ?? '', 
+          addressLine: this.user?.address?.addressLine ?? '', 
+          city: this.user?.address?.city ?? '', 
+          zipCode: this.user?.address?.zipCode ?? '', 
+          region: this.user?.address?.region ?? '', 
+          country: this.user?.address?.country ?? ''
+        },
         isActive: this.user?.isActive ?? true
       }); 
     }
   }  
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
 }

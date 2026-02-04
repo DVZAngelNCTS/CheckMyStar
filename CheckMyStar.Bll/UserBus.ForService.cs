@@ -15,5 +15,20 @@ namespace CheckMyStar.Bll
         {
             return this.GetUsers(request.LastName, request.FirstName, request.Society, request.Email, request.Phone, request.Address, request.Role, ct);
         }
+
+        public Task<BaseResponse> AddUser(UserSaveRequest request, CancellationToken ct)
+        {
+            return this.AddUser(request.User, ct);
+        }
+
+        public Task<BaseResponse> UpdateUser(UserSaveRequest request, CancellationToken ct)
+        {
+            return this.UpdateUser(request.User, ct);
+        }
+
+        public Task<BaseResponse> DeleteUser(UserDeleteRequest request, CancellationToken ct)
+        {
+            return this.DeleteUser(request.Identifier, ct);
+        }
     }
 }
