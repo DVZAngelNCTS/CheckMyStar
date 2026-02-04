@@ -13,5 +13,27 @@ namespace CheckMyStar.Apis.Services
 
             return users;
         }
+
+        public async Task<BaseResponse> AddUser(UserSaveRequest request, CancellationToken ct)
+        {
+            var result = await userBusForService.AddUser(request, ct);
+
+            return result;
+        }
+
+        public async Task<BaseResponse> UpdateUser(UserSaveRequest request, CancellationToken ct)
+        {
+            var result = await userBusForService.UpdateUser(request, ct);
+
+            return result;
+        }
+
+        public async Task<BaseResponse> DeleteUser(UserDeleteRequest request, CancellationToken ct)
+        {
+            var result = await userBusForService.DeleteUser(request, ct);
+
+            return result;
+        }
+
     }
 }

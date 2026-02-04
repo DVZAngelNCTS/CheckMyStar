@@ -63,6 +63,7 @@ export class LoginFormComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.loaderManager.hide('login-button')
         this.errorMessage = err.error?.message || "Erreur inconnue";
       }
     });

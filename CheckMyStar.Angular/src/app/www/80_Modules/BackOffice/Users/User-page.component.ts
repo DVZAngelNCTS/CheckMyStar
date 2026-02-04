@@ -95,8 +95,8 @@ export class UserPageComponent {
 		this.popupError = null;
 		this.popupMode = 'create';
 		this.popupTitle = this.translate.instant('UserSection.Create');
-		this.popupConfirmLabel = this.translate.instant('UserSection.Validate');
-		this.popupCancelLabel = this.translate.instant('UserSection.Cancel');
+		this.popupConfirmLabel = this.translate.instant('PopupSection.Validate');
+		this.popupCancelLabel = this.translate.instant('PopupSection.Cancel');
 		this.popupVisible = true;
 	}
 

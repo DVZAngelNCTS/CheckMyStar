@@ -68,6 +68,16 @@
     "Active": "Utilisateur actif",
     "DeleteAsk": "Voulez-vous vraiment supprimer l'utilisateur",
     "Mister": "Monsieur",
-    "Madam": "Madame"
+    "Madam": "Madame",
+    "Password": "Mot de passe",
+    "Informations": "Informations utilisateur"
+  },
+  "AddressSection": {
+    "Number": "Numéro",
+    "AddressLine": "Adresse",
+    "City": "Ville",
+    "ZipCode": "Code postal",
+    "Region": "Région",
+    "Country": "Pays"
   }
 }

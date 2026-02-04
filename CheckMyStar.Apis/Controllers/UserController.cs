@@ -28,5 +28,52 @@ namespace CheckMyStar.Apis.Controllers
             
             return Ok(users);
         }
+
+        /// <summary>
+        /// Creates a new user using the specified request data.
+        /// </summary>
+        /// <param name="request">The details of the user to create. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the created user.</returns>
+        [HttpPost("adduser")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AddUser([FromBody] UserSaveRequest request, CancellationToken ct)
+        {
+            var user = await userService.AddUser(request, ct);
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Updates an existing user with the specified details.
+        /// </summary>
+        /// <param name="request">The user information to update. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the updated user information if the update is successful.</returns>
+        [HttpPost("updateuser")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserSaveRequest request, CancellationToken ct)
+        {
+            var user = await userService.UpdateUser(request, ct);
+
+            return Ok(user);
+        }
+
+        /// <summary>
+        /// Deletes an existing user based on the specified request.
+        /// </summary>
+        /// <remarks>This action is restricted to users with the Administrator role. The request must
+        /// include valid user information in the request body.</remarks>
+        /// <param name="request">The details of the user to delete. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An IActionResult indicating the result of the delete operation.</returns>
+        [HttpPost("deleteuser")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> DeleteUser([FromBody] UserDeleteRequest request, CancellationToken ct)
+        {
+            var user = await userService.DeleteUser(request, ct);
+
+            return Ok(user);
+        }
     }
 }

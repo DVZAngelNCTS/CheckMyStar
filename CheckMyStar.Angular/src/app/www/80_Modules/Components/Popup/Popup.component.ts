@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MiniLoaderComponent } from '../../Components/Loader/Mini/Loader-mini.component';
@@ -8,7 +8,8 @@ import { MiniLoaderComponent } from '../../Components/Loader/Mini/Loader-mini.co
   standalone: true,
   templateUrl: './Popup.component.html',
   styleUrls: ['./Popup.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, MiniLoaderComponent]
+  imports: [CommonModule, ReactiveFormsModule, MiniLoaderComponent],
+  encapsulation: ViewEncapsulation.None
 })
 export class PopupComponent {
   @Input() loading = false;

@@ -6,6 +6,7 @@ using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
+using System.Data;
 
 namespace CheckMyStar.Bll
 {
@@ -33,6 +34,91 @@ namespace CheckMyStar.Bll
             var users = await userDal.GetUsers(lastName, firstName, society, email, phone, address, role, ct);
 
             return mapper.Map<UsersResponse>(users);
+        }
+
+        public async Task<BaseResponse> AddUser(UserModel userModel, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await userDal.GetUser(userModel.Identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                if (user.User == null)
+                {
+                    user = await userDal.GetUser(userModel.LastName, userModel.FirstName, userModel.Society, userModel.Email, userModel.Phone, ct);
+
+                    if (user.IsSuccess)
+                    {
+                        if (user.User == null)
+                        {
+                            var userEntity = mapper.Map<User>(userModel);
+
+                            result = mapper.Map<BaseResponse>(await userDal.AddUser(userEntity, ct));
+                        }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "L'utilisateur existe déjà";
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = user.Message;
+                    }
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "L'utilisateur existe déjà";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<BaseResponse> UpdateUser(UserModel userModel, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await userDal.GetUser(userModel.Identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                var userEntity = mapper.Map<User>(userModel);
+
+                return mapper.Map<BaseResponse>(await userDal.UpdateUser(userEntity, ct));
+            }
+
+            result.IsSuccess = false;
+            result.Message = "L'utilisateur' n'existe pas, impossible de le modifié";
+
+            return result;
+        }
+
+        public async Task<BaseResponse> DeleteUser(int identifier, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await userDal.GetUser(identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                var userEntity = mapper.Map<User>(user.User);
+
+                return mapper.Map<BaseResponse>(await userDal.DeleteUser(userEntity, ct));
+            }
+
+            result.IsSuccess = false;
+            result.Message = "L'utilisateur n'existe pas, impossible de le supprimer";
+
+            return result;
         }
 
         private async Task<UserModel?> LoadUser(User user, CancellationToken ct)
