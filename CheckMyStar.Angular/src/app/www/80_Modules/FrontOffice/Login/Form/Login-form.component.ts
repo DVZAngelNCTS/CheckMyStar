@@ -51,6 +51,7 @@ export class LoginFormComponent implements OnInit {
       next: (result) => {   
         this.loaderManager.hide('login-button');     
         localStorage.setItem('token', result.login.token);
+        localStorage.setItem('refreshToken', result.login.refreshToken);
         localStorage.setItem('user', JSON.stringify(result.login.user));
         
         if (result.login.user.role === EnumRole.Administrator) {

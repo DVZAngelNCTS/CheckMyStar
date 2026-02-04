@@ -12,4 +12,8 @@ export class LoginBllService {
   login$(login: string, password: string) {
     return this.loginDal.login$({ login: login, password: password } as LoginGetRequest);
   }
+
+  refresh$(refreshToken: string) {
+    return this.loginDal.refresh$(refreshToken);
+  }
 }

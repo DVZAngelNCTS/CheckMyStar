@@ -48,7 +48,10 @@
     "Delete": "Supprimer un rôle",
     "Active": "Rôle actif",
     "DeleteAsk": "Voulez-vous vraiment supprimer le rôle",
-    "Role": "Rôle"
+    "Role": "Rôle",
+    "Administrator": "Administrateur",
+    "User": "Utilisateur",
+    "Inspector": "Inspecteur"
   },
   "UserSection": {
     "Identifier": "Identifiant",
@@ -63,6 +66,8 @@
     "Update": "Modifier un utilisateur",
     "Delete": "Supprimer un utilisateur",
     "Active": "Utilisateur actif",
-    "DeleteAsk": "Voulez-vous vraiment supprimer l'utilisateur"
+    "DeleteAsk": "Voulez-vous vraiment supprimer l'utilisateur",
+    "Mister": "Monsieur",
+    "Madam": "Madame"
   }
 }

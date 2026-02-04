@@ -34,4 +34,22 @@ export class AuthenticateService {
       return null;
     }
   }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+
+  setTokens(access: string, refresh: string) {
+    localStorage.setItem('token', access);
+    localStorage.setItem('refreshToken', refresh);
+  }
+
+  refreshToken$() {
+    const refresh = this.getRefreshToken();
+    return this.loginBllService.refresh$(refresh!);
+  }
 }

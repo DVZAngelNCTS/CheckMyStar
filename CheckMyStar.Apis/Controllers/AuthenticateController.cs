@@ -1,15 +1,17 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 using CheckMyStar.Apis.Services.Abstractions;
-using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Models;
-using CheckMyStar.Enumerations;
+using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
+using CheckMyStar.Enumerations;
 
 namespace CheckMyStar.Apis.Controllers;
 
@@ -57,6 +59,9 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
         }
 
         var token = GenerateJwtToken(user.User);
+        var refreshToken = GenerateSecureRefreshToken();
+
+        authenticateService.StoreRefreshToken(refreshToken, user);
 
         var message = $"Connexion réussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
         
@@ -70,10 +75,53 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
             Login = new LoginModel
             {
                 Token = token,
+                RefreshToken = refreshToken,
                 User = user.User
             }
         });
     }
+
+    /// <summary>
+    /// Refresk token
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequest request, CancellationToken ct)
+    {
+        var user = await authenticateService.ValidateRefreshTokenAsync(request.RefreshToken, ct);
+
+        if (user == null)
+            return Unauthorized(new { message = "Invalid refresh token" });
+
+        var newAccessToken = GenerateJwtToken(user.User!);
+        var newRefreshToken = GenerateSecureRefreshToken();
+
+        // Supprimer l'ancien
+        authenticateService.RemoveRefreshToken(request.RefreshToken); 
+        
+        // Stocker le nouveau
+        authenticateService.StoreRefreshToken(newRefreshToken, user);
+
+        var message = $"Connexion rafraichie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
+
+        logger.LogInformation("Connexion rafraichie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
+
+        return Ok(new LoginResponse
+        {
+            IsSuccess = true,
+            IsValid = true,
+            Message = message,
+            Login = new LoginModel
+            {
+                Token = newAccessToken,
+                RefreshToken = newRefreshToken,
+                User = user.User
+            }
+        });
+    }
+
 
     private string GenerateJwtToken(UserModel user)
     {
@@ -105,5 +153,13 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateSecureRefreshToken()
+    {
+        var randomNumber = new byte[64];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

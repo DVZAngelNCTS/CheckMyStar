@@ -3,6 +3,13 @@
   <app-field controlName="identifier" label="{{ 'UserSection.Identifier' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
     <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
   </app-field>
+  <!-- CIVILITY -->
+  <app-field controlName="civility" label="{{ 'UserSection.Civility' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <select class="form-control" formControlName="civility">
+      <option [value]="EnumCivility.Mister">{{ 'UserSection.Mister' | translate }}</option>
+      <option [value]="EnumCivility.Madam">{{ 'UserSection.Madam' | translate }}</option>
+    </select>
+  </app-field>
   <!-- LAST NAME -->
   <app-field controlName="lastName" label="{{ 'UserSection.LastName' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
     <input type="text" class="form-control" formControlName="lastName" required>
@@ -11,6 +18,26 @@
   <app-field controlName="firstName" label="{{ 'UserSection.FirstName' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
     <input type="text" class="form-control" formControlName="firstName" required>
   </app-field>
+  <!-- SOCIETY -->
+  <app-field controlName="society" label="{{ 'UserSection.Society' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <input type="text" class="form-control" formControlName="society" required>
+  </app-field>
+  <!-- EMAIL -->
+  <app-field controlName="email" label="{{ 'UserSection.Email' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <input type="text" class="form-control" formControlName="email" required>
+  </app-field>  
+  <!-- PHONE -->
+  <app-field controlName="phone" label="{{ 'UserSection.Phone' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <input type="text" class="form-control" formControlName="phone" required>
+  </app-field>  
+  <!-- ROLE -->
+  <app-field controlName="role" label="{{ 'UserSection.Role' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <select class="form-control" formControlName="role">
+      <option [value]="EnumRole.Administrator">{{ 'RoleSection.Administrator' | translate }}</option>
+      <option [value]="EnumRole.User">{{ 'RoleSection.User' | translate }}</option>
+      <option [value]="EnumRole.Inspector">{{ 'RoleSection.Inspector' | translate }}</option>
+    </select>
+  </app-field>
   <!-- ACTIVE -->
   <app-field controlName="isActive" label="{{ 'UserSection.Active' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
     <select class="form-control" formControlName="isActive">
@@ -18,5 +45,4 @@
       <option [value]="false">{{ 'CommonSection.No' | translate }}</option>
     </select>
   </app-field>
-
 </form>

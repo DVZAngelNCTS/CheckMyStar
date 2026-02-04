@@ -12,9 +12,16 @@ export class UserBllService {
   constructor(private userDal: UserDalService) {
   }
 
-  getUsers$(lastName?: string) {
+  getUsers$(lastName?: string, firstName?: string, society?: string, email?: string, phone?: string, address?: string, role?: number) {
     const request = { 
-      lastName: lastName } as UserGetRequest;
+      lastName: lastName,
+      firstName: firstName,
+      society: society,
+      email: email,
+      phone: phone,
+      address: address,
+      role: role
+    } as UserGetRequest;
 
     return this.userDal.getUsers$(request);
   }

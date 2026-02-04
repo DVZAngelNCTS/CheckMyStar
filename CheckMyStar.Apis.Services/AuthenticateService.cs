@@ -19,7 +19,9 @@ namespace CheckMyStar.Apis.Services;
 /// in production environments. The implementation is not thread-safe and is designed for demonstration or testing
 /// purposes only.</remarks>
 public class AuthenticateService(IUserBusForService userBusForService) : IAuthenticateService
-{    
+{
+    private static readonly Dictionary<string, UserResponse> RefreshTokens = new();
+
     /// <summary>
     /// Asynchronously validates a user's credentials based on the specified request.
     /// </summary>
@@ -40,6 +42,16 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
         }
 
         return user;
+    }
+
+    public Task<UserResponse?> ValidateRefreshTokenAsync(string refreshToken, CancellationToken ct)
+    {
+        if (RefreshTokens.TryGetValue(refreshToken, out var user))
+        {
+            return Task.FromResult<UserResponse?>(user);
+        }
+
+        return Task.FromResult<UserResponse?>(null);
     }
 
     /// <summary>
@@ -74,5 +86,15 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
         string computedHash = HashPassword(password);
 
         return computedHash == passwordHash;
+    }
+
+    public void StoreRefreshToken(string refreshToken, UserResponse user)
+    {
+        RefreshTokens[refreshToken] = user;
+    }
+
+    public void RemoveRefreshToken(string refreshToken)
+    {
+        RefreshTokens.Remove(refreshToken);
     }
 }

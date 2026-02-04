@@ -4,6 +4,7 @@ using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
+using CheckMyStar.Enumerations;
 
 namespace CheckMyStar.Bll.Mappings
 {
@@ -18,7 +19,20 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.LastName, opts => opts.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society)).ReverseMap();
+                .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society))
+                .ForMember(dest => dest.Civility, opts => opts.MapFrom(src => src.CivilityIdentifier.ToEnum<EnumCivility>()))
+                .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.RoleIdentifier.ToEnum<EnumRole>()));
+
+            CreateMap<UserModel, User>()
+                .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
+                .ForMember(dest => dest.FirstName, opts => opts.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.Identifier, opts => opts.MapFrom(src => src.Identifier))
+                .ForMember(dest => dest.LastName, opts => opts.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password))
+                .ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society))
+                .ForMember(dest => dest.CivilityIdentifier, opts => opts.MapFrom(src => src.Civility.ToInt()))
+                .ForMember(dest => dest.RoleIdentifier, opts => opts.MapFrom(src => src.Role.ToInt()));
 
             CreateMap<UserResult, UserResponse>()
                 .ForMember(dest => dest.User, opts => opts.MapFrom(src => src.User ?? null));
