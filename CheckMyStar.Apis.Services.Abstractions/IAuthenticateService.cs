@@ -1,3 +1,4 @@
+using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 
@@ -34,4 +35,20 @@ public interface IAuthenticateService
     /// <param name="passwordHash">The hashed password to compare with. Cannot be null.</param>
     /// <returns>true if the password matches the hash; otherwise, false.</returns>
     bool VerifyPassword(string password, string passwordHash);
+    /// <summary>
+    /// Asynchronously validates refresh token
+    /// </summary>
+    /// <param name="refreshToken">The refreshToken</param>
+    /// <returns></returns>
+    Task<UserResponse?> ValidateRefreshTokenAsync(string refreshToken, CancellationToken ct);
+    /// <summary>
+    /// Store refresh token
+    /// </summary>
+    /// <param name="refreshToken">The refreshToken</param>
+    void StoreRefreshToken(string refreshToken, UserResponse user);
+    /// <summary>
+    /// Remove refresh token
+    /// </summary>
+    /// <param name="refreshToken">The refreshToken</param>
+    void RemoveRefreshToken(string refreshToken);
 }

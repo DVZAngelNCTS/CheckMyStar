@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserFilterComponent } from './Filter/User-filter.component';
 import { UserBllService } from '../../../60_Bll/BackOffice/User-bll.service';
 import { UserModel } from '../../../20_Models/Common/User.model';
@@ -10,6 +10,9 @@ import { TranslationModule } from '../../../10_Common/Translation.module';
 import { PopupComponent } from '../../Components/Popup/Popup.component';
 import { UserFormComponent } from '../Users/Form/User-form.component'
 import { TranslateService } from '@ngx-translate/core';
+import { EnumCivility } from '../../../10_Common/Enumerations/EnumCivility';
+import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
+import { ToastService } from '../../../90_Services/Toast/Toast.service';
 
 @Component({
 	selector: 'app-user-page',
@@ -33,18 +36,20 @@ export class UserPageComponent {
 
 	columns = [
 		{ icon: 'bi bi-list-ol', field: 'identifier', header: 'UserSection.Identifier', sortable: true, filterable: true, width: '10%' },
-		{ icon: 'bi bi-gender-ambiguous', field: 'civility', header: 'UserSection.Civility', translate: true, sortable: true, filterable: true, width: '10%' },
+		//{ icon: 'bi bi-gender-ambiguous', field: 'civility', header: 'UserSection.Civility', translate: true, sortable: true, filterable: true, width: '10%', 
+		//	pipe: (value) => this.translate.instant( value === EnumCivility.Mister ? 'UserSection.Mister' : value === EnumCivility.Madam ? 'UserSection.Madam' : '') },
 		{ icon: 'bi bi-person', field: 'lastName', header: 'UserSection.LastName', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-person', field: 'firstName', header: 'UserSection.FirstName', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-building', field: 'society', header: 'UserSection.Society', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-envelope-at', field: 'email', header: 'UserSection.Email', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-telephone', field: 'phone', header: 'UserSection.Phone', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-envelope', field: 'address', header: 'UserSection.Address', translate: true, sortable: true, filterable: true, width: '10%' },
-		{ icon: 'bi bi-shield', field: 'role', header: 'RoleSection.Role', translate: true, sortable: true, filterable: true, width: '10%' },
+		{ icon: 'bi bi-shield', field: 'role', header: 'RoleSection.Role', translate: true, sortable: true, filterable: true, width: '10%',
+			pipe: (value) => this.translate.instant( value === EnumRole.Administrator ? 'RoleSection.Administrator' : value === EnumRole.User ? 'RoleSection.User' : value === EnumRole.Inspector ? 'RoleSection.Inspector' : '') },
 		{ icon: 'bi bi-shield-check', field: 'isActive', header: 'UserSection.Active', sortable: true, filterable: false }
 		] as TableColumn<UserModel>[];
 
-	constructor(private userBll: UserBllService, private translate: TranslateService) { 
+	constructor(private userBll: UserBllService, private translate: TranslateService, private toast: ToastService) { 
 	}
 
 	ngOnInit() {
@@ -65,7 +70,7 @@ export class UserPageComponent {
 		else
 			this.loadingSearch = true;
 
-		this.userBll.getUsers$(filter.name).subscribe({
+		this.userBll.getUsers$(filter.name, filter.firstName, filter.society, filter.email, filter.phone, filter.address, filter.role).subscribe({
 			next: users => {
 				if (filter.reset)
 						this.loadingReset = false;
@@ -175,6 +180,7 @@ export class UserPageComponent {
 
 				this.popupError = null;
 				this.loadUsers();
+				this.toast.show(response.message, "success", 5000);
 				this.popupVisible = false;
 			},
 			error: err => {
@@ -204,6 +210,7 @@ export class UserPageComponent {
 
 				this.popupError = null;
 				this.loadUsers();
+				this.toast.show(response.message, "success", 5000);
 				this.popupVisible = false;
 			},
 			error: err => {
@@ -227,7 +234,8 @@ export class UserPageComponent {
 				}
 
 				this.popupError = null;
-				this.loadUsers();				
+				this.loadUsers();		
+				this.toast.show(response.message, "success", 5000);		
 				this.popupVisible = false;
 			},
 			error: err => {
@@ -246,24 +254,26 @@ export class UserPageComponent {
 	};
 
 	this.userBll.updateUser$(updatedUser).subscribe({
-		next: response => {
-		this.loading = false;
+			next: response => {
+				this.loading = false;
 
-		if (!response.isSuccess) {
-			console.error(response.message);
-			return;
-		}
+				if (!response.isSuccess) {
+					this.toast.show(response.message, "error", 5000);	
+					return;
+				}
 
-		// Mise à jour locale
-		this.users = this.users?.map(r =>
-			r.identifier === user.identifier ? updatedUser : r
-		);
-		},
-		error: err => {
-		this.loading = false;
-		console.error(err);
-		}
-	});
+				// Mise à jour locale
+				this.users = this.users?.map(r =>
+					r.identifier === user.identifier ? updatedUser : r
+				);
+
+				this.toast.show(response.message, "success", 5000);	
+			},
+			error: err => {
+				this.loading = false;
+				console.error(err);
+			}
+		});
 	}
 
 }

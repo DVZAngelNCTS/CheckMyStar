@@ -270,21 +270,21 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
            WHERE TABLE_SCHEMA = 'dbo' 
            AND TABLE_NAME = 'Civility')
 BEGIN
-    INSERT INTO dbo.Civility (Identifier, [Name], [Description])
+    INSERT INTO dbo.Civility ([Identifier], [Name], [Description])
     SELECT
-        ROW_NUMBER() OVER (ORDER BY x.[Name]) AS Identifier,
+        x.[Identifier],
         x.[Name],
         x.[Description]
     FROM
     (
         VALUES
-            ('Mr.', 'Monsieur'),
-            ('Mme.', 'Madamme')
-    ) AS x([Name], [Description])
+            (1, 'Mr.', 'Monsieur'),
+            (2, 'Mme.', 'Madamme')
+    ) AS x([Identifier], [Name], [Description])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.Civility c
-        WHERE c.[Name] = x.[Name]
+        WHERE c.[Identifier] = x.[Identifier]
     );
 END
 GO
@@ -324,28 +324,28 @@ BEGIN
     DECLARE @CivilityMrIdentifier INT;
     SELECT @CivilityMrIdentifier = Identifier FROM dbo.Civility WHERE [Name] = 'Mr.';
 
-    INSERT INTO dbo.[User] (Identifier, CivilityIdentifier, LastName, FirstName, Society, Email, Phone, [Password], RoleIdentifier, AddressIdentifier)
+    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier])
     SELECT
-        x.Identifier,
-        x.CivilityIdentifier,
-        x.LastName,
-        x.FirstName,
-        x.Society,
-        x.Email,
-        x.Phone,
+        x.[Identifier],
+        x.[CivilityIdentifier],
+        x.[LastName],
+        x.[FirstName],
+        x.[Society],
+        x.[Email],
+        x.[Phone],
         x.[Password],
-        x.RoleIdentifier,
-        x.AddressIdentifier
+        x.[RoleIdentifier],
+        x.[AddressIdentifier]
     FROM
     (
         VALUES
             (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL),
             (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL)
-    ) AS x(Identifier, CivilityIdentifier, LastName, FirstName, Society, Email, Phone, [Password], RoleIdentifier, AddressIdentifier)
+    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[User] u
-        WHERE u.Identifier = x.Identifier
+        WHERE u.[Identifier] = x.[Identifier]
     );
 END
 GO

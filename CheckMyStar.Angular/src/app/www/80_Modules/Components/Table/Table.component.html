@@ -50,7 +50,7 @@
 
           <!-- Autres colonnes -->
           <span *ngSwitchDefault>
-            {{ row[col.field] }}
+            {{ col.pipe ? col.pipe(row[col.field], row) : row[col.field] }}
           </span>
 
         </ng-container>

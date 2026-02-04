@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RoleFilterComponent } from './Filter/Role-filter.component';
 import { RoleBllService } from '../../../60_Bll/BackOffice/Role-bll.service';
 import { RoleModel } from '../../../20_Models/BackOffice/Role.model';
@@ -244,24 +244,26 @@ export class RolePageComponent {
 	};
 
 	this.roleBll.updateRole$(updatedRole).subscribe({
-		next: response => {
-		this.loading = false;
+			next: response => {
+				this.loading = false;
 
-		if (!response.isSuccess) {
-			console.error(response.message);
-			return;
-		}
+				if (!response.isSuccess) {
+					this.toast.show(response.message, "error", 5000);	
+					return;
+				}
 
-		// Mise à jour locale
-		this.roles = this.roles?.map(r =>
-			r.identifier === role.identifier ? updatedRole : r
-		);
-		},
-		error: err => {
-		this.loading = false;
-		console.error(err);
-		}
-	});
+				// Mise à jour locale
+				this.roles = this.roles?.map(r =>
+					r.identifier === role.identifier ? updatedRole : r
+				);
+
+				this.toast.show(response.message, "success", 5000);	
+			},
+			error: err => {
+				this.loading = false;
+				console.error(err);
+			}
+		});
 	}
 
 }

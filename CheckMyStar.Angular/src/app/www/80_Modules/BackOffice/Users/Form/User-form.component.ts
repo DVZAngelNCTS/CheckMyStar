@@ -5,6 +5,8 @@ import { UserModel } from '../../../../20_Models/Common/User.model';
 import { FieldComponent } from '../../../Components/Field/Field.component';
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { DigitsOnlyDirective } from '../../../../10_Common/InputFilter/Digit-only'
+import { EnumCivility } from '../../../../10_Common/Enumerations/EnumCivility';
+import { EnumRole } from '../../../../10_Common/Enumerations/EnumRole';
 
 @Component({
   selector: 'app-user-form',
@@ -17,6 +19,9 @@ export class UserFormComponent implements OnInit, OnChanges {
   @Input() readonlyIdentifier: boolean = false;
 
   form!: FormGroup;
+
+  EnumCivility = EnumCivility;
+  EnumRole = EnumRole;
 
   constructor(private fb: FormBuilder) {}
 
@@ -32,8 +37,13 @@ export class UserFormComponent implements OnInit, OnChanges {
   private buildForm() { 
     this.form = this.fb.group({
       identifier: [this.user?.identifier ?? '', Validators.required],
+      civility: [this.user?.civility ?? EnumCivility.Mister, Validators.required],      
       lastName: [this.user?.lastName ?? '', Validators.required],
       firstName: [this.user?.firstName ?? '', Validators.required],
+      society: [this.user?.society ?? '', Validators.required],
+      email: [this.user?.email ?? '', [Validators.required, Validators.email]],
+      phone: [this.user?.phone ?? '', Validators.required],
+      role: [this.user?.role ?? EnumRole.User, Validators.required],      
       isActive: [this.user?.isActive ?? true]
     });
   }
@@ -42,8 +52,13 @@ export class UserFormComponent implements OnInit, OnChanges {
      if (changes['user'] && !changes['user'].firstChange) { 
       this.form.patchValue({ 
         identifier: this.user?.identifier ?? '', 
+        civility: this.user?.civility ?? EnumCivility.Mister,
         lastName: this.user?.lastName ?? '', 
         firstName: this.user?.firstName ?? '',
+        society: this.user?.society ?? '',
+        email: this.user?.email ?? '',
+        phone: this.user?.phone ?? '',
+        role: this.user?.role ?? EnumRole.User,
         isActive: this.user?.isActive ?? true
       }); 
     }

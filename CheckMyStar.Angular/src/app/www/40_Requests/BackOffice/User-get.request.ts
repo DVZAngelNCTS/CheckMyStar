@@ -5,4 +5,5 @@ export interface UserGetRequest {
     email: string;
     phone: string;
     address: string;
+    role?: number;
 }

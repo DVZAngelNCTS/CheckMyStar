@@ -17,4 +17,8 @@ export class LoginDalService {
   login$(request: LoginGetRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/authenticate/login`, request);
   }
+
+  refresh$(refreshToken: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/authenticate/refresh`, { refreshToken });
+  }
 }
