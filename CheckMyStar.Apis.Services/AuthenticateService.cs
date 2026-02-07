@@ -7,6 +7,7 @@ using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
+using CheckMyStar.Security;
 
 namespace CheckMyStar.Apis.Services;
 
@@ -32,13 +33,13 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
     {
         string password = request.Password;
 
-        request.Password = HashPassword(request.Password);
+        request.Password = SecurityHelper.HashPassword(request.Password);
 
         var user = await userBusForService.GetUser(request, ct);
 
         if (user.IsSuccess && user.User != null)
         {
-            user.IsValid = VerifyPassword(password, user.User.Password);
+            user.IsValid = SecurityHelper.VerifyPassword(password, user.User.Password);
         }
 
         return user;
@@ -52,40 +53,6 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
         }
 
         return Task.FromResult<UserResponse?>(null);
-    }
-
-    /// <summary>
-    /// Computes a SHA-256 hash of the specified password and returns the result as a hexadecimal string.
-    /// </summary>
-    /// <remarks>The returned hash is suitable for storage or comparison, but this method does not apply
-    /// salting or key stretching. For secure password storage, consider using a dedicated password hashing algorithm
-    /// such as PBKDF2, bcrypt, or Argon2.</remarks>
-    /// <param name="password">The password to hash. Cannot be null.</param>
-    /// <returns>A hexadecimal string representation of the SHA-256 hash of the password.</returns>
-    public string HashPassword(string password)
-    {
-        using (var sha256 = SHA256.Create())
-        {
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
-            byte[] hashBytes = sha256.ComputeHash(passwordBytes);
-
-            return Convert.ToHexString(hashBytes);
-        }
-    }
-
-    /// <summary>
-    /// Verifies whether the specified password matches the given password hash.
-    /// </summary>
-    /// <remarks>This method uses the same hashing algorithm as the one used to generate the provided password
-    /// hash. Ensure that the hash was created using a compatible method to avoid false negatives.</remarks>
-    /// <param name="password">The plain text password to verify. Cannot be null.</param>
-    /// <param name="passwordHash">The hashed password to compare against. Cannot be null.</param>
-    /// <returns>true if the password matches the hash; otherwise, false.</returns>
-    public bool VerifyPassword(string password, string passwordHash)
-    {
-        string computedHash = HashPassword(password);
-
-        return computedHash == passwordHash;
     }
 
     public void StoreRefreshToken(string refreshToken, UserResponse user)

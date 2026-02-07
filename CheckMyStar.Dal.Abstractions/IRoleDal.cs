@@ -5,6 +5,7 @@ namespace CheckMyStar.Dal.Abstractions
 {
     public interface IRoleDal
     {
+        Task<RoleResult> GetNextIdentifier(CancellationToken ct);
         Task<RolesResult> GetRoles(string? name, CancellationToken ct);
         Task<RoleResult> GetRole(int identifier, CancellationToken ct);
         Task<RoleResult> GetRole(string name, CancellationToken ct);

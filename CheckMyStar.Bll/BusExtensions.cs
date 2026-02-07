@@ -11,11 +11,15 @@ namespace CheckMyStar.Bll
         {
             services
                 .AddScoped<IUserBus, UserBus>()
-                .AddScoped<IRoleBus, RoleBus>();
+                .AddScoped<IRoleBus, RoleBus>()
+                .AddScoped<ICountryBus, CountryBus>()
+                .AddScoped<IAddressBus, AddressBus>();
 
             services
                 .AddScoped<IUserBusForService>(x => (UserBus)x.GetRequiredService<IUserBus>())
-                .AddScoped<IRoleBusForService>(x => (RoleBus)x.GetRequiredService<IRoleBus>());
+                .AddScoped<IRoleBusForService>(x => (RoleBus)x.GetRequiredService<IRoleBus>())
+                .AddScoped<ICountryBusForService>(x => (CountryBus)x.GetRequiredService<ICountryBus>())
+                .AddScoped<IAddressBusForService>(x => (AddressBus)x.GetRequiredService<IAddressBus>());
 
             return services;
         }

@@ -15,9 +15,9 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var civilities = await (from c in dbContext.Civilities
+                var civilities = await (from c in dbContext.Civilities.AsNoTracking()
                                         orderby c.Name
-                                        select c).AsNoTracking().ToListAsync(ct);
+                                        select c).ToListAsync(ct);
 
                 civilityResult.Civilities = civilities;
                 civilityResult.IsSuccess = true;

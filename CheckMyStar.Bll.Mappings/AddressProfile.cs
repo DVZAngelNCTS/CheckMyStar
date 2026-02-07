@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 
 using CheckMyStar.Bll.Models;
+using CheckMyStar.Bll.Responses;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll.Mappings
@@ -16,6 +18,9 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.Number))
                 .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.Region))
                 .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode)).ReverseMap();
+
+            CreateMap<AddressResult, AddressResponse>()
+                .ForMember(dest => dest.Address, opts => opts.MapFrom(src => src.Address ?? null));
         }
     }
 }

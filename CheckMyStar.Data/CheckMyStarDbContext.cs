@@ -101,12 +101,14 @@ public partial class CheckMyStarDbContext : DbContext
 
             entity.ToTable("User");
 
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
                 .IsUnicode(false);

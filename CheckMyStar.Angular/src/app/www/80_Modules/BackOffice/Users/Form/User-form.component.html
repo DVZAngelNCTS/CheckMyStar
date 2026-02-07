@@ -7,7 +7,7 @@
     </app-field>
     <!-- CIVILITY -->
     <app-field controlName="civility" label="{{ 'UserSection.Civility' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-      <select class="form-control" formControlName="civility">
+      <select class="form-select" formControlName="civility">
         <option [value]="EnumCivility.Mister">{{ 'UserSection.Mister' | translate }}</option>
         <option [value]="EnumCivility.Madam">{{ 'UserSection.Madam' | translate }}</option>
       </select>
@@ -38,11 +38,17 @@
         <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
           <i class="bi" [ngClass]="passwordVisible ? 'bi-eye-slash' : 'bi-eye'"></i>
         </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="generatePassword()"> 
+          <i class="bi bi-magic"></i>
+        </button>        
       </div>
+      <div class="invalid-feedback d-block" *ngIf="form.get('password')?.errors?.['weakPassword']">
+         {{ 'UserSection.PasswordValidate' | translate }}
+      </div>      
     </app-field> 
     <!-- ROLE -->
     <app-field controlName="role" label="{{ 'RoleSection.Role' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-      <select class="form-control" formControlName="role">
+      <select class="form-select" formControlName="role">
         <option [value]="EnumRole.Administrator">{{ 'RoleSection.Administrator' | translate }}</option>
         <option [value]="EnumRole.User">{{ 'RoleSection.User' | translate }}</option>
         <option [value]="EnumRole.Inspector">{{ 'RoleSection.Inspector' | translate }}</option>
@@ -50,7 +56,7 @@
     </app-field>
     <!-- ACTIVE -->
     <app-field controlName="isActive" label="{{ 'UserSection.Active' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-      <select class="form-control" formControlName="isActive">
+      <select class="form-select" formControlName="isActive">
         <option [value]="true">{{ 'CommonSection.Yes' | translate }}</option>
         <option [value]="false">{{ 'CommonSection.No' | translate }}</option>
       </select>
@@ -58,24 +64,37 @@
   </div>
   <div class="flex-grow-1 d-flex flex-column column-box" formGroupName="address">
     <h5 class="fw-bold mb-3">{{ 'UserSection.Address' | translate }}</h5>
+    <!-- IDENTIFIER -->
+    <app-field controlName="address.identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+      <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
+    </app-field>    
     <!-- NUMBER -->
     <app-field controlName="number" label="{{ 'AddressSection.Number' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
       <input type="text" class="form-control" formControlName="number">
     </app-field>
+    <!-- ADDRESS LINE -->
     <app-field controlName="addressLine" label="{{ 'AddressSection.AddressLine' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
       <input type="text" class="form-control" formControlName="addressLine">
     </app-field>
+    <!-- CITY -->
     <app-field controlName="city" label="{{ 'AddressSection.City' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
       <input type="text" class="form-control" formControlName="city">
     </app-field>
+    <!-- ZIP CODE -->
     <app-field controlName="zipCode" label="{{ 'AddressSection.ZipCode' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
       <input type="text" class="form-control" formControlName="zipCode">
     </app-field>
+    <!-- REGION -->
     <app-field controlName="region" label="{{ 'AddressSection.Region' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
       <input type="text" class="form-control" formControlName="region">
     </app-field>
-    <app-field controlName="country" label="{{ 'AddressSection.Country' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-      <input type="text" class="form-control" formControlName="country">
-    </app-field>
+    <!-- COUNTRY -->
+     <div formGroupName="country">
+      <app-field controlName="identifier" label="{{ 'AddressSection.Country' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <select class="form-select" formControlName="identifier" (change)="onCountryChange($event)">
+          <option *ngFor="let c of countries" [value]="c.identifier"> {{ c.name }} </option>
+        </select>
+      </app-field>
+     </div>
   </div>
 </form>

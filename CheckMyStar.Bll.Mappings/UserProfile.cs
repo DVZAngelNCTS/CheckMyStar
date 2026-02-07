@@ -21,7 +21,8 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society))
                 .ForMember(dest => dest.Civility, opts => opts.MapFrom(src => src.CivilityIdentifier.ToEnum<EnumCivility>()))
-                .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.RoleIdentifier.ToEnum<EnumRole>()));
+                .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.RoleIdentifier.ToEnum<EnumRole>()))
+                .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive));
 
             CreateMap<UserModel, User>()
                 .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
@@ -32,7 +33,8 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society))
                 .ForMember(dest => dest.CivilityIdentifier, opts => opts.MapFrom(src => src.Civility.ToInt()))
-                .ForMember(dest => dest.RoleIdentifier, opts => opts.MapFrom(src => src.Role.ToInt()));
+                .ForMember(dest => dest.RoleIdentifier, opts => opts.MapFrom(src => src.Role.ToInt()))
+                .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive));
 
             CreateMap<UserResult, UserResponse>()
                 .ForMember(dest => dest.User, opts => opts.MapFrom(src => src.User ?? null));

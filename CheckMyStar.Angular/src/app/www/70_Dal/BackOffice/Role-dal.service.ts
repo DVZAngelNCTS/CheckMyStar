@@ -7,6 +7,7 @@ import { RoleSaveRequest } from '../../40_Requests/BackOffice/Role-save.request'
 import { RoleDeleteRequest } from '../../40_Requests/BackOffice/Role-delete.request';
 import { RolesResponse } from '../../50_Responses/BackOffice/RolesResponse';
 import { BaseResponse } from '../../50_Responses/BaseResponse';
+import { RoleResponse } from '../../50_Responses/BackOffice/RoleResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,9 @@ export class RoleDalService {
 
   deleteRole$(request: RoleDeleteRequest) {
         return this.http.post<BaseResponse>(`${this.apiUrl}/Role/deleterole`, request);
+  }
+
+  getNextIdentifier$(): Observable<RoleResponse> {
+    return this.http.post<RoleResponse>(`${this.apiUrl}/Role/getnextidentifier`, {});
   }
 }

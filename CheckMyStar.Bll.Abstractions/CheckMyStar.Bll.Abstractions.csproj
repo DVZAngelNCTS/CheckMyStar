@@ -10,6 +10,7 @@
     <ProjectReference Include="..\CheckMyStar.Bll.Models\CheckMyStar.Bll.Models.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll.Requests\CheckMyStar.Bll.Requests.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll.Responses\CheckMyStar.Bll.Responses.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Dal.Results\CheckMyStar.Dal.Results.csproj" />
   </ItemGroup>
 
 </Project>

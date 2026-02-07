@@ -5,6 +5,7 @@ namespace CheckMyStar.Dal.Abstractions
 {
     public interface IUserDal
     {
+        Task<UserResult> GetNextIdentifier(CancellationToken ct);
         Task<UserResult> GetUser(string login, string password, CancellationToken ct);
         Task<UserResult> GetUser(int identifier, CancellationToken ct);
         Task<UserResult> GetUser(string lastName, string firstName, string? society, string email, string? phone, CancellationToken ct);

@@ -35,7 +35,7 @@
     "Roles": "Rôles",
     "Disconnect": "Se déconnecter"
   },
-    "PopupSection": {
+  "PopupSection": {
     "Validate": "Valider",
     "Cancel": "Annuler"
   },
@@ -70,9 +70,11 @@
     "Mister": "Monsieur",
     "Madam": "Madame",
     "Password": "Mot de passe",
-    "Informations": "Informations utilisateur"
+    "Informations": "Informations utilisateur",
+    "PasswordValidate": "12 caractères minimum, une majuscule, une minuscule, un chiffre et un symbole."
   },
   "AddressSection": {
+    "Identifier": "Identifiant",
     "Number": "Numéro",
     "AddressLine": "Adresse",
     "City": "Ville",

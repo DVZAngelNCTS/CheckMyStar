@@ -4,14 +4,22 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
-using System.Data;
+using CheckMyStar.Security;
 
 namespace CheckMyStar.Bll
 {
     public partial class UserBus(IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
     {
+        public async Task<UserResponse> GetIdentifier(CancellationToken ct)
+        {
+            var user = await userDal.GetNextIdentifier(ct);
+
+            return mapper.Map<UserResponse>(user);
+        }
+
         public async Task<UserResponse> GetUser(string login, string password, CancellationToken ct)
         {
             UserResponse userResult = new UserResponse();
@@ -31,9 +39,37 @@ namespace CheckMyStar.Bll
 
         public async Task<UsersResponse> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct)
         {
+            UsersResponse usersResponse = new UsersResponse();
+
+            usersResponse.Users = new List<UserModel>();
+
             var users = await userDal.GetUsers(lastName, firstName, society, email, phone, address, role, ct);
 
-            return mapper.Map<UsersResponse>(users);
+            if (users.IsSuccess && users.Users != null)
+            {
+                foreach (User user in users.Users)
+                {
+                    var userModel = mapper.Map<UserModel>(user);
+
+                    if (user.AddressIdentifier != null)
+                    {
+                        var addressReponse = await addressDal.GetAddress(user.AddressIdentifier.Value, ct);
+
+                        if (addressReponse.IsSuccess && addressReponse.Address != null)
+                        {
+                            userModel.Address = mapper.Map<AddressModel>(addressReponse.Address);
+
+                            var countryResponse = await countryDal.GetCountry(addressReponse.Address.CountryIdentifier, ct);
+
+                            userModel.Address.Country = mapper.Map<CountryModel>(countryResponse.Country);
+                        }
+                    }
+
+                    usersResponse.Users.Add(userModel);
+                }
+            }
+
+            return usersResponse;
         }
 
         public async Task<BaseResponse> AddUser(UserModel userModel, CancellationToken ct)
@@ -52,9 +88,33 @@ namespace CheckMyStar.Bll
                     {
                         if (user.User == null)
                         {
+                            userModel.Password = SecurityHelper.HashPassword(userModel.Password);
+
                             var userEntity = mapper.Map<User>(userModel);
 
+                            userEntity.AddressIdentifier = userModel.Address.Identifier;
+
                             result = mapper.Map<BaseResponse>(await userDal.AddUser(userEntity, ct));
+
+                            if (user.IsSuccess)
+                            {
+                                result.IsSuccess = true;
+                                result.Message += result.Message;
+
+                                var addressEntity = mapper.Map<Address>(userModel.Address);
+
+                                var resultAddress = mapper.Map<BaseResponse>(await addressDal.AddAddress(addressEntity, ct));
+
+                                if (resultAddress.IsSuccess)
+                                {
+                                    result.Message += "<br>" + resultAddress.Message;
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message += "<br>" + resultAddress.Message;
+                                }
+                            }
                         }
                         else
                         {
@@ -91,13 +151,43 @@ namespace CheckMyStar.Bll
 
             if (user.IsSuccess)
             {
-                var userEntity = mapper.Map<User>(userModel);
+                if (user.User != null)
+                {
+                    if (userModel.Password == string.Empty)
+                    {
+                        userModel.Password = user.User.Password;
+                    }
 
-                return mapper.Map<BaseResponse>(await userDal.UpdateUser(userEntity, ct));
+                    var userEntity = mapper.Map<User>(userModel);
+
+                    var userResult = await userDal.UpdateUser(userEntity, ct);
+
+                    if (userResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = userResult.Message;
+
+                        var addressEntity = mapper.Map<Address>(userModel.Address);
+
+                        var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
+
+                        if (addressResult.IsSuccess)
+                        {
+                            result.Message += "<br>" + addressResult.Message;
+                        }
+                    }
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "L'utilisateur' n'existe pas, impossible de le modifié";
+                }
             }
-
-            result.IsSuccess = false;
-            result.Message = "L'utilisateur' n'existe pas, impossible de le modifié";
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
+            }
 
             return result;
         }
@@ -110,13 +200,52 @@ namespace CheckMyStar.Bll
 
             if (user.IsSuccess)
             {
-                var userEntity = mapper.Map<User>(user.User);
+                if (user.User != null)
+                {
+                    var userEntity = mapper.Map<User>(user.User);
 
-                return mapper.Map<BaseResponse>(await userDal.DeleteUser(userEntity, ct));
+                    var userResult = await userDal.DeleteUser(userEntity, ct);
+
+                    if (userResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = userResult.Message;
+
+                        if (user.User.AddressIdentifier != null)
+                        {
+                            var addressResult = await addressDal.GetAddress(user.User.AddressIdentifier.Value, ct);
+
+                            if (addressResult.IsSuccess && addressResult.Address != null)
+                            {
+                                var baseResumlt = await addressDal.DeleteAddress(addressResult.Address, ct);
+
+                                if (addressResult.IsSuccess)
+                                {
+                                    result.Message += "<br>" + addressResult.Message;
+                                }
+                                else
+                                {
+                                    result.Message += "<br>" + baseResumlt.Message;
+                                }
+                            }
+                            else
+                            {
+                                result.Message += "<br>" + addressResult.Message;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "L'utilisateur n'existe pas, impossible de le supprimer";
+                }
             }
-
-            result.IsSuccess = false;
-            result.Message = "L'utilisateur n'existe pas, impossible de le supprimer";
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
+            }
 
             return result;
         }

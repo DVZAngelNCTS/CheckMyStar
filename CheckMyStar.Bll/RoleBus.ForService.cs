@@ -6,6 +6,11 @@ namespace CheckMyStar.Bll
 {
     public partial class RoleBus : IRoleBusForService
     {
+        public Task<RoleResponse> GetNextIdentifier(CancellationToken ct)
+        {
+            return this.GetIdentifier(ct);
+        }
+
         public Task<RolesResponse> GetRoles(RoleGetRequest request, CancellationToken ct)
         {
             return this.GetRoles(request.Name, ct);

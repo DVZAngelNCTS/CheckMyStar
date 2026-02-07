@@ -10,6 +10,7 @@
             {
                 return (T)(object)(value switch
                 {
+                    0 => EnumCivility.None,
                     1 => EnumCivility.Mister,
                     2 => EnumCivility.Madam,
                     _ => throw new ArgumentOutOfRangeException(nameof(value), $"Value '{value}' is not valid for enum '{type.Name}'.")
@@ -20,6 +21,7 @@
             {
                 return (T)(object)(value switch
                 {
+                    0 => EnumRole.None,
                     1 => EnumRole.Administrator,
                     2 => EnumRole.User,
                     3 => EnumRole.Inspector,
@@ -38,6 +40,7 @@
             {
                 return (T)(object)(value switch
                 {
+                    "None" => EnumCivility.None,
                     "Mister" => EnumCivility.Mister,
                     "Madam" => EnumCivility.Madam,
                     _ => throw new ArgumentOutOfRangeException(nameof(value), $"Value '{value}' is not valid for enum '{type.Name}'.")
@@ -48,6 +51,7 @@
             {
                 return (T)(object)(value switch
                 {
+                    "None" => EnumRole.None,
                     "Administrator" => EnumRole.Administrator,
                     "User" => EnumRole.User,
                     "Inspector" => EnumRole.Inspector,
@@ -66,6 +70,7 @@
             {
                 return (value switch
                 {
+                    EnumCivility.None => 0,
                     EnumCivility.Mister => 1,
                     EnumCivility.Madam => 2,
                     _ => throw new ArgumentOutOfRangeException(nameof(value), $"Value '{value}' is not valid for enum '{type.Name}'.")
@@ -76,6 +81,7 @@
             {
                 return (value switch
                 {
+                    EnumRole.None => 0,
                     EnumRole.Administrator => 1,
                     EnumRole.User => 2,
                     EnumRole.Inspector => 3,
@@ -94,6 +100,7 @@
             {
                 return (value switch
                 {
+                    EnumCivility.None => "None",
                     EnumCivility.Mister => "Mister",
                     EnumCivility.Madam => "Madam",
                     _ => throw new ArgumentOutOfRangeException(nameof(value), $"Value '{value}' is not valid for enum '{type.Name}'.")
@@ -104,6 +111,7 @@
             {
                 return (value switch
                 {
+                    EnumRole.None => "None",
                     EnumRole.Administrator => "Administrator",
                     EnumRole.User => "User",
                     EnumRole.Inspector => "Inspector",

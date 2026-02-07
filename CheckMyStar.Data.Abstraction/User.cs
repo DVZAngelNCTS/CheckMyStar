@@ -24,4 +24,6 @@ public partial class User
     public int RoleIdentifier { get; set; }
 
     public int? AddressIdentifier { get; set; }
+
+    public bool IsActive { get; set; }
 }
