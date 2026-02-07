@@ -4,6 +4,6 @@
     *ngFor="let toast of toasts; trackBy: trackById"
     [ngClass]="toast.type"
   >
-    {{ toast.message }}
+    <div [innerHTML]="toast.message"></div>
   </div>
 </div>

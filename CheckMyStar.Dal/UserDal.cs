@@ -9,18 +9,64 @@ namespace CheckMyStar.Dal
 {
     public class UserDal(ICheckMyStarDbContext dbContext) : IUserDal
     {
+        public async Task<UserResult> GetNextIdentifier(CancellationToken ct)
+        {
+            UserResult userResult = new UserResult();
+
+            try
+            {
+                var existingIdentifiers = await (from r in dbContext.Users.AsNoTracking()
+                                                 orderby r.Identifier
+                                                 select r.Identifier).ToListAsync(ct);
+
+                if (existingIdentifiers.Count == 0)
+                {
+                    userResult.IsSuccess = true;
+                    userResult.User = new User { Identifier = 1 };
+                    userResult.Message = "Identifiant récupéré avec succès";
+                }
+                else
+                {
+                    int nextIdentifier = 1;
+
+                    foreach (var id in existingIdentifiers)
+                    {
+                        if (id == nextIdentifier)
+                        {
+                            nextIdentifier++;
+                        }
+                        else if (id > nextIdentifier)
+                        {
+                            break;
+                        }
+                    }
+
+                    userResult.IsSuccess = true;
+                    userResult.User = new User { Identifier = nextIdentifier };
+                    userResult.Message = "Identifiant récupéré avec succès";
+                }
+            }
+            catch (Exception ex)
+            {
+                userResult.IsSuccess = false;
+                userResult.Message = ex.Message;
+            }
+
+            return userResult;
+        }
+
         public async Task<UserResult> GetUser(string login, string password, CancellationToken ct)
         {
             UserResult userResult = new UserResult();
 
             try
             {
-                var user = await (from u in dbContext.Users
+                var user = await (from u in dbContext.Users.AsNoTracking()
                                   where
                                       (u.Email == login
                                    || u.LastName == login)
                                    && u.Password == password
-                                  select u).AsNoTracking().FirstOrDefaultAsync(ct);
+                                  select u).FirstOrDefaultAsync(ct);
 
                 userResult.IsSuccess = true;
                 userResult.User = user;
@@ -40,10 +86,10 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var user = await (from r in dbContext.Users
+                var user = await (from r in dbContext.Users.AsNoTracking()
                                   where
                                    r.Identifier == identifier
-                                  select r).AsNoTracking().FirstOrDefaultAsync(ct);
+                                  select r).FirstOrDefaultAsync(ct);
 
                 userResult.User = user;
                 userResult.IsSuccess = true;
@@ -63,14 +109,14 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var user = await (from r in dbContext.Users
+                var user = await (from r in dbContext.Users.AsNoTracking()
                                   where
                                       r.LastName == lastName
                                    && r.FirstName == firstName
                                    && (!string.IsNullOrEmpty(society) && r.Society == society)
                                    && r.Email == email
                                    && (!string.IsNullOrEmpty(phone) && r.Phone == phone)
-                                  select r).AsNoTracking().FirstOrDefaultAsync(ct);
+                                  select r).FirstOrDefaultAsync(ct);
 
                 userResult.User = user;
                 userResult.IsSuccess = true;
@@ -90,8 +136,8 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var users = await (from u in dbContext.Users
-                                   join a in dbContext.Addresses on u.AddressIdentifier equals a.Identifier into ua
+                var users = await (from u in dbContext.Users.AsNoTracking()
+                                   join a in dbContext.Addresses.AsNoTracking() on u.AddressIdentifier equals a.Identifier into ua
                                    from a in ua.DefaultIfEmpty()
                                    where
                                       (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
@@ -104,7 +150,7 @@ namespace CheckMyStar.Dal
                                    || a.AddressLine.Contains(address)
                                    || a.City.Contains(address)
                                    || a.ZipCode.Contains(address))
-                                   select u).AsNoTracking().ToListAsync(ct);
+                                   select u).ToListAsync(ct);
 
                 userResult.IsSuccess = true;
                 userResult.Users = users;

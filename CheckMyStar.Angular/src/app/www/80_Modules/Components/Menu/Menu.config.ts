@@ -2,6 +2,11 @@ import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
 
 export const MENU_CONFIG: Record<EnumRole, { icon: string, label: string, route?: string, action?: string }[]> = {
 
+  [EnumRole.None]: [
+    { icon: 'bi bi-house', label: 'FrontOfficeMenuSection.Home', route: '/fronthome' },
+    { icon: 'bi bi-door-closed', label: 'FrontOfficeMenuSection.Disconnect', action: 'logout' }
+  ],
+  
   [EnumRole.Administrator]: [
     { icon: 'bi bi-house', label: 'BackOfficeMenuSection.Home', route: '/backhome' },
     { icon: 'bi bi-shield-check', label: 'BackOfficeMenuSection.Roles', route: '/backhome/roles' },

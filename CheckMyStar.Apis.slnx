@@ -20,6 +20,7 @@
   </Folder>
   <Folder Name="/30_Common/">
     <Project Path="CheckMyStar.Enumerations/CheckMyStar.Enumerations.csproj" Id="aec2623a-8069-4012-844a-c74a9da8a09d" />
+    <Project Path="CheckMyStar.Security/CheckMyStar.Security.csproj" Id="7257be08-bc8c-4f09-b694-6717ba8cad5c" />
   </Folder>
   <Folder Name="/40_Site/">
     <Project Path="CheckMyStar.Apis/CheckMyStar.Apis.csproj" />

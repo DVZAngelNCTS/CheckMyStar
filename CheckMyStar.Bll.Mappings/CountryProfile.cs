@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 
 using CheckMyStar.Bll.Models;
+using CheckMyStar.Bll.Responses;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll.Mappings
@@ -13,6 +15,9 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Code, opts => opts.MapFrom(src => src.Code))
                 .ForMember(dest => dest.Identifier, opts => opts.MapFrom(src => src.Identifier))
                 .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Name)).ReverseMap().ReverseMap();
+
+            CreateMap<CountriesResult, CountriesResponse>()
+                .ForMember(dest => dest.Countries, opts => opts.MapFrom(src => src.Countries ?? null));
         }
     }
 }

@@ -43,4 +43,8 @@ export class UserBllService {
 
     return this.userDal.deleteUser$(request);
   }
+
+  getNextIdentifier$() {
+    return this.userDal.getNextIdentifier$();
+  }
 }

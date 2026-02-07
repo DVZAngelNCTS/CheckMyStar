@@ -35,4 +35,8 @@ export class RoleBllService {
 
     return this.roleDal.deleteRole$(request);
   }
+
+  getNextIdentifier$() {
+    return this.roleDal.getNextIdentifier$();
+  }
 }

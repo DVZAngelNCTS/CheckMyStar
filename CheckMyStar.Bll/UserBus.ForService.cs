@@ -6,6 +6,11 @@ namespace CheckMyStar.Bll
 {
     public partial class UserBus : IUserBusForService
     {
+        public Task<UserResponse> GetNextIdentifier(CancellationToken ct)
+        {
+            return this.GetIdentifier(ct);
+        }
+
         public Task<UserResponse> GetUser(LoginGetRequest request, CancellationToken ct)
         {
             return this.GetUser(request.Login, request.Password, ct);

@@ -104,7 +104,7 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
         // Stocker le nouveau
         authenticateService.StoreRefreshToken(newRefreshToken, user);
 
-        var message = $"Connexion rafraichie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
+        var message = $"Connexion rafraichie pour l'utilisateur: {user.User!.LastName} {user.User.FirstName}";
 
         logger.LogInformation("Connexion rafraichie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
 

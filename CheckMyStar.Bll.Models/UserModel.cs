@@ -14,5 +14,6 @@ namespace CheckMyStar.Bll.Models
         public string Password { get; set; } = null!;
         public EnumRole Role { get; set; }
         public AddressModel Address { get; set; } = null!;
+        public bool IsActive { get; set; }
     }
 }

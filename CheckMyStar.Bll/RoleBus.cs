@@ -10,6 +10,13 @@ namespace CheckMyStar.Bll
 {
     public partial class RoleBus(IRoleDal roleDal, IMapper mapper) : IRoleBus
     {
+        public async Task<RoleResponse> GetIdentifier(CancellationToken ct)
+        {
+            var role = await roleDal.GetNextIdentifier(ct);
+
+            return mapper.Map<RoleResponse>(role);
+        }
+
         public async Task<RolesResponse> GetRoles(string? name, CancellationToken ct)
         {
             var roles = await roleDal.GetRoles(name, ct);
@@ -72,13 +79,23 @@ namespace CheckMyStar.Bll
 
             if (role.IsSuccess)
             {
-                var roleEntity = mapper.Map<Role>(roleModel);
+                if (role.Role != null)
+                {
+                    var roleEntity = mapper.Map<Role>(roleModel);
 
-                return mapper.Map<BaseResponse>(await roleDal.UpdateRole(roleEntity, ct));
+                    return mapper.Map<BaseResponse>(await roleDal.UpdateRole(roleEntity, ct));
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Le rôle n'existe pas, impossible de le modifié";
+                }
             }
-
-            result.IsSuccess = false;
-            result.Message = "Le rôle n'existe pas, impossible de le modifié";
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = role.Message;
+            }
 
             return result;
         }
@@ -91,13 +108,23 @@ namespace CheckMyStar.Bll
 
             if (role.IsSuccess)
             {
-                var roleEntity = mapper.Map<Role>(role.Role);
+                if (role.Role != null)
+                {
+                    var roleEntity = mapper.Map<Role>(role.Role);
 
-                return mapper.Map<BaseResponse>(await roleDal.DeleteRole(roleEntity, ct));
+                    return mapper.Map<BaseResponse>(await roleDal.DeleteRole(roleEntity, ct));
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Le rôle n'existe pas, impossible de le supprimer";
+                }
             }
-
-            result.IsSuccess = false;
-            result.Message = "Le rôle n'existe pas, impossible de le supprimer";
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = role.Message;
+            }
 
             return result;
         }

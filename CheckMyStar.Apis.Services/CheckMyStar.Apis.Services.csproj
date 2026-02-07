@@ -17,6 +17,7 @@
     <ProjectReference Include="..\CheckMyStar.Bll.Responses\CheckMyStar.Bll.Responses.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll\CheckMyStar.Bll.csproj" />
     <ProjectReference Include="..\CheckMyStar.Enumerations\CheckMyStar.Enumerations.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Security\CheckMyStar.Security.csproj" />
   </ItemGroup>
 
 </Project>

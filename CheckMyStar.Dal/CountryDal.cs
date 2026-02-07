@@ -14,9 +14,9 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var countries = await (from c in dbContext.Countries
+                var countries = await (from c in dbContext.Countries.AsNoTracking()
                                        orderby c.Name
-                                       select c).AsNoTracking().ToListAsync(ct);
+                                       select c).ToListAsync(ct);
 
                 countriesResult.IsSuccess = true;
                 countriesResult.Countries = countries;
@@ -29,6 +29,29 @@ namespace CheckMyStar.Dal
             }
 
             return countriesResult;
+        }
+
+        public async Task<CountryResult> GetCountry(int identifier, CancellationToken ct)
+        {
+            CountryResult countryResult = new CountryResult();
+
+            try
+            {
+                var country = await (from c in dbContext.Countries.AsNoTracking()
+                                     where
+                                        c.Identifier == identifier
+                                     select c).FirstAsync();
+
+                countryResult.IsSuccess = true;
+                countryResult.Country = country;
+            }
+            catch (Exception ex)
+            {
+                countryResult.IsSuccess = false;
+                countryResult.Message = ex.Message;
+            }
+
+            return countryResult;
         }
     }
 }

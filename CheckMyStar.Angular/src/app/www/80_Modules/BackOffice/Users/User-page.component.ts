@@ -43,7 +43,8 @@ export class UserPageComponent {
 		{ icon: 'bi bi-building', field: 'society', header: 'UserSection.Society', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-envelope-at', field: 'email', header: 'UserSection.Email', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-telephone', field: 'phone', header: 'UserSection.Phone', translate: true, sortable: true, filterable: true, width: '10%' },
-		{ icon: 'bi bi-envelope', field: 'address', header: 'UserSection.Address', translate: true, sortable: true, filterable: true, width: '10%' },
+		{ icon: 'bi bi-envelope', field: 'address', header: 'UserSection.Address', translate: true, sortable: true, filterable: true, width: '10%',
+		 	pipe: (a) => { if (!a) return ''; const line1 = [a.number, a.addressLine].filter(Boolean).join(' '); const line2 = [a.zipCode, a.city].filter(Boolean).join(' '); const country = a.country?.name ?? ''; return [line1, line2, country].filter(Boolean).join(', '); }},
 		{ icon: 'bi bi-shield', field: 'role', header: 'RoleSection.Role', translate: true, sortable: true, filterable: true, width: '10%',
 			pipe: (value) => this.translate.instant( value === EnumRole.Administrator ? 'RoleSection.Administrator' : value === EnumRole.User ? 'RoleSection.User' : value === EnumRole.Inspector ? 'RoleSection.Inspector' : '') },
 		{ icon: 'bi bi-shield-check', field: 'isActive', header: 'UserSection.Active', sortable: true, filterable: false }
@@ -108,8 +109,8 @@ export class UserPageComponent {
 		this.selectedUser = user;
 		this.popupMode = 'edit';
 		this.popupTitle = this.translate.instant('UserSection.Update');
-		this.popupConfirmLabel = this.translate.instant('PopUserSectionupSection.Validate');
-		this.popupCancelLabel = this.translate.instant('UserSection.Cancel');
+		this.popupConfirmLabel = this.translate.instant('PopupSection.Validate');
+		this.popupCancelLabel = this.translate.instant('PopupSection.Cancel');
 		this.popupVisible = true;
 	}
 
@@ -121,8 +122,8 @@ export class UserPageComponent {
 		this.selectedUser = user;
 		this.popupMode = 'delete';
 		this.popupTitle = this.translate.instant('UserSection.Delete');
-		this.popupConfirmLabel = this.translate.instant('UserSection.Validate');
-		this.popupCancelLabel = this.translate.instant('UserSection.Cancel');
+		this.popupConfirmLabel = this.translate.instant('PopupSection.Validate');
+		this.popupCancelLabel = this.translate.instant('PopupSection.Cancel');
 		this.popupVisible = true;
 	}
 
@@ -168,8 +169,8 @@ export class UserPageComponent {
 
 	this.loading = true;
 
-	const newUser = this.userForm.getValue();
-
+	const newUser = this.getValue();
+		
 	this.userBll.addUser$(newUser).subscribe({
 		next: response => {
 				if (!response.isSuccess) {
@@ -198,7 +199,7 @@ export class UserPageComponent {
 
 		this.loading = true;
 
-		const updatedUser = this.userForm.getValue();
+		const updatedUser = this.getValue();
 
 		this.userBll.updateUser$(updatedUser).subscribe({
 			next: response => {
@@ -245,35 +246,38 @@ export class UserPageComponent {
 		});
 	}
 
-	toggleEnabled(user: UserModel) {
-	this.loading = true;
-
-	const updatedUser: UserModel = {
-		...user,
-		isActive: !user.isActive 
-	};
-
-	this.userBll.updateUser$(updatedUser).subscribe({
-			next: response => {
-				this.loading = false;
-
-				if (!response.isSuccess) {
-					this.toast.show(response.message, "error", 5000);	
-					return;
-				}
-
-				// Mise à jour locale
-				this.users = this.users?.map(r =>
-					r.identifier === user.identifier ? updatedUser : r
-				);
-
-				this.toast.show(response.message, "success", 5000);	
-			},
-			error: err => {
-				this.loading = false;
-				console.error(err);
-			}
-		});
+	getValue(): UserModel {
+  		return this.userForm.form.getRawValue() as UserModel;
 	}
 
+	toggleEnabled(user: UserModel) {
+		this.loading = true;
+
+		const updatedUser: UserModel = {
+			...user,
+			isActive: !user.isActive 
+		};
+
+		this.userBll.updateUser$(updatedUser).subscribe({
+				next: response => {
+					this.loading = false;
+
+					if (!response.isSuccess) {
+						this.toast.show(response.message, "error", 5000);	
+						return;
+					}
+
+					// Mise à jour locale
+					this.users = this.users?.map(r =>
+						r.identifier === user.identifier ? updatedUser : r
+					);
+
+					this.toast.show(response.message, "success", 5000);	
+				},
+				error: err => {
+					this.loading = false;
+					console.error(err);
+				}
+			});
+	}
 }

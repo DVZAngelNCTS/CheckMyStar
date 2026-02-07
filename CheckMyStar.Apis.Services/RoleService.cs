@@ -7,6 +7,13 @@ namespace CheckMyStar.Apis.Services
 {
     public class RoleService(IRoleBusForService roleBusForService) : IRoleService
     {
+        public async Task<RoleResponse> GetNextIdentifier(CancellationToken ct)
+        {
+            var result = await roleBusForService.GetNextIdentifier(ct);
+
+            return result;
+        }
+
         public async Task<RolesResponse> GetRoles(RoleGetRequest request, CancellationToken ct)
         {
             var result = await roleBusForService.GetRoles(request, ct);

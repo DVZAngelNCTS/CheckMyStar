@@ -37,10 +37,10 @@
 
   <ng-container *ngIf="popupVisible">
     <ng-container *ngIf="popupMode === 'edit'">
-      <app-role-form [role]="selectedRole" [readonlyIdentifier]="true">></app-role-form>
+      <app-role-form [role]="selectedRole" [readonlyIdentifier]="true"></app-role-form>
     </ng-container>
     <ng-container *ngIf="popupMode === 'create'">
-      <app-role-form [readonlyIdentifier]="false">></app-role-form>
+      <app-role-form [readonlyIdentifier]="true"></app-role-form>
     </ng-container>
   </ng-container>
 </app-popup>
