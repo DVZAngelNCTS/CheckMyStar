@@ -90,30 +90,31 @@ namespace CheckMyStar.Bll
                         {
                             userModel.Password = SecurityHelper.HashPassword(userModel.Password);
 
-                            var userEntity = mapper.Map<User>(userModel);
+                            var addressEntity = mapper.Map<Address>(userModel.Address);
 
-                            userEntity.AddressIdentifier = userModel.Address.Identifier;
+                            var addressResult = mapper.Map<BaseResponse>(await addressDal.AddAddress(addressEntity, ct));
 
-                            result = mapper.Map<BaseResponse>(await userDal.AddUser(userEntity, ct));
-
-                            if (user.IsSuccess)
+                            if (addressResult.IsSuccess)
                             {
-                                result.IsSuccess = true;
-                                result.Message += result.Message;
+                                var userEntity = mapper.Map<User>(userModel);
 
-                                var addressEntity = mapper.Map<Address>(userModel.Address);
+                                var userResult = mapper.Map<BaseResponse>(await userDal.AddUser(userEntity, ct));
 
-                                var resultAddress = mapper.Map<BaseResponse>(await addressDal.AddAddress(addressEntity, ct));
-
-                                if (resultAddress.IsSuccess)
+                                if (userResult.IsSuccess)
                                 {
-                                    result.Message += "<br>" + resultAddress.Message;
+                                    result.IsSuccess = true;
+                                    result.Message = userResult.Message + "<br>" + addressResult.Message;
                                 }
                                 else
                                 {
                                     result.IsSuccess = false;
-                                    result.Message += "<br>" + resultAddress.Message;
+                                    result.Message = userResult.Message + "<br>" + addressResult.Message;
                                 }
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = addressResult.Message;
                             }
                         }
                         else
@@ -164,17 +165,25 @@ namespace CheckMyStar.Bll
 
                     if (userResult.IsSuccess)
                     {
-                        result.IsSuccess = true;
-                        result.Message = userResult.Message;
-
                         var addressEntity = mapper.Map<Address>(userModel.Address);
 
                         var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
 
                         if (addressResult.IsSuccess)
                         {
-                            result.Message += "<br>" + addressResult.Message;
+                            result.IsSuccess = true;
+                            result.Message = userResult.Message + "<br>" + addressResult.Message;
                         }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Message = userResult.Message + "<br>" + addressResult.Message;
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = userResult.Message;
                     }
                 }
                 else
@@ -215,21 +224,31 @@ namespace CheckMyStar.Bll
                         {
                             var addressResult = await addressDal.GetAddress(user.User.AddressIdentifier.Value, ct);
 
-                            if (addressResult.IsSuccess && addressResult.Address != null)
+                            if (addressResult.IsSuccess)
                             {
-                                var baseResumlt = await addressDal.DeleteAddress(addressResult.Address, ct);
-
-                                if (addressResult.IsSuccess)
+                                if (addressResult.Address != null)
                                 {
-                                    result.Message += "<br>" + addressResult.Message;
+                                    var baseResult = await addressDal.DeleteAddress(addressResult.Address, ct);
+
+                                    if (baseResult.IsSuccess)
+                                    {
+                                        result.Message += "<br>" + addressResult.Message;
+                                    }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message += "<br>" + baseResult.Message;
+                                    }
                                 }
                                 else
                                 {
-                                    result.Message += "<br>" + baseResumlt.Message;
+                                    result.IsSuccess = false;
+                                    result.Message += "<br>" + addressResult.Message;
                                 }
                             }
                             else
                             {
+                                result.IsSuccess = false;
                                 result.Message += "<br>" + addressResult.Message;
                             }
                         }

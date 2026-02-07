@@ -71,7 +71,7 @@ export class UserPageComponent {
 		else
 			this.loadingSearch = true;
 
-		this.userBll.getUsers$(filter.name, filter.firstName, filter.society, filter.email, filter.phone, filter.address, filter.role).subscribe({
+		this.userBll.getUsers$(filter.lastName, filter.firstName, filter.society, filter.email, filter.phone, filter.address, filter.role).subscribe({
 			next: users => {
 				if (filter.reset)
 						this.loadingReset = false;
