@@ -7,7 +7,7 @@
     }
   },
   "HomeSection": {
-    "BackOffice": "Bienvenue sur le back office de Check MyStars"
+    "BackOffice": "Bienvenue dans votre centre de contrôle Check MyStars"
   },
   "CommonSection": {
     "Search": "Rechercher",
@@ -30,6 +30,7 @@
     "Required": "Ce champ est obligatoire."
   },
   "BackOfficeMenuSection": {
+    "Dashboard": "Tableau de bord",
     "Home": "Accueil",
     "Users": "Utilistateurs",
     "Roles": "Rôles",
@@ -81,5 +82,18 @@
     "ZipCode": "Code postal",
     "Region": "Région",
     "Country": "Pays"
+  },
+  "DashboardSection": {
+    "Title": "Tableau de bord",
+    "Description": "Vue d'ensemble de l'activité de Check My Stars",
+    "Users": "Utilisateurs",
+    "FromUsers": "des utilisateurs",
+    "Weekly": "Semaine",
+    "Month": "Mois",
+    "Year": "Année",
+    "UserActive": "Actif",
+    "Roles": "Rôles",
+    "ProfilesAvailable": "Profils disponibles",
+    "Criterias": "Critères"
   }
 }

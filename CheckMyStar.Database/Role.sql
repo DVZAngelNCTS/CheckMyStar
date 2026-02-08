@@ -4,5 +4,7 @@
     [Name] VARCHAR(50) NOT NULL, 
     [Description] VARCHAR(255) NULL, 
     [IsActive] BIT NULL DEFAULT 1, 
+    [CreatedDate] DATETIME NULL, 
+    [UpdatedDate] DATETIME NULL, 
     CONSTRAINT [PK_Role] PRIMARY KEY ([Identifier])
 )

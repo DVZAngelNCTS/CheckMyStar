@@ -1,6 +1,7 @@
 ﻿using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
+using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
@@ -18,17 +19,23 @@ namespace CheckMyStar.Bll
 
         public Task<BaseResponse> AddRole(RoleSaveRequest request, CancellationToken ct)
         {
-            return this.AddRole(request.Role, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.AddRole(request.Role, user, ct);
         }
 
         public Task<BaseResponse> UpdateRole(RoleSaveRequest request, CancellationToken ct)
         {
-            return this.UpdateRole(request.Role, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.UpdateRole(request.Role, user, ct);
         }
 
         public Task<BaseResponse> DeleteRole(RoleDeleteRequest request, CancellationToken ct)
         {
-            return this.DeleteRole(request.Identifier, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.DeleteRole(request.Identifier, user, ct);
         }
     }
 }

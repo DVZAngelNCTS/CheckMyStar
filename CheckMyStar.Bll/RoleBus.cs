@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 
+using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
+using System;
 
 namespace CheckMyStar.Bll
 {
-    public partial class RoleBus(IRoleDal roleDal, IMapper mapper) : IRoleBus
+    public partial class RoleBus(IUserContextService userContext, IActivityBus activityBus, IRoleDal roleDal, IMapper mapper) : IRoleBus
     {
         public async Task<RoleResponse> GetIdentifier(CancellationToken ct)
         {
@@ -24,7 +27,7 @@ namespace CheckMyStar.Bll
             return mapper.Map<RolesResponse>(roles);
         }
 
-        public async Task<BaseResponse> AddRole(RoleModel roleModel, CancellationToken ct)
+        public async Task<BaseResponse> AddRole(RoleModel roleModel, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -40,9 +43,16 @@ namespace CheckMyStar.Bll
                     {
                         if (role.Role == null)
                         {
+                            var dateTime = DateTime.Now;
+
+                            roleModel.CreatedDate = dateTime;
+                            roleModel.UpdatedDate = dateTime;
+
                             var roleEntity = mapper.Map<Role>(roleModel);
 
                             result = mapper.Map<BaseResponse>(await roleDal.AddRole(roleEntity, ct));
+
+                            await activityBus.AddActivity(result.Message, dateTime, currentUser, result.IsSuccess, ct);
                         }
                         else
                         {
@@ -71,7 +81,7 @@ namespace CheckMyStar.Bll
             return result;
         }
 
-        public async Task<BaseResponse> UpdateRole(RoleModel roleModel, CancellationToken ct)
+        public async Task<BaseResponse> UpdateRole(RoleModel roleModel, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -81,9 +91,15 @@ namespace CheckMyStar.Bll
             {
                 if (role.Role != null)
                 {
+                    var dateTime = DateTime.Now;
+
+                    roleModel.UpdatedDate = dateTime;
+
                     var roleEntity = mapper.Map<Role>(roleModel);
 
-                    return mapper.Map<BaseResponse>(await roleDal.UpdateRole(roleEntity, ct));
+                    result = mapper.Map<BaseResponse>(await roleDal.UpdateRole(roleEntity, ct));
+
+                    await activityBus.AddActivity(result.Message, dateTime, currentUser, result.IsSuccess, ct);
                 }
                 else
                 {
@@ -100,7 +116,7 @@ namespace CheckMyStar.Bll
             return result;
         }
 
-        public async Task<BaseResponse> DeleteRole(int identifier, CancellationToken ct)
+        public async Task<BaseResponse> DeleteRole(int identifier, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -112,7 +128,9 @@ namespace CheckMyStar.Bll
                 {
                     var roleEntity = mapper.Map<Role>(role.Role);
 
-                    return mapper.Map<BaseResponse>(await roleDal.DeleteRole(roleEntity, ct));
+                    result = mapper.Map<BaseResponse>(await roleDal.DeleteRole(roleEntity, ct));
+
+                    await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
                 }
                 else
                 {

@@ -9,6 +9,7 @@ namespace CheckMyStar.Data
         IQueryable<Country> ICheckMyStarDbContext.Countries => this.Countries;
         IQueryable<Role> ICheckMyStarDbContext.Roles => this.Roles;
         IQueryable<User> ICheckMyStarDbContext.Users => this.Users;
+        IQueryable<Activity> ICheckMyStarDbContext.Activities => this.Activities;
 
         public Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
         {

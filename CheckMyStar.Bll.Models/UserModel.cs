@@ -15,5 +15,7 @@ namespace CheckMyStar.Bll.Models
         public EnumRole Role { get; set; }
         public AddressModel Address { get; set; } = null!;
         public bool IsActive { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

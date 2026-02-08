@@ -7,6 +7,8 @@
     [ZipCode] VARCHAR(20) NOT NULL, 
     [Region] VARCHAR(50) NULL, 
     [CountryIdentifier] INT NOT NULL, 
-    CONSTRAINT [FK_Address_Counrty] FOREIGN KEY ([CountryIdentifier]) REFERENCES [Country]([Identifier]), 
+    [CreatedDate] DATETIME NULL, 
+    [UpdateDate] DATETIME NULL, 
+    CONSTRAINT [FK_Address_Counrty] FOREIGN KEY ([CountryIdentifier]) REFERENCES [Country]([Identifier]),
     CONSTRAINT [PK_Address] PRIMARY KEY ([Identifier])
 )

@@ -26,4 +26,8 @@ public partial class User
     public int? AddressIdentifier { get; set; }
 
     public bool IsActive { get; set; }
+
+    public DateTime? CreatedDate { get; set; }
+
+    public DateTime? UpdatedDate { get; set; }
 }

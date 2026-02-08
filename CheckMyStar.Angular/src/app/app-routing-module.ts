@@ -6,6 +6,7 @@ import { LoginPageComponent } from './www/80_Modules/FrontOffice/Login/Login-pag
 import { AuthenticateGuardian } from './www/90_Services/Authenticate/AuthenticateGuardian.service';
 import { RolePageComponent } from './www/80_Modules/BackOffice/Roles/Role-page.component';
 import { UserPageComponent } from './www/80_Modules/BackOffice/Users/User-page.component';
+import { DashboardComponent } from './www/80_Modules/BackOffice/Home/Dashboard/Dashboard-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'fronthome', component: FrontHomePageComponent, canActivate: [AuthenticateGuardian] },
   { path: 'backhome', component: BackHomePageComponent, canActivate: [AuthenticateGuardian], data: { breadcrumb: 'BackOfficeMenuSection.Home', icon: 'bi bi-house' },
     children: [
+      { path: '', component: DashboardComponent, data: { breadcrumb: 'BackOfficeMenuSection.Dashboard', icon: 'bi bi-speedometer2' }},
       { path : 'roles', component:  RolePageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Roles', icon: 'bi bi-shield-check' }},
       { path : 'users', component:  UserPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Users', icon: 'bi bi-people' }}
     ]

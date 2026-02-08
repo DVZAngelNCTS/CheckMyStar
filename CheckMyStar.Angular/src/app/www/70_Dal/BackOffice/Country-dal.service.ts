@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../../../../Environment/environment';
-import { CountriesResponse } from '../../50_Responses/BackOffice/CountriesResponse';
+import { CountriesResponse } from '../../50_Responses/BackOffice/Countries.response';
 
 @Injectable({
   providedIn: 'root'

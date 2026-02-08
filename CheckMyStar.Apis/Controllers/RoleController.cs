@@ -9,7 +9,7 @@ namespace CheckMyStar.Apis.Controllers
     /// <summary>
     /// Defines API endpoints for role operations.
     /// </summary>
-    /// <param name="roleService"></param>
+    /// <param name="roleService">Role service</param>
     [ApiController]
     [Route("api/[controller]")]
     public class RoleController(IRoleService roleService) : ControllerBase

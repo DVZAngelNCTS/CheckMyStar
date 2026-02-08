@@ -8,7 +8,7 @@ namespace CheckMyStar.Apis.Controllers
     /// <summary>
     /// Defines API endpoints for user operations.
     /// </summary>
-    /// <param name="userService"></param>    
+    /// <param name="userService">User service</param>    
     [ApiController]
     [Route("api/[controller]")]
     public class UserController(IUserService userService) : ControllerBase

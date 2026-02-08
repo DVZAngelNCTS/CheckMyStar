@@ -13,6 +13,8 @@ public partial class CheckMyStarDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Activity> Activities { get; set; }
+
     public virtual DbSet<Address> Addresses { get; set; }
 
     public virtual DbSet<Civility> Civilities { get; set; }
@@ -25,6 +27,19 @@ public partial class CheckMyStarDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Activity>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Activity");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.Date).HasColumnType("datetime");
+            entity.Property(e => e.Description)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.Identifier);
@@ -38,12 +53,14 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.City)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Number)
                 .HasMaxLength(20)
                 .IsUnicode(false);
             entity.Property(e => e.Region)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
             entity.Property(e => e.ZipCode)
                 .HasMaxLength(20)
                 .IsUnicode(false);
@@ -86,6 +103,7 @@ public partial class CheckMyStarDbContext : DbContext
             entity.ToTable("Role");
 
             entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -93,6 +111,7 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -102,6 +121,7 @@ public partial class CheckMyStarDbContext : DbContext
             entity.ToTable("User");
 
             entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -121,6 +141,7 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.Society)
                 .HasMaxLength(150)
                 .IsUnicode(false);
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

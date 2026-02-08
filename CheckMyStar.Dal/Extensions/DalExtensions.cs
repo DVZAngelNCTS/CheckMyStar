@@ -2,7 +2,7 @@
 
 using CheckMyStar.Dal.Abstractions;
 
-namespace CheckMyStar.Dal
+namespace CheckMyStar.Dal.Extensions
 {
     public static class DalExtensions
     {
@@ -14,7 +14,9 @@ namespace CheckMyStar.Dal
                 .AddScoped<IRoleDal, RoleDal>()
                 .AddScoped<ICivilityDal, CivilityDal>()
                 .AddScoped<ICountryDal, CountryDal>()
-                .AddScoped<IAddressDal, AddressDal>();
+                .AddScoped<IAddressDal, AddressDal>()
+                .AddScoped<IDashboardDal, DashboardDal>()
+                .AddScoped<IActivityDal, ActivityDal>();
 
             return services;
         }
