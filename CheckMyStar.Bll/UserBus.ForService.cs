@@ -1,6 +1,7 @@
 ﻿using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
+using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
@@ -23,17 +24,23 @@ namespace CheckMyStar.Bll
 
         public Task<BaseResponse> AddUser(UserSaveRequest request, CancellationToken ct)
         {
-            return this.AddUser(request.User, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.AddUser(request.User, user, ct);
         }
 
         public Task<BaseResponse> UpdateUser(UserSaveRequest request, CancellationToken ct)
         {
-            return this.UpdateUser(request.User, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.UpdateUser(request.User, user, ct);
         }
 
         public Task<BaseResponse> DeleteUser(UserDeleteRequest request, CancellationToken ct)
         {
-            return this.DeleteUser(request.Identifier, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.DeleteUser(request.Identifier, user, ct);
         }
     }
 }

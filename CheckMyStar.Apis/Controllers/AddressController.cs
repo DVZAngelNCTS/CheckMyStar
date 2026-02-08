@@ -8,7 +8,7 @@ namespace CheckMyStar.Apis.Controllers
     /// <summary>
     /// Defines API endpoints for address operations.
     /// </summary>
-    /// <param name="addressService"></param>    
+    /// <param name="addressService">Address service</param>    
     [ApiController]
     [Route("api/[controller]")]
     public class AddressController(IAddressService addressService) : ControllerBase

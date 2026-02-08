@@ -11,8 +11,10 @@
     [RoleIdentifier] INT NOT NULL, 
     [AddressIdentifier] INT NULL, 
     [IsActive] BIT NOT NULL DEFAULT 1, 
+    [CreatedDate] DATETIME NULL, 
+    [UpdatedDate] DATETIME NULL, 
     CONSTRAINT [FK_User_Address] FOREIGN KEY ([AddressIdentifier]) REFERENCES [Address]([Identifier]), 
     CONSTRAINT [FK_User_Role] FOREIGN KEY ([RoleIdentifier]) REFERENCES [Role]([Identifier]), 
     CONSTRAINT [FK_User_Civility] FOREIGN KEY ([CivilityIdentifier]) REFERENCES [Civility]([Identifier]), 
-    CONSTRAINT [PK_User] PRIMARY KEY ([Identifier]) 
+    CONSTRAINT [PK_User] PRIMARY KEY ([Identifier])
 )

@@ -5,9 +5,9 @@ import { Environment } from '../../../../Environment/environment';
 import { RoleGetRequest } from '../../40_Requests/BackOffice/Role-get.request';
 import { RoleSaveRequest } from '../../40_Requests/BackOffice/Role-save.request';
 import { RoleDeleteRequest } from '../../40_Requests/BackOffice/Role-delete.request';
-import { RolesResponse } from '../../50_Responses/BackOffice/RolesResponse';
+import { RolesResponse } from '../../50_Responses/BackOffice/Roles.response';
 import { BaseResponse } from '../../50_Responses/BaseResponse';
-import { RoleResponse } from '../../50_Responses/BackOffice/RoleResponse';
+import { RoleResponse } from '../../50_Responses/BackOffice/Role.response';
 
 @Injectable({
   providedIn: 'root'

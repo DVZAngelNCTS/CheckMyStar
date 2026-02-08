@@ -7,9 +7,7 @@ namespace CheckMyStar.Apis.Controllers
     /// <summary>
     /// Represents an API controller that provides endpoints for managing and retrieving country data.
     /// </summary>
-    /// <remarks>This controller is intended for use in ASP.NET Core applications and requires users to have
-    /// the 'Administrator' role to access its endpoints. All routes are prefixed with 'api/country'.</remarks>
-    /// <param name="countryService">The service used to access and manage country information.</param>
+    /// <param name="countryService">Country service</param>
     [ApiController]
     [Route("api/[controller]")]
     public class CountryController(ICountryService countryService) : ControllerBase

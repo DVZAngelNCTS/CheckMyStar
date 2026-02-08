@@ -7,6 +7,7 @@
         IQueryable<Country> Countries { get; }
         IQueryable<Role> Roles { get; }
         IQueryable<User> Users { get; }
+        IQueryable<Activity> Activities { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 

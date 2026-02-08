@@ -7,9 +7,9 @@ import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { DigitsOnlyDirective } from '../../../../10_Common/InputFilter/Digit-only'
 import { EnumCivility } from '../../../../10_Common/Enumerations/EnumCivility';
 import { EnumRole } from '../../../../10_Common/Enumerations/EnumRole';
-import { CountryBllService } from '../../../../60_Bll/BackOffice/Country-bll-service';
+import { CountryBllService } from '../../../../60_Bll/BackOffice/Country-bll.service';
 import { CountryModel } from '../../../../20_Models/Common/Country.model';
-import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll-service';
+import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll.service';
 import { UserBllService } from '../../../../60_Bll/BackOffice/User-bll.service';
 
 @Component({

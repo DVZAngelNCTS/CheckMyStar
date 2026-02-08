@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace CheckMyStar.Bll.Mappings
+namespace CheckMyStar.Bll.Mappings.Extensions
 {
     public static class ProfileExtensions
     {
@@ -12,7 +12,9 @@ namespace CheckMyStar.Bll.Mappings
                 .AddAutoMapper(typeof(AddressProfile))
                 .AddAutoMapper(typeof(CountryProfile))
                 .AddAutoMapper(typeof(RoleProfile))
-                .AddAutoMapper(typeof(BaseProfile));
+                .AddAutoMapper(typeof(BaseProfile))
+                .AddAutoMapper(typeof(DashboardProfile))
+                .AddAutoMapper(typeof(ActivityProfile));
 
             return services;
         }

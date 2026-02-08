@@ -18,4 +18,8 @@ public partial class Address
     public string? Region { get; set; }
 
     public int CountryIdentifier { get; set; }
+
+    public DateTime? CreatedDate { get; set; }
+
+    public DateTime? UpdateDate { get; set; }
 }

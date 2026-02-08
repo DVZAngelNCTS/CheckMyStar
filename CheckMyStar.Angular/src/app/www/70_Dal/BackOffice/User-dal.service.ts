@@ -5,9 +5,9 @@ import { Environment } from '../../../../Environment/environment';
 import { UserGetRequest } from '../../40_Requests/BackOffice/User-get.request';
 import { UserSaveRequest } from '../../40_Requests/BackOffice/User-save.request';
 import { UserDeleteRequest } from '../../40_Requests/BackOffice/User-delete.request';
-import { UsersResponse } from '../../50_Responses/BackOffice/UsersResponse';
+import { UsersResponse } from '../../50_Responses/BackOffice/Users.response';
 import { BaseResponse } from '../../50_Responses/BaseResponse';
-import { UserResponse } from '../../50_Responses/BackOffice/UserResponse';
+import { UserResponse } from '../../50_Responses/BackOffice/User.response';
 
 @Injectable({
   providedIn: 'root'

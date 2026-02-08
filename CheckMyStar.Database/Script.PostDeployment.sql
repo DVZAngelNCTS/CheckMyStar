@@ -293,19 +293,21 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
            WHERE TABLE_SCHEMA = 'dbo' 
            AND TABLE_NAME = 'Role')
 BEGIN
-    INSERT INTO dbo.[Role] ([Identifier], [Name], [Description], [IsActive])
+    INSERT INTO dbo.[Role] ([Identifier], [Name], [Description], [IsActive], [CreatedDate], [UpdatedDate])
     SELECT
         x.[Identifier],
         x.[Name],
         x.[Description],
-        x.[IsActive]
+        x.[IsActive],
+        x.[CreatedDate],
+        x.[UpdatedDate]
     FROM
     (
         VALUES
-            (1, 'Administrateur', 'Accès à l''administration du back office', 1),
-            (2, 'Inspecteur', 'Accès aux fonctionnalités inspecteur du front office', 1),
-            (3, 'Utilisateur', 'ccès aux fonctionnalités utilisateur du front office', 1)
-    ) AS x([Identifier], [Name], [Description], [IsActive])
+            (1, 'Administrateur', 'Accès à l''administration du back office', 1, GETDATE(), GETDATE()),
+            (2, 'Inspecteur', 'Accès aux fonctionnalités inspecteur du front office', 1, GETDATE(), GETDATE()),
+            (3, 'Utilisateur', 'ccès aux fonctionnalités utilisateur du front office', 1, GETDATE(), GETDATE())
+    ) AS x([Identifier], [Name], [Description], [IsActive], [CreatedDate], [UpdatedDate])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[Role] r
@@ -324,7 +326,7 @@ BEGIN
     DECLARE @CivilityMrIdentifier INT;
     SELECT @CivilityMrIdentifier = Identifier FROM dbo.Civility WHERE [Name] = 'Mr.';
 
-    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier])
+    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [CreatedDate], [UpdatedDate])
     SELECT
         x.[Identifier],
         x.[CivilityIdentifier],
@@ -335,13 +337,15 @@ BEGIN
         x.[Phone],
         x.[Password],
         x.[RoleIdentifier],
-        x.[AddressIdentifier]
+        x.[AddressIdentifier],
+        x.[CreatedDate],
+        x.[UpdatedDate]
     FROM
     (
         VALUES
-            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL),
-            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL)
-    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier])
+            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE()),
+            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE())
+    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [CreatedDate], [UpdatedDate])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[User] u

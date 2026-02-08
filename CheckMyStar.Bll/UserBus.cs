@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
 
+using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
-using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
 using CheckMyStar.Security;
 
 namespace CheckMyStar.Bll
 {
-    public partial class UserBus(IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
+    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IActivityDal activityDal, IMapper mapper) : IUserBus
     {
         public async Task<UserResponse> GetIdentifier(CancellationToken ct)
         {
@@ -72,7 +72,7 @@ namespace CheckMyStar.Bll
             return usersResponse;
         }
 
-        public async Task<BaseResponse> AddUser(UserModel userModel, CancellationToken ct)
+        public async Task<BaseResponse> AddUser(UserModel userModel, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -90,12 +90,20 @@ namespace CheckMyStar.Bll
                         {
                             userModel.Password = SecurityHelper.HashPassword(userModel.Password);
 
+                            var dateTime = DateTime.Now;
+
+                            userModel.Address.CreatedDate = dateTime;
+                            userModel.Address.UpdatedDate = dateTime;
+
                             var addressEntity = mapper.Map<Address>(userModel.Address);
 
                             var addressResult = mapper.Map<BaseResponse>(await addressDal.AddAddress(addressEntity, ct));
 
                             if (addressResult.IsSuccess)
                             {
+                                userModel.CreatedDate = dateTime;
+                                userModel.UpdatedDate = dateTime;
+
                                 var userEntity = mapper.Map<User>(userModel);
 
                                 var userResult = mapper.Map<BaseResponse>(await userDal.AddUser(userEntity, ct));
@@ -110,12 +118,17 @@ namespace CheckMyStar.Bll
                                     result.IsSuccess = false;
                                     result.Message = userResult.Message + "<br>" + addressResult.Message;
                                 }
+
+                                await activityBus.AddActivity(userResult.Message, dateTime, currentUser, userResult.IsSuccess, ct);
                             }
                             else
                             {
                                 result.IsSuccess = false;
                                 result.Message = addressResult.Message;
                             }
+
+                            await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
+
                         }
                         else
                         {
@@ -144,7 +157,7 @@ namespace CheckMyStar.Bll
             return result;
         }
 
-        public async Task<BaseResponse> UpdateUser(UserModel userModel, CancellationToken ct)
+        public async Task<BaseResponse> UpdateUser(UserModel userModel, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -159,12 +172,20 @@ namespace CheckMyStar.Bll
                         userModel.Password = user.User.Password;
                     }
 
+                    var dateTime = DateTime.Now;
+
+                    userModel.CreatedDate = dateTime;
+                    userModel.UpdatedDate = dateTime;
+
                     var userEntity = mapper.Map<User>(userModel);
 
                     var userResult = await userDal.UpdateUser(userEntity, ct);
 
                     if (userResult.IsSuccess)
                     {
+                        userModel.Address.CreatedDate = dateTime;
+                        userModel.Address.UpdatedDate = dateTime;
+
                         var addressEntity = mapper.Map<Address>(userModel.Address);
 
                         var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
@@ -179,12 +200,17 @@ namespace CheckMyStar.Bll
                             result.IsSuccess = false;
                             result.Message = userResult.Message + "<br>" + addressResult.Message;
                         }
+
+                        await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
                     }
                     else
                     {
                         result.IsSuccess = false;
                         result.Message = userResult.Message;
                     }
+
+                    await activityBus.AddActivity(userResult.Message, dateTime, currentUser, userResult.IsSuccess, ct);
+
                 }
                 else
                 {
@@ -201,7 +227,7 @@ namespace CheckMyStar.Bll
             return result;
         }
 
-        public async Task<BaseResponse> DeleteUser(int identifier, CancellationToken ct)
+        public async Task<BaseResponse> DeleteUser(int identifier, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -239,6 +265,8 @@ namespace CheckMyStar.Bll
                                         result.IsSuccess = false;
                                         result.Message += "<br>" + baseResult.Message;
                                     }
+
+                                    await activityBus.AddActivity(baseResult.Message, DateTime.Now, currentUser, baseResult.IsSuccess, ct);
                                 }
                                 else
                                 {
@@ -253,6 +281,13 @@ namespace CheckMyStar.Bll
                             }
                         }
                     }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = userResult.Message;
+                    }
+
+                    await activityBus.AddActivity(userResult.Message, DateTime.Now, currentUser, userResult.IsSuccess, ct);
                 }
                 else
                 {

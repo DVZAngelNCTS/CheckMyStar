@@ -177,18 +177,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Utilisateur ajouté avec succès";
+                    baseResult.Message = $"Utilisateur {user.LastName} {user.FirstName} ajouté avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible d'ajouter l'utilisateur";
+                    baseResult.Message = $"Impossible d'ajouter l'utilisateur {user.LastName} {user.FirstName}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible d'ajouter l'utilisateur : " + ex.Message;
+                baseResult.Message = $"Impossible d'ajouter l'utilisateur {user.LastName} {user.FirstName} : " + ex.Message;
             }
 
             return baseResult;
@@ -207,18 +207,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Utilisateur modifié avec succès";
+                    baseResult.Message = $"Utilisateur {user.LastName} {user.FirstName} modifié avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible de modifier l'utilisateur";
+                    baseResult.Message = $"Impossible de modifier l'utilisateur {user.LastName} {user.FirstName}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible de modifier l'utilisateur : " + ex.Message;
+                baseResult.Message = $"Impossible de modifier l'utilisateur {user.LastName} {user.FirstName} : " + ex.Message;
             }
 
             return baseResult;
@@ -237,18 +237,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Utilisateur supprimé avec succès";
+                    baseResult.Message = $"Utilisateur {user.LastName} {user.FirstName} supprimé avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible de supprimer l'utilisateur";
+                    baseResult.Message = $"Impossible de supprimer l'utilisateur {user.LastName} {user.FirstName}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible de supprimer l'utilisateur : " + ex.Message;
+                baseResult.Message = $"Impossible de supprimer l'utilisateur {user.LastName} {user.FirstName} : " + ex.Message;
             }
 
             return baseResult;

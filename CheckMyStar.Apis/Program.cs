@@ -3,12 +3,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-
-using CheckMyStar.Apis.Services;
 using CheckMyStar.Data;
-using CheckMyStar.Dal;
-using CheckMyStar.Bll;
-using CheckMyStar.Bll.Mappings;
+using CheckMyStar.Apis.Services.Extensions;
+using CheckMyStar.Dal.Extensions;
+using CheckMyStar.Bll.Extensions;
+using CheckMyStar.Bll.Mappings.Extensions;
 
 var applicationName = $"CheckMyStar.Apis";
 var version = typeof(Program).Assembly.GetName().Version;

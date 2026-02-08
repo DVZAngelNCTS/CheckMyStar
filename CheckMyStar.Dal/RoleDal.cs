@@ -140,18 +140,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Rôle ajouté avec succès";
+                    baseResult.Message = $"Rôle {role.Name} ajouté avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible d'ajouter le rôle";
+                    baseResult.Message = $"Impossible d'ajouter le rôle {role.Name}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible d'ajouter le rôle : " + ex.Message;
+                baseResult.Message = $"Impossible d'ajouter le rôle {role.Name} : " + ex.Message;
             }
 
             return baseResult;
@@ -170,18 +170,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Rôle modifié avec succès";
+                    baseResult.Message = $"Rôle {role.Name} modifié avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible de modifier le rôle";
+                    baseResult.Message = $"Impossible de modifier le rôle {role.Name}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible de modifier le rôle : " + ex.Message;
+                baseResult.Message = $"Impossible de modifier le rôle {role.Name} : " + ex.Message;
             }
 
             return baseResult;
@@ -200,18 +200,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Rôle supprimé avec succès";
+                    baseResult.Message = $"Rôle {role.Name} supprimé avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible de supprimer le rôle";
+                    baseResult.Message = $"Impossible de supprimer le rôle {role.Name}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible de supprimer le rôle : " + ex.Message;
+                baseResult.Message = $"Impossible de supprimer le rôle {role.Name} : " + ex.Message;
             }
 
             return baseResult;

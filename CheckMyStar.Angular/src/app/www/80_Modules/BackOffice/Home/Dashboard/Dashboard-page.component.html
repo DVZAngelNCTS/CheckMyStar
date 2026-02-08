@@ -1,0 +1,124 @@
+<div class="container py-4">
+
+  <!-- Titre -->
+  <div class="mb-4">
+    <h2 class="fw-bold">{{ 'DashboardSection.Title' | translate }}</h2>
+    <p class="text-muted">{{ 'DashboardSection.Description' | translate }}</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="row g-4 mb-4">
+
+    <!-- Total utilisateurs -->
+    <div class="col-md-3">
+      <div class="stat-card p-3 border rounded shadow-sm h-100">
+        <div class="d-flex justify-content-between">
+          <h6 class="text-muted">{{ 'DashboardSection.Users' | translate }}</h6>
+          <i class="bi bi-people fs-4 text-primary"></i>
+        </div>
+          <h3 class="fw-bold">{{ totalUsers }}</h3>
+
+          <ul class="list-unstyled small mt-2">
+            <li>
+              <strong>{{ 'DashboardSection.Weekly' | translate }} :</strong>
+              {{ numberUserWeeklyTrend }}
+              <span [class.text-success]="percentageUserWeeklyTrend >= 0"
+                    [class.text-danger]="percentageUserWeeklyTrend < 0">
+                ({{ percentageUserWeeklyTrend >= 0 ? '+' : '' }}{{ percentageUserWeeklyTrend }}%)
+              </span>
+            </li>
+
+            <li>
+              <strong>{{ 'DashboardSection.Month' | translate }} :</strong>
+              {{ numberUserMonthlyTrend }}
+              <span [class.text-success]="percentageUserMonthlyTrend >= 0"
+                    [class.text-danger]="percentageUserMonthlyTrend < 0">
+                ({{ percentageUserMonthlyTrend >= 0 ? '+' : '' }}{{ percentageUserMonthlyTrend }}%)
+              </span>
+            </li>
+
+            <li>
+              <strong>{{ 'DashboardSection.Year' | translate }} :</strong>
+              {{ numberUserYearlyTrend }}
+              <span [class.text-success]="percentageUserYearlyTrend >= 0"
+                    [class.text-danger]="percentageUserYearlyTrend < 0">
+                ({{ percentageUserYearlyTrend >= 0 ? '+' : '' }}{{ percentageUserYearlyTrend }}%)
+              </span>
+            </li>
+          </ul>
+      </div>
+    </div>
+
+    <!-- Utilisateurs actifs -->
+    <div class="col-md-3">
+      <div class="stat-card p-3 border rounded shadow-sm h-100">
+        <div class="d-flex justify-content-between">
+          <h6 class="text-muted">{{ 'DashboardSection.UserActive' | translate }}</h6>
+          <i class="bi bi-check-circle fs-4 text-success"></i>
+        </div>
+        <h3 class="fw-bold">{{ activeUsers }}</h3>
+        <small class="text-muted">{{ activeRate }}% {{ 'DashboardSection.FromUsers' | translate }}</small>
+      </div>
+    </div>
+
+    <!-- Rôles -->
+    <div class="col-md-3">
+      <div class="stat-card p-3 border rounded shadow-sm h-100">
+        <div class="d-flex justify-content-between">
+          <h6 class="text-muted">{{ 'DashboardSection.Roles' | translate }}</h6>
+          <i class="bi bi-shield-lock fs-4 text-warning"></i>
+        </div>
+        <h3 class="fw-bold">{{ totalRoles }}</h3>
+        <small class="text-muted">{{ 'DashboardSection.ProfilesAvailable' | translate }}</small>
+      </div>
+    </div>
+
+    <!-- Critères -->
+    <div class="col-md-3">
+      <div class="stat-card p-3 border rounded shadow-sm h-100">
+        <div class="d-flex justify-content-between">
+          <h6 class="text-muted">{{ 'DashboardSection.Criterias' | translate }}</h6>
+          <i class="bi bi-star-half fs-4 text-info"></i>
+        </div>
+        <h3 class="fw-bold">{{ totalCriteria }}</h3>
+        <small class="text-muted">Module en développement</small>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Deux colonnes principales -->
+  <div class="row g-4">
+
+    <!-- Activité récente -->
+    <div class="col-md-6">
+      <div class="p-4 border rounded shadow-sm h-100">
+        <h4 class="fw-bold mb-3">
+          <i class="bi bi-clock-history me-2"></i>Activité récente
+        </h4>
+        <ul class="list-group small">
+          <li *ngFor="let log of recentLogs" class="list-group-item">
+            {{ log }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Mini‑graphique (sans librairie externe) -->
+    <div class="col-md-6">
+      <div class="p-4 border rounded shadow-sm h-100">
+        <h4 class="fw-bold mb-3">
+          <i class="bi bi-graph-up-arrow me-2"></i>Évolution des utilisateurs
+        </h4>
+
+        <canvas #usersChart height="120"></canvas>
+
+        <p class="text-muted small mt-3">
+          Variation mensuelle basée sur les inscriptions et désactivations.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>

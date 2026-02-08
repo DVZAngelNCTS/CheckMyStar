@@ -2,7 +2,7 @@
 
 using CheckMyStar.Apis.Services.Abstractions;
 
-namespace CheckMyStar.Apis.Services
+namespace CheckMyStar.Apis.Services.Extensions
 {
     public static class ServicesExtensions
     {
@@ -14,7 +14,9 @@ namespace CheckMyStar.Apis.Services
                 .AddScoped<IUserService, UserService>()
                 .AddScoped<IRoleService, RoleService>()
                 .AddScoped<ICountryService, CountryService>()
-                .AddScoped<IAddressService, AddressService>();
+                .AddScoped<IAddressService, AddressService>()
+                .AddScoped<IDashboardService, DashboardService>()
+                .AddScoped<IActivityService, ActivityService>();
 
             return services;
         }

@@ -90,18 +90,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Adresse ajouté avec succès";
+                    baseResult.Message = $"Adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City} ajouté avec succès";                        
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible d'ajouter l'adresse";
+                    baseResult.Message = $"Impossible d'ajouter l'adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible d'ajouter l'adresse : " + ex.Message;
+                baseResult.Message = $"Impossible d'ajouter l'adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City} : " + ex.Message;
             }
 
             return baseResult;
@@ -120,18 +120,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Adresse modifié avec succès";
+                    baseResult.Message = $"Adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City} modifié avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible de modifier l'adresse";
+                    baseResult.Message = $"Impossible de modifier l'adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible de modifier l'adresse : " + ex.Message;
+                baseResult.Message = $"Impossible de modifier l'adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City} : " + ex.Message;
             }
 
             return baseResult;
@@ -150,18 +150,18 @@ namespace CheckMyStar.Dal
                 if (result)
                 {
                     baseResult.IsSuccess = true;
-                    baseResult.Message = "Adresse supprimé avec succès";
+                    baseResult.Message = $"Adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City} supprimé avec succès";
                 }
                 else
                 {
                     baseResult.IsSuccess = false;
-                    baseResult.Message = "Impossible de supprimer l'adresse";
+                    baseResult.Message = $"Impossible de supprimer l'adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City}";
                 }
             }
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = "Impossible de supprimer l'adresse : " + ex.Message;
+                baseResult.Message = $"Impossible de supprimer l'adresse {address.Number} {address.AddressLine} {address.ZipCode} {address.City} : " + ex.Message;
             }
 
             return baseResult;

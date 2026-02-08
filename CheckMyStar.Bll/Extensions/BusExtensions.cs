@@ -3,7 +3,7 @@
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Abstractions.ForService;
 
-namespace CheckMyStar.Bll
+namespace CheckMyStar.Bll.Extensions
 {
     public static class BusExtensions
     {
@@ -13,13 +13,17 @@ namespace CheckMyStar.Bll
                 .AddScoped<IUserBus, UserBus>()
                 .AddScoped<IRoleBus, RoleBus>()
                 .AddScoped<ICountryBus, CountryBus>()
-                .AddScoped<IAddressBus, AddressBus>();
+                .AddScoped<IAddressBus, AddressBus>()
+                .AddScoped<IDashboardBus, DashboardBus>()
+                .AddScoped<IActivityBus, ActivityBus>();
 
             services
                 .AddScoped<IUserBusForService>(x => (UserBus)x.GetRequiredService<IUserBus>())
                 .AddScoped<IRoleBusForService>(x => (RoleBus)x.GetRequiredService<IRoleBus>())
                 .AddScoped<ICountryBusForService>(x => (CountryBus)x.GetRequiredService<ICountryBus>())
-                .AddScoped<IAddressBusForService>(x => (AddressBus)x.GetRequiredService<IAddressBus>());
+                .AddScoped<IAddressBusForService>(x => (AddressBus)x.GetRequiredService<IAddressBus>())
+                .AddScoped<IDashboardBusForService>(x => (DashboardBus)x.GetRequiredService<IDashboardBus>())
+                .AddScoped<IActivityBusForService>(x => (ActivityBus)x.GetRequiredService<IActivityBus>());
 
             return services;
         }
