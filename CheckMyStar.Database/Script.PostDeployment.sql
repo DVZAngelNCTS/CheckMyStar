@@ -353,3 +353,103 @@ BEGIN
     );
 END
 GO
+
+INSERT INTO [dbo].[CriterionType] ([TypeCode], [Label])
+SELECT x.[TypeCode], x.[Label]
+FROM (VALUES
+    ('X',     N'Critères obligatoires'),
+    ('O',     N'Critères à la carte'),
+    ('NA',    N'Critères non applicables'),
+    ('X_ONC', N'Critères obligatoires non compensables')
+) AS x([TypeCode], [Label])
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [dbo].[CriterionType] t
+    WHERE t.[TypeCode] = x.[TypeCode]
+);
+GO
+
+INSERT INTO [dbo].[StarLevel] ([StarLevelId], [Label])
+SELECT x.[StarLevelId], x.[Label]
+FROM (VALUES
+    (1, N'1 étoile'),
+    (2, N'2 étoiles'),
+    (3, N'3 étoiles'),
+    (4, N'4 étoiles'),
+    (5, N'5 étoiles')
+) AS x([StarLevelId], [Label])
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [dbo].[StarLevel] s
+    WHERE s.[StarLevelId] = x.[StarLevelId]
+);
+GO
+
+INSERT INTO [dbo].[Criterion] ([Description], [BasePoints])
+SELECT x.[Description], x.[BasePoints]
+FROM (VALUES
+    (N'Accueil et information du client',             CONVERT(DECIMAL(9,2), 2.00)),
+    (N'Propreté des espaces communs',                 CONVERT(DECIMAL(9,2), 3.00)),
+    (N'Propreté de la chambre',                       CONVERT(DECIMAL(9,2), 4.00)),
+    (N'Sécurité incendie (signalétique, consignes)',  CONVERT(DECIMAL(9,2), 5.00)),
+    (N'Accessibilité (informations et parcours)',     CONVERT(DECIMAL(9,2), 2.00)),
+    (N'Qualité de la literie',                        CONVERT(DECIMAL(9,2), 4.00)),
+    (N'Isolation phonique minimale',                  CONVERT(DECIMAL(9,2), 3.00)),
+    (N'Connexion Internet (disponibilité)',           CONVERT(DECIMAL(9,2), 2.00)),
+    (N'Gestion des réclamations',                     CONVERT(DECIMAL(9,2), 2.00)),
+    (N'Affichage des tarifs et informations légales', CONVERT(DECIMAL(9,2), 1.00))
+) AS x([Description], [BasePoints])
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [dbo].[Criterion] c
+    WHERE c.[Description] = x.[Description]
+);
+GO
+
+;WITH Crit10 AS
+(
+    SELECT
+        c.[CriterionId],
+        c.[Description],
+        ROW_NUMBER() OVER (ORDER BY c.[CriterionId]) AS rn
+    FROM [dbo].[Criterion] c
+    WHERE c.[Description] IN
+    (
+        N'Accueil et information du client',
+        N'Propreté des espaces communs',
+        N'Propreté de la chambre',
+        N'Sécurité incendie (signalétique, consignes)',
+        N'Accessibilité (informations et parcours)',
+        N'Qualité de la literie',
+        N'Isolation phonique minimale',
+        N'Connexion Internet (disponibilité)',
+        N'Gestion des réclamations',
+        N'Affichage des tarifs et informations légales'
+    )
+),
+MapType AS
+(
+    SELECT
+        s.[StarLevelId],
+        c10.[CriterionId],
+        [TypeCode] =
+            CASE
+                WHEN s.[StarLevelId] = 1 THEN CASE WHEN c10.rn <= 6 THEN 'X'     WHEN c10.rn <= 8 THEN 'O'     ELSE 'NA'    END
+                WHEN s.[StarLevelId] = 2 THEN CASE WHEN c10.rn <= 7 THEN 'X'     WHEN c10.rn <= 9 THEN 'O'     ELSE 'NA'    END
+                WHEN s.[StarLevelId] = 3 THEN CASE WHEN c10.rn <= 7 THEN 'X'     WHEN c10.rn = 8  THEN 'X_ONC' ELSE 'O'     END
+                WHEN s.[StarLevelId] = 4 THEN CASE WHEN c10.rn <= 6 THEN 'X_ONC' WHEN c10.rn <= 9 THEN 'X'     ELSE 'O'     END
+                WHEN s.[StarLevelId] = 5 THEN CASE WHEN c10.rn <= 9 THEN 'X_ONC' ELSE 'X'                               END
+            END
+    FROM [dbo].[StarLevel] s
+    CROSS JOIN Crit10 c10
+)
+INSERT INTO [dbo].[StarLevelCriterion] ([StarLevelId], [CriterionId], [TypeCode])
+SELECT m.[StarLevelId], m.[CriterionId], m.[TypeCode]
+FROM MapType m
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [dbo].[StarLevelCriterion] slc
+    WHERE slc.[StarLevelId] = m.[StarLevelId]
+      AND slc.[CriterionId] = m.[CriterionId]
+);
+GO

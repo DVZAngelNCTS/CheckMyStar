@@ -11,6 +11,7 @@ export const MENU_CONFIG: Record<EnumRole, { icon: string, label: string, route?
     { icon: 'bi bi-house', label: 'BackOfficeMenuSection.Home', route: '/backhome' },
     { icon: 'bi bi-shield-check', label: 'BackOfficeMenuSection.Roles', route: '/backhome/roles' },
     { icon: 'bi bi-people', label: 'BackOfficeMenuSection.Users', route: '/backhome/users' },
+    { icon: 'bi bi-star', label: 'BackOfficeMenuSection.Criteres', route: '/backhome/criteres' },
     { icon: 'bi bi-door-closed', label: 'BackOfficeMenuSection.Disconnect', action: 'logout' }
   ],
 
