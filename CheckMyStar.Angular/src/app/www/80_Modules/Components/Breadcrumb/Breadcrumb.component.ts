@@ -8,17 +8,32 @@ import { TranslationModule } from '../../../10_Common/Translation.module';
   selector: 'app-breadcrumb',
   standalone: true,
   imports: [CommonModule, RouterModule, TranslationModule],
-  templateUrl: './Breadcrumb.component.html'
+  templateUrl: './Breadcrumb.component.html',
+  styleUrl: './Breadcrumb.component.css'
 })
 export class BreadcrumbComponent {
   breadcrumbs: Array<{ icon: string, label: string, url: string }> = [];
 
+  parentUrl: string | null = null;
+  
   constructor(private router: Router, private route: ActivatedRoute) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.breadcrumbs = this.buildBreadcrumbs(this.route.root);
-      });
+
+      if (this.breadcrumbs.length > 1) { 
+        const parent = this.breadcrumbs[this.breadcrumbs.length - 2];
+      
+        if (parent.url !== this.router.url) { 
+          this.parentUrl = parent.url; 
+        } else { 
+          this.parentUrl = null; 
+        } 
+      } else { 
+        this.parentUrl = null; 
+      }
+    });
   }
 
   private buildBreadcrumbs(route: ActivatedRoute, url: string = '', breadcrumbs: any[] = []): any[] {
@@ -35,9 +50,24 @@ export class BreadcrumbComponent {
       }
 
       const label = child.snapshot.data['breadcrumb'];
-
       const icon = child.snapshot.data['icon'];
-      
+      const parent = child.snapshot.data['parent'];
+
+      // Si la route a un parent logique → on l'ajoute AVANT
+      if (parent) {
+        const parentBreadcrumb = {
+          label: parent,
+          icon: 'bi bi-speedometer2', // ou récupéré dynamiquement si tu veux
+          url: '/backhome' // URL du dashboard
+        };
+
+        // On évite les doublons
+        if (!breadcrumbs.some(b => b.label === parentBreadcrumb.label)) {
+          breadcrumbs.push(parentBreadcrumb);
+        }
+      }
+
+      // Ajout du breadcrumb courant
       if (label) {
         breadcrumbs.push({ icon, label, url });
       }
@@ -46,5 +76,11 @@ export class BreadcrumbComponent {
     }
 
     return breadcrumbs;
+  }
+
+  goBack() {
+    if (this.parentUrl) {
+      this.router.navigate([this.parentUrl]);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardBllService } from '../../../../60_Bll/BackOffice/Dashboard-bll.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -6,6 +6,7 @@ import { ActivityModel } from '../../../../20_Models/BackOffice/Activity.model';
 import { ActivityBllService } from '../../../../60_Bll/BackOffice/Activity-bll.service';
 import { UserBllService } from '../../../../60_Bll/BackOffice/User-bll.service';
 import { UserEvolutionModel } from '../../../../20_Models/BackOffice/UserEvolution.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +35,7 @@ export class DashboardComponent {
   usersTrend = +12; // +12% ce mois
   activeRate = Math.round((this.activeUsers / this.totalUsers) * 100);
 
-  constructor(private dashboardBll: DashboardBllService, private activityBll: ActivityBllService, private userBll: UserBllService) {}
+  constructor(private dashboardBll: DashboardBllService, private activityBll: ActivityBllService, private userBll: UserBllService, private router: Router) {}
 
   ngOnInit() {
       this.dashboardBll.getDashboard$().subscribe(d => {
@@ -175,6 +176,6 @@ export class DashboardComponent {
   }
 
 	openActivityDetails() {
-
+    this.router.navigate(['/backhome/activities']);
 	}  
 }
