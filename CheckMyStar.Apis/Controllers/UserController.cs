@@ -1,5 +1,6 @@
 ﻿using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Requests;
+using CheckMyStar.Bll.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -89,6 +90,20 @@ namespace CheckMyStar.Apis.Controllers
             var user = await userService.DeleteUser(request, ct);
 
             return Ok(user);
+        }
+
+        /// <summary>
+        /// Get user evolutions
+        /// </summary>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An IActionResult indicating the result of the delete operation.</returns>
+        [HttpPost("getuserevolutions")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> GetUserEvolutions(CancellationToken ct)
+        {
+            var evolutions = await userService.GetUserEvolutions(ct);
+
+            return Ok(evolutions);
         }
     }
 }

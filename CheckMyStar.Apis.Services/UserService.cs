@@ -42,5 +42,11 @@ namespace CheckMyStar.Apis.Services
             return result;
         }
 
+        public async Task<UserEvolutionResponse> GetUserEvolutions(CancellationToken ct)
+        {
+            var result = await userBusForService.GetUserEvolutions(ct);
+
+            return result;
+        }
     }
 }

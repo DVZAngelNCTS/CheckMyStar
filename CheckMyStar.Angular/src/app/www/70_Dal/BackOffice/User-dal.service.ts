@@ -8,6 +8,7 @@ import { UserDeleteRequest } from '../../40_Requests/BackOffice/User-delete.requ
 import { UsersResponse } from '../../50_Responses/BackOffice/Users.response';
 import { BaseResponse } from '../../50_Responses/BaseResponse';
 import { UserResponse } from '../../50_Responses/BackOffice/User.response';
+import { UserEvolutionsResponse } from '../../50_Responses/BackOffice/UserEvolutions.response';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,9 @@ export class UserDalService {
 
   getNextIdentifier$(): Observable<UserResponse> {
     return this.http.post<UserResponse>(`${this.apiUrl}/User/getnextidentifier`, {});
+  }
+
+  getUserEvolutions$(): Observable<UserEvolutionsResponse> {
+    return this.http.post<UserEvolutionsResponse>(`${this.apiUrl}/User/getuserevolutions`, {});
   }
 }

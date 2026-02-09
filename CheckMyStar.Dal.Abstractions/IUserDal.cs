@@ -13,5 +13,6 @@ namespace CheckMyStar.Dal.Abstractions
         Task<BaseResult> AddUser(User user, CancellationToken ct);
         Task<BaseResult> UpdateUser(User user, CancellationToken ct);
         Task<BaseResult> DeleteUser(User user, CancellationToken ct);
+        Task<UserEvolutionResult> GetUserEvolutions(CancellationToken ct);
     }
 }

@@ -11,7 +11,7 @@ using CheckMyStar.Security;
 
 namespace CheckMyStar.Bll
 {
-    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IActivityDal activityDal, IMapper mapper) : IUserBus
+    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
     {
         public async Task<UserResponse> GetIdentifier(CancellationToken ct)
         {
@@ -302,6 +302,13 @@ namespace CheckMyStar.Bll
             }
 
             return result;
+        }
+
+        public async Task<UserEvolutionResponse> GetEvolutions(CancellationToken ct)
+        {
+            var evolutions = await userDal.GetUserEvolutions(ct);
+
+            return mapper.Map<UserEvolutionResponse>(evolutions);
         }
 
         private async Task<UserModel?> LoadUser(User user, CancellationToken ct)

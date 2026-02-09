@@ -11,5 +11,6 @@ namespace CheckMyStar.Bll.Abstractions
         Task<BaseResponse> AddUser(UserModel userModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> UpdateUser(UserModel userModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> DeleteUser(int identifier, int currentUser, CancellationToken ct);
+        Task<UserEvolutionResponse> GetEvolutions(CancellationToken ct);
     }
 }

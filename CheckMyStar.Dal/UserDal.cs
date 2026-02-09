@@ -4,6 +4,7 @@ using CheckMyStar.Data.Abstractions;
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
+using CheckMyStar.Dal.Models;
 
 namespace CheckMyStar.Dal
 {
@@ -252,6 +253,41 @@ namespace CheckMyStar.Dal
             }
 
             return baseResult;
+        }
+
+        public async Task<UserEvolutionResult> GetUserEvolutions(CancellationToken ct)
+        {
+            UserEvolutionResult userEvolutionResult = new UserEvolutionResult();
+
+            try
+            {
+                var evolutions = await (from u in dbContext.Users
+                                        group u by new
+                                        {
+                                            Year = u.CreatedDate!.Value.Year,
+                                            Month = u.CreatedDate!.Value.Month
+                                        } into g
+                                        orderby
+                                            g.Key.Month
+                                        select new UserEvolution()
+                                        {
+                                            Year = g.Key.Year,
+                                            Month = g.Key.Month,
+                                            Total = g.Count(),
+                                            IsActive = g.Count(x => x.IsActive),
+                                            IsDisabled = g.Count(x => !x.IsActive)
+                                        }).ToListAsync();
+
+                userEvolutionResult.IsSuccess = true;
+                userEvolutionResult.Evolutions = evolutions;
+            }
+            catch (Exception ex)
+            {
+                userEvolutionResult.IsSuccess = false;
+                userEvolutionResult.Message = ex.Message;
+            }
+
+            return userEvolutionResult;
         }
     }
 }
