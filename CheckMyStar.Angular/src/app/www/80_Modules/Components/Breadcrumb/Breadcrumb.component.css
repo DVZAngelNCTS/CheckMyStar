@@ -1,0 +1,46 @@
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  padding: 10px 16px;
+  margin: 0 !important;
+}
+
+.breadcrumb-wrapper { 
+  background-color: #FBB900;
+  padding: 8px 16px;
+}
+
+.breadcrumb a {
+  color: #2b8a00;
+  font-weight: bolder;
+  text-decoration: none;
+  transition: color .15s ease;
+}
+
+.breadcrumb a:hover {
+  color: #1f6500;
+}
+
+.breadcrumb span {
+  color: #444;
+  font-weight: bolder;
+}
+
+.breadcrumb-separator {
+  color: #888;
+}
+
+.breadcrumb-icon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+  color: #2b8a00;
+}
+
+.breadcrumb-current {
+  font-weight: bolder;
+  color: #2b8a00;
+}

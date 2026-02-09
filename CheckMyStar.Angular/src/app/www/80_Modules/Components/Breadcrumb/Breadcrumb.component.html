@@ -1,22 +1,28 @@
-<nav class="breadcrumb">
-  <ng-container *ngFor="let bc of breadcrumbs; let last = last">
-    <ng-container *ngIf="!last">
-      <a [routerLink]="bc.url">
-        <span class="material-symbols-outlined breadcrumb-icon">
-          <i class="bi bi-chevron-double-right me-2"></i>
+<div class="breadcrumb-wrapper d-flex justify-content-between align-items-center w-100">
+  <nav class="breadcrumb">
+    <ng-container *ngFor="let bc of breadcrumbs; let last = last">
+      <ng-container *ngIf="!last">
+        <a [routerLink]="bc.url">
+          <span class="material-symbols-outlined breadcrumb-icon">
+            <i class="bi bi-chevron-double-right me-2"></i>
+          </span>
+          <i [class]="bc.icon" class="me-2"></i>
+          {{ bc.label | translate }}
+        </a>
+      </ng-container>
+      <ng-container *ngIf="last">
+        <span class="breadcrumb-current">
+          <span class="material-symbols-outlined breadcrumb-icon">
+            <i class="bi bi-chevron-double-right me-2"></i>
+          </span>
+          <i [class]="bc.icon" class="me-2"></i>
+          {{ bc.label | translate }}
         </span>
-        <i [class]="bc.icon" class="me-2"></i>
-        {{ bc.label | translate }}
-      </a>
+      </ng-container>
     </ng-container>
-    <ng-container *ngIf="last">
-      <span class="breadcrumb-current">
-        <span class="material-symbols-outlined breadcrumb-icon">
-          <i class="bi bi-chevron-double-right me-2"></i>
-        </span>
-        <i [class]="bc.icon" class="me-2"></i>
-        {{ bc.label | translate }}
-      </span>
-    </ng-container>
-  </ng-container>
-</nav>
+  </nav>
+  <button *ngIf="parentUrl" class="btn btn-secondary btn-sm sm-3" (click)="goBack()">
+    <i class="bi bi-arrow-left"></i>
+    {{ 'BackOfficeMenuSection.Return' | translate }}
+  </button>
+</div>
