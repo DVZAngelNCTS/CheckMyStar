@@ -95,5 +95,14 @@
     "Roles": "Rôles",
     "ProfilesAvailable": "Profils disponibles",
     "Criterias": "Critères"
+  },
+  "ActivitySection": {
+    "Title": "Activités récentes",
+    "Description": "Les 7 dernières activités sur votre compte",
+    "NoActivity": "Aucune activité récente",
+    "From": "par",
+    "Details": "Détails des activités",
+    "UserEvolution": "Évolution des utilisateurs",
+    "Variation": "Variation annuelle basée sur les inscriptions et désactivations."
   }
 }

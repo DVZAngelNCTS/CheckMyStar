@@ -1,9 +1,10 @@
-﻿using CheckMyStar.Data;
+﻿using CheckMyStar.Dal.Models;
+using CheckMyStar.Data;
 
 namespace CheckMyStar.Dal.Results
 {
     public class ActivitiesResult : BaseResult
     {
-        public List<Activity>? Activities { get; set; }
+        public List<UserActivity>? Activities { get; set; }
     }
 }

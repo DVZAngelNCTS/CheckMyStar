@@ -1,7 +1,6 @@
 ﻿using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
-using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
@@ -41,6 +40,11 @@ namespace CheckMyStar.Bll
             var user = userContext.CurrentUser.Identifier;
 
             return this.DeleteUser(request.Identifier, user, ct);
+        }
+
+        public Task<UserEvolutionResponse> GetUserEvolutions(CancellationToken ct)
+        {
+            return this.GetEvolutions(ct);
         }
     }
 }

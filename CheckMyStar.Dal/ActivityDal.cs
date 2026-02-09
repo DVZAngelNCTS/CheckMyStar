@@ -4,6 +4,7 @@ using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data.Abstractions;
 using CheckMyStar.Data;
+using CheckMyStar.Dal.Models;
 
 namespace CheckMyStar.Dal
 {
@@ -64,9 +65,17 @@ namespace CheckMyStar.Dal
                 var date = DateTime.Now.AddDays(-numberDays);
 
                 var activities = await (from a in dbContext.Activities.AsNoTracking()
+                                        join u in dbContext.Users.AsNoTracking() on a.User equals u.Identifier
                                         where
                                             a.Date >= date
-                                        select a).ToListAsync();
+                                        select new UserActivity()
+                                        {
+                                            Date = a.Date,
+                                            Description = a.Description,
+                                            Identifier = a.Identifier,
+                                            IsSuccess = a.IsSuccess,
+                                            User = u
+                                        }).ToListAsync();
 
                 activityResult.IsSuccess = true;
                 activityResult.Activities = activities;

@@ -2,6 +2,7 @@
 
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
+using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
@@ -41,6 +42,16 @@ namespace CheckMyStar.Bll.Mappings
 
             CreateMap<UsersResult, UsersResponse>()
                 .ForMember(dest => dest.Users, opts => opts.MapFrom(src => src.Users ?? null));
+
+            CreateMap<UserEvolution, UserEvolutionModel>()
+                .ForMember(dest => dest.Year, opts => opts.MapFrom(src => src.Year))
+                .ForMember(dest => dest.Month, opts => opts.MapFrom(src => src.Month))
+                .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.IsDisabled, opts => opts.MapFrom(src => src.IsDisabled))
+                .ForMember(dest => dest.Total, opts => opts.MapFrom(src => src.Total));
+
+            CreateMap<UserEvolutionResult, UserEvolutionResponse>()
+                .ForMember(dest => dest.Evolutions, opts => opts.MapFrom(src => src.Evolutions ?? null));
         }
     }
 }
