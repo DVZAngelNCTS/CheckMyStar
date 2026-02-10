@@ -21,7 +21,15 @@ public partial class CheckMyStarDbContext : DbContext
 
     public virtual DbSet<Country> Countries { get; set; }
 
+    public virtual DbSet<Criterion> Criteria { get; set; }
+
+    public virtual DbSet<CriterionType> CriterionTypes { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<StarLevel> StarLevels { get; set; }
+
+    public virtual DbSet<StarLevelCriterion> StarLevelCriteria { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -96,6 +104,26 @@ public partial class CheckMyStarDbContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Criterion>(entity =>
+        {
+            entity.ToTable("Criterion");
+
+            entity.Property(e => e.BasePoints).HasColumnType("decimal(9, 2)");
+            entity.Property(e => e.Description).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<CriterionType>(entity =>
+        {
+            entity.HasKey(e => e.TypeCode);
+
+            entity.ToTable("CriterionType");
+
+            entity.Property(e => e.TypeCode)
+                .HasMaxLength(5)
+                .IsUnicode(false);
+            entity.Property(e => e.Label).HasMaxLength(80);
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Identifier);
@@ -112,6 +140,24 @@ public partial class CheckMyStarDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<StarLevel>(entity =>
+        {
+            entity.ToTable("StarLevel");
+
+            entity.Property(e => e.Label).HasMaxLength(30);
+        });
+
+        modelBuilder.Entity<StarLevelCriterion>(entity =>
+        {
+            entity.HasKey(e => new { e.StarLevelId, e.CriterionId });
+
+            entity.ToTable("StarLevelCriterion");
+
+            entity.Property(e => e.TypeCode)
+                .HasMaxLength(5)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<User>(entity =>

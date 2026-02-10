@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd, RouterModule } from '@angular/ro
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { TranslationModule } from '../../../10_Common/Translation.module';
+import { BreadcrumbNavService } from '../../../90_Services/Breadcrumb/BreadcrumbNav.service';
 
 @Component({
   selector: 'app-breadcrumb',
@@ -16,7 +17,7 @@ export class BreadcrumbComponent {
 
   parentUrl: string | null = null;
   
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(private router: Router, private route: ActivatedRoute, private navService: BreadcrumbNavService) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
@@ -79,6 +80,11 @@ export class BreadcrumbComponent {
   }
 
   goBack() {
+    if (this.navService.customBackAction) {
+      this.navService.customBackAction();
+      return;
+    }
+
     if (this.parentUrl) {
       this.router.navigate([this.parentUrl]);
     }

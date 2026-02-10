@@ -68,6 +68,7 @@ builder.Services
     .AddDal()
     .AddBus()
     .AddProfile()
+    .AddCriteresServices()
     .AddControllers();
 
 // Configure OpenAPI avec les packages Microsoft natifs

@@ -18,4 +18,8 @@
     <ProjectReference Include="..\CheckMyStar.Data.Abstraction\CheckMyStar.Data.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Criteres\" />
+  </ItemGroup>
+
 </Project>
