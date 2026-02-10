@@ -5,7 +5,7 @@
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "IrregularWords": null,
-   "MinimumProductVersion": "2.6.1248",
+   "MinimumProductVersion": "2.6.1301",
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "",
@@ -35,7 +35,23 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Criterion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CriterionType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Role]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StarLevel]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StarLevelCriterion]",
          "ObjectType": 0
       },
       {
