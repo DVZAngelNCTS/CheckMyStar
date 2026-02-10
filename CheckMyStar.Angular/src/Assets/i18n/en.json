@@ -1,0 +1,111 @@
+{
+  "translation": {
+    "selectlanguage": "Language",
+    "language": {
+      "en": "English",
+      "fr": "French"
+    }
+  },
+  "HomeSection": {
+    "BackOffice": "Welcome to your Check MyStars control center"
+  },
+  "CommonSection": {
+    "Search": "Search",
+    "Reset": "Clear",
+    "Update": "Edit",
+    "Delete": "Delete",
+    "Add": "Add",
+    "Enabled": "Enable",
+    "Disabled": "Disable",
+    "Yes": "Yes",
+    "No": "No",
+    "UnknownError": "Unknown error"
+  },
+  "LoginSection": {
+    "Login": "Login",
+    "Password": "Password",
+    "Connect": "Connect"
+  },
+  "ValidationSection": {
+    "Required": "This field is required."
+  },
+  "BackOfficeMenuSection": {
+    "Dashboard": "Dashboard",
+    "Home": "Home",
+    "Users": "Users",
+    "Roles": "Roles",
+    "Activities": "Activities",
+    "Criteres": "Criteria",
+    "Disconnect": "Disconnect",
+    "Return": "Return"
+  },
+  "PopupSection": {
+    "Validate": "Validate",
+    "Cancel": "Cancel"
+  },
+  "RoleSection": {
+    "Name": "Role name",
+    "Identifier": "Identifier",
+    "Description": "Description",
+    "Create": "Create a role",
+    "Update": "Edit a role",
+    "Delete": "Delete a role",
+    "Active": "Active role",
+    "DeleteAsk": "Are you sure you want to delete the role",
+    "Role": "Role",
+    "Administrator": "Administrator",
+    "User": "User",
+    "Inspector": "Inspector"
+  },
+  "UserSection": {
+    "Identifier": "Identifier",
+    "Civility": "Civility",
+    "LastName": "Last name",
+    "FirstName": "First name",
+    "Email": "Email",
+    "Phone": "Phone",
+    "Society": "Company",
+    "Address": "Address",
+    "Create": "Create a user",
+    "Update": "Edit a user",
+    "Delete": "Delete a user",
+    "Active": "Active user",
+    "DeleteAsk": "Are you sure you want to delete the user",
+    "Mister": "Mr.",
+    "Madam": "Mrs.",
+    "Password": "Password",
+    "Informations": "User information",
+    "PasswordValidate": "Minimum 12 characters, one uppercase, one lowercase, one digit and one symbol."
+  },
+  "AddressSection": {
+    "Identifier": "Identifier",
+    "Number": "Number",
+    "AddressLine": "Address",
+    "City": "City",
+    "ZipCode": "Postal code",
+    "Region": "Region",
+    "Country": "Country"
+  },
+  "DashboardSection": {
+    "Title": "Dashboard",
+    "Description": "Overview of Check My Stars activity",
+    "Users": "Users",
+    "FromUsers": "of users",
+    "Weekly": "Weekly",
+    "Month": "Month",
+    "Year": "Year",
+    "UserActive": "Active",
+    "Roles": "Roles",
+    "ProfilesAvailable": "Available profiles",
+    "Criterias": "Criteria"
+  },
+  "ActivitySection": {
+    "Title": "Recent activities",
+    "Description": "The last 7 activities on your account",
+    "NoActivity": "No recent activity",
+    "From": "by",
+    "Details": "Activity details",
+    "UserEvolution": "User evolution",
+    "Variation": "Annual variation based on registrations and deactivations."
+  }
+}

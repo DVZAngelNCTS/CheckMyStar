@@ -8,6 +8,7 @@ import { RolePageComponent } from './www/80_Modules/BackOffice/Roles/Role-page.c
 import { UserPageComponent } from './www/80_Modules/BackOffice/Users/User-page.component';
 import { DashboardComponent } from './www/80_Modules/BackOffice/Home/Dashboard/Dashboard-page.component';
 import { ActivityComponent } from './www/80_Modules/BackOffice/Home/Dashboard/Activity/Activity-page.component';
+import { CriteresPageComponent } from './www/80_Modules/BackOffice/Criteres/Criteres-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -22,7 +23,8 @@ const routes: Routes = [
       { path: '', component: DashboardComponent, data: { breadcrumb: 'BackOfficeMenuSection.Dashboard', icon: 'bi bi-speedometer2' }},
       { path: 'activities', component: ActivityComponent, data: { breadcrumb: 'BackOfficeMenuSection.Activities', icon: 'bi-clock-history', parent: 'BackOfficeMenuSection.Dashboard' }},
       { path: 'roles', component: RolePageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Roles', icon: 'bi bi-shield-check' }},
-      { path: 'users', component: UserPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Users', icon: 'bi bi-people' }}
+      { path: 'users', component: UserPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Users', icon: 'bi bi-people' }},
+      { path: 'criteres', component: CriteresPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Criteres', icon: 'bi bi-star' }}
     ]
   }
 ];
