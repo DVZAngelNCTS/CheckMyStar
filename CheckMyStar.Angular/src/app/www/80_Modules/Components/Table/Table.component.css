@@ -3,6 +3,11 @@ table {
   width: 100%;
 }
 
+.table-container-scroll {
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+}
+
 th, td {
   overflow: hidden;
   text-overflow: ellipsis;

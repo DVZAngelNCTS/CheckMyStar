@@ -1,86 +1,88 @@
-<table class="w-100 mb-4">
-  <thead>
-    <tr>
-      <th *ngFor="let col of columns()" class="p-3" [style.width]="col.width" (click)="onSort(col)" [class.sortable]="col.sortable">
-        <i [class]="col.icon"></i>
-        {{ col.header | translate }}
-        <ng-container *ngIf="col.sortable && sortField === col.field">
-          <span *ngIf="sortDirection === 'asc'">▲</span>
-          <span *ngIf="sortDirection === 'desc'">▼</span>
-        </ng-container>
-      </th>
-      <th class="p-3 action-col-update"></th>
-      <th class="p-3 action-col-enabled"></th>
-      <th class="p-3 action-col-delete"></th>
-    </tr>
-    <tr>
-      <th *ngFor="let col of columns()" class="p-2">
-        <input
-          *ngIf="col.filterable"
-          type="text"
-          class="form-control form-control-sm"
-          placeholder="Filtrer..."
-          (input)="onFilterChange(col, $event.target.value)"
-        />
-      </th>
-      <th class="text-end p-2">
-      </th>
-      <th class="text-end p-2">
-      </th>
-      <th class="text-end p-2">    
-        <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()">
-          <i class="bi bi-filetype-csv"></i>
-        </button>
-        <button class="btn btn-primary btn-sm" (click)="exportXlsx()">
-          <i class="bi bi-file-earmark-excel"></i>
-        </button>    
-      </th>
-    </tr>
-  </thead>
+<div class="table-container-scroll">
+  <table class="w-100 mb-4">
+    <thead>
+      <tr>
+        <th *ngFor="let col of columns()" class="p-3" [style.width]="col.width" (click)="onSort(col)" [class.sortable]="col.sortable">
+          <i [class]="col.icon"></i>
+          {{ col.header | translate }}
+          <ng-container *ngIf="col.sortable && sortField === col.field">
+            <span *ngIf="sortDirection === 'asc'">▲</span>
+            <span *ngIf="sortDirection === 'desc'">▼</span>
+          </ng-container>
+        </th>
+        <th class="p-3 action-col-update"></th>
+        <th class="p-3 action-col-enabled"></th>
+        <th class="p-3 action-col-delete"></th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns()" class="p-2">
+          <input
+            *ngIf="col.filterable"
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Filtrer..."
+            (input)="onFilterChange(col, $event.target.value)"
+          />
+        </th>
+        <th class="text-end p-2">
+        </th>
+        <th class="text-end p-2">
+        </th>
+        <th class="text-end p-2">    
+          <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()">
+            <i class="bi bi-filetype-csv"></i>
+          </button>
+          <button class="btn btn-primary btn-sm" (click)="exportXlsx()">
+            <i class="bi bi-file-earmark-excel"></i>
+          </button>    
+        </th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <tr *ngFor="let row of displayData()" class="border-top">
-      <td *ngFor="let col of columns()" class="p-2">
-        <ng-container [ngSwitch]="col.field">
+    <tbody>
+      <tr *ngFor="let row of displayData()" class="border-top">
+        <td *ngFor="let col of columns()" class="p-2">
+          <ng-container [ngSwitch]="col.field">
 
-          <!-- Colonne isActive -->
-          <span *ngSwitchCase="'isActive'">
-            {{ $any(row).isActive ? ('CommonSection.Yes' | translate) : ('CommonSection.No' | translate) }}
-          </span>
+            <!-- Colonne isActive -->
+            <span *ngSwitchCase="'isActive'">
+              {{ $any(row).isActive ? ('CommonSection.Yes' | translate) : ('CommonSection.No' | translate) }}
+            </span>
 
-          <!-- Autres colonnes -->
-          <span *ngSwitchDefault>
-            {{ col.pipe ? col.pipe(row[col.field], row) : row[col.field] }}
-          </span>
+            <!-- Autres colonnes -->
+            <span *ngSwitchDefault>
+              {{ col.pipe ? col.pipe(row[col.field], row) : row[col.field] }}
+            </span>
 
-        </ng-container>
-      </td>
+          </ng-container>
+        </td>
 
-      <td class="p-2 action-col-update">
-        <button class="btn btn-primary me-2 w-9rem" (click)="update.emit(row)">
-          <i class="bi bi-pencil me-2"></i>
-          {{ 'CommonSection.Update' | translate }}
-        </button>
-      </td>
+        <td class="p-2 action-col-update">
+          <button class="btn btn-primary me-2 w-9rem" (click)="update.emit(row)">
+            <i class="bi bi-pencil me-2"></i>
+            {{ 'CommonSection.Update' | translate }}
+          </button>
+        </td>
 
-      <td class="p-2 action-col-enabled">
-        <button class="btn btn-tertiary me-2 w-9rem" (click)="enabled.emit(row)">
-          <i class="bi"
-            [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'">
-          </i>
+        <td class="p-2 action-col-enabled">
+          <button class="btn btn-tertiary me-2 w-9rem" (click)="enabled.emit(row)">
+            <i class="bi"
+              [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'">
+            </i>
 
-          {{ $any(row).isActive
-              ? ('CommonSection.Disabled' | translate)
-              : ('CommonSection.Enabled' | translate) }}
-        </button>
-      </td>
+            {{ $any(row).isActive
+                ? ('CommonSection.Disabled' | translate)
+                : ('CommonSection.Enabled' | translate) }}
+          </button>
+        </td>
 
-      <td class="p-2 action-col-delete">
-        <button class="btn btn-tertiary me-2 w-9rem" (click)="delete.emit(row)">
-          <i class="bi bi-trash me-2"></i>
-          {{ 'CommonSection.Delete' | translate }}
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <td class="p-2 action-col-delete">
+          <button class="btn btn-tertiary me-2 w-9rem" (click)="delete.emit(row)">
+            <i class="bi bi-trash me-2"></i>
+            {{ 'CommonSection.Delete' | translate }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
