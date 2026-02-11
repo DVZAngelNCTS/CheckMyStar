@@ -109,7 +109,9 @@ public partial class CheckMyStarDbContext : DbContext
             entity.ToTable("Criterion");
 
             entity.Property(e => e.BasePoints).HasColumnType("decimal(9, 2)");
-            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<CriterionType>(entity =>
@@ -121,7 +123,9 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.TypeCode)
                 .HasMaxLength(5)
                 .IsUnicode(false);
-            entity.Property(e => e.Label).HasMaxLength(80);
+            entity.Property(e => e.Label)
+                .HasMaxLength(80)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Role>(entity =>

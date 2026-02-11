@@ -43,7 +43,7 @@ export class RolePageComponent {
 	}
 
 	ngOnInit() {
-	this.loadRoles();
+		this.loadRoles();
 	}
 
 	loadRoles() {

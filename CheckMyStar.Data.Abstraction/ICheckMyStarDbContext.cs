@@ -8,6 +8,10 @@
         IQueryable<Role> Roles { get; }
         IQueryable<User> Users { get; }
         IQueryable<Activity> Activities { get; }
+        IQueryable<StarLevel> StarLevels { get; }
+        IQueryable<StarLevelCriterion> StarLevelCriterias { get; }
+        IQueryable<Criterion> Criterias { get; }
+        IQueryable<CriterionType> CriterionTypes { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 

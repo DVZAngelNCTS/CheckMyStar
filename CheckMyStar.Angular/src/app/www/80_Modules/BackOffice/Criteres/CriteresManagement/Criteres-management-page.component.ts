@@ -9,6 +9,7 @@ import { CriteresFormComponent } from './Form/Criteres-form.component';
 import { TableComponent } from '../../../Components/Table/Table.component';
 import { TableColumn } from '../../../Components/Table/Models/TableColumn.model';
 import { PopupComponent } from '../../../Components/Popup/Popup.component';
+import { RatingContextService } from '../Service/Rating-context.service';
 
 @Component({
   selector: 'app-criteres-management-page',
@@ -51,14 +52,11 @@ export class CriteresManagementPageComponent implements OnInit {
   currentCriterion: StarCriterionDetail | null = null;
   isEdit = false;
 
-  constructor(
-    private criteresBll: CriteresBllService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  constructor(private criteresBll: CriteresBllService, private route: ActivatedRoute, private router: Router, private ratingContext: RatingContextService) {
+  }
 
   ngOnInit(): void {
-    this.starRating = Number(this.route.snapshot.paramMap.get('rating'));
+    this.starRating = this.ratingContext.rating || 0;
     if (!this.starRating) {
       this.router.navigate(['/backhome/criteres']);
       return;
@@ -67,16 +65,16 @@ export class CriteresManagementPageComponent implements OnInit {
   }
 
   private loadData(): void {
-    this.criteresBll.getStarCriteria().subscribe({
+    this.criteresBll.getStarCriterias$().subscribe({
       next: stars => {
-        this.selectedStar = stars.find(s => s.rating === this.starRating) || null;
+        this.selectedStar = stars.starCriterias?.find(s => s.rating === this.starRating) || null;
       },
       error: err => console.error('Erreur getStarCriteria', err)
     });
 
-    this.criteresBll.getStarCriteriaDetails().subscribe({
+    this.criteresBll.getStarCriteriaDetails$().subscribe({
       next: details => {
-        const detailsForStar = details.find(d => d.rating === this.starRating);
+        const detailsForStar = details.starCriterias?.find(d => d.rating === this.starRating);
         this.allCriteria = detailsForStar ? detailsForStar.criteria : [];
         this.filteredCriteria = [...this.allCriteria];
       },
@@ -147,9 +145,5 @@ export class CriteresManagementPageComponent implements OnInit {
   closePopup(): void {
     this.showPopup = false;
     this.currentCriterion = null;
-  }
-
-  onBackToCards(): void {
-    this.router.navigate(['/backhome/criteres']);
   }
 }

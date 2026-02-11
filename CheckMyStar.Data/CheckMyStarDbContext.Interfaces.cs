@@ -10,6 +10,10 @@ namespace CheckMyStar.Data
         IQueryable<Role> ICheckMyStarDbContext.Roles => this.Roles;
         IQueryable<User> ICheckMyStarDbContext.Users => this.Users;
         IQueryable<Activity> ICheckMyStarDbContext.Activities => this.Activities;
+        IQueryable<StarLevel> ICheckMyStarDbContext.StarLevels => this.StarLevels;
+        IQueryable<StarLevelCriterion> ICheckMyStarDbContext.StarLevelCriterias => this.StarLevelCriteria;
+        IQueryable<Criterion> ICheckMyStarDbContext.Criterias => this.Criteria;
+        IQueryable<CriterionType> ICheckMyStarDbContext.CriterionTypes => this.CriterionTypes;
 
         public Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
         {
