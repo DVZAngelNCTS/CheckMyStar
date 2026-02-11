@@ -1,5 +1,7 @@
 ﻿using CheckMyStar.Apis.Services.Abstractions;
+using CheckMyStar.Apis.Services.Models;
 using CheckMyStar.Bll.Abstractions.ForService;
+using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Apis.Services
@@ -18,6 +20,25 @@ namespace CheckMyStar.Apis.Services
             var criterias = await criteriaBusForService.GetStarCriteriaStatus(ct);
 
             return criterias;
+        }
+
+        public async Task<CreateCriterionResponse> CreateCriterionAsync(CreateCriterionModel model, CancellationToken ct)
+        {
+            var request = new CreateCriterionRequest
+            {
+                Description = model.Description,
+                BasePoints = model.BasePoints,
+                StarLevels = model.StarLevels
+                    .Select(sl => new StarLevelCriterionRequest
+                    {
+                        StarLevelId = sl.StarLevelId,
+                        TypeCode = sl.TypeCode
+                    })
+                    .ToList()
+            };
+
+            var response = await criteriaBusForService.CreateCriterionAsync(request, ct);
+            return response;
         }
     }
 }

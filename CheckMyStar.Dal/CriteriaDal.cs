@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Dal.Abstractions;
+﻿using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Models;
-using CheckMyStar.Data.Abstractions;
 using CheckMyStar.Dal.Results;
+using CheckMyStar.Data;
+using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckMyStar.Dal
 {
@@ -74,5 +74,47 @@ namespace CheckMyStar.Dal
 
             return starCriteriaResult;
         }
+
+        public async Task<int> CreateCriterionAsync(string description, decimal basePoints, CancellationToken ct)
+        {
+            try
+            {
+                var criterion = new Criterion
+                {
+                    Description = description,
+                    BasePoints = basePoints
+                };
+
+                await dbContext.AddAsync(criterion, ct);
+                await dbContext.SaveChangesAsync(ct);
+
+                return criterion.CriterionId;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while creating the criterion.", ex);
+            }
+        }
+
+        public async Task AddStarLevelCriterionAsync(int starLevelId, int criterionId, string typeCode, CancellationToken ct)
+        {
+            try
+            {
+                var entity = new StarLevelCriterion
+                {
+                    StarLevelId = (byte)starLevelId,
+                    CriterionId = criterionId,
+                    TypeCode = typeCode
+                };
+
+                await dbContext.AddAsync(entity, ct);
+                await dbContext.SaveChangesAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while linking the criterion to the star level.", ex);
+            }
+        }
+
     }
 }

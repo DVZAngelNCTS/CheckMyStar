@@ -6,5 +6,7 @@ namespace CheckMyStar.Dal.Abstractions
     {
         Task<StarCriteriasResult> GetStarCriterias(CancellationToken ct);
         Task<StarCriteriasDetailResult> GetStarCriteriaDetails(CancellationToken ct);
+        Task<int> CreateCriterionAsync(string description, decimal basePoints, CancellationToken ct);
+        Task AddStarLevelCriterionAsync(int starLevelId, int criterionId, string typeCode, CancellationToken ct);
     }
 }

@@ -1,4 +1,5 @@
-﻿using CheckMyStar.Bll.Responses;
+﻿using CheckMyStar.Bll.Requests;
+using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Bll.Abstractions.ForService
 {
@@ -6,5 +7,6 @@ namespace CheckMyStar.Bll.Abstractions.ForService
     {
         Task<StarCriteriaStatusResponse> GetStarCriteriaStatus(CancellationToken ct);
         Task<StarCriteriaDetailsResponse> GetStarCriteriaDetails(CancellationToken ct);
+        Task<CreateCriterionResponse> CreateCriterionAsync(CreateCriterionRequest request, CancellationToken ct);
     }
 }
