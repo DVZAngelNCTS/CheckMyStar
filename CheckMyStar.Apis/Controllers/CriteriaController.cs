@@ -1,7 +1,8 @@
-using CheckMyStar.Apis.Services.Abstractions;
-using CheckMyStar.Apis.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using CheckMyStar.Apis.Services.Abstractions;
+using CheckMyStar.Bll.Requests;
 
 /// <summary>
 /// Defines API endpoints for criteria operations.
@@ -40,23 +41,15 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     }
 
     /// <summary>
-    /// Create a new criterion
+    /// Add a new criterion
     /// </summary>
-    /// <param name="model">Criterion data</param>
+    /// <param name="request">Criterion request</param>
     /// <param name="ct">Cancellation token</param>
-    [HttpPost("createcriterion")]
+    [HttpPost("addcriterion")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> CreateCriterion([FromBody] CreateCriterionModel model, CancellationToken ct)
+    public async Task<IActionResult> AddCriterion([FromBody] CriterionSaveRequest request, CancellationToken ct)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var result = await criteriaService.CreateCriterionAsync(model, ct);
-
-        if (!result.IsSuccess)
-        {
-            return BadRequest(new { message = result.Message });
-        }
+        var result = await criteriaService.AddCriterion(request, ct);
 
         return Ok(result);
     }
