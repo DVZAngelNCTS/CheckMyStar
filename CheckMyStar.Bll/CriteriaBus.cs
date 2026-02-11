@@ -1,12 +1,16 @@
-﻿using CheckMyStar.Bll.Abstractions;
+﻿using AutoMapper;
+
+using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
+using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
-    public partial class CriteriaBus(ICriteresDal criteresDal) : ICriteriaBus
+    public partial class CriteriaBus(ICriteresDal criteresDal, IMapper mapper) : ICriteriaBus
     {
         public async Task<StarCriteriaDetailsResponse> GetCriteriaDetails(CancellationToken ct)
         {
@@ -82,54 +86,61 @@ namespace CheckMyStar.Bll
             return starCriteriasResponse;
         }
 
-        public async Task<CreateCriterionResponse> CreateCriterionAsync(CreateCriterionRequest request, CancellationToken ct)
+        public async Task<BaseResponse> AddCriterion(StarCriterionModel starCriterionModel, StarLevelCriterionModel starLevelCriterionModel, CancellationToken ct)
         {
-            var createCriterionResponse = new CreateCriterionResponse();
+            BaseResponse baseResponse = new BaseResponse();
 
             try
             {
-                if (string.IsNullOrWhiteSpace(request.Description))
+                CriterionResult criterionResult = await criteresDal.GetNextIdentifier(ct);
+
+                if (!criterionResult.IsSuccess && criterionResult.Criterion != null)
                 {
-                    createCriterionResponse.IsSuccess = false;
-                    createCriterionResponse.Message = "La description du critère est obligatoire.";
-                    return createCriterionResponse;
-                }
+                    var starCriterion = mapper.Map<Criterion>(starCriterionModel);
 
-                if (request.BasePoints <= 0)
+                    starCriterion.CriterionId = criterionResult.Criterion.CriterionId;
+
+                    BaseResult baseResultCriterion = await criteresDal.AddCriterion(starCriterion, ct);
+
+                    if (baseResultCriterion.IsSuccess)
+                    {
+                        var starLevelCriterion = mapper.Map<StarLevelCriterion>(starLevelCriterionModel);
+
+                        starLevelCriterion.CriterionId = starCriterion.CriterionId;
+
+                        BaseResult baseResultLevelCriterion = await criteresDal.AddStarLevelCriterion(starLevelCriterion, ct);
+
+                        if (baseResultLevelCriterion.IsSuccess)
+                        {
+                            baseResponse.IsSuccess = true;
+                            baseResponse.Message = baseResultCriterion.Message + "<br>" + baseResultLevelCriterion.Message;
+                        }
+                        else
+                        {
+                            baseResponse.IsSuccess = false;
+                            baseResponse.Message = baseResultCriterion.Message + "<br>" + baseResultLevelCriterion.Message;
+                        }
+                    }
+                    else
+                    {
+                        baseResponse.IsSuccess = false;
+                        baseResponse.Message = baseResultCriterion.Message;
+                    }
+                }
+                else
                 {
-                    createCriterionResponse.IsSuccess = false;
-                    createCriterionResponse.Message = "Les points de base doivent être strictement positifs.";
-                    return createCriterionResponse;
+                    baseResponse.IsSuccess = false;
+                    baseResponse.Message = criterionResult.Message;
+
                 }
-
-                int criterionId = await criteresDal.CreateCriterionAsync(
-                    request.Description,
-                    request.BasePoints,
-                    ct
-                );
-
-                foreach (var sl in request.StarLevels)
-                {
-                    await criteresDal.AddStarLevelCriterionAsync(
-                        sl.StarLevelId,
-                        criterionId,
-                        sl.TypeCode,
-                        ct
-                    );
-                }
-
-                createCriterionResponse.IsSuccess = true;
-                createCriterionResponse.CriterionId = criterionId;
-                createCriterionResponse.Description = request.Description;
-                createCriterionResponse.BasePoints = request.BasePoints;
             }
             catch (Exception ex)
             {
-                createCriterionResponse.IsSuccess = false;
-                createCriterionResponse.Message = "Erreur lors de la création du critère.";
+                baseResponse.IsSuccess = false;
+                baseResponse.Message = ex.Message;
             }
 
-            return createCriterionResponse;
+            return baseResponse;
         }
     }
 }
