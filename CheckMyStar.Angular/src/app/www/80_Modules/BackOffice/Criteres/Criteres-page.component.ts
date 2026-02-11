@@ -4,29 +4,28 @@ import { Router, RouterModule } from '@angular/router';
 import { TranslationModule } from '../../../10_Common/Translation.module';
 import { CriteresBllService } from '../../../60_Bll/BackOffice/Criteres-bll.service';
 import { StarCriteria } from '../../../20_Models/BackOffice/Criteres.model';
+import { RatingContextService } from './Service/Rating-context.service';
 
 @Component({
   selector: 'app-criteres-page',
   standalone: true,
   imports: [CommonModule, RouterModule, TranslationModule],
   templateUrl: './Criteres-page.component.html',
-  styleUrl: './Criteres-page.component.css'
+  styleUrls: ['./Criteres-page.component.css']
 })
 export class CriteresPageComponent implements OnInit {
-  stars: StarCriteria[] = [];
+  stars?: StarCriteria[] = [];
 
-  constructor(
-    private criteresBll: CriteresBllService,
-    private router: Router
-  ) {}
+  constructor(private criteresBll: CriteresBllService, private router: Router, private ratingContext: RatingContextService) {
+  }
 
   ngOnInit(): void {
     this.loadData();
   }
 
   private loadData(): void {
-    this.criteresBll.getStarCriteria().subscribe({
-      next: data => this.stars = data,
+    this.criteresBll.getStarCriterias$().subscribe({
+      next: data => this.stars = data.starCriterias,
       error: err => console.error('Erreur getStarCriteria', err)
     });
   }
@@ -42,6 +41,7 @@ export class CriteresPageComponent implements OnInit {
   }
 
   onManageCriteria(star: StarCriteria): void {
-    this.router.navigate(['/backhome/criteres/gestion', star.rating]);
+    this.ratingContext.rating = star.rating;
+    this.router.navigate(['/backhome/criteres/management']);
   }
 }

@@ -16,7 +16,8 @@ namespace CheckMyStar.Dal.Extensions
                 .AddScoped<ICountryDal, CountryDal>()
                 .AddScoped<IAddressDal, AddressDal>()
                 .AddScoped<IDashboardDal, DashboardDal>()
-                .AddScoped<IActivityDal, ActivityDal>();
+                .AddScoped<IActivityDal, ActivityDal>()
+                .AddScoped<ICriteresDal, CriteriaDal>();
 
             return services;
         }

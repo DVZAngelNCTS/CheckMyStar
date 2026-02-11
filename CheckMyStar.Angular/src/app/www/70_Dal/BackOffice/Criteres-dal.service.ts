@@ -1,26 +1,24 @@
-// www/70_Dal/BackOffice/Criteres-dal.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-import { StarCriteria, StarCriteriaDetail } from '../../20_Models/BackOffice/Criteres.model';
 import { Environment } from '../../../../Environment/environment';
+import { CriteriaStatusResponse } from '../../50_Responses/BackOffice/CriteriaStatus.response';
+import { CriteriaDetailsResponse } from '../../50_Responses/BackOffice/CriteriaDetail.reposne';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CriteresDalService {
-  private readonly baseUrl = Environment.ApiUrl; 
-  // ex: "http://checkmystar.apis.local:5109/api"
+  private apiUrl = Environment.ApiUrl;
 
-  constructor(private http: HttpClient) {}
-
-  getStarCriteria(): Observable<StarCriteria[]> {
-    // NE PAS rajouter /api ici
-    return this.http.post<StarCriteria[]>(`${this.baseUrl}/criteres`, {});
+  constructor(private http: HttpClient) {    
   }
 
-  getStarCriteriaDetails(): Observable<StarCriteriaDetail[]> {
-    return this.http.post<StarCriteriaDetail[]>(`${this.baseUrl}/criteres/details`, {});
+  getStarCriterias$(): Observable<CriteriaStatusResponse> {
+    return this.http.post<CriteriaStatusResponse>(`${this.apiUrl}/Criteria/getstarcriteriastatus`, {});
+  }
+
+  getStarCriteriaDetails$(): Observable<CriteriaDetailsResponse> {
+    return this.http.post<CriteriaDetailsResponse>(`${this.apiUrl}/Criteria/getstarcriteriadetails`, {});
   }
 }

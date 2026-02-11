@@ -15,7 +15,8 @@ namespace CheckMyStar.Bll.Extensions
                 .AddScoped<ICountryBus, CountryBus>()
                 .AddScoped<IAddressBus, AddressBus>()
                 .AddScoped<IDashboardBus, DashboardBus>()
-                .AddScoped<IActivityBus, ActivityBus>();
+                .AddScoped<IActivityBus, ActivityBus>()
+                .AddScoped<ICriteriaBus, CriteriaBus>();
 
             services
                 .AddScoped<IUserBusForService>(x => (UserBus)x.GetRequiredService<IUserBus>())
@@ -23,7 +24,8 @@ namespace CheckMyStar.Bll.Extensions
                 .AddScoped<ICountryBusForService>(x => (CountryBus)x.GetRequiredService<ICountryBus>())
                 .AddScoped<IAddressBusForService>(x => (AddressBus)x.GetRequiredService<IAddressBus>())
                 .AddScoped<IDashboardBusForService>(x => (DashboardBus)x.GetRequiredService<IDashboardBus>())
-                .AddScoped<IActivityBusForService>(x => (ActivityBus)x.GetRequiredService<IActivityBus>());
+                .AddScoped<IActivityBusForService>(x => (ActivityBus)x.GetRequiredService<IActivityBus>())
+                .AddScoped<ICriteriaBusForService>(x => (CriteriaBus)x.GetRequiredService<ICriteriaBus>());
 
             return services;
         }

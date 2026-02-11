@@ -14,7 +14,6 @@ import { CriteresManagementPageComponent } from './www/80_Modules/BackOffice/Cri
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginPageComponent },
-
   {
     path: 'backhome',
     component: BackHomePageComponent,
@@ -25,12 +24,8 @@ const routes: Routes = [
       { path: 'activities', component: ActivityComponent, data: { breadcrumb: 'BackOfficeMenuSection.Activities', icon: 'bi-clock-history', parent: 'BackOfficeMenuSection.Dashboard' }},
       { path: 'roles', component: RolePageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Roles', icon: 'bi bi-shield-check' }},
       { path: 'users', component: UserPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Users', icon: 'bi bi-people' }},
-      { path: 'criteres', data: { breadcrumb: 'BackOfficeMenuSection.Criteres', icon: 'bi bi-star' },
-        children: [
-          { path: '', component: CriteresPageComponent },
-          { path: 'gestion/:rating', component: CriteresManagementPageComponent, data: { breadcrumb: 'Gestion', parent: 'BackOfficeMenuSection.Criteres' }}
-        ]
-      }
+      { path: 'criteres', component: CriteresPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Criteres', icon: 'bi bi-star' }},
+      { path: 'criteres/management', component: CriteresManagementPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Management', icon: 'bi bi-gear', parent: 'BackOfficeMenuSection.Criteres' }}          
     ]
   }
 ];

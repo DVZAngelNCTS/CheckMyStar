@@ -16,7 +16,8 @@ namespace CheckMyStar.Apis.Services.Extensions
                 .AddScoped<ICountryService, CountryService>()
                 .AddScoped<IAddressService, AddressService>()
                 .AddScoped<IDashboardService, DashboardService>()
-                .AddScoped<IActivityService, ActivityService>();
+                .AddScoped<IActivityService, ActivityService>()
+                .AddScoped<ICriteriaService, CriteriaService>();
 
             return services;
         }

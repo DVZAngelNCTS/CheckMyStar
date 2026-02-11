@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Criteres\**" />
+    <EmbeddedResource Remove="Criteres\**" />
+    <None Remove="Criteres\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="efpt.config.json.user" />
   </ItemGroup>
 
@@ -16,10 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CheckMyStar.Data.Abstraction\CheckMyStar.Data.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Criteres\" />
   </ItemGroup>
 
 </Project>
