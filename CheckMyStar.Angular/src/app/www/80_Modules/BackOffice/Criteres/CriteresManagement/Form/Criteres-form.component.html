@@ -1,0 +1,27 @@
+<form [formGroup]="form" class="d-flex flex-row gap-2">
+  <div class="flex-grow-1 d-flex flex-column column-box">
+    <h5 class="fw-bold mb-3">{{ 'CriteresSection.Informations' | translate }}</h5>
+    
+    <!-- ID -->
+    <app-field controlName="criterionId" label="{{ 'CriteresSection.Id' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+      <input type="text" class="form-control" formControlName="criterionId" [readonly]="readonlyIdentifier">
+    </app-field>
+    
+    <!-- DESCRIPTION -->
+    <app-field controlName="description" label="{{ 'CriteresSection.Description' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+      <input type="text" class="form-control" formControlName="description" required>
+    </app-field>
+    
+    <!-- POINTS -->
+    <app-field controlName="basePoints" label="{{ 'CriteresSection.Points' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+      <input type="number" class="form-control" formControlName="basePoints" required min="0">
+    </app-field>
+    
+    <!-- TYPE CODE -->
+    <app-field controlName="typeCode" label="{{ 'CriteresSection.Type' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+      <select class="form-select" formControlName="typeCode" required>
+        <option *ngFor="let type of typeCodes" [value]="type.value">{{ type.label }}</option>
+      </select>
+    </app-field>
+  </div>
+</form>

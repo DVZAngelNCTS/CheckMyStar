@@ -1,0 +1,62 @@
+<div class="ms-3 d-flex align-items-center" (keydown.enter)="search()">
+  <div class="d-flex flex-column" [formGroup]="form">
+    <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+      <app-field controlName="description" icon="bi bi-text-left" label="{{ 'CriteresSection.Description' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <input type="text" class="form-control" formControlName="description">               
+      </app-field>
+      <app-field controlName="typeCode" icon="bi bi-tag" label="{{ 'CriteresSection.Type' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <select class="form-select" formControlName="typeCode">
+          <option value="">{{ 'CommonSection.All' | translate }}</option>
+          <option value="X">Obligatoire</option>
+          <option value="O">À la carte</option>
+          <option value="X ONC">Obligatoire non compensable</option>
+          <option value="NA">Non applicable</option>
+        </select>               
+      </app-field>
+      <app-field controlName="basePoints" icon="bi bi-123" label="{{ 'CriteresSection.Points' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <input type="number" class="form-control" formControlName="basePoints">               
+      </app-field>           
+    </div>
+  </div>
+  <div class="ms-auto d-flex flex-nowrap">
+    <button
+      type="button"
+      class="btn btn-primary me-2 d-flex align-items-center justify-content-center gap-2 btn-filter"
+      [disabled]="loadingSearch"
+      (click)="search()">
+      <app-loader-mini *ngIf="loadingSearch"></app-loader-mini>
+      <span class="d-flex align-items-center">
+        <i class="bi bi-search"></i>
+        <span class="btn-filter-label ms-2">
+          {{ 'CommonSection.Search' | translate }}
+        </span>
+      </span>
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-tertiary me-2 d-flex align-items-center justify-content-center gap-2 btn-filter"
+      [disabled]="loadingReset"
+      (click)="reset()">
+      <app-loader-mini *ngIf="loadingReset"></app-loader-mini>
+      <span class="d-flex align-items-center">
+        <i class="bi bi-funnel"></i>
+        <span class="btn-filter-label ms-2">
+          {{ 'CommonSection.Reset' | translate }}
+        </span>
+      </span>
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-success d-flex align-items-center justify-content-center gap-2 btn-filter"
+      (click)="add.emit()">
+      <span class="d-flex align-items-center">
+        <i class="bi bi-plus-lg"></i>
+        <span class="btn-filter-label ms-2">
+          {{ 'CommonSection.Add' | translate }}
+        </span>
+      </span>
+    </button>
+  </div>
+</div>

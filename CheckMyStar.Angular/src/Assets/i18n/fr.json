@@ -19,7 +19,8 @@
     "Disabled": "Désactiver",
     "Yes": "Oui",
     "No": "Non",
-    "UnknownError": "Erreur inconnue"
+    "UnknownError": "Erreur inconnue",
+    "All": "Tous"
   },
   "LoginSection": {
     "Login": "Identifiant",
@@ -107,5 +108,15 @@
     "Details": "Détails des activités",
     "UserEvolution": "Évolution des utilisateurs",
     "Variation": "Variation annuelle basée sur les inscriptions et désactivations."
+  },
+  "CriteresSection": {
+    "Informations": "Informations",
+    "Description": "Description",
+    "Type": "Type",
+    "Points": "Points",
+    "Id": "Id critère",
+    "Management": "Gestion des critères",
+    "AddCriterion": "Ajouter un critère",
+    "EditCriterion": "Modifier un critère"
   }
 }
