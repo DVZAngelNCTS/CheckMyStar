@@ -1,5 +1,6 @@
 ﻿using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
+using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
 
@@ -79,6 +80,56 @@ namespace CheckMyStar.Bll
             }
 
             return starCriteriasResponse;
+        }
+
+        public async Task<CreateCriterionResponse> CreateCriterionAsync(CreateCriterionRequest request, CancellationToken ct)
+        {
+            var createCriterionResponse = new CreateCriterionResponse();
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.Description))
+                {
+                    createCriterionResponse.IsSuccess = false;
+                    createCriterionResponse.Message = "La description du critère est obligatoire.";
+                    return createCriterionResponse;
+                }
+
+                if (request.BasePoints <= 0)
+                {
+                    createCriterionResponse.IsSuccess = false;
+                    createCriterionResponse.Message = "Les points de base doivent être strictement positifs.";
+                    return createCriterionResponse;
+                }
+
+                int criterionId = await criteresDal.CreateCriterionAsync(
+                    request.Description,
+                    request.BasePoints,
+                    ct
+                );
+
+                foreach (var sl in request.StarLevels)
+                {
+                    await criteresDal.AddStarLevelCriterionAsync(
+                        sl.StarLevelId,
+                        criterionId,
+                        sl.TypeCode,
+                        ct
+                    );
+                }
+
+                createCriterionResponse.IsSuccess = true;
+                createCriterionResponse.CriterionId = criterionId;
+                createCriterionResponse.Description = request.Description;
+                createCriterionResponse.BasePoints = request.BasePoints;
+            }
+            catch (Exception ex)
+            {
+                createCriterionResponse.IsSuccess = false;
+                createCriterionResponse.Message = "Erreur lors de la création du critère.";
+            }
+
+            return createCriterionResponse;
         }
     }
 }
