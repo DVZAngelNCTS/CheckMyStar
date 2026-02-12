@@ -1,12 +1,11 @@
-﻿using System.Data;
-
-using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Dal.Abstractions;
+﻿using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
 
 namespace CheckMyStar.Dal
 {
@@ -124,27 +123,6 @@ namespace CheckMyStar.Dal
             return starCriteriaResult;
         }
 
-        public async Task<int> CreateCriterionAsync(string description, decimal basePoints, CancellationToken ct)
-        {
-            try
-            {
-                var criterion = new Criterion
-                {
-                    Description = description,
-                    BasePoints = basePoints
-                };
-
-                await dbContext.AddAsync(criterion, ct);
-                await dbContext.SaveChangesAsync(ct);
-
-                return criterion.CriterionId;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while creating the criterion.", ex);
-            }
-        }
-
         public async Task<BaseResult> AddStarLevelCriterion(StarLevelCriterion starLevelCriterion , CancellationToken ct)
         {
             BaseResult baseResult = new BaseResult();
@@ -203,6 +181,64 @@ namespace CheckMyStar.Dal
             }
 
             return baseResult;
+        }
+
+        public async Task<BaseResult> DeleteStarLevelCriterionByCriterionId(int criterionId, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var links = await dbContext.StarLevelCriterias
+                    .Where(slc => slc.CriterionId == criterionId)
+                    .ToListAsync(ct);
+
+                if (links.Any())
+                {
+                    foreach (var link in links)
+                    {
+                        await dbContext.RemoveAsync<StarLevelCriterion>(link, ct);
+                    }
+                    await dbContext.SaveChangesAsync(ct);   // ← AJOUT OBLIGATOIRE
+                }
+
+                result.IsSuccess = true;
+                result.Message = "Liaisons supprimées.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur suppression liaisons : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<BaseResult> DeleteCriterion(int criterionId, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var criterion = await dbContext.Criterias
+                    .FirstOrDefaultAsync(c => c.CriterionId == criterionId, ct);
+
+                if (criterion == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Critère {criterionId} introuvable.";
+                    return result;
+                }
+
+                await dbContext.RemoveAsync<Criterion>(criterion, ct);
+                await dbContext.SaveChangesAsync(ct);   // ← AJOUT OBLIGATOIRE
+
+                result.IsSuccess = true;
+                result.Message = $"Critère {criterionId} supprimé.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur suppression critère : {ex.Message}";
+            }
+            return result;
         }
     }
 }

@@ -2,9 +2,15 @@
   <div class="flex-grow-1 d-flex flex-column column-box">
     <h5 class="fw-bold mb-3">{{ 'CriteresSection.Informations' | translate }}</h5>
     
-    <!-- ID -->
-    <app-field controlName="criterionId" label="{{ 'CriteresSection.Id' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-      <input type="text" class="form-control" formControlName="criterionId" [readonly]="readonlyIdentifier">
+    <!-- ID (uniquement en mode EDIT) -->
+    <app-field 
+      *ngIf="criterion !== null" 
+      controlName="criterionId" 
+      label="{{ 'CriteresSection.Id' | translate }}" 
+      labelClass="w-8rem start fw-bold" 
+      labelTextPosition="start" 
+      controlClass="w-100">
+      <input type="text" class="form-control" formControlName="criterionId" [readonly]="true">
     </app-field>
     
     <!-- DESCRIPTION -->
@@ -14,7 +20,7 @@
     
     <!-- POINTS -->
     <app-field controlName="basePoints" label="{{ 'CriteresSection.Points' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-      <input type="number" class="form-control" formControlName="basePoints" required min="0">
+      <input type="number" class="form-control" formControlName="basePoints" required min="1" max="10">
     </app-field>
     
     <!-- TYPE CODE -->

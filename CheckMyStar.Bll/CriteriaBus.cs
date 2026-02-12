@@ -142,5 +142,39 @@ namespace CheckMyStar.Bll
 
             return baseResponse;
         }
+
+        public async Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct)
+        {
+            var response = new BaseResponse();
+            try
+            {
+                // 1. Supprimer les liaisons
+                var deleteLinksResult = await criteresDal.DeleteStarLevelCriterionByCriterionId(criterionId, ct);
+                if (!deleteLinksResult.IsSuccess)
+                {
+                    response.IsSuccess = false;
+                    response.Message = deleteLinksResult.Message;
+                    return response;
+                }
+
+                // 2. Supprimer le critère
+                var deleteCriterionResult = await criteresDal.DeleteCriterion(criterionId, ct);
+                if (!deleteCriterionResult.IsSuccess)
+                {
+                    response.IsSuccess = false;
+                    response.Message = deleteCriterionResult.Message;
+                    return response;
+                }
+
+                response.IsSuccess = true;
+                response.Message = $"Critère {criterionId} supprimé avec succès.";
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = $"Erreur lors de la suppression : {ex.Message}";
+            }
+            return response;
+        }
     }
 }
