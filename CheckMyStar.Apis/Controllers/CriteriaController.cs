@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
 using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Requests;
+using CheckMyStar.Bll.Responses;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
 /// Defines API endpoints for criteria operations.
@@ -65,6 +65,20 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     public async Task<IActionResult> DeleteCriterion(int id, CancellationToken ct)
     {
         var result = await criteriaService.DeleteCriterion(id, ct);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
+
+    /// <summary>
+    /// Updates an existing criterion.
+    /// </summary>
+    /// <param name="id">Criterion identifier</param>
+    /// <param name="request">Updated data</param>
+    /// <param name="ct">Cancellation token</param>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> UpdateCriterion(int id, [FromBody] CriterionUpdateRequest request, CancellationToken ct)
+    {
+        var result = await criteriaService.UpdateCriterion(request, ct);
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

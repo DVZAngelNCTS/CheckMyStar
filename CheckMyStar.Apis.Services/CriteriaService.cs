@@ -31,5 +31,10 @@ namespace CheckMyStar.Apis.Services
         {
             return await criteriaBusForService.DeleteCriterion(criterionId, ct);
         }
+
+        public async Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct)
+        {
+            return await criteriaBusForService.UpdateCriterion(request, ct);
+        }
     }
 }
