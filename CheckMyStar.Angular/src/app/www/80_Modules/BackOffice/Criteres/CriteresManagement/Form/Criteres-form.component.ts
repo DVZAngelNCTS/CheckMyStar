@@ -38,19 +38,30 @@ export class CriteresFormComponent implements OnInit, OnChanges {
         basePoints: this.criterion?.basePoints ?? 0,
         typeCode: this.criterion?.typeCode ?? 'X'
       });
+      
+      if (this.criterion !== null) {
+        this.form.controls['criterionId'].disable();
+      } else {
+        this.form.controls['criterionId'].enable();
+      }
     }
   }
 
   getValue(): StarCriterionDetail {
-    return this.form.value as StarCriterionDetail;
+    return this.form.getRawValue() as StarCriterionDetail;
   }
 
-  private buildForm() { 
+  private buildForm() {
+    const isEditMode = this.criterion !== null;
+
     this.form = this.fb.group({
-      criterionId: [this.criterion?.criterionId ?? 0],
+      criterionId: [{ 
+        value: this.criterion?.criterionId ?? 0, 
+        disabled: isEditMode
+      }],
       description: [this.criterion?.description ?? '', Validators.required],
       basePoints: [
-        this.criterion?.basePoints ?? 1, 
+        this.criterion?.basePoints ?? 1,
         [Validators.required, Validators.min(1), Validators.max(10)]
       ],
       typeCode: [this.criterion?.typeCode ?? 'X', Validators.required]

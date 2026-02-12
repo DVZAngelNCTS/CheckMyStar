@@ -155,15 +155,15 @@ namespace CheckMyStar.Dal
 
         public async Task<BaseResult> AddCriterion(Criterion criterion, CancellationToken ct)
         {
-            BaseResult baseResult = new BaseResult();
-
+            var baseResult = new BaseResult();
             try
             {
+                criterion.CriterionId = 0;
+
                 await dbContext.AddAsync(criterion, ct);
+                int affected = await dbContext.SaveChangesAsync(ct);
 
-                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
-
-                if (result)
+                if (affected > 0)
                 {
                     baseResult.IsSuccess = true;
                     baseResult.Message = $"Critère {criterion.Description} ajouté avec succès";
@@ -177,7 +177,7 @@ namespace CheckMyStar.Dal
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = $"Impossible d'ajouter le critère {criterion.Description} : " + ex.Message;
+                baseResult.Message = $"Impossible d'ajouter le critère {criterion.Description} : {ex.Message}";
             }
 
             return baseResult;
@@ -237,6 +237,68 @@ namespace CheckMyStar.Dal
             {
                 result.IsSuccess = false;
                 result.Message = $"Erreur suppression critère : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<BaseResult> UpdateCriterion(Criterion criterion, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var existing = await dbContext.Criterias
+                    .FirstOrDefaultAsync(c => c.CriterionId == criterion.CriterionId, ct);
+
+                if (existing == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Critère {criterion.CriterionId} introuvable.";
+                    return result;
+                }
+
+                existing.Description = criterion.Description;
+                existing.BasePoints = criterion.BasePoints;
+
+                await dbContext.UpdateAsync(existing, ct);
+                await dbContext.SaveChangesAsync(ct);
+
+                result.IsSuccess = true;
+                result.Message = $"Critère {criterion.CriterionId} mis à jour.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur mise à jour critère : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<BaseResult> UpdateStarLevelCriterionType(int criterionId, byte starLevelId, string typeCode, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var link = await dbContext.StarLevelCriterias
+                    .FirstOrDefaultAsync(slc => slc.CriterionId == criterionId && slc.StarLevelId == starLevelId, ct);
+
+                if (link == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Association critère {criterionId} / niveau {starLevelId} introuvable.";
+                    return result;
+                }
+
+                link.TypeCode = typeCode;
+                await dbContext.UpdateAsync(link, ct);
+                await dbContext.SaveChangesAsync(ct);
+
+                result.IsSuccess = true;
+                result.Message = $"Type du critère mis à jour pour le niveau {starLevelId}.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur mise à jour type : {ex.Message}";
             }
             return result;
         }

@@ -11,8 +11,9 @@ import { TableColumn } from '../../../Components/Table/Models/TableColumn.model'
 import { PopupComponent } from '../../../Components/Popup/Popup.component';
 import { RatingContextService } from '../Service/Rating-context.service';
 import { ToastService } from '../../../../90_Services/Toast/Toast.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { CreateCriterionRequest } from '../../../../20_Models/BackOffice/Criteres.model';
+import { CreateCriterionRequest, UpdateCriterionRequest } from '../../../../20_Models/BackOffice/Criteres.model';
 
 @Component({
   selector: 'app-criteres-management-page',
@@ -193,7 +194,7 @@ export class CriteresManagementPageComponent implements OnInit
               'success',
               5000
             );
-            this.loadData();   // recharge la liste
+            this.loadData();
             this.closePopup();
           },
           error: (err) => {
@@ -214,35 +215,77 @@ export class CriteresManagementPageComponent implements OnInit
     const formValue = this.formComponent.getValue();
     
     const request: CreateCriterionRequest = {
-      description: formValue.description,
-      basePoints: formValue.basePoints,
-      starLevels: [
-        {
-          starLevelId: this.starRating,
-          typeCode: formValue.typeCode
-        }
-      ]
+      starCriterion: {
+        description: formValue.description,
+        basePoints: formValue.basePoints
+      },
+      starLevelCriterion: {
+        starLevelId: this.starRating,
+        typeCode: formValue.typeCode
+      }
     };
 
     if (this.popupMode === 'edit') {
-      console.log('EDIT - À implémenter côté API', request);
-      this.loading = false;
-      this.closePopup();
+      if (!this.currentCriterion) return;
+      if (this.formComponent.form.invalid) {
+        this.formComponent.form.markAllAsTouched();
+        return;
+      }
+
+      this.loading = true;
+      const formValue = this.formComponent.getValue();
+
+      const request: UpdateCriterionRequest = {
+        criterionId: this.currentCriterion.criterionId,
+        description: formValue.description,
+        basePoints: formValue.basePoints,
+        typeCode: formValue.typeCode,
+        starLevelId: this.starRating
+      };
+
+      this.criteresBll.updateCriterion$(this.currentCriterion.criterionId, request).subscribe({
+        next: () => {
+          this.loading = false;
+          this.toast.show(
+            this.translate.instant('CriteresSection.EditSuccess'),
+            'success',
+            5000
+          );
+          this.loadData();
+          this.closePopup();
+        },
+        error: (err) => {
+          this.loading = false;
+          this.popupError = err.error?.message || 
+            this.translate.instant('CommonSection.UnknownError');
+        }
+      });
+      return;
     } 
 
     else if (this.popupMode === 'create') {
       this.criteresBll.createCriterion$(request).subscribe({
-        next: (response: any) => {
-          this.loading = false;
-          this.toast.show('Critère créé avec succès', 'success', 5000);
+      next: (response: { isSuccess: boolean; message?: string }) => {
+        this.loading = false;
+        if (response.isSuccess) {
+          this.toast.show(
+            this.translate.instant('CriteresSection.CreateSuccess'),
+            'success',
+            5000
+          );
           this.loadData();
           this.closePopup();
-        },
-        error: (err: any) => {
-          this.loading = false;
-          this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
+        } else {
+          this.popupError = response.message || 
+            this.translate.instant('CommonSection.UnknownError');
         }
-      });
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        this.popupError = err.error?.message || 
+          this.translate.instant('CommonSection.UnknownError');
+      }
+    });
     }
   }
 

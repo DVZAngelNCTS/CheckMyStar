@@ -88,51 +88,38 @@ namespace CheckMyStar.Bll
 
         public async Task<BaseResponse> AddCriterion(StarCriterionModel starCriterionModel, StarLevelCriterionModel starLevelCriterionModel, CancellationToken ct)
         {
-            BaseResponse baseResponse = new BaseResponse();
+            var baseResponse = new BaseResponse();
 
             try
             {
-                CriterionResult criterionResult = await criteresDal.GetNextIdentifier(ct);
+                var starCriterion = mapper.Map<Criterion>(starCriterionModel);
+                starCriterion.CriterionId = 0;
 
-                if (!criterionResult.IsSuccess && criterionResult.Criterion != null)
-                {
-                    var starCriterion = mapper.Map<Criterion>(starCriterionModel);
+                var addCriterionResult = await criteresDal.AddCriterion(starCriterion, ct);
 
-                    starCriterion.CriterionId = criterionResult.Criterion.CriterionId;
-
-                    BaseResult baseResultCriterion = await criteresDal.AddCriterion(starCriterion, ct);
-
-                    if (baseResultCriterion.IsSuccess)
-                    {
-                        var starLevelCriterion = mapper.Map<StarLevelCriterion>(starLevelCriterionModel);
-
-                        starLevelCriterion.CriterionId = starCriterion.CriterionId;
-
-                        BaseResult baseResultLevelCriterion = await criteresDal.AddStarLevelCriterion(starLevelCriterion, ct);
-
-                        if (baseResultLevelCriterion.IsSuccess)
-                        {
-                            baseResponse.IsSuccess = true;
-                            baseResponse.Message = baseResultCriterion.Message + "<br>" + baseResultLevelCriterion.Message;
-                        }
-                        else
-                        {
-                            baseResponse.IsSuccess = false;
-                            baseResponse.Message = baseResultCriterion.Message + "<br>" + baseResultLevelCriterion.Message;
-                        }
-                    }
-                    else
-                    {
-                        baseResponse.IsSuccess = false;
-                        baseResponse.Message = baseResultCriterion.Message;
-                    }
-                }
-                else
+                if (!addCriterionResult.IsSuccess)
                 {
                     baseResponse.IsSuccess = false;
-                    baseResponse.Message = criterionResult.Message;
-
+                    baseResponse.Message = addCriterionResult.Message;
+                    return baseResponse;
                 }
+
+                int newCriterionId = starCriterion.CriterionId;
+
+                var starLevelCriterion = mapper.Map<StarLevelCriterion>(starLevelCriterionModel);
+                starLevelCriterion.CriterionId = newCriterionId;
+
+                var addLinkResult = await criteresDal.AddStarLevelCriterion(starLevelCriterion, ct);
+
+                if (!addLinkResult.IsSuccess)
+                {
+                    baseResponse.IsSuccess = false;
+                    baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message;
+                    return baseResponse;
+                }
+
+                baseResponse.IsSuccess = true;
+                baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message;
             }
             catch (Exception ex)
             {
@@ -148,7 +135,6 @@ namespace CheckMyStar.Bll
             var response = new BaseResponse();
             try
             {
-                // 1. Supprimer les liaisons
                 var deleteLinksResult = await criteresDal.DeleteStarLevelCriterionByCriterionId(criterionId, ct);
                 if (!deleteLinksResult.IsSuccess)
                 {
@@ -157,7 +143,6 @@ namespace CheckMyStar.Bll
                     return response;
                 }
 
-                // 2. Supprimer le critère
                 var deleteCriterionResult = await criteresDal.DeleteCriterion(criterionId, ct);
                 if (!deleteCriterionResult.IsSuccess)
                 {
@@ -173,6 +158,50 @@ namespace CheckMyStar.Bll
             {
                 response.IsSuccess = false;
                 response.Message = $"Erreur lors de la suppression : {ex.Message}";
+            }
+            return response;
+        }
+
+        public async Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct)
+        {
+            var response = new BaseResponse();
+            try
+            {
+                var criterion = new Criterion
+                {
+                    CriterionId = request.CriterionId,
+                    Description = request.Description,
+                    BasePoints = request.BasePoints
+                };
+
+                var updateCriterionResult = await criteresDal.UpdateCriterion(criterion, ct);
+                if (!updateCriterionResult.IsSuccess)
+                {
+                    response.IsSuccess = false;
+                    response.Message = updateCriterionResult.Message;
+                    return response;
+                }
+
+                var updateTypeResult = await criteresDal.UpdateStarLevelCriterionType(
+                    request.CriterionId,
+                    request.StarLevelId,
+                    request.TypeCode,
+                    ct);
+
+                if (!updateTypeResult.IsSuccess)
+                {
+                    response.IsSuccess = false;
+                    response.Message = updateTypeResult.Message;
+                    return response;
+                }
+
+                response.IsSuccess = true;
+                response.Message = $"Critère {request.CriterionId} modifié avec succès.";
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = $"Erreur lors de la modification : {ex.Message}";
             }
             return response;
         }

@@ -10,5 +10,6 @@ namespace CheckMyStar.Apis.Services.Abstractions
         Task<StarCriteriaStatusResponse> GetStarCriteriaStatus(CancellationToken ct);
         Task<BaseResponse> AddCriterion(CriterionSaveRequest request, CancellationToken ct);
         Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct);
+        Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct);
     }
 }
