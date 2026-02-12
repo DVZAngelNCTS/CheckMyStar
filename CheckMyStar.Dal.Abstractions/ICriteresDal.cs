@@ -10,5 +10,7 @@ namespace CheckMyStar.Dal.Abstractions
         Task<StarCriteriasDetailResult> GetStarCriteriaDetails(CancellationToken ct);
         Task<BaseResult> AddStarLevelCriterion(StarLevelCriterion starLevelCriterion, CancellationToken ct);
         Task<BaseResult> AddCriterion(Criterion criterion, CancellationToken ct);
+        Task<BaseResult> DeleteStarLevelCriterionByCriterionId(int criterionId, CancellationToken ct);
+        Task<BaseResult> DeleteCriterion(int criterionId, CancellationToken ct);
     }
 }

@@ -143,81 +143,38 @@ namespace CheckMyStar.Bll
             return baseResponse;
         }
 
-        public async Task<UpdateCriterionResponse> UpdateCriterionAsync(UpdateCriterionRequest request, CancellationToken ct)
+        public async Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct)
         {
-            var updateCriterionResponse = new UpdateCriterionResponse();
-
+            var response = new BaseResponse();
             try
             {
-                // Vérifier que le critère existe
-                var criteriaDetails = await criteresDal.GetStarCriteriaDetails(ct);
-                var existingCriterion = criteriaDetails.StarCriteriaDetails?
-                    .FirstOrDefault(c => c.CriterionId == request.CriterionId);
-
-                if (existingCriterion == null)
+                // 1. Supprimer les liaisons
+                var deleteLinksResult = await criteresDal.DeleteStarLevelCriterionByCriterionId(criterionId, ct);
+                if (!deleteLinksResult.IsSuccess)
                 {
-                    updateCriterionResponse.IsSuccess = false;
-                    updateCriterionResponse.Message = "Le critère n'existe pas.";
-                    return updateCriterionResponse;
+                    response.IsSuccess = false;
+                    response.Message = deleteLinksResult.Message;
+                    return response;
                 }
 
-                if (string.IsNullOrWhiteSpace(request.Description))
+                // 2. Supprimer le critère
+                var deleteCriterionResult = await criteresDal.DeleteCriterion(criterionId, ct);
+                if (!deleteCriterionResult.IsSuccess)
                 {
-                    updateCriterionResponse.IsSuccess = false;
-                    updateCriterionResponse.Message = "La description du critère est obligatoire.";
-                    return updateCriterionResponse;
+                    response.IsSuccess = false;
+                    response.Message = deleteCriterionResult.Message;
+                    return response;
                 }
 
-                if (request.BasePoints <= 0)
-                {
-                    updateCriterionResponse.IsSuccess = false;
-                    updateCriterionResponse.Message = "Les points de base doivent être strictement positifs.";
-                    return updateCriterionResponse;
-                }
-
-                // Mettre à jour le critère
-                var updated = await criteresDal.UpdateCriterionAsync(
-                    request.CriterionId,
-                    request.Description,
-                    request.BasePoints,
-                    ct
-                );
-
-                if (!updated)
-                {
-                    updateCriterionResponse.IsSuccess = false;
-                    updateCriterionResponse.Message = "Échec de la mise à jour du critère.";
-                    return updateCriterionResponse;
-                }
-
-                // Supprimer les anciennes associations
-                await criteresDal.DeleteStarLevelCriteriaAsync(request.CriterionId, ct);
-
-                // Ajouter les nouvelles associations
-                foreach (var sl in request.StarLevels)
-                {
-                    await criteresDal.AddStarLevelCriterionAsync(
-                        sl.StarLevelId,
-                        request.CriterionId,
-                        sl.TypeCode,
-                        ct
-                    );
-                }
-
-                updateCriterionResponse.IsSuccess = true;
-                updateCriterionResponse.Message = "Critère mis à jour avec succès.";
-                updateCriterionResponse.CriterionId = request.CriterionId;
-                updateCriterionResponse.Description = request.Description;
-                updateCriterionResponse.BasePoints = request.BasePoints;
+                response.IsSuccess = true;
+                response.Message = $"Critère {criterionId} supprimé avec succès.";
             }
             catch (Exception ex)
             {
-                updateCriterionResponse.IsSuccess = false;
-                updateCriterionResponse.Message = "Erreur lors de la mise à jour du critère.";
+                response.IsSuccess = false;
+                response.Message = $"Erreur lors de la suppression : {ex.Message}";
             }
-
-            return updateCriterionResponse;
+            return response;
         }
-
     }
 }

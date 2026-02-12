@@ -119,6 +119,8 @@
     "Id": "Id critère",
     "Management": "Gestion des critères",
     "AddCriterion": "Ajouter un critère",
-    "EditCriterion": "Modifier un critère"
+    "EditCriterion": "Modifier un critère",
+    "DeleteSuccess": "Critère supprimé avec succès.",
+    "DeleteAsk": "Êtes-vous sûr de vouloir supprimer le critère :"
   }
 }

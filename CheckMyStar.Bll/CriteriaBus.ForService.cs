@@ -20,5 +20,10 @@ namespace CheckMyStar.Bll
         {
             return this.AddCriterion(request.StarCriterion!, request.StarLevelCriterion!, ct);
         }
+
+        Task<BaseResponse> ICriteriaBusForService.DeleteCriterion(int criterionId, CancellationToken ct)
+        {
+            return this.DeleteCriterion(criterionId, ct);
+        }
     }
 }

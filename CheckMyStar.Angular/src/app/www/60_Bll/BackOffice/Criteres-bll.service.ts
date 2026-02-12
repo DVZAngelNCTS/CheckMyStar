@@ -21,4 +21,8 @@ export class CriteresBllService {
     return this.criteriaDal.createCriterion$(request);
   }
 
+  deleteCriterion$(id: number): Observable<any> {
+    return this.criteriaDal.deleteCriterion$(id);
+  }
+
 }

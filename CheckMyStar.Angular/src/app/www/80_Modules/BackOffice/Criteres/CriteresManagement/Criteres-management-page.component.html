@@ -26,7 +26,8 @@
       <div class="mt-3">
         <app-table 
           [data]="filteredCriteria" 
-          [columns]="columns">
+          [columns]="columns"
+          (delete)="onDelete($event)">
         </app-table>
 
         <div *ngIf="filteredCriteria.length === 0" class="text-center text-muted py-4">

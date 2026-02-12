@@ -53,4 +53,18 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
 
         return Ok(result);
     }
+
+    /// <summary>
+    /// Deletes a criterion by its identifier.
+    /// </summary>
+    /// <param name="id">Criterion identifier</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns>Operation result</returns>
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> DeleteCriterion(int id, CancellationToken ct)
+    {
+        var result = await criteriaService.DeleteCriterion(id, ct);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
 }

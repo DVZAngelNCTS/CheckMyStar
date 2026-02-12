@@ -26,4 +26,8 @@ export class CriteresDalService {
   createCriterion$(request: CreateCriterionRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/Criteria/createcriterion`, request);
   }
+
+  deleteCriterion$(id: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/Criteria/${id}`);
+}
 }

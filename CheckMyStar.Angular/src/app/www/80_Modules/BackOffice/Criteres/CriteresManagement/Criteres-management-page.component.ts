@@ -183,8 +183,25 @@ export class CriteresManagementPageComponent implements OnInit
   onSavePopup(): void 
   {
     if (this.popupMode === 'delete') {
-      console.log('DELETE - À implémenter côté API', this.currentCriterion);
-      this.closePopup();
+       if (!this.currentCriterion) return;
+        this.loading = true;
+        this.criteresBll.deleteCriterion$(this.currentCriterion.criterionId).subscribe({
+          next: () => {
+            this.loading = false;
+            this.toast.show(
+              this.translate.instant('CriteresSection.DeleteSuccess'),
+              'success',
+              5000
+            );
+            this.loadData();   // recharge la liste
+            this.closePopup();
+          },
+          error: (err) => {
+            this.loading = false;
+            this.popupError = err.error?.message || 
+              this.translate.instant('CommonSection.UnknownError');
+          }
+        });
       return;
     }
 

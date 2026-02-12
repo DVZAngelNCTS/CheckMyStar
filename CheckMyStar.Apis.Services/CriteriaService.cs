@@ -27,24 +27,9 @@ namespace CheckMyStar.Apis.Services
             return response;
         }
 
-        public async Task<UpdateCriterionResponse> UpdateCriterionAsync(UpdateCriterionModel model, CancellationToken ct)
+        public async Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct)
         {
-            var request = new UpdateCriterionRequest
-            {
-                CriterionId = model.CriterionId,
-                Description = model.Description,
-                BasePoints = model.BasePoints,
-                StarLevels = model.StarLevels
-                    .Select(sl => new StarLevelCriterionRequest
-                    {
-                        StarLevelId = sl.StarLevelId,
-                        TypeCode = sl.TypeCode
-                    })
-                    .ToList()
-            };
-
-            var response = await criteriaBusForService.UpdateCriterionAsync(request, ct);
-            return response;
+            return await criteriaBusForService.DeleteCriterion(criterionId, ct);
         }
     }
 }
