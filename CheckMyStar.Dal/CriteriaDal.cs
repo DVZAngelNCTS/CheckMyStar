@@ -1,15 +1,63 @@
-﻿using CheckMyStar.Dal.Abstractions;
+﻿using System.Data;
+
+using Microsoft.EntityFrameworkCore;
+
+using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace CheckMyStar.Dal
 {
     public class CriteriaDal(ICheckMyStarDbContext dbContext) : ICriteresDal
     {
+        public async Task<CriterionResult> GetNextIdentifier(CancellationToken ct)
+        {
+            CriterionResult criterionResult = new CriterionResult();
+
+            try
+            {
+                var existingIdentifiers = await (from r in dbContext.Criterias.AsNoTracking()
+                                                 orderby r.CriterionId
+                                                 select r.CriterionId).ToListAsync(ct);
+
+                if (existingIdentifiers.Count == 0)
+                {
+                    criterionResult.IsSuccess = true;
+                    criterionResult.Criterion = new Criterion { CriterionId = 1 };
+                    criterionResult.Message = "Identifiant récupéré avec succès";
+                }
+                else
+                {
+                    int nextIdentifier = 1;
+
+                    foreach (var id in existingIdentifiers)
+                    {
+                        if (id == nextIdentifier)
+                        {
+                            nextIdentifier++;
+                        }
+                        else if (id > nextIdentifier)
+                        {
+                            break;
+                        }
+                    }
+
+                    criterionResult.IsSuccess = true;
+                    criterionResult.Criterion = new Criterion { CriterionId = nextIdentifier };
+                    criterionResult.Message = "Identifiant récupéré avec succès";
+                }
+            }
+            catch (Exception ex)
+            {
+                criterionResult.IsSuccess = false;
+                criterionResult.Message = ex.Message;
+            }
+
+            return criterionResult;
+        }
+
         public async Task<StarCriteriasDetailResult> GetStarCriteriaDetails(CancellationToken ct)
         {
             StarCriteriasDetailResult starCriteriaDetailResult = new StarCriteriasDetailResult();
@@ -97,67 +145,64 @@ namespace CheckMyStar.Dal
             }
         }
 
-        public async Task AddStarLevelCriterionAsync(int starLevelId, int criterionId, string typeCode, CancellationToken ct)
+        public async Task<BaseResult> AddStarLevelCriterion(StarLevelCriterion starLevelCriterion , CancellationToken ct)
         {
+            BaseResult baseResult = new BaseResult();
+
             try
             {
-                var entity = new StarLevelCriterion
+                await dbContext.AddAsync(starLevelCriterion, ct);
+
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
                 {
-                    StarLevelId = (byte)starLevelId,
-                    CriterionId = criterionId,
-                    TypeCode = typeCode
-                };
-
-                await dbContext.AddAsync(entity, ct);
-                await dbContext.SaveChangesAsync(ct);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while linking the criterion to the star level.", ex);
-            }
-        }
-
-        public async Task<bool> UpdateCriterionAsync(int criterionId, string description, decimal basePoints, CancellationToken ct)
-        {
-            try
-            {
-                var criterion = await dbContext.Criterias
-                    .FirstOrDefaultAsync(c => c.CriterionId == criterionId, ct);
-
-                if (criterion == null)
-                    return false;
-
-                criterion.Description = description;
-                criterion.BasePoints = basePoints;
-
-                await dbContext.SaveChangesAsync(ct);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public async Task DeleteStarLevelCriteriaAsync(int criterionId, CancellationToken ct)
-        {
-            try
-            {
-                var starLevelCriteria = await dbContext.StarLevelCriterias
-                    .Where(slc => slc.CriterionId == criterionId)
-                    .ToListAsync(ct);
-
-                foreach (var item in starLevelCriteria)
-                {
-                    dbContext.RemoveAsync(item);
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Niveau de critère {starLevelCriterion.TypeCode} ajouté avec succès";
                 }
-
-                await dbContext.SaveChangesAsync(ct);
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible d'ajouter le niveau de critère {starLevelCriterion.TypeCode}";
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while deleting star level criteria.", ex);
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible d'ajouter le niveau de critère {starLevelCriterion.TypeCode} : " + ex.Message;
             }
+
+            return baseResult;
+        }
+
+        public async Task<BaseResult> AddCriterion(Criterion criterion, CancellationToken ct)
+        {
+            BaseResult baseResult = new BaseResult();
+
+            try
+            {
+                await dbContext.AddAsync(criterion, ct);
+
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
+                {
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Critère {criterion.Description} ajouté avec succès";
+                }
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible d'ajouter le critère {criterion.Description}";
+                }
+            }
+            catch (Exception ex)
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible d'ajouter le critère {criterion.Description} : " + ex.Message;
+            }
+
+            return baseResult;
         }
     }
 }

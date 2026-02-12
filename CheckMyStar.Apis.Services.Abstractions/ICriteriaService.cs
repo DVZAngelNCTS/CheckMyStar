@@ -1,4 +1,5 @@
 ﻿using CheckMyStar.Apis.Services.Models;
+using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Apis.Services.Abstractions
@@ -7,7 +8,6 @@ namespace CheckMyStar.Apis.Services.Abstractions
     {
         Task<StarCriteriaDetailsResponse> GetStarCriteriaDetails(CancellationToken ct);
         Task<StarCriteriaStatusResponse> GetStarCriteriaStatus(CancellationToken ct);
-        Task<CreateCriterionResponse> CreateCriterionAsync(CreateCriterionModel model, CancellationToken ct);
-        Task<UpdateCriterionResponse> UpdateCriterionAsync(UpdateCriterionModel model, CancellationToken ct);
+        Task<BaseResponse> AddCriterion(CriterionSaveRequest request, CancellationToken ct);
     }
 }

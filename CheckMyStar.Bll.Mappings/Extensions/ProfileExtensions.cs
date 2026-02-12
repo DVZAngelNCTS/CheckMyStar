@@ -14,7 +14,8 @@ namespace CheckMyStar.Bll.Mappings.Extensions
                 .AddAutoMapper(typeof(RoleProfile))
                 .AddAutoMapper(typeof(BaseProfile))
                 .AddAutoMapper(typeof(DashboardProfile))
-                .AddAutoMapper(typeof(ActivityProfile));
+                .AddAutoMapper(typeof(ActivityProfile))
+                .AddAutoMapper(typeof(CriteriaProfile));
 
             return services;
         }
