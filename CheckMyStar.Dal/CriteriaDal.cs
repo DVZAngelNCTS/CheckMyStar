@@ -3,6 +3,7 @@ using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace CheckMyStar.Dal
@@ -116,5 +117,47 @@ namespace CheckMyStar.Dal
             }
         }
 
+        public async Task<bool> UpdateCriterionAsync(int criterionId, string description, decimal basePoints, CancellationToken ct)
+        {
+            try
+            {
+                var criterion = await dbContext.Criterias
+                    .FirstOrDefaultAsync(c => c.CriterionId == criterionId, ct);
+
+                if (criterion == null)
+                    return false;
+
+                criterion.Description = description;
+                criterion.BasePoints = basePoints;
+
+                await dbContext.SaveChangesAsync(ct);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task DeleteStarLevelCriteriaAsync(int criterionId, CancellationToken ct)
+        {
+            try
+            {
+                var starLevelCriteria = await dbContext.StarLevelCriterias
+                    .Where(slc => slc.CriterionId == criterionId)
+                    .ToListAsync(ct);
+
+                foreach (var item in starLevelCriteria)
+                {
+                    dbContext.RemoveAsync(item);
+                }
+
+                await dbContext.SaveChangesAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting star level criteria.", ex);
+            }
+        }
     }
 }

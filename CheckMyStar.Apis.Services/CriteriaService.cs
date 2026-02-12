@@ -40,5 +40,25 @@ namespace CheckMyStar.Apis.Services
             var response = await criteriaBusForService.CreateCriterionAsync(request, ct);
             return response;
         }
+
+        public async Task<UpdateCriterionResponse> UpdateCriterionAsync(UpdateCriterionModel model, CancellationToken ct)
+        {
+            var request = new UpdateCriterionRequest
+            {
+                CriterionId = model.CriterionId,
+                Description = model.Description,
+                BasePoints = model.BasePoints,
+                StarLevels = model.StarLevels
+                    .Select(sl => new StarLevelCriterionRequest
+                    {
+                        StarLevelId = sl.StarLevelId,
+                        TypeCode = sl.TypeCode
+                    })
+                    .ToList()
+            };
+
+            var response = await criteriaBusForService.UpdateCriterionAsync(request, ct);
+            return response;
+        }
     }
 }

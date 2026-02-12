@@ -20,7 +20,8 @@
     "Yes": "Oui",
     "No": "Non",
     "UnknownError": "Erreur inconnue",
-    "All": "Tous"
+    "All": "Tous",
+    "NoResults": "Aucun résultat"
   },
   "LoginSection": {
     "Login": "Identifiant",

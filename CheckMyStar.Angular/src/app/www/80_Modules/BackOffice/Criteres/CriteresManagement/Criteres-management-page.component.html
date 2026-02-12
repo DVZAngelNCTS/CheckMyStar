@@ -38,16 +38,27 @@
   </div>
 </div>
 
+<!-- POPUP -->
 <app-popup 
-  *ngIf="showPopup"
-  [title]="popupTitle"
-  (confirm)="onSavePopup()"
+  [visible]="showPopup" 
+  [title]="popupTitle" 
+  [confirmLabel]="popupConfirmLabel" 
+  [cancelLabel]="popupCancelLabel" 
+  [errorMessage]="popupError" 
+  [loading]="loading" 
+  (confirm)="onSavePopup()" 
   (cancel)="closePopup()">
   
-  <app-criteres-form 
-    #formComponent
-    [criterion]="currentCriterion"
-    [readonlyIdentifier]="isEdit">
-  </app-criteres-form>
-  
+  <!-- Mode DELETE -->
+  <ng-container *ngIf="popupMode === 'delete'">
+    <p>{{ 'CriteresSection.DeleteAsk' | translate }} <strong>{{ currentCriterion?.description }}</strong> ?</p>
+  </ng-container>
+
+  <!-- Mode CREATE ou EDIT -->
+  <ng-container *ngIf="popupMode === 'create' || popupMode === 'edit'">
+    <app-criteres-form 
+      [criterion]="currentCriterion" 
+      [readonlyIdentifier]="popupMode === 'edit'">
+    </app-criteres-form>
+  </ng-container>
 </app-popup>

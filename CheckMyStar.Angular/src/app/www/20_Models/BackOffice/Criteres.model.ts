@@ -25,3 +25,14 @@ export interface StarCriteriaDetail {
   starLabel: string;
   criteria: StarCriterionDetail[];
 }
+
+export interface CreateCriterionRequest {
+  description: string;
+  basePoints: number;
+  starLevels: StarLevelAssignment[];
+}
+
+export interface StarLevelAssignment {
+  starLevelId: number;
+  typeCode: string;
+}

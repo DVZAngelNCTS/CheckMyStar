@@ -7,11 +7,11 @@
       <app-field controlName="typeCode" icon="bi bi-tag" label="{{ 'CriteresSection.Type' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
         <select class="form-select" formControlName="typeCode">
           <option value="">{{ 'CommonSection.All' | translate }}</option>
-          <option value="X">Obligatoire</option>
-          <option value="O">À la carte</option>
-          <option value="X ONC">Obligatoire non compensable</option>
-          <option value="NA">Non applicable</option>
-        </select>               
+          <option value="X">X - Obligatoire</option>
+          <option value="O">O - À la carte</option>
+          <option value="X ONC">X ONC - Obligatoire non compensable</option>
+          <option value="NA">NA - Non applicable</option>
+        </select>
       </app-field>
       <app-field controlName="basePoints" icon="bi bi-123" label="{{ 'CriteresSection.Points' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
         <input type="number" class="form-control" formControlName="basePoints">               
