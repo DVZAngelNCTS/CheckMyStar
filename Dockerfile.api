@@ -6,7 +6,7 @@ WORKDIR /src
 COPY . .
 
 # Restaurer toute la solution
-RUN dotnet restore "./CheckMyStar.sln"
+RUN dotnet restore "./CheckMyStar.slnx"
 
 # Publier uniquement l'API
 RUN dotnet publish "./CheckMyStar.Apis/CheckMyStar.Apis.csproj" -c Release -o /app/publish
