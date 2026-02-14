@@ -44,6 +44,25 @@ jobs:
         source: "./*"
         target: ${{ secrets.VPS_PATH }}
 
+    # --- Déployer le DACPAC dans SQL Server Docker ---
+    - name: Deploy DACPAC to SQL Server
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        script: |
+          cd ${{ secrets.VPS_PATH }}/CheckMyStar.Database/bin/Release
+          docker run --rm \
+            -v $(pwd):/dacpac \
+            mcr.microsoft.com/sqlpackage:latest \
+            /Action:Publish \
+            /SourceFile:/dacpac/CheckMyStar.Database.dacpac \
+            /TargetServerName:sqlserver \
+            /TargetUser:sa \
+            /TargetPassword:"@Eb23#Ab28!Mb15$" \
+            /TargetDatabaseName:CheckMyStar
+
     # --- Redémarrer docker-compose ---
     - name: Restart docker-compose on VPS
       uses: appleboy/ssh-action@v0.1.10
