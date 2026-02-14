@@ -25,14 +25,10 @@ jobs:
     - name: Install .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '8.0.x'  
     
-    - name: Install MSBuild
-      uses: microsoft/setup-msbuild@v2
-    
-    - name: Build SQL Project (DACPAC)
-      run: |
-        msbuild ./CheckMyStar.Database/CheckMyStar.Database.sqlproj /t:Build /p:Configuration=Release
+    - name: Build DACPAC
+      run: dotnet build ./CheckMyStar.Database/CheckMyStar.Database.sqlproj -c Release
 
     # --- Copier les fichiers sur le VPS ---
     - name: Upload project to VPS
