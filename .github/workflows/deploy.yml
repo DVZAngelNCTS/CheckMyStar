@@ -101,6 +101,7 @@ jobs:
             /TargetUser:sa \
             /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
             /TargetDatabaseName:CheckMyStar
+            /p:CreateNewDatabase=true
 
     # -----------------------------------------------------
     # Restart docker-compose on VPS
