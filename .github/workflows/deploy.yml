@@ -91,13 +91,13 @@ jobs:
             sleep 5
           done
           echo "SQL Server is ready!"
-
+          
           docker run --rm \
             -v $(pwd):/dacpac \
             mcr.microsoft.com/sqlpackage:preview-ubuntu-22.04 \
             /Action:Publish \
             /SourceFile:/dacpac/*.dacpac \
-            /TargetServerName:sqlserver \
+            /TargetServerName:51.38.33.23 \
             /TargetUser:sa \
             /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
             /TargetDatabaseName:CheckMyStar
