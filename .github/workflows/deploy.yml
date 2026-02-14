@@ -79,9 +79,19 @@ jobs:
         key: ${{ secrets.VPS_KEY }}
         script: |
           cd ${{ secrets.VPS_PATH }}/dacpac
+
+          echo "Waiting for SQL Server to be ready..."
+          until docker exec sqlserver /opt/mssql-tools/bin/sqlcmd \
+            -S localhost -U sa -P "${{ secrets.DB_PASSWORD }}" -Q "SELECT 1" > /dev/null 2>&1
+          do
+            echo "SQL Server not ready yet..."
+            sleep 5
+          done
+          echo "SQL Server is ready!"
+
           docker run --rm \
             -v $(pwd):/dacpac \
-            mcr.microsoft.com/sqlpackage/linux:latest \
+            mcr.microsoft.com/sqlpackage:preview-ubuntu-22.04 \
             /Action:Publish \
             /SourceFile:/dacpac/*.dacpac \
             /TargetServerName:sqlserver \
