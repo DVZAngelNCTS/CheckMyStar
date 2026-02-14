@@ -81,7 +81,7 @@ jobs:
           cd ${{ secrets.VPS_PATH }}/dacpac
           docker run --rm \
             -v $(pwd):/dacpac \
-            mcr.microsoft.com/sqlpackage:162.0.52.1 \
+            mcr.microsoft.com/sqlpackage/linux:latest \
             /Action:Publish \
             /SourceFile:/dacpac/*.dacpac \
             /TargetServerName:sqlserver \
