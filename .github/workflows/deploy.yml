@@ -81,10 +81,10 @@ jobs:
           cd ${{ secrets.VPS_PATH }}/dacpac
 
           echo "Waiting for SQL Server to be ready..."
-          until docker run --rm --network host \
+          until docker run --rm \
             mcr.microsoft.com/mssql-tools \
             /opt/mssql-tools/bin/sqlcmd \
-              -S localhost -U sa -P "${{ secrets.DB_PASSWORD }}" \
+              -S 51.38.33.23 -U sa -P "${{ secrets.DB_PASSWORD }}" \
               -Q "SELECT 1" > /dev/null 2>&1
           do
             echo "SQL Server not ready yet..."
