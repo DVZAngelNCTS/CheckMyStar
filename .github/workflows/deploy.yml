@@ -15,7 +15,7 @@ jobs:
     # --- Build Docker images ---
     - name: Build API Docker image
       run: |
-        docker build -t checkmystar-api -f Dockerfile.api
+        docker build -t checkmystar-api -f Dockerfile.api .
 
     - name: Build Angular Docker image
       run: |
