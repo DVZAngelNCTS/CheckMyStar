@@ -2,35 +2,55 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ "master" ]   # ou "main" selon ton repo
+    branches: [ "master" ]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+
+  # --- JOB 1 : Build DACPAC (Windows) ---
+  build-dacpac:
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build DACPAC
+      run: msbuild ./CheckMyStar.Database/CheckMyStar.Database.sqlproj /p:Configuration=Release
+
+    - name: Upload DACPAC artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: dacpac
+        path: CheckMyStar.Database/bin/Release/*.dacpac
+
+
+  # --- JOB 2 : Build Docker + Deploy (Linux) ---
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-dacpac
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Télécharger le DACPAC compilé par le job Windows
+    - name: Download DACPAC
+      uses: actions/download-artifact@v3
+      with:
+        name: dacpac
+        path: dacpac
+
     # --- Build Docker images ---
     - name: Build API Docker image
-      run: |
-        docker build -t checkmystar-api -f Dockerfile.api .
+      run: docker build -t checkmystar-api -f Dockerfile.api .
 
     - name: Build Angular Docker image
-      run: |
-        docker build -t checkmystar-angular ./CheckMyStar.Angular
+      run: docker build -t checkmystar-angular ./CheckMyStar.Angular
 
-    # -- Database -- #
-    - name: Install .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'  
-    
-    - name: Build DACPAC
-      run: dotnet build ./CheckMyStar.Database/CheckMyStar.Database.sqlproj -c Release
-
-    # --- Copier les fichiers sur le VPS ---
+    # --- Upload files to VPS ---
     - name: Upload project to VPS
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -40,7 +60,7 @@ jobs:
         source: "./*"
         target: ${{ secrets.VPS_PATH }}
 
-    # --- Déployer le DACPAC dans SQL Server Docker ---
+    # --- Deploy DACPAC ---
     - name: Deploy DACPAC to SQL Server
       uses: appleboy/ssh-action@v0.1.10
       with:
@@ -48,18 +68,18 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_KEY }}
         script: |
-          cd ${{ secrets.VPS_PATH }}/CheckMyStar.Database/bin/Release
+          cd ${{ secrets.VPS_PATH }}/dacpac
           docker run --rm \
             -v $(pwd):/dacpac \
             mcr.microsoft.com/sqlpackage:latest \
             /Action:Publish \
-            /SourceFile:/dacpac/CheckMyStar.Database.dacpac \
+            /SourceFile:/dacpac/*.dacpac \
             /TargetServerName:sqlserver \
             /TargetUser:sa \
-            /TargetPassword:"@Eb23#Ab28!Mb15$" \
+            /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
             /TargetDatabaseName:CheckMyStar
 
-    # --- Redémarrer docker-compose ---
+    # --- Restart docker-compose ---
     - name: Restart docker-compose on VPS
       uses: appleboy/ssh-action@v0.1.10
       with:
