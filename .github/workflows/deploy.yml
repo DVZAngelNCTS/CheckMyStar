@@ -1,0 +1,44 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ "master" ]   # ou "main" selon ton repo
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # --- Build Docker images ---
+    - name: Build API Docker image
+      run: |
+        docker build -t checkmystar-api ./CheckMyStar.Apis
+
+    - name: Build Angular Docker image
+      run: |
+        docker build -t checkmystar-angular ./CheckMyStar.Angular
+
+    # --- Copier les fichiers sur le VPS ---
+    - name: Upload project to VPS
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        source: "./*"
+        target: ${{ secrets.VPS_PATH }}
+
+    # --- Redémarrer docker-compose ---
+    - name: Restart docker-compose on VPS
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        script: |
+          cd ${{ secrets.VPS_PATH }}
+          docker compose down
+          docker compose up -d --build
