@@ -94,7 +94,7 @@ jobs:
           
           docker run --rm \
             -v $(pwd):/dacpac \
-            mcr.microsoft.com/sqlpackage:ubuntu-22.04 \
+            mcr.microsoft.com/sqlpackage:latest \
             /Action:Publish \
             /SourceFile:/dacpac/*.dacpac \
             /TargetServerName:51.38.33.23 \
