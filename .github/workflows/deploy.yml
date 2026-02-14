@@ -21,6 +21,19 @@ jobs:
       run: |
         docker build -t checkmystar-angular ./CheckMyStar.Angular
 
+    # -- Database -- #
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Install MSBuild
+      uses: microsoft/setup-msbuild@v2
+    
+    - name: Build SQL Project (DACPAC)
+      run: |
+        msbuild ./CheckMyStar.Database/CheckMyStar.Database.sqlproj /t:Build /p:Configuration=Release
+
     # --- Copier les fichiers sur le VPS ---
     - name: Upload project to VPS
       uses: appleboy/scp-action@v0.1.4
