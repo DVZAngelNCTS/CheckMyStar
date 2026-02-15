@@ -42,7 +42,7 @@ jobs:
             echo "📦 Publishing DACPAC"
             sqlpackage \
               /Action:Publish \
-              /SourceFile:/var/www/checkmystar/dacpac/CheckMyStar.dacpac \
+              /SourceFile:/var/www/checkmystar/dacpac/CheckMyStar.Database.dacpac \
               /TargetServerName:${{ secrets.DB_HOST }} \
               /TargetUser:sa \
               /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
