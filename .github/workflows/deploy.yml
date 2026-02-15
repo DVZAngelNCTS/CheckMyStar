@@ -39,9 +39,6 @@ jobs:
             echo "🐳 Rebuilding containers"
             docker compose up -d --build
 
-            echo "🔧 Fixing sqlpackage permissions"
-            chmod +x /home/ubuntu/sqlpackage/sqlpackage
-
             echo "📦 Publishing DACPAC"
             sqlpackage \
               /Action:Publish \
