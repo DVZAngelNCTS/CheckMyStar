@@ -43,7 +43,7 @@ jobs:
             chmod +x /home/ubuntu/sqlpackage/sqlpackage
 
             echo "📦 Publishing DACPAC"
-            /home/ubuntu/sqlpackage/sqlpackage \
+            sqlpackage \
               /Action:Publish \
               /SourceFile:/var/www/checkmystar/dacpac/CheckMyStar.dacpac \
               /TargetServerName:${{ secrets.DB_HOST }} \
