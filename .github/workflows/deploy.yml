@@ -1,9 +1,8 @@
-# Script de déploiement
 name: Deploy CheckMyStar
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   deploy:
