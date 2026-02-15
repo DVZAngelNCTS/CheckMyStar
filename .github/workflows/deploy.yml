@@ -1,118 +1,53 @@
-name: Deploy to VPS
+name: Deploy CheckMyStar
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
-
-  # ---------------------------------------------------------
-  # JOB 1 : Build DACPAC (Windows)
-  # ---------------------------------------------------------
-  build-dacpac:
-    runs-on: windows-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Build DACPAC
-      run: msbuild ./CheckMyStar.Database/CheckMyStar.Database.sqlproj /p:Configuration=Release
-
-    - name: Upload DACPAC artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: dacpac
-        path: CheckMyStar.Database/bin/Release/*.dacpac
-
-
-  # ---------------------------------------------------------
-  # JOB 2 : Build Docker + Deploy (Linux)
-  # ---------------------------------------------------------
   deploy:
     runs-on: ubuntu-latest
-    needs: build-dacpac
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Télécharger le DACPAC compilé par le job Windows
-    - name: Download DACPAC
-      uses: actions/download-artifact@v4
-      with:
-        name: dacpac
-        path: dacpac
-
-    # -----------------------------------------------------
-    # Build Docker images
-    # -----------------------------------------------------
-    - name: Build API Docker image
-      run: docker build -t checkmystar-api -f Dockerfile.api .
-
-    - name: Build Angular Docker image
-      run: docker build -t checkmystar-angular ./CheckMyStar.Angular
-
-    # -----------------------------------------------------
-    # Upload project to VPS
-    # -----------------------------------------------------
-    - name: Upload project to VPS
-      uses: appleboy/scp-action@v0.1.4
+    # 1) Copier tout le projet sur ton VPS
+    - name: Copy project to VPS
+      uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_KEY }}
-        source: "./*"
+        key: ${{ secrets.VPS_SSH_KEY }}
+        source: "."
         target: ${{ secrets.VPS_PATH }}
 
-    # -----------------------------------------------------
-    # Deploy DACPAC to SQL Server Docker
-    # -----------------------------------------------------
-    - name: Deploy DACPAC to SQL Server
+    # 2) SSH dans le VPS pour :
+    # - reconstruire docker-compose
+    # - publier le DACPAC via sqlpackage installé sur le VPS
+    - name: Deploy on VPS
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_KEY }}
+        key: ${{ secrets.VPS_SSH_KEY }}
         script: |
-          cd ${{ secrets.VPS_PATH }}/dacpac
+          cd ${{ secrets.VPS_PATH }}
 
-          echo "Waiting for SQL Server to be ready..."
-          until docker run --rm \
-            mcr.microsoft.com/mssql-tools \
-            /opt/mssql-tools/bin/sqlcmd \
-              -S 51.38.33.23 -U sa -P "${{ secrets.DB_PASSWORD }}" \
-              -Q "SELECT 1" > /dev/null 2>&1
-          do
-            echo "SQL Server not ready yet..."
-            sleep 5
-          done
-          echo "SQL Server is ready!"
-          
-          docker run --rm \
-            -v $(pwd):/dacpac \
-            mcr.microsoft.com/sqlpackage:ubuntu-22.04 \
+          echo "Stopping old containers..."
+          docker compose down || true
+
+          echo "Rebuilding containers..."
+          docker compose up -d --build
+
+          echo "Publishing DACPAC..."
+          /home/ubuntu/sqlpackage/sqlpackage \
             /Action:Publish \
-            /SourceFile:/dacpac/*.dacpac \
+            /SourceFile:${{ secrets.VPS_PATH }}/dacpac/CheckMyStar.dacpac \
             /TargetServerName:51.38.33.23 \
             /TargetUser:sa \
             /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
             /TargetDatabaseName:CheckMyStar \
             /p:CreateNewDatabase=true
 
-    # -----------------------------------------------------
-    # Restart docker-compose on VPS
-    # -----------------------------------------------------
-    - name: Restart docker-compose on VPS
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_KEY }}
-        script: |
-          cd ${{ secrets.VPS_PATH }}
-          docker compose down
-          docker compose up -d --build
+          echo "Deployment complete!"
