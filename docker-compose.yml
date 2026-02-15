@@ -4,7 +4,7 @@ services:
 
   api:
     build:
-      context: ./CheckMyStar.Api
+      context: ./CheckMyStar.Apis
       dockerfile: Dockerfile
     container_name: checkmystar-api
     ports:
