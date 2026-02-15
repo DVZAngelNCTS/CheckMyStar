@@ -1,4 +1,4 @@
-name: Deploy CheckMyStar
+name: Deploy to VPS
 
 on:
   push:
@@ -9,45 +9,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # 1) Copier tout le projet sur ton VPS
-    - name: Copy project to VPS
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_KEY }}
-        source: "."
-        target: ${{ secrets.VPS_PATH }}
+      # --- COPY PROJECT TO VPS ---
+      - name: Copy project to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "./*"
+          target: "/var/www/checkmystar"
 
-    # 2) SSH dans le VPS pour :
-    # - reconstruire docker-compose
-    # - publier le DACPAC via sqlpackage installé sur le VPS
-    - name: Deploy on VPS
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_KEY }}
-        script: |
-          cd ${{ secrets.VPS_PATH }}
+      # --- DEPLOY ON VPS ---
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "📁 Moving to project directory"
+            cd /var/www/checkmystar
 
-          echo "Stopping old containers..."
-          docker compose down || true
+            echo "🐳 Stopping old containers"
+            docker compose down || true
 
-          echo "Rebuilding containers..."
-          docker compose up -d --build
+            echo "🐳 Rebuilding containers"
+            docker compose up -d --build
 
-          echo "Publishing DACPAC..."
-          /home/ubuntu/sqlpackage/sqlpackage \
-            /Action:Publish \
-            /SourceFile:${{ secrets.VPS_PATH }}/dacpac/CheckMyStar.dacpac \
-            /TargetServerName:51.38.33.23 \
-            /TargetUser:sa \
-            /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
-            /TargetDatabaseName:CheckMyStar \
-            /p:CreateNewDatabase=true
+            echo "🔧 Fixing sqlpackage permissions"
+            sudo chmod +x /home/ubuntu/sqlpackage/sqlpackage
 
-          echo "Deployment complete!"
+            echo "📦 Publishing DACPAC"
+            /home/ubuntu/sqlpackage/sqlpackage \
+              /Action:Publish \
+              /SourceFile:/var/www/checkmystar/dacpac/CheckMyStar.dacpac \
+              /TargetServerName:${{ secrets.DB_HOST }} \
+              /TargetUser:sa \
+              /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
+              /TargetDatabaseName:CheckMyStar \
+              /p:CreateNewDatabase=true
+
+            echo "✅ Deployment complete!"
