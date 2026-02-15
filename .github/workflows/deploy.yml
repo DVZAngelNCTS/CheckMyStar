@@ -100,7 +100,7 @@ jobs:
             /TargetServerName:51.38.33.23 \
             /TargetUser:sa \
             /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
-            /TargetDatabaseName:CheckMyStar
+            /TargetDatabaseName:CheckMyStar \
             /p:CreateNewDatabase=true
 
     # -----------------------------------------------------
