@@ -48,7 +48,7 @@ jobs:
               /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
               /TargetDatabaseName:CheckMyStar \
               /p:CreateNewDatabase=true \
-              /p:Encrypt=False \
-              /p:TrustServerCertificate=True
+              /TargetEncryptConnection:false \
+              /TargetTrustServerCertificate:true
 
             echo "✅ Deployment complete!"
