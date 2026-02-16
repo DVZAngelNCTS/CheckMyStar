@@ -8,7 +8,7 @@ namespace CheckMyStar.Bll.Models
         public EnumCivility Civility { get; set; }
         public string LastName { get; set; } = null!;
         public string FirstName { get; set; } = null!;
-        public string? Society { get; set; }
+        public int? SocietyIdentifier { get; set; }
         public string Email { get; set; } = null!;
         public string? Phone { get; set; }
         public string Password { get; set; } = null!;

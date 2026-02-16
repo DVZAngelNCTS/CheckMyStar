@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Data.Abstractions;
-using CheckMyStar.Dal.Abstractions;
+﻿using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
-using CheckMyStar.Dal.Models;
+using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CheckMyStar.Dal
 {
@@ -104,7 +104,7 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<UserResult> GetUser(string lastName, string firstName, string? society, string email, string? phone, CancellationToken ct)
+        public async Task<UserResult> GetUser(string lastName, string firstName, int? SocietyIdentifier, string email, string? phone, CancellationToken ct)
         {
             UserResult userResult = new UserResult();
 
@@ -114,7 +114,7 @@ namespace CheckMyStar.Dal
                                   where
                                       r.LastName == lastName
                                    && r.FirstName == firstName
-                                   && (!string.IsNullOrEmpty(society) && r.Society == society)
+                                   //&& (!string.IsNullOrEmpty(society) && r.Society == society)
                                    && r.Email == email
                                    && (!string.IsNullOrEmpty(phone) && r.Phone == phone)
                                   select r).FirstOrDefaultAsync(ct);
@@ -131,7 +131,7 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct)
+        public async Task<UsersResult> GetUsers(string lastName, string firstName, int SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct)
         {
             UsersResult userResult = new UsersResult();
 
@@ -143,7 +143,7 @@ namespace CheckMyStar.Dal
                                    where
                                       (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
                                    && (string.IsNullOrEmpty(firstName) || u.LastName.Contains(firstName))
-                                   && (string.IsNullOrEmpty(society) || u.LastName.Contains(society))
+                                   && (SocietyIdentifier == null || u.SocietyIdentifier == SocietyIdentifier)
                                    && (string.IsNullOrEmpty(email) || u.LastName.Contains(email))
                                    && (string.IsNullOrEmpty(phone) || u.LastName.Contains(phone))
                                    && (role == null || u.RoleIdentifier == role)
