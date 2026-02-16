@@ -14,11 +14,15 @@ var version = typeof(Program).Assembly.GetName().Version;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string[] allowedOrigins = builder.Environment.IsDevelopment()
+    ? new[] { "http://checkmystar.site.local:50477" }
+    : new[] { "http://51.38.33.23" };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://checkmystar.site.local:50477")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
