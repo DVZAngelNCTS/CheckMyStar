@@ -11,7 +11,7 @@ services:
       - "5109:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=CheckMyStar;User Id=sa;Password=@Eb23#Ab28%Mb15!;TrustServerCertificate=True;"
+      ConnectionStrings__CheckMyStarConnection: "Server=sqlserver;Database=CheckMyStar;User Id=sa;Password=@Eb23#Ab28%Mb15!;TrustServerCertificate=True;"
     depends_on:
       - sqlserver
     restart: always
