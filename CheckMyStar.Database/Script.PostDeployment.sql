@@ -316,6 +316,38 @@ BEGIN
 END
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES 
+           WHERE TABLE_SCHEMA = 'dbo' 
+           AND TABLE_NAME = 'Address')
+BEGIN
+    DECLARE @CountryIdentifier INT;
+    SELECT @CountryIdentifier = Identifier FROM dbo.Country WHERE Code = 'FR';
+
+    INSERT INTO dbo.[Address] ([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdateDate])
+    SELECT
+        x.[Identifier],
+        x.[Number],
+        x.[AddressLine],
+        x.[City],
+        x.[ZipCode],
+        x.[Region],
+        x.[CountryIdentifier],
+        x.[CreatedDate],
+        x.[UpdatedDate]
+    FROM
+    (
+        VALUES
+            (1, '', '', '', '', '', @CountryIdentifier, GETDATE(), GETDATE()),
+            (2, '', '', '', '', '', @CountryIdentifier, GETDATE(), GETDATE())
+    ) AS x([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdateDate])
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM dbo.[Address] r
+        WHERE r.[Identifier] = x.[Identifier]
+    );
+END
+GO
+
 IF  EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES 
            WHERE TABLE_SCHEMA = 'dbo' 
            AND TABLE_NAME = 'User')
@@ -345,8 +377,8 @@ BEGIN
     FROM
     (
         VALUES
-            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL, 1, 0, GETDATE(), GETDATE()),
-            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL, 1, 0, GETDATE(), GETDATE())
+            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, 1, 1, 0, GETDATE(), GETDATE()),
+            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, 2, 1, 0, GETDATE(), GETDATE())
     ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection], [CreatedDate], [UpdatedDate])
     WHERE NOT EXISTS (
         SELECT 1
