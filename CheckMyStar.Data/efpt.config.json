@@ -47,6 +47,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Society]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[StarLevel]",
          "ObjectType": 0
       },

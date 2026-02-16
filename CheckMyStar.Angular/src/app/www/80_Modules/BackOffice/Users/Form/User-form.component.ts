@@ -38,7 +38,8 @@ export class UserFormComponent implements OnInit, OnChanges {
     private countryBll: CountryBllService,
     private addressBll: AddressBllService,
     private userBll: UserBllService,
-    private societyBll: SocietyBllService
+    private societyBll: SocietyBllService,
+    private authenticateService: AuthenticateService
   ) {}
 
   societies: any[] = [];
