@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Data;
-using CheckMyStar.Data.Abstractions;
 
 namespace CheckMyStar.Bll.Mappings;
 
