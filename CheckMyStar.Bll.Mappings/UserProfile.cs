@@ -20,7 +20,7 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.LastName, opts => opts.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society))
+                .ForMember(dest => dest.SocietyIdentifier, opts => opts.MapFrom(src => src.SocietyIdentifier))
                 .ForMember(dest => dest.Civility, opts => opts.MapFrom(src => src.CivilityIdentifier.ToEnum<EnumCivility>()))
                 .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.RoleIdentifier.ToEnum<EnumRole>()))
                 .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive));
@@ -32,7 +32,7 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.LastName, opts => opts.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.Password, opts => opts.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Phone, opts => opts.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.Society, opts => opts.MapFrom(src => src.Society))
+                .ForMember(dest => dest.SocietyIdentifier, opts => opts.MapFrom(src => src.SocietyIdentifier))
                 .ForMember(dest => dest.CivilityIdentifier, opts => opts.MapFrom(src => src.Civility.ToInt()))
                 .ForMember(dest => dest.RoleIdentifier, opts => opts.MapFrom(src => src.Role.ToInt()))
                 .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive));

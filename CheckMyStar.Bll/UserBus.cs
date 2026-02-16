@@ -37,13 +37,13 @@ namespace CheckMyStar.Bll
             return userResult;
         }
 
-        public async Task<UsersResponse> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct)
+        public async Task<UsersResponse> GetUsers(string lastName, string firstName, int SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct)
         {
             UsersResponse usersResponse = new UsersResponse();
 
             usersResponse.Users = new List<UserModel>();
 
-            var users = await userDal.GetUsers(lastName, firstName, society, email, phone, address, role, ct);
+            var users = await userDal.GetUsers(lastName, firstName, SocietyIdentifier, email, phone, address, role, ct);
 
             if (users.IsSuccess && users.Users != null)
             {
@@ -82,7 +82,7 @@ namespace CheckMyStar.Bll
             {
                 if (user.User == null)
                 {
-                    user = await userDal.GetUser(userModel.LastName, userModel.FirstName, userModel.Society, userModel.Email, userModel.Phone, ct);
+                    user = await userDal.GetUser(userModel.LastName, userModel.FirstName, userModel.SocietyIdentifier, userModel.Email, userModel.Phone, ct);
 
                     if (user.IsSuccess)
                     {

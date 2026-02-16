@@ -14,6 +14,7 @@ namespace CheckMyStar.Data
         IQueryable<StarLevelCriterion> ICheckMyStarDbContext.StarLevelCriterias => this.StarLevelCriteria;
         IQueryable<Criterion> ICheckMyStarDbContext.Criterias => this.Criteria;
         IQueryable<CriterionType> ICheckMyStarDbContext.CriterionTypes => this.CriterionTypes;
+        IQueryable<Society> ICheckMyStarDbContext.Societies => this.Societies;
 
         public Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
         {
