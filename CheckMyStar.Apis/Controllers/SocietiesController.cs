@@ -1,8 +1,13 @@
-﻿using CheckMyStar.Apis.Services.Abstractions;
-using CheckMyStar.Bll.Requests;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using CheckMyStar.Apis.Services.Abstractions;
+using CheckMyStar.Bll.Requests;
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="societyService"></param>
 [ApiController]
 [Route("api/[controller]")]
 public class SocietiesController(ISocietyService societyService) : ControllerBase
@@ -18,6 +23,7 @@ public class SocietiesController(ISocietyService societyService) : ControllerBas
     public async Task<IActionResult> CreateSociety([FromBody] SocietyCreateRequest request, CancellationToken ct)
     {
         var result = await societyService.CreateSociety(request, ct);
+
         return Ok(result);
     }
 
@@ -30,6 +36,7 @@ public class SocietiesController(ISocietyService societyService) : ControllerBas
     public async Task<IActionResult> GetSocieties(CancellationToken ct)
     {
         var result = await societyService.GetSocieties(ct);
+
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

@@ -1,0 +1,16 @@
+<div class="d-flex flex-row flex-nowrap">
+    <div class="mx-auto">                        
+        <form [formGroup]="form" (ngSubmit)="submit()" class="p-4 border rounded login-form">
+            <img src="../../../../../../Assets/Images/Logo 350.png" alt="Logo" class="login-logo mb-4">
+            <h4 class="text-center mb-4 text-white">{{ 'LoginSection.ResetPassword' | translate }}</h4>
+            <app-field controlName="email" icon="bi bi-envelope-at" label="{{ 'LoginSection.Email' | translate }}" labelClass="w-9rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                <div class="input-group">
+                    <input type="email" class="form-control" formControlName="email" required> 
+                </div>      
+            </app-field>
+            <button class="btn btn-primary w-100 mt-3" type="submit">
+                {{ 'LoginSection.SendResetLink' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

@@ -16,13 +16,23 @@ public interface IAuthenticateService
     /// Asynchronously validates the specified user request and retrieves the corresponding user if validation succeeds.
     /// </summary>
     /// <param name="request">The user request containing the criteria used to identify and validate the user. Cannot be null.</param>
+    /// <param name="ct">The cancellation operation token</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the request is
     /// valid and a matching user is found; otherwise, null.</returns>
     Task<UserResponse> ValidateUserAsync(LoginGetRequest request, CancellationToken ct);
     /// <summary>
+    /// Asynchronously validates the specified user request and retrieves the corresponding user if validation succeeds.
+    /// </summary>
+    /// <param name="request">he user request containing the criteria used to identify and validate the user. Cannot be null.</param>
+    /// <param name="ct">The cancellation operation token</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the request is
+    /// valid and a matching user is found; otherwise, null.</returns>
+    Task<UserResponse> ValidateUserAsync(PasswordGetRequest request, CancellationToken ct);
+    /// <summary>
     /// Asynchronously validates refresh token
     /// </summary>
     /// <param name="refreshToken">The refreshToken</param>
+    /// <param name="ct">The cancellation operation token</param>
     /// <returns></returns>
     Task<UserResponse?> ValidateRefreshTokenAsync(string refreshToken, CancellationToken ct);
     /// <summary>

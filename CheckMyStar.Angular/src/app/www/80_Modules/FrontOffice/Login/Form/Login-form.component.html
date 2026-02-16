@@ -6,15 +6,25 @@
                 <input type="text" class="form-control" formControlName="login" required>               
             </app-field>
             <app-field controlName="password" icon="bi bi-lock" label="{{ 'LoginSection.Password' | translate }}" labelClass="w-9rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="password" class="form-control" formControlName="password" required>               
-            </app-field>                
+                <div class="input-group">
+                    <input [type]="passwordVisible ? 'text' : 'password'" class="form-control" formControlName="password" required>
+                    <button type="button" class="btn btn-primary" (click)="togglePasswordVisibility()">
+                        <i class="bi" [ngClass]="passwordVisible ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </button>  
+                </div>      
+            </app-field>
             <button type="submit" class="btn btn-primary w-100 mt-3 d-flex align-items-center justify-content-center gap-2" [disabled]="loading">
                 <app-loader-mini *ngIf="loading"></app-loader-mini>
                 <span>
-                    <i class="bi bi-door-open"></i>
+                    <i class="bi bi-door-open me-2"></i>
                     {{ 'LoginSection.Connect' | translate }}
                 </span>
             </button>
+            <div class="text-center mt-2">
+                <a class="text-white text-decoration-underline" [routerLink]="['/forgot-password']">
+                    {{ 'LoginSection.ForgotPassword' | translate }}
+                </a>
+            </div>
             <div *ngIf="errorMessage" class="error-message text-center mt-3"> {{ errorMessage }} </div>
         </form>
     </div>

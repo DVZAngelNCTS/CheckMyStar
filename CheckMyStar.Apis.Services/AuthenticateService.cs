@@ -45,6 +45,26 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
         return user;
     }
 
+    /// <summary>
+    /// Asynchronously validates a user's change password credentials based on the specified request.
+    /// </summary>
+    /// <param name="request">An object containing the user's identification and credential information to be validated. Cannot be null.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the validated user if the
+    /// credentials are correct; otherwise, null.</returns>
+    public async Task<UserResponse> ValidateUserAsync(PasswordGetRequest request, CancellationToken ct)
+    {
+        string oldPassword = request.OldPassword;        
+
+        var user = await userBusForService.GetUser(request, ct);
+
+        if (user.IsSuccess && user.User != null)
+        {
+            user.IsValid = true;
+        }
+
+        return user;
+    }
+
     public Task<UserResponse?> ValidateRefreshTokenAsync(string refreshToken, CancellationToken ct)
     {
         if (RefreshTokens.TryGetValue(refreshToken, out var user))
