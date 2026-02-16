@@ -112,7 +112,7 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Initialising {ApplicationName} v{Version}", applicationName, version);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.MapOpenApi();
     app.UseSwaggerUI(options =>
@@ -120,6 +120,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "CheckMyStar API v1");
     });
 }
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
