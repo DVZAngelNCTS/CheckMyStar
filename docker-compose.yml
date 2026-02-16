@@ -14,6 +14,8 @@ services:
       ConnectionStrings__CheckMyStarConnection: "Server=sqlserver;Database=CheckMyStar;User Id=sa;Password=@Eb23#Ab28%Mb15!;TrustServerCertificate=True;"
     depends_on:
       - sqlserver
+    volumes:
+      - ./dacpac:/dacpac
     restart: always
 
   angular:
