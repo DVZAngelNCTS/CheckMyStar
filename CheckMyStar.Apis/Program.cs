@@ -42,7 +42,17 @@ builder.Logging
         options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
     });
 
-builder.WebHost.UseIIS();
+if (builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseIIS();
+}
+else
+{
+    builder.WebHost.ConfigureKestrel(serverOptions =>
+    {
+        serverOptions.ListenAnyIP(8080);
+    });
+}
 
 builder.Services
     .AddEndpointsApiExplorer()
