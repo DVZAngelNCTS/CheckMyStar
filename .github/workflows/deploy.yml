@@ -16,11 +16,9 @@ jobs:
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
+          username: ${{ secrets.VPS_USER }}   # DOIT être "deploy"
           key: ${{ secrets.VPS_KEY }}
           script: |
-            sudo -u deploy bash << 'EOF'
-
             echo "📁 Updating repository"
             git config --global --add safe.directory /var/www/checkmystar
             cd /var/www/checkmystar
@@ -47,4 +45,3 @@ jobs:
               /TargetTrustServerCertificate:true
 
             echo "✅ Deployment complete!"
-            EOF
