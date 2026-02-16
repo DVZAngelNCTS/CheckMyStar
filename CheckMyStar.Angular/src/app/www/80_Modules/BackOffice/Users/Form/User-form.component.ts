@@ -11,6 +11,7 @@ import { CountryBllService } from '../../../../60_Bll/BackOffice/Country-bll.ser
 import { CountryModel } from '../../../../20_Models/Common/Country.model';
 import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll.service';
 import { UserBllService } from '../../../../60_Bll/BackOffice/User-bll.service';
+import { SocietyBllService } from '../../../../60_Bll/BackOffice/Society-bll.service';
 
 @Component({
   selector: 'app-user-form',
@@ -31,11 +32,20 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   countries: CountryModel[] = [];
 
-  constructor(private fb: FormBuilder, private countryBll: CountryBllService, private addressBll: AddressBllService, private userBll: UserBllService) {}
+  constructor(
+    private fb: FormBuilder,
+    private countryBll: CountryBllService,
+    private addressBll: AddressBllService,
+    private userBll: UserBllService,
+    private societyBll: SocietyBllService
+  ) {}
+
+  societies: any[] = [];
 
   ngOnInit() {
     this.buildForm();
     this.loadCountries();
+    this.loadSocieties();
 
     // Création → charger les identifiants
     if (!this.user) {
@@ -47,6 +57,17 @@ export class UserFormComponent implements OnInit, OnChanges {
       this.form.get('identifier')?.disable();
       this.form.get('address.identifier')?.disable();
     }
+  }
+
+  loadSocieties() {
+    this.societyBll.getSocieties$().subscribe({
+      next: (response) => {
+        console.log('Sociétés reçues :', response);
+        this.societies = response.societies || [];
+        console.log('Tableau societies :', this.societies);
+      },
+      error: (err) => console.error('Erreur chargement sociétés', err)
+    });
   }
 
   /** Permet au parent de récupérer les valeurs */
@@ -67,7 +88,7 @@ export class UserFormComponent implements OnInit, OnChanges {
         civility: this.user?.civility ?? EnumCivility.Mister,
         lastName: this.user?.lastName ?? '',
         firstName: this.user?.firstName ?? '',
-        society: this.user?.society ?? '',
+        societyIdentifier: this.user?.societyIdentifier ?? null,
         email: this.user?.email ?? '',
         phone: this.user?.phone ?? '',
         role: this.user?.role ?? EnumRole.User,
@@ -94,7 +115,10 @@ export class UserFormComponent implements OnInit, OnChanges {
       if (!addrId || addrId === 0) {
         this.addressBll.getNextIdentifier$().subscribe({
           next: a => {
-            this.form.get('address.identifier')?.patchValue(a.address?.identifier ?? 0);
+            const newId = a.address?.identifier;
+            if (newId && newId > 0) {
+              this.form.get('address.identifier')?.patchValue(newId);
+            }
           }
         });
       }
@@ -124,13 +148,13 @@ export class UserFormComponent implements OnInit, OnChanges {
       civility: [this.user?.civility ?? EnumCivility.Mister, Validators.required],      
       lastName: [this.user?.lastName ?? '', Validators.required],
       firstName: [this.user?.firstName ?? '', Validators.required],
-      society: [this.user?.society ?? ''],
+      societyIdentifier: [this.user?.societyIdentifier ?? null],
       email: [this.user?.email ?? '', [Validators.required, this.emailValidator]],
       phone: [this.user?.phone ?? '', this.phoneValidator],
       role: [this.user?.role ?? EnumRole.User, Validators.required], 
       password: [ '', this.user ? [] : [Validators.required, this.strongPasswordValidator]],
       address: this.fb.group({ 
-        identifier: [this.user?.address?.identifier ?? ''],
+        identifier: [this.user?.address?.identifier ?? null],
         number: [this.user?.address?.number ?? ''], 
         addressLine: [this.user?.address?.addressLine ?? ''], 
         city: [this.user?.address?.city ?? ''], 

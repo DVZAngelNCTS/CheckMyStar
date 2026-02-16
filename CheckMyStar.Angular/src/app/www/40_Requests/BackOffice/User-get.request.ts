@@ -1,7 +1,7 @@
 export interface UserGetRequest {
     lastName: string;
     firstName: string;
-    society: string;
+    societyIdentifier: Number;
     email: string;
     phone: string;
     address: string;

@@ -39,4 +39,21 @@ public class SocietyDal(ICheckMyStarDbContext dbContext) : ISocietyDal
         }
         return result;
     }
+
+    public async Task<SocietiesResult> GetSocieties(CancellationToken ct)
+    {
+        var result = new SocietiesResult();
+        try
+        {
+            var societies = await dbContext.Societies.AsNoTracking().ToListAsync(ct);
+            result.IsSuccess = true;
+            result.Societies = societies;
+        }
+        catch (Exception ex)
+        {
+            result.IsSuccess = false;
+            result.Message = ex.Message;
+        }
+        return result;
+    }
 }

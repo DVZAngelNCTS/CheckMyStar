@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
@@ -14,5 +15,7 @@ public class SocietyProfile : Profile
             .ForMember(dest => dest.IsActive, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedDate, opt => opt.Ignore());
+
+        CreateMap<Society, SocietyModel>();
     }
 }

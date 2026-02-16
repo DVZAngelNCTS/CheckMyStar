@@ -11,4 +11,9 @@ public class SocietyService(ISocietyBusForService societyBus) : ISocietyService
     {
         return await societyBus.CreateSociety(request, ct);
     }
+
+    public async Task<SocietiesResponse> GetSocieties(CancellationToken ct)
+    {
+        return await societyBus.GetSocieties(ct);
+    }
 }

@@ -13,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EnumCivility } from '../../../10_Common/Enumerations/EnumCivility';
 import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
 import { ToastService } from '../../../90_Services/Toast/Toast.service';
+import { SocietyBllService } from '../../../60_Bll/BackOffice/Society-bll.service';
 
 @Component({
 	selector: 'app-user-page',
@@ -40,7 +41,8 @@ export class UserPageComponent {
 		//	pipe: (value) => this.translate.instant( value === EnumCivility.Mister ? 'UserSection.Mister' : value === EnumCivility.Madam ? 'UserSection.Madam' : '') },
 		{ icon: 'bi bi-person', field: 'lastName', header: 'UserSection.LastName', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-person', field: 'firstName', header: 'UserSection.FirstName', translate: true, sortable: true, filterable: true, width: '10%' },
-		{ icon: 'bi bi-building', field: 'society', header: 'UserSection.Society', translate: true, sortable: true, filterable: true, width: '10%' },
+		{ icon: 'bi bi-building', field: 'societyIdentifier', header: 'UserSection.Society', translate: true, sortable: true, filterable: true, width: '10%',
+			pipe: (id) => { if (!id) return '';	const society = this.societies.find(s => s.identifier === id);return society ? society.name : '';}},
 		{ icon: 'bi bi-envelope-at', field: 'email', header: 'UserSection.Email', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-telephone', field: 'phone', header: 'UserSection.Phone', translate: true, sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-envelope', field: 'address', header: 'UserSection.Address', translate: true, sortable: true, filterable: true, width: '10%',
@@ -50,17 +52,29 @@ export class UserPageComponent {
 		{ icon: 'bi bi-shield-check', field: 'isActive', header: 'UserSection.Active', sortable: true, filterable: false }
 		] as TableColumn<UserModel>[];
 
-	constructor(private userBll: UserBllService, private translate: TranslateService, private toast: ToastService) { 
+	societies: any[] = [];
+
+	constructor(private userBll: UserBllService, private translate: TranslateService, private toast: ToastService, private societyBll: SocietyBllService) { 
 	}
 
 	ngOnInit() {
 		this.loadUsers();
+		this.loadSocieties();
 	}
 
 	loadUsers() {
 		this.userBll.getUsers$().subscribe({
 			next: users => this.users = users.users,
 			error: err => console.error(err)
+		});
+	}
+
+	loadSocieties() {
+		this.societyBll.getSocieties$().subscribe({
+		next: (res) => {
+			this.societies = res.societies || [];
+		},
+		error: (err) => console.error(err)
 		});
 	}
 
@@ -71,7 +85,7 @@ export class UserPageComponent {
 		else
 			this.loadingSearch = true;
 
-		this.userBll.getUsers$(filter.lastName, filter.firstName, filter.society, filter.email, filter.phone, filter.address, filter.role).subscribe({
+		this.userBll.getUsers$(filter.lastName, filter.firstName, filter.societyIdentifier, filter.email, filter.phone, filter.address, filter.role).subscribe({
 			next: users => {
 				if (filter.reset)
 						this.loadingReset = false;
