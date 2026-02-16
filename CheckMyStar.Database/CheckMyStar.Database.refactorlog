@@ -98,4 +98,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="IsFirstConnection" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="a4057fb0-2ece-4d61-b26a-eb5cf2efdcad" ChangeDateTime="02/16/2026 14:34:06">
+    <Property Name="ElementName" Value="[dbo].[Address].[UpdateDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Address]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UpdatedDate" />
+  </Operation>
 </Operations>

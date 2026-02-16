@@ -10,9 +10,6 @@ namespace CheckMyStar.Dal.Abstractions
         Task<UserResult> GetUser(int identifier, CancellationToken ct);
         Task<UserResult> GetUser(string lastName, string firstName, int? SocietyIdentifier, string email, string? phone, CancellationToken ct);
         Task<UsersResult> GetUsers(string lastName, string firstName, int? SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct);
-        Task<UserResult> GetUser(int identifier, string password, CancellationToken ct);
-        Task<UserResult> GetUser(string lastName, string firstName, string? society, string email, string? phone, CancellationToken ct);
-        Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct);
         Task<BaseResult> AddUser(User user, CancellationToken ct);
         Task<BaseResult> UpdateUser(User user, CancellationToken ct);
         Task<BaseResult> DeleteUser(User user, CancellationToken ct);

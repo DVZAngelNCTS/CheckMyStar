@@ -8,7 +8,7 @@
     [Region] VARCHAR(50) NULL, 
     [CountryIdentifier] INT NOT NULL, 
     [CreatedDate] DATETIME NULL, 
-    [UpdateDate] DATETIME NULL, 
+    [UpdatedDate] DATETIME NULL, 
     CONSTRAINT [FK_Address_Counrty] FOREIGN KEY ([CountryIdentifier]) REFERENCES [Country]([Identifier]),
     CONSTRAINT [PK_Address] PRIMARY KEY ([Identifier])
 )

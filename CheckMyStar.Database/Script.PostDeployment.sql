@@ -323,7 +323,7 @@ BEGIN
     DECLARE @CountryIdentifier INT;
     SELECT @CountryIdentifier = Identifier FROM dbo.Country WHERE Code = 'FR';
 
-    INSERT INTO dbo.[Address] ([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdateDate])
+    INSERT INTO dbo.[Address] ([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdatedDate])
     SELECT
         x.[Identifier],
         x.[Number],
@@ -339,7 +339,7 @@ BEGIN
         VALUES
             (1, '', '', '', '', '', @CountryIdentifier, GETDATE(), GETDATE()),
             (2, '', '', '', '', '', @CountryIdentifier, GETDATE(), GETDATE())
-    ) AS x([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdateDate])
+    ) AS x([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdatedDate])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[Address] r
@@ -358,13 +358,13 @@ BEGIN
     DECLARE @CivilityMrIdentifier INT;
     SELECT @CivilityMrIdentifier = Identifier FROM dbo.Civility WHERE [Name] = 'Mr.';
 
-    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection]], [CreatedDate], [UpdatedDate])
+    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [SocietyIdentifier], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection], [CreatedDate], [UpdatedDate])
     SELECT
         x.[Identifier],
         x.[CivilityIdentifier],
         x.[LastName],
         x.[FirstName],
-        x.[Society],
+        x.[SocietyIdentifier],
         x.[Email],
         x.[Phone],
         x.[Password],
@@ -379,7 +379,7 @@ BEGIN
         VALUES
             (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, 1, 1, 0, GETDATE(), GETDATE()),
             (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, 2, 1, 0, GETDATE(), GETDATE())
-    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection], [CreatedDate], [UpdatedDate])
+    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [SocietyIdentifier], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection], [CreatedDate], [UpdatedDate])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[User] u
