@@ -31,6 +31,10 @@ jobs:
             echo "🐳 Rebuilding containers"
             docker compose up -d --build
 
+            echo "⬇️ Téléchargement du DACPAC depuis GitHub"
+            mkdir -p dacpac
+            curl -L -o dacpac/CheckMyStar.Database.dacpac https://raw.githubusercontent.com/DVZAngelNCTS/CheckMyStar/master/dacpac/CheckMyStar.Database.dacpac
+
             echo "📦 Publishing DACPAC"
             sqlpackage \
               /Action:Publish \
