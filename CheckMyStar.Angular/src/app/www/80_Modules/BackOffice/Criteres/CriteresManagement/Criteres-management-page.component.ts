@@ -115,7 +115,7 @@ export class CriteresManagementPageComponent implements OnInit
       'X': 'badge bg-danger',
       'O': 'badge bg-warning text-dark',
       'NA': 'badge bg-secondary',
-      'X ONC': 'badge bg-success'
+      'X_ONC': 'badge bg-success'
     };
     return classes[code] || 'badge bg-secondary';
   }

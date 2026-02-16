@@ -326,13 +326,26 @@ BEGIN
     DECLARE @CivilityMrIdentifier INT;
     SELECT @CivilityMrIdentifier = Identifier FROM dbo.Civility WHERE [Name] = 'Mr.';
 
-    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [CreatedDate], [UpdatedDate])
+    INSERT INTO dbo.[User] (
+        [Identifier],
+        [CivilityIdentifier],
+        [LastName],
+        [FirstName],
+        [SocietyIdentifier],
+        [Email],
+        [Phone],
+        [Password],
+        [RoleIdentifier],
+        [AddressIdentifier],
+        [CreatedDate],
+        [UpdatedDate]
+    )
     SELECT
         x.[Identifier],
         x.[CivilityIdentifier],
         x.[LastName],
         x.[FirstName],
-        x.[Society],
+        NULL,
         x.[Email],
         x.[Phone],
         x.[Password],
@@ -343,9 +356,21 @@ BEGIN
     FROM
     (
         VALUES
-            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE()),
-            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE())
-    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [Society], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [CreatedDate], [UpdatedDate])
+            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE()),
+            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE())
+    ) AS x(
+        [Identifier],
+        [CivilityIdentifier],
+        [LastName],
+        [FirstName],
+        [Email],
+        [Phone],
+        [Password],
+        [RoleIdentifier],
+        [AddressIdentifier],
+        [CreatedDate],
+        [UpdatedDate]
+    )
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[User] u
@@ -369,8 +394,20 @@ WHERE NOT EXISTS (
 );
 GO
 
-INSERT INTO [dbo].[StarLevel] ([StarLevelId], [Label])
-SELECT x.[StarLevelId], x.[Label]
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'dbo' 
+                 AND TABLE_NAME = 'StarLevel' 
+                 AND COLUMN_NAME = 'LastUpdate')
+BEGIN
+    ALTER TABLE [dbo].[StarLevel] ADD [LastUpdate] DATETIME NULL;
+END
+GO
+
+UPDATE [dbo].[StarLevel] SET LastUpdate = GETUTCDATE() WHERE LastUpdate IS NULL;
+GO
+
+INSERT INTO [dbo].[StarLevel] ([StarLevelId], [Label], [LastUpdate])
+SELECT x.[StarLevelId], x.[Label], GETUTCDATE()
 FROM (VALUES
     (1, N'1 étoile'),
     (2, N'2 étoiles'),
