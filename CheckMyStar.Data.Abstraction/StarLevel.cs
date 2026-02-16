@@ -8,4 +8,6 @@ public partial class StarLevel
     public byte StarLevelId { get; set; }
 
     public string Label { get; set; } = null!;
+
+    public DateTime? LastUpdate { get; set; }
 }

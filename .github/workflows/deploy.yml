@@ -1,0 +1,54 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- COPY PROJECT TO VPS ---
+      - name: Copy project to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          source: "./*"
+          target: "/var/www/checkmystar"
+
+      # --- DEPLOY ON VPS ---
+      - name: Deploy on VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            echo "📁 Moving to project directory"
+            cd /var/www/checkmystar
+
+            echo "🐳 Stopping old containers"
+            docker compose down || true
+
+            echo "🐳 Rebuilding containers"
+            docker compose up -d --build
+
+            echo "📦 Publishing DACPAC"
+            sqlpackage \
+              /Action:Publish \
+              /SourceFile:/var/www/checkmystar/dacpac/CheckMyStar.Database.dacpac \
+              /TargetServerName:${{ secrets.DB_HOST }} \
+              /TargetUser:sa \
+              /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
+              /TargetDatabaseName:CheckMyStar \
+              /p:CreateNewDatabase=true \
+              /TargetEncryptConnection:false \
+              /TargetTrustServerCertificate:true
+
+            echo "✅ Deployment complete!"

@@ -1,12 +1,10 @@
-﻿using System.Data;
-
-using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Dal.Abstractions;
+﻿using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace CheckMyStar.Dal
 {
@@ -101,16 +99,24 @@ namespace CheckMyStar.Dal
                 var query = await (from s in dbContext.StarLevels.AsNoTracking()
                                    join slc in dbContext.StarLevelCriterias.AsNoTracking() on s.StarLevelId equals slc.StarLevelId
                                    join crt in dbContext.CriterionTypes.AsNoTracking() on slc.TypeCode equals crt.TypeCode
-                                   group new { s, ct } by new { Rating = s.StarLevelId, StarLabel = s.Label, crt.TypeCode, TypeLabel = crt.Label } into g
+                                   group new { s, slc, crt } by new
+                                   {
+                                       Rating = s.StarLevelId,
+                                       StarLabel = s.Label,
+                                       LastUpdate = s.LastUpdate,
+                                       crt.TypeCode,
+                                       TypeLabel = crt.Label
+                                   } into g
                                    orderby g.Key.Rating, g.Key.TypeCode
                                    select new StarCriteria
                                    {
                                        Rating = Convert.ToInt32(g.Key.Rating),
                                        StarLabel = g.Key.StarLabel ?? string.Empty,
+                                       LastUpdate = g.Key.LastUpdate,
                                        TypeCode = g.Key.TypeCode ?? string.Empty,
                                        TypeLabel = g.Key.TypeLabel ?? string.Empty,
                                        Count = g.Count()
-                                   }).ToListAsync();
+                                   }).ToListAsync(ct);
 
                 starCriteriaResult.IsSuccess = true;
                 starCriteriaResult.StarCriterias = query;
@@ -122,27 +128,6 @@ namespace CheckMyStar.Dal
             }
 
             return starCriteriaResult;
-        }
-
-        public async Task<int> CreateCriterionAsync(string description, decimal basePoints, CancellationToken ct)
-        {
-            try
-            {
-                var criterion = new Criterion
-                {
-                    Description = description,
-                    BasePoints = basePoints
-                };
-
-                await dbContext.AddAsync(criterion, ct);
-                await dbContext.SaveChangesAsync(ct);
-
-                return criterion.CriterionId;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while creating the criterion.", ex);
-            }
         }
 
         public async Task<BaseResult> AddStarLevelCriterion(StarLevelCriterion starLevelCriterion , CancellationToken ct)
@@ -177,15 +162,15 @@ namespace CheckMyStar.Dal
 
         public async Task<BaseResult> AddCriterion(Criterion criterion, CancellationToken ct)
         {
-            BaseResult baseResult = new BaseResult();
-
+            var baseResult = new BaseResult();
             try
             {
+                criterion.CriterionId = 0;
+
                 await dbContext.AddAsync(criterion, ct);
+                int affected = await dbContext.SaveChangesAsync(ct);
 
-                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
-
-                if (result)
+                if (affected > 0)
                 {
                     baseResult.IsSuccess = true;
                     baseResult.Message = $"Critère {criterion.Description} ajouté avec succès";
@@ -199,10 +184,167 @@ namespace CheckMyStar.Dal
             catch (Exception ex)
             {
                 baseResult.IsSuccess = false;
-                baseResult.Message = $"Impossible d'ajouter le critère {criterion.Description} : " + ex.Message;
+                baseResult.Message = $"Impossible d'ajouter le critère {criterion.Description} : {ex.Message}";
             }
 
             return baseResult;
+        }
+
+        public async Task<BaseResult> DeleteStarLevelCriterionByCriterionId(int criterionId, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var links = await dbContext.StarLevelCriterias
+                    .Where(slc => slc.CriterionId == criterionId)
+                    .ToListAsync(ct);
+
+                if (links.Any())
+                {
+                    foreach (var link in links)
+                    {
+                        await dbContext.RemoveAsync<StarLevelCriterion>(link, ct);
+                    }
+                    await dbContext.SaveChangesAsync(ct);   // ← AJOUT OBLIGATOIRE
+                }
+
+                result.IsSuccess = true;
+                result.Message = "Liaisons supprimées.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur suppression liaisons : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<BaseResult> DeleteCriterion(int criterionId, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var criterion = await dbContext.Criterias
+                    .FirstOrDefaultAsync(c => c.CriterionId == criterionId, ct);
+
+                if (criterion == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Critère {criterionId} introuvable.";
+                    return result;
+                }
+
+                await dbContext.RemoveAsync<Criterion>(criterion, ct);
+                await dbContext.SaveChangesAsync(ct);   // ← AJOUT OBLIGATOIRE
+
+                result.IsSuccess = true;
+                result.Message = $"Critère {criterionId} supprimé.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur suppression critère : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<BaseResult> UpdateCriterion(Criterion criterion, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var existing = await dbContext.Criterias
+                    .FirstOrDefaultAsync(c => c.CriterionId == criterion.CriterionId, ct);
+
+                if (existing == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Critère {criterion.CriterionId} introuvable.";
+                    return result;
+                }
+
+                existing.Description = criterion.Description;
+                existing.BasePoints = criterion.BasePoints;
+
+                await dbContext.UpdateAsync(existing, ct);
+                await dbContext.SaveChangesAsync(ct);
+
+                result.IsSuccess = true;
+                result.Message = $"Critère {criterion.CriterionId} mis à jour.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur mise à jour critère : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<BaseResult> UpdateStarLevelCriterionType(int criterionId, byte starLevelId, string typeCode, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var link = await dbContext.StarLevelCriterias
+                    .FirstOrDefaultAsync(slc => slc.CriterionId == criterionId && slc.StarLevelId == starLevelId, ct);
+
+                if (link == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Association critère {criterionId} / niveau {starLevelId} introuvable.";
+                    return result;
+                }
+
+                link.TypeCode = typeCode;
+                await dbContext.UpdateAsync(link, ct);
+                await dbContext.SaveChangesAsync(ct);
+
+                result.IsSuccess = true;
+                result.Message = $"Type du critère mis à jour pour le niveau {starLevelId}.";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur mise à jour type : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<List<byte>> GetStarLevelIdsByCriterionId(int criterionId, CancellationToken ct)
+        {
+            return await dbContext.StarLevelCriterias
+                .Where(slc => slc.CriterionId == criterionId)
+                .Select(slc => slc.StarLevelId)
+                .Distinct()
+                .ToListAsync(ct);
+        }
+
+        public async Task<BaseResult> UpdateStarLevelLastUpdate(byte starLevelId, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var starLevel = await dbContext.StarLevels
+                    .FirstOrDefaultAsync(s => s.StarLevelId == starLevelId, ct);
+                if (starLevel != null)
+                {
+                    starLevel.LastUpdate = DateTime.UtcNow;
+                    await dbContext.SaveChangesAsync(ct);
+                    result.IsSuccess = true;
+                    result.Message = "Date de mise à jour actualisée.";
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Niveau {starLevelId} introuvable.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur mise à jour LastUpdate : {ex.Message}";
+            }
+            return result;
         }
     }
 }

@@ -18,10 +18,10 @@ export class CriteresFormComponent implements OnInit, OnChanges {
   form!: FormGroup;
 
   typeCodes = [
-    { value: 'X', label: 'Obligatoire' },
-    { value: 'O', label: 'À la carte' },
-    { value: 'X ONC', label: 'Obligatoire non compensable' },
-    { value: 'NA', label: 'Non applicable' }
+    { value: 'X', label: 'X - Obligatoire' },
+    { value: 'O', label: 'O - À la carte' },
+    { value: 'X_ONC', label: 'X ONC - Obligatoire non compensable' },
+    { value: 'NA', label: 'NA - Non applicable' }
   ];
 
   constructor(private fb: FormBuilder) {}
@@ -38,18 +38,32 @@ export class CriteresFormComponent implements OnInit, OnChanges {
         basePoints: this.criterion?.basePoints ?? 0,
         typeCode: this.criterion?.typeCode ?? 'X'
       });
+      
+      if (this.criterion !== null) {
+        this.form.controls['criterionId'].disable();
+      } else {
+        this.form.controls['criterionId'].enable();
+      }
     }
   }
 
   getValue(): StarCriterionDetail {
-    return this.form.value as StarCriterionDetail;
+    return this.form.getRawValue() as StarCriterionDetail;
   }
 
-  private buildForm() { 
+  private buildForm() {
+    const isEditMode = this.criterion !== null;
+
     this.form = this.fb.group({
-      criterionId: [this.criterion?.criterionId ?? 0],
+      criterionId: [{ 
+        value: this.criterion?.criterionId ?? 0, 
+        disabled: isEditMode
+      }],
       description: [this.criterion?.description ?? '', Validators.required],
-      basePoints: [this.criterion?.basePoints ?? 0, [Validators.required, Validators.min(0)]],
+      basePoints: [
+        this.criterion?.basePoints ?? 1,
+        [Validators.required, Validators.min(1), Validators.max(10)]
+      ],
       typeCode: [this.criterion?.typeCode ?? 'X', Validators.required]
     });
   }

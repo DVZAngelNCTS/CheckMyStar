@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Data.Abstractions;
-using CheckMyStar.Dal.Abstractions;
+﻿using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
-using CheckMyStar.Dal.Models;
+using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CheckMyStar.Dal
 {
@@ -153,7 +153,7 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<UserResult> GetUser(string lastName, string firstName, string? society, string email, string? phone, CancellationToken ct)
+        public async Task<UserResult> GetUser(string lastName, string firstName, int? SocietyIdentifier, string email, string? phone, CancellationToken ct)
         {
             UserResult userResult = new UserResult();
 
@@ -163,7 +163,7 @@ namespace CheckMyStar.Dal
                                   where
                                       r.LastName == lastName
                                    && r.FirstName == firstName
-                                   && (!string.IsNullOrEmpty(society) && r.Society == society)
+                                   && (SocietyIdentifier == null || r.SocietyIdentifier == SocietyIdentifier)
                                    && r.Email == email
                                    && (!string.IsNullOrEmpty(phone) && r.Phone == phone)
                                   select r).FirstOrDefaultAsync(ct);
@@ -181,7 +181,7 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct)
+        public async Task<UsersResult> GetUsers(string lastName, string firstName, int? SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct)
         {
             UsersResult userResult = new UsersResult();
 
@@ -192,10 +192,10 @@ namespace CheckMyStar.Dal
                                    from a in ua.DefaultIfEmpty()
                                    where
                                       (string.IsNullOrEmpty(lastName) || u.LastName.Contains(lastName))
-                                   && (string.IsNullOrEmpty(firstName) || u.LastName.Contains(firstName))
-                                   && (string.IsNullOrEmpty(society) || u.LastName.Contains(society))
-                                   && (string.IsNullOrEmpty(email) || u.LastName.Contains(email))
-                                   && (string.IsNullOrEmpty(phone) || u.LastName.Contains(phone))
+                                   && (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName))
+                                   && (SocietyIdentifier == null || u.SocietyIdentifier == SocietyIdentifier)
+                                   && (string.IsNullOrEmpty(email) || u.Email.Contains(email))
+                                   && (string.IsNullOrEmpty(phone) || u.Phone.Contains(phone))
                                    && (role == null || u.RoleIdentifier == role)
                                    && (string.IsNullOrEmpty(address) || a.Number.Contains(address)
                                    || a.AddressLine.Contains(address)
@@ -208,6 +208,7 @@ namespace CheckMyStar.Dal
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Erreur GetUsers: {ex}");
                 userResult.IsSuccess = false;
                 userResult.Message = ex.Message;
             }
@@ -312,13 +313,13 @@ namespace CheckMyStar.Dal
             try
             {
                 var evolutions = await (from u in dbContext.Users
+                                        where u.CreatedDate != null
                                         group u by new
                                         {
-                                            Year = u.CreatedDate!.Value.Year,
-                                            Month = u.CreatedDate!.Value.Month
+                                            Year = u.CreatedDate.Value.Year,
+                                            Month = u.CreatedDate.Value.Month
                                         } into g
-                                        orderby
-                                            g.Key.Month
+                                        orderby g.Key.Year, g.Key.Month
                                         select new UserEvolution()
                                         {
                                             Year = g.Key.Year,
@@ -326,7 +327,7 @@ namespace CheckMyStar.Dal
                                             Total = g.Count(),
                                             IsActive = g.Count(x => x.IsActive),
                                             IsDisabled = g.Count(x => !x.IsActive)
-                                        }).ToListAsync();
+                                        }).ToListAsync(ct);
 
                 userEvolutionResult.IsSuccess = true;
                 userEvolutionResult.Evolutions = evolutions;

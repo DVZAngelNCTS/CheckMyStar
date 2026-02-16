@@ -8,6 +8,8 @@ namespace CheckMyStar.Dal.Abstractions
         Task<UserResult> GetNextIdentifier(CancellationToken ct);
         Task<UserResult> GetUser(string login, string password, CancellationToken ct);
         Task<UserResult> GetUser(int identifier, CancellationToken ct);
+        Task<UserResult> GetUser(string lastName, string firstName, int? SocietyIdentifier, string email, string? phone, CancellationToken ct);
+        Task<UsersResult> GetUsers(string lastName, string firstName, int? SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct);
         Task<UserResult> GetUser(int identifier, string password, CancellationToken ct);
         Task<UserResult> GetUser(string lastName, string firstName, string? society, string email, string? phone, CancellationToken ct);
         Task<UsersResult> GetUsers(string lastName, string firstName, string society, string email, string phone, string address, int? role, CancellationToken ct);

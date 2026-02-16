@@ -16,6 +16,7 @@ import { last } from 'rxjs';
 export class UserFilterComponent {
     @Input() loadingSearch = false; 
     @Input() loadingReset = false;
+    @Input() societies: any[] = []; 
 
     filter = output<UserFilter>({ alias: 'filter' });
     form: FormGroup;
@@ -25,7 +26,7 @@ export class UserFilterComponent {
         firstName: [''],
         email: [''],
         phone: [''],
-        society: [''],
+        societyIdentifier: [null],
         address: ['']
       });
 	}

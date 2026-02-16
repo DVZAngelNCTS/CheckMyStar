@@ -17,10 +17,22 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Identifier, opt => opt.MapFrom(src => src.Identifier))
                 .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.Number))
                 .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.Region))
-                .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode)).ReverseMap();
+                .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdateDate));
+
+            CreateMap<AddressModel, Address>()
+                .ForMember(dest => dest.AddressLine, opt => opt.MapFrom(src => src.AddressLine))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.Identifier, opt => opt.MapFrom(src => src.Identifier))
+                .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.Number))
+                .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.Region))
+                .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdatedDate));
 
             CreateMap<AddressResult, AddressResponse>()
-                .ForMember(dest => dest.Address, opts => opts.MapFrom(src => src.Address ?? null));
+                    .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address ?? null));
         }
     }
 }

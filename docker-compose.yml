@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: checkmystar-api
+    ports:
+      - "5109:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__CheckMyStarConnection: "Server=sqlserver;Database=CheckMyStar;User Id=sa;Password=@Eb23#Ab28%Mb15!;TrustServerCertificate=True;"
+    depends_on:
+      - sqlserver
+    restart: always
+
+  angular:
+    build:
+      context: ./CheckMyStar.Angular
+      dockerfile: Dockerfile
+    container_name: checkmystar-angular
+    ports:
+      - "80:80"
+    restart: always
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "@Eb23#Ab28%Mb15!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: always
+
+volumes:
+  sql_data:

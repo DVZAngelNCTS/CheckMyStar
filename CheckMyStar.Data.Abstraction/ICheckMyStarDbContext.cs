@@ -12,6 +12,7 @@
         IQueryable<StarLevelCriterion> StarLevelCriterias { get; }
         IQueryable<Criterion> Criterias { get; }
         IQueryable<CriterionType> CriterionTypes { get; }
+        IQueryable<Society> Societies { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 

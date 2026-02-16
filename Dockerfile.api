@@ -1,0 +1,24 @@
+# Étape 1 : Build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
+WORKDIR /src
+
+# Copier tout le repo
+COPY . .
+
+# Restaurer uniquement le projet API
+RUN dotnet restore "./CheckMyStar.Apis/CheckMyStar.Apis.csproj"
+
+# Publier l'API
+RUN dotnet publish "./CheckMyStar.Apis/CheckMyStar.Apis.csproj" -c Release -o /app/publish
+
+# Étape 2 : Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+
+WORKDIR /app
+
+EXPOSE 8080
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "CheckMyStar.Apis.dll"]

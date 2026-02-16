@@ -45,7 +45,7 @@
                 </button>
                 <div class="form-text text-center small">
                   <i class="bi bi-calendar2 me-1"></i>
-                  Dernière mise à jour : {{ star.lastUpdate | date:'dd/MM/yyyy - HH:mm' }}
+                    Dernière mise à jour : {{ (star.lastUpdate ? (star.lastUpdate | date:'dd/MM/yyyy - HH:mm') : 'Jamais') }}
                 </div>
               </div>
             </div>
