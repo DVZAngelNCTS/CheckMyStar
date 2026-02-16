@@ -1,0 +1,16 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Environment } from '../../../../Environment/environment';
+import { SocietiesResponse } from '../../50_Responses/BackOffice/Societies.response';
+
+@Injectable({ providedIn: 'root' })
+export class SocietyDalService {
+  private apiUrl = Environment.ApiUrl;
+
+  constructor(private http: HttpClient) {}
+
+  getSocieties$(): Observable<SocietiesResponse> {
+    return this.http.post<SocietiesResponse>(`${this.apiUrl}/Societies/getSocieties`, {});
+  }
+}

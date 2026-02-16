@@ -78,7 +78,8 @@
     "Madam": "Madame",
     "Password": "Mot de passe",
     "Informations": "Informations utilisateur",
-    "PasswordValidate": "12 caractères minimum, une majuscule, une minuscule, un chiffre et un symbole."
+    "PasswordValidate": "12 caractères minimum, une majuscule, une minuscule, un chiffre et un symbole.",
+    "AddNewSociety": "Ajouter une nouvelle société"
   },
   "AddressSection": {
     "Identifier": "Identifiant",

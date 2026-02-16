@@ -356,8 +356,8 @@ BEGIN
     FROM
     (
         VALUES
-            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE()),
-            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, NULL, GETDATE(), GETDATE())
+            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, 0, GETDATE(), GETDATE()),
+            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, 0, GETDATE(), GETDATE())
     ) AS x(
         [Identifier],
         [CivilityIdentifier],

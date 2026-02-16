@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Abstractions.ForService;
+using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
@@ -36,6 +37,31 @@ public class SocietyBus(ISocietyDal societyDal, IMapper mapper) : ISocietyBus, I
         {
             response.IsSuccess = false;
             response.Message = $"Erreur inattendue : {ex.Message}";
+        }
+        return response;
+    }
+
+    public async Task<SocietiesResponse> GetSocieties(CancellationToken ct)
+    {
+        var response = new SocietiesResponse();
+        try
+        {
+            var dalResult = await societyDal.GetSocieties(ct);
+            if (dalResult.IsSuccess)
+            {
+                response.IsSuccess = true;
+                response.Societies = mapper.Map<List<SocietyModel>>(dalResult.Societies);
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = dalResult.Message;
+            }
+        }
+        catch (Exception ex)
+        {
+            response.IsSuccess = false;
+            response.Message = ex.Message;
         }
         return response;
     }

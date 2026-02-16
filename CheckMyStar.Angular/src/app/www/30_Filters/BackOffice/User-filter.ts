@@ -3,7 +3,7 @@ export interface UserFilter {
   firstName?: string;
   email?: string;
   phone?: string;
-  society?: string;
+  societyIdentifier?: Number;
   address?: string;
   reset?: boolean;
 }

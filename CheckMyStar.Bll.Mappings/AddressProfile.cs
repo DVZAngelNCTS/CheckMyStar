@@ -30,6 +30,9 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdatedDate));
+
+            CreateMap<AddressResult, AddressResponse>()
+                    .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address ?? null));
         }
     }
 }

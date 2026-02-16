@@ -20,4 +20,16 @@ public class SocietiesController(ISocietyService societyService) : ControllerBas
         var result = await societyService.CreateSociety(request, ct);
         return Ok(result);
     }
+
+    /// <summary>
+    /// Récupère toutes les sociétés.
+    /// </summary>
+    /// <param name="ct">Jeton d'annulation</param>
+    [HttpPost("getSocieties")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> GetSocieties(CancellationToken ct)
+    {
+        var result = await societyService.GetSocieties(ct);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
+    }
 }

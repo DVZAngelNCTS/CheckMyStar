@@ -2,7 +2,7 @@
   <!-- Filtres -->
   <div class="d-flex flex-row">
     <div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
-      <app-user-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (filter)="onFilter($event)"></app-user-filter>
+      <app-user-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" [societies]="societies" (filter)="onFilter($event)"></app-user-filter>
     </div>
   </div>
 
