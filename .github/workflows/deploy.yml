@@ -19,6 +19,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
+            sudo -u deploy bash << 'EOF'
+
             echo "📁 Updating repository"
             git config --global --add safe.directory /var/www/checkmystar
             cd /var/www/checkmystar
@@ -45,3 +47,4 @@ jobs:
               /TargetTrustServerCertificate:true
 
             echo "✅ Deployment complete!"
+            EOF
