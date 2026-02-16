@@ -7,7 +7,7 @@ import { FieldComponent } from '../../../../Components/Field/Field.component';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  templateUrl: './forgot-form.component.html',
+  templateUrl: './Forgot-form.component.html',
   imports: [ReactiveFormsModule, CommonModule, TranslationModule, FieldComponent]
 })
 export class ForgotPasswordComponent {

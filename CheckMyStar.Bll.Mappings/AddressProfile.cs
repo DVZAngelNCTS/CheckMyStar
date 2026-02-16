@@ -19,7 +19,7 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.Region))
                 .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
-                .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdateDate));
+                .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate));
 
             CreateMap<AddressModel, Address>()
                 .ForMember(dest => dest.AddressLine, opt => opt.MapFrom(src => src.AddressLine))
@@ -29,7 +29,7 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Region, opt => opt.MapFrom(src => src.Region))
                 .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
-                .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdatedDate));
+                .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate));
 
             CreateMap<AddressResult, AddressResponse>()
                     .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address ?? null));

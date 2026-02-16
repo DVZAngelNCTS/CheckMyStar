@@ -100,17 +100,9 @@ namespace CheckMyStar.Dal
                                    r.Identifier == identifier
                                   select r).FirstOrDefaultAsync(ct);
 
-                if (user != null)
-                {
-                    userResult.IsSuccess = true;
-                    userResult.User = user;
-                }
-                else
-                {
-                    userResult.IsSuccess = false;
-                    userResult.Message = "Utilisateur ou mot de passe incorrect";
-                }
 
+                userResult.IsSuccess = true;
+                userResult.User = user;
             }
             catch (Exception ex)
             {
