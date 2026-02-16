@@ -20,7 +20,7 @@ export class CriteresFormComponent implements OnInit, OnChanges {
   typeCodes = [
     { value: 'X', label: 'X - Obligatoire' },
     { value: 'O', label: 'O - À la carte' },
-    { value: 'X ONC', label: 'X ONC - Obligatoire non compensable' },
+    { value: 'X_ONC', label: 'X ONC - Obligatoire non compensable' },
     { value: 'NA', label: 'NA - Non applicable' }
   ];
 

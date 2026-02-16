@@ -65,7 +65,7 @@ namespace CheckMyStar.Bll
                         Rating = g.Key.Rating,
                         Label = g.Key.StarLabel,
                         Description = $"Critères {g.Key.Rating} étoile(s)",
-                        LastUpdate = DateTime.UtcNow,
+                        LastUpdate = g.First().LastUpdate ?? DateTime.UtcNow,
                         Statuses = g.Select(r => new StarStatusModel
                         {
                             Code = r.TypeCode,
@@ -111,6 +111,8 @@ namespace CheckMyStar.Bll
 
                 var addLinkResult = await criteresDal.AddStarLevelCriterion(starLevelCriterion, ct);
 
+                var updateLastUpdateResult = await criteresDal.UpdateStarLevelLastUpdate(starLevelCriterionModel.StarLevelId, ct);
+
                 if (!addLinkResult.IsSuccess)
                 {
                     baseResponse.IsSuccess = false;
@@ -135,12 +137,19 @@ namespace CheckMyStar.Bll
             var response = new BaseResponse();
             try
             {
+                var starLevelIds = await criteresDal.GetStarLevelIdsByCriterionId(criterionId, ct);
+
                 var deleteLinksResult = await criteresDal.DeleteStarLevelCriterionByCriterionId(criterionId, ct);
                 if (!deleteLinksResult.IsSuccess)
                 {
                     response.IsSuccess = false;
                     response.Message = deleteLinksResult.Message;
                     return response;
+                }
+
+                foreach (var id in starLevelIds)
+                {
+                    await criteresDal.UpdateStarLevelLastUpdate(id, ct);
                 }
 
                 var deleteCriterionResult = await criteresDal.DeleteCriterion(criterionId, ct);
@@ -174,11 +183,11 @@ namespace CheckMyStar.Bll
                     BasePoints = request.BasePoints
                 };
 
-                var updateCriterionResult = await criteresDal.UpdateCriterion(criterion, ct);
-                if (!updateCriterionResult.IsSuccess)
+                var updateLastUpdateResult = await criteresDal.UpdateStarLevelLastUpdate(request.StarLevelId, ct);
+                if (!updateLastUpdateResult.IsSuccess)
                 {
                     response.IsSuccess = false;
-                    response.Message = updateCriterionResult.Message;
+                    response.Message = updateLastUpdateResult.Message;
                     return response;
                 }
 

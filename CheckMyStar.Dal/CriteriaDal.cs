@@ -4,7 +4,6 @@ using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 
 namespace CheckMyStar.Dal
@@ -100,16 +99,24 @@ namespace CheckMyStar.Dal
                 var query = await (from s in dbContext.StarLevels.AsNoTracking()
                                    join slc in dbContext.StarLevelCriterias.AsNoTracking() on s.StarLevelId equals slc.StarLevelId
                                    join crt in dbContext.CriterionTypes.AsNoTracking() on slc.TypeCode equals crt.TypeCode
-                                   group new { s, ct } by new { Rating = s.StarLevelId, StarLabel = s.Label, crt.TypeCode, TypeLabel = crt.Label } into g
+                                   group new { s, slc, crt } by new
+                                   {
+                                       Rating = s.StarLevelId,
+                                       StarLabel = s.Label,
+                                       LastUpdate = s.LastUpdate,
+                                       crt.TypeCode,
+                                       TypeLabel = crt.Label
+                                   } into g
                                    orderby g.Key.Rating, g.Key.TypeCode
                                    select new StarCriteria
                                    {
                                        Rating = Convert.ToInt32(g.Key.Rating),
                                        StarLabel = g.Key.StarLabel ?? string.Empty,
+                                       LastUpdate = g.Key.LastUpdate,
                                        TypeCode = g.Key.TypeCode ?? string.Empty,
                                        TypeLabel = g.Key.TypeLabel ?? string.Empty,
                                        Count = g.Count()
-                                   }).ToListAsync();
+                                   }).ToListAsync(ct);
 
                 starCriteriaResult.IsSuccess = true;
                 starCriteriaResult.StarCriterias = query;
@@ -299,6 +306,43 @@ namespace CheckMyStar.Dal
             {
                 result.IsSuccess = false;
                 result.Message = $"Erreur mise à jour type : {ex.Message}";
+            }
+            return result;
+        }
+
+        public async Task<List<byte>> GetStarLevelIdsByCriterionId(int criterionId, CancellationToken ct)
+        {
+            return await dbContext.StarLevelCriterias
+                .Where(slc => slc.CriterionId == criterionId)
+                .Select(slc => slc.StarLevelId)
+                .Distinct()
+                .ToListAsync(ct);
+        }
+
+        public async Task<BaseResult> UpdateStarLevelLastUpdate(byte starLevelId, CancellationToken ct)
+        {
+            var result = new BaseResult();
+            try
+            {
+                var starLevel = await dbContext.StarLevels
+                    .FirstOrDefaultAsync(s => s.StarLevelId == starLevelId, ct);
+                if (starLevel != null)
+                {
+                    starLevel.LastUpdate = DateTime.UtcNow;
+                    await dbContext.SaveChangesAsync(ct);
+                    result.IsSuccess = true;
+                    result.Message = "Date de mise à jour actualisée.";
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Niveau {starLevelId} introuvable.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur mise à jour LastUpdate : {ex.Message}";
             }
             return result;
         }
