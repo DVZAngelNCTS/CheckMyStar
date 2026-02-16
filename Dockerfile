@@ -39,7 +39,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 80
 
-RUN mkdir -p /dacpac
-COPY --from=build /src/CheckMyStar.Database/bin/Release/net10.0/*.dacpac /dacpac/
-
 ENTRYPOINT ["dotnet", "CheckMyStar.Apis.dll"]
