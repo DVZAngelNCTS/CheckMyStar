@@ -12,16 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- COPY PROJECT TO VPS ---
-      - name: Copy project to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
-          source: "./*"
-          target: "/var/www/checkmystar"
-
       # --- DEPLOY ON VPS ---
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.10
@@ -30,8 +20,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
-            echo "📁 Moving to project directory"
+            echo "📁 Updating repository"
             cd /var/www/checkmystar
+            git fetch --all
+            git reset --hard origin/master
 
             echo "🐳 Stopping old containers"
             docker compose down || true
