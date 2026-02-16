@@ -48,6 +48,7 @@ jobs:
               /TargetPassword:"${{ secrets.DB_PASSWORD }}" \
               /TargetDatabaseName:CheckMyStar \
               /p:CreateNewDatabase=true \
+              /p:BlockOnPossibleDataLoss=False \
               /TargetEncryptConnection:false \
               /TargetTrustServerCertificate:true
 
