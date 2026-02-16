@@ -12,7 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- DEPLOY ON VPS ---
       - name: Deploy on VPS
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -21,6 +20,7 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           script: |
             echo "📁 Updating repository"
+            git config --global --add safe.directory /var/www/checkmystar
             cd /var/www/checkmystar
             git fetch --all
             git reset --hard origin/master
