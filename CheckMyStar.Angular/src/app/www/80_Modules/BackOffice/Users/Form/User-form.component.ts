@@ -11,6 +11,7 @@ import { CountryBllService } from '../../../../60_Bll/BackOffice/Country-bll.ser
 import { CountryModel } from '../../../../20_Models/Common/Country.model';
 import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll.service';
 import { UserBllService } from '../../../../60_Bll/BackOffice/User-bll.service';
+import { AuthenticateService } from '../../../../90_Services/Authenticate/Authenticate.service';
 
 @Component({
   selector: 'app-user-form',
@@ -31,7 +32,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   countries: CountryModel[] = [];
 
-  constructor(private fb: FormBuilder, private countryBll: CountryBllService, private addressBll: AddressBllService, private userBll: UserBllService) {}
+  constructor(private fb: FormBuilder, private countryBll: CountryBllService, private addressBll: AddressBllService, private userBll: UserBllService, private authenticateService: AuthenticateService) {}
 
   ngOnInit() {
     this.buildForm();
@@ -85,7 +86,8 @@ export class UserFormComponent implements OnInit, OnChanges {
             code: this.user?.address?.country?.code ?? ''
           }
         },
-        isActive: this.user?.isActive ?? true
+        isActive: this.user?.isActive ?? true,
+        isFirstConnection: this.user?.isFirstConnection ?? true
       });
 
       // 2) Si l'adresse n'a pas d'identifiant → on en génère un
@@ -142,7 +144,8 @@ export class UserFormComponent implements OnInit, OnChanges {
           code: [this.user?.address?.country?.code ?? '']
         })
       }),
-      isActive: [this.user?.isActive ?? true]          
+      isActive: [this.user?.isActive ?? true],
+      isFirstConnection: [this.user?.isFirstConnection ?? true]      
     });
   }
 
@@ -200,29 +203,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   generatePassword() {
-    const length = 12;
-
-    const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const lower = "abcdefghijklmnopqrstuvwxyz";
-    const numbers = "0123456789";
-    const symbols = "!@#$%^&*()_+-=[]{};':\"\\|,.<>/?";
-
-    // 1) On garantit au moins un de chaque
-    let pwd = "";
-    pwd += upper[Math.floor(Math.random() * upper.length)];
-    pwd += lower[Math.floor(Math.random() * lower.length)];
-    pwd += numbers[Math.floor(Math.random() * numbers.length)];
-    pwd += symbols[Math.floor(Math.random() * symbols.length)];
-
-    // 2) On complète avec un mélange aléatoire
-    const all = upper + lower + numbers + symbols;
-
-    for (let i = pwd.length; i < length; i++) {
-      pwd += all[Math.floor(Math.random() * all.length)];
-    }
-
-    // 3) On mélange le mot de passe pour éviter un pattern fixe
-    pwd = pwd.split('').sort(() => Math.random() - 0.5).join('');
+    const pwd = this.authenticateService.generatePassword();
 
     // 4) On remplit le champ
     this.form.get('password')?.setValue(pwd);

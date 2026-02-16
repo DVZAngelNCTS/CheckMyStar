@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FrontHomePageComponent } from './www/80_Modules/FrontOffice/Home/Home-page.component';
 import { BackHomePageComponent } from './www/80_Modules/BackOffice/Home/Home-page.component';
 import { LoginPageComponent } from './www/80_Modules/FrontOffice/Login/Login-page.component';
 import { AuthenticateGuardian } from './www/90_Services/Authenticate/AuthenticateGuardian.service';
@@ -10,10 +9,14 @@ import { DashboardComponent } from './www/80_Modules/BackOffice/Home/Dashboard/D
 import { ActivityComponent } from './www/80_Modules/BackOffice/Home/Dashboard/Activity/Activity-page.component';
 import { CriteresPageComponent } from './www/80_Modules/BackOffice/Criteres/Criteres-page.component';
 import { CriteresManagementPageComponent } from './www/80_Modules/BackOffice/Criteres/CriteresManagement/Criteres-management-page.component';
+import { PasswordPageComponent } from './www/80_Modules/FrontOffice/Login/Password/Password-page.component';
+import { ForgotPageComponent } from './www/80_Modules/FrontOffice/Login/Forgot/Forgot-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginPageComponent },
+  { path: 'password', component: PasswordPageComponent },
+  { path: 'forgot-password', component: ForgotPageComponent },
   {
     path: 'backhome',
     component: BackHomePageComponent,
@@ -29,9 +32,6 @@ const routes: Routes = [
     ]
   }
 ];
-
-
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

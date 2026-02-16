@@ -1,4 +1,4 @@
 export const Environment = {
   Production: false,
-  ApiUrl: 'http://checkmystar.apis.fr:5109/api'
+  ApiUrl: 'http://51.38.33.23:5109/api'
 };

@@ -15,4 +15,5 @@ export interface UserModel {
     role: EnumRole;
     address: AddressModel;
     isActive: boolean;
+    isFirstConnection: boolean;
 } 

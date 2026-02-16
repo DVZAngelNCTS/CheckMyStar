@@ -69,8 +69,16 @@ namespace CheckMyStar.Dal
                                    && u.Password == password
                                   select u).FirstOrDefaultAsync(ct);
 
-                userResult.IsSuccess = true;
-                userResult.User = user;
+                if (user != null)
+                {
+                    userResult.IsSuccess = true;
+                    userResult.User = user;
+                }
+                else
+                {
+                    userResult.IsSuccess = false;
+                    userResult.Message = "Utilisateur ou mot de passe incorrect";
+                }
             }
             catch (Exception ex)
             {
@@ -92,8 +100,49 @@ namespace CheckMyStar.Dal
                                    r.Identifier == identifier
                                   select r).FirstOrDefaultAsync(ct);
 
-                userResult.User = user;
+                if (user != null)
+                {
+                    userResult.IsSuccess = true;
+                    userResult.User = user;
+                }
+                else
+                {
+                    userResult.IsSuccess = false;
+                    userResult.Message = "Utilisateur ou mot de passe incorrect";
+                }
+
+            }
+            catch (Exception ex)
+            {
                 userResult.IsSuccess = true;
+                userResult.Message = ex.Message;
+            }
+
+            return userResult;
+        }
+
+        public async Task<UserResult> GetUser(int identifier, string password, CancellationToken ct)
+        {
+            UserResult userResult = new UserResult();
+
+            try
+            {
+                var user = await (from r in dbContext.Users.AsNoTracking()
+                                  where
+                                      r.Identifier == identifier
+                                   && r.Password == password
+                                  select r).FirstOrDefaultAsync(ct);
+
+                if (user != null)
+                {
+                    userResult.IsSuccess = true;
+                    userResult.User = user;
+                }
+                else
+                {
+                    userResult.IsSuccess = false;
+                    userResult.Message = "Utilisateur ou mot de passe incorrect";
+                }
             }
             catch (Exception ex)
             {
@@ -119,8 +168,9 @@ namespace CheckMyStar.Dal
                                    && (!string.IsNullOrEmpty(phone) && r.Phone == phone)
                                   select r).FirstOrDefaultAsync(ct);
 
-                userResult.User = user;
+
                 userResult.IsSuccess = true;
+                userResult.User = user;
             }
             catch (Exception ex)
             {

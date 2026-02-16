@@ -11,6 +11,7 @@
     [RoleIdentifier] INT NOT NULL, 
     [AddressIdentifier] INT NULL, 
     [IsActive] BIT NOT NULL DEFAULT 1, 
+    [IsFirstConnection] BIT NOT NULL DEFAULT 1, 
     [CreatedDate] DATETIME NULL, 
     [UpdatedDate] DATETIME NULL, 
     CONSTRAINT [FK_User_Address] FOREIGN KEY ([AddressIdentifier]) REFERENCES [Address]([Identifier]), 

@@ -23,7 +23,7 @@ export class UserDalService {
     return this.http.post<UsersResponse>(`${this.apiUrl}/User/getusers`, request);
   }
 
-  addUser$(request: UserSaveRequest) {
+  addUser$(request: UserSaveRequest) {   
     return this.http.post<BaseResponse>(`${this.apiUrl}/User/adduser`, request);
   }
   
