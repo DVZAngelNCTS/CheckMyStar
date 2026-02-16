@@ -10,6 +10,6 @@ RUN npm run build -- --configuration production
 
 # Étape 2 : Serveur Nginx
 FROM nginx:alpine
-COPY --from=build /app/dist/<nom-du-projet> /usr/share/nginx/html
+COPY --from=build /app/dist/CheckMyStar.Angular /usr/share/nginx/html
 
 EXPOSE 80
