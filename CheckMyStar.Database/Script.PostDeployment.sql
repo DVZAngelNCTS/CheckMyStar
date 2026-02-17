@@ -316,6 +316,38 @@ BEGIN
 END
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES 
+           WHERE TABLE_SCHEMA = 'dbo' 
+           AND TABLE_NAME = 'Address')
+BEGIN
+    DECLARE @CountryIdentifier INT;
+    SELECT @CountryIdentifier = Identifier FROM dbo.Country WHERE Code = 'FR';
+
+    INSERT INTO dbo.[Address] ([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdatedDate])
+    SELECT
+        x.[Identifier],
+        x.[Number],
+        x.[AddressLine],
+        x.[City],
+        x.[ZipCode],
+        x.[Region],
+        x.[CountryIdentifier],
+        x.[CreatedDate],
+        x.[UpdatedDate]
+    FROM
+    (
+        VALUES
+            (1, '', '', '', '', '', @CountryIdentifier, GETDATE(), GETDATE()),
+            (2, '', '', '', '', '', @CountryIdentifier, GETDATE(), GETDATE())
+    ) AS x([Identifier], [Number], [AddressLine], [City], [ZipCode], [Region], [CountryIdentifier], [CreatedDate], [UpdatedDate])
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM dbo.[Address] r
+        WHERE r.[Identifier] = x.[Identifier]
+    );
+END
+GO
+
 IF  EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES 
            WHERE TABLE_SCHEMA = 'dbo' 
            AND TABLE_NAME = 'User')
@@ -326,51 +358,28 @@ BEGIN
     DECLARE @CivilityMrIdentifier INT;
     SELECT @CivilityMrIdentifier = Identifier FROM dbo.Civility WHERE [Name] = 'Mr.';
 
-    INSERT INTO dbo.[User] (
-        [Identifier],
-        [CivilityIdentifier],
-        [LastName],
-        [FirstName],
-        [SocietyIdentifier],
-        [Email],
-        [Phone],
-        [Password],
-        [RoleIdentifier],
-        [AddressIdentifier],
-        [CreatedDate],
-        [UpdatedDate]
-    )
+    INSERT INTO dbo.[User] ([Identifier], [CivilityIdentifier], [LastName], [FirstName], [SocietyIdentifier], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection], [CreatedDate], [UpdatedDate])
     SELECT
         x.[Identifier],
         x.[CivilityIdentifier],
         x.[LastName],
         x.[FirstName],
-        NULL,
+        x.[SocietyIdentifier],
         x.[Email],
         x.[Phone],
         x.[Password],
         x.[RoleIdentifier],
         x.[AddressIdentifier],
+        x.[IsActive],
+        x.[IsFirstConnection],
         x.[CreatedDate],
         x.[UpdatedDate]
     FROM
     (
         VALUES
-            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, 0, GETDATE(), GETDATE()),
-            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, 0, GETDATE(), GETDATE())
-    ) AS x(
-        [Identifier],
-        [CivilityIdentifier],
-        [LastName],
-        [FirstName],
-        [Email],
-        [Phone],
-        [Password],
-        [RoleIdentifier],
-        [AddressIdentifier],
-        [CreatedDate],
-        [UpdatedDate]
-    )
+            (1, @CivilityMrIdentifier, 'Bourdon-Lopez', 'Angel', NULL, 'bourdonangel@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Admin#'), 2), @AdminRoleIdentifier, 1, 1, 0, GETDATE(), GETDATE()),
+            (2, @CivilityMrIdentifier, 'Bourdon', 'Eric', NULL, 'bourdoneric@free.fr', NULL, CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', '@Eb23!Ab28?Mb14#'), 2), @AdminRoleIdentifier, 2, 1, 0, GETDATE(), GETDATE())
+    ) AS x([Identifier], [CivilityIdentifier], [LastName], [FirstName], [SocietyIdentifier], [Email], [Phone], [Password], [RoleIdentifier], [AddressIdentifier], [IsActive], [IsFirstConnection], [CreatedDate], [UpdatedDate])
     WHERE NOT EXISTS (
         SELECT 1
         FROM dbo.[User] u
@@ -394,20 +403,8 @@ WHERE NOT EXISTS (
 );
 GO
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
-               WHERE TABLE_SCHEMA = 'dbo' 
-                 AND TABLE_NAME = 'StarLevel' 
-                 AND COLUMN_NAME = 'LastUpdate')
-BEGIN
-    ALTER TABLE [dbo].[StarLevel] ADD [LastUpdate] DATETIME NULL;
-END
-GO
-
-UPDATE [dbo].[StarLevel] SET LastUpdate = GETUTCDATE() WHERE LastUpdate IS NULL;
-GO
-
-INSERT INTO [dbo].[StarLevel] ([StarLevelId], [Label], [LastUpdate])
-SELECT x.[StarLevelId], x.[Label], GETUTCDATE()
+INSERT INTO [dbo].[StarLevel] ([StarLevelId], [Label])
+SELECT x.[StarLevelId], x.[Label]
 FROM (VALUES
     (1, N'1 étoile'),
     (2, N'2 étoiles'),

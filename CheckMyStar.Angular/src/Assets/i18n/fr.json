@@ -24,9 +24,17 @@
     "NoResults": "Aucun résultat"
   },
   "LoginSection": {
+    "Email": "E-mail",
     "Login": "Identifiant",
     "Password": "Mot de passe",
-    "Connect": "Se connecter"
+    "Connect": "Se connecter",
+    "Update": "Mettre à jour",
+    "UpdatePassword": "Mettre à jour votre mot de passe",
+    "PasswordVerify": "Confirmer",
+    "PasswordResetSuccess": "Un e-mail de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.",
+    "ForgotPassword": "Mot de passe oublié ?",
+    "ResetPassword": "Réinitialiser votre mot de passe",
+    "SendResetLink": "Envoyer le lien de réinitialisation"
   },
   "ValidationSection": {
     "Required": "Ce champ est obligatoire."

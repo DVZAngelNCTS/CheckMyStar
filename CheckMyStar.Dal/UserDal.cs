@@ -1,10 +1,10 @@
-﻿using CheckMyStar.Dal.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+
+using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Models;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CheckMyStar.Dal
 {
@@ -69,8 +69,16 @@ namespace CheckMyStar.Dal
                                    && u.Password == password
                                   select u).FirstOrDefaultAsync(ct);
 
-                userResult.IsSuccess = true;
-                userResult.User = user;
+                if (user != null)
+                {
+                    userResult.IsSuccess = true;
+                    userResult.User = user;
+                }
+                else
+                {
+                    userResult.IsSuccess = false;
+                    userResult.Message = "Utilisateur ou mot de passe incorrect";
+                }
             }
             catch (Exception ex)
             {
@@ -92,8 +100,9 @@ namespace CheckMyStar.Dal
                                    r.Identifier == identifier
                                   select r).FirstOrDefaultAsync(ct);
 
-                userResult.User = user;
+
                 userResult.IsSuccess = true;
+                userResult.User = user;
             }
             catch (Exception ex)
             {
@@ -102,7 +111,7 @@ namespace CheckMyStar.Dal
             }
 
             return userResult;
-        }
+        }      
 
         public async Task<UserResult> GetUser(string lastName, string firstName, int? SocietyIdentifier, string email, string? phone, CancellationToken ct)
         {
@@ -119,8 +128,9 @@ namespace CheckMyStar.Dal
                                    && (!string.IsNullOrEmpty(phone) && r.Phone == phone)
                                   select r).FirstOrDefaultAsync(ct);
 
-                userResult.User = user;
+
                 userResult.IsSuccess = true;
+                userResult.User = user;
             }
             catch (Exception ex)
             {
@@ -145,7 +155,7 @@ namespace CheckMyStar.Dal
                                    && (string.IsNullOrEmpty(firstName) || u.FirstName.Contains(firstName))
                                    && (SocietyIdentifier == null || u.SocietyIdentifier == SocietyIdentifier)
                                    && (string.IsNullOrEmpty(email) || u.Email.Contains(email))
-                                   && (string.IsNullOrEmpty(phone) || u.Phone.Contains(phone))
+                                   && (string.IsNullOrEmpty(phone) || (u.Phone != null && u.Phone.Contains(phone)))
                                    && (role == null || u.RoleIdentifier == role)
                                    && (string.IsNullOrEmpty(address) || a.Number.Contains(address)
                                    || a.AddressLine.Contains(address)
@@ -266,7 +276,7 @@ namespace CheckMyStar.Dal
                                         where u.CreatedDate != null
                                         group u by new
                                         {
-                                            Year = u.CreatedDate.Value.Year,
+                                            Year = u.CreatedDate!.Value.Year,
                                             Month = u.CreatedDate.Value.Month
                                         } into g
                                         orderby g.Key.Year, g.Key.Month

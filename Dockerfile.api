@@ -12,6 +12,9 @@ RUN dotnet restore "./CheckMyStar.Apis/CheckMyStar.Apis.csproj"
 # Publier l'API
 RUN dotnet publish "./CheckMyStar.Apis/CheckMyStar.Apis.csproj" -c Release -o /app/publish
 
+# 🟩 Générer le DACPAC
+RUN dotnet build "./CheckMyStar.Database/CheckMyStar.Database.sqlproj" -c Release
+
 # Étape 2 : Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
@@ -19,6 +22,8 @@ WORKDIR /app
 
 EXPOSE 8080
 
+# Copier l'API publiée
 COPY --from=build /app/publish .
 
 ENTRYPOINT ["dotnet", "CheckMyStar.Apis.dll"]
+

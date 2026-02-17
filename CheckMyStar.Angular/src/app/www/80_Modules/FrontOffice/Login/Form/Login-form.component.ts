@@ -22,6 +22,7 @@ export class LoginFormComponent implements OnInit {
   loading$!: Observable<boolean>;
   form: FormGroup;
   errorMessage: string | null = null;
+  passwordVisible = false;
 
   constructor(private authenticateService: AuthenticateService, private fb: FormBuilder, private router: Router, private loaderManager: LoaderManager) {    
     this.form = this.fb.group({
@@ -47,25 +48,44 @@ export class LoginFormComponent implements OnInit {
 
     const { login, password } = this.form.value;
 
-    this.authenticateService.login(login, password).subscribe({
-      next: (result) => {   
-        this.loaderManager.hide('login-button');     
+    this.authenticateService.login$(login, password).subscribe({
+    next: (result) => {   
+      this.loaderManager.hide('login-button');     
+
+      if (result.isSuccess && result.isValid) {
+        const user = result.login.user;
+        
         localStorage.setItem('token', result.login.token);
         localStorage.setItem('refreshToken', result.login.refreshToken);
-        localStorage.setItem('user', JSON.stringify(result.login.user));
-        
-        if (result.login.user.role === EnumRole.Administrator) {
-          this.router.navigate(['/backhome']);
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // 👉 Première connexion : redirection vers changement de mot de passe
+        if (user.isFirstConnection) {
+          this.router.navigate(['/password']);
+          return;
         }
-        else {
-          this.loaderManager.hide('login-button');
+
+        // 👉 Sinon : redirection normale
+        if (user.role === EnumRole.Administrator) {
+          this.router.navigate(['/backhome']);
+        } else {
           this.router.navigate(['/fronthome']);
         }
-      },
-      error: (err) => {
+      }
+      else
+      {
+        this.loaderManager.hide('login-button')
+        this.errorMessage = result.message;        
+      }
+    },
+    error: (err) => {      
         this.loaderManager.hide('login-button')
         this.errorMessage = err.error?.message || "Erreur inconnue";
       }
     });
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 }

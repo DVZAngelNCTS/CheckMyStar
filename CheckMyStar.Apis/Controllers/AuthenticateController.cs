@@ -1,17 +1,17 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-
+using CheckMyStar.Apis.Services;
 using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Enumerations;
+using CheckMyStar.Security;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CheckMyStar.Apis.Controllers;
 
@@ -24,7 +24,7 @@ namespace CheckMyStar.Apis.Controllers;
 /// return standard HTTP status codes such as 200 (OK) or 401 (Unauthorized) based on authentication results.</remarks>
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticateController(ILogger<AuthenticateController> logger, IConfiguration configuration, IAuthenticateService authenticateService) : ControllerBase
+public class AuthenticateController(ILogger<AuthenticateController> logger, IConfiguration configuration, IAuthenticateService authenticateService, IUserService userService) : ControllerBase
 {
     /// <summary>
     /// Authenticates a user based on the provided credentials and returns a JWT token if authentication is successful.
@@ -40,22 +40,25 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
 
         if (!user.IsSuccess)
         {
-            logger.LogError("Erreur lors de la tentative de connexion pour l'utilisateur: {Login}", request.Login);
+            logger.LogError("Utilisateur ou mot de passe incorrect: {Login}", request.Login);
 
             return Ok(new LoginResponse
             {
                 IsSuccess = false,
                 IsValid = false,
-                Message = $"Erreur lors de la tentative de connexion pour l'utilisateur: {request.Login}",
-                Login = new LoginModel { Token = string.Empty, User = null }
+                Message = $"Utilisateur ou mot de passe incorrect",
+                Login = new LoginModel { 
+                    Token = string.Empty, 
+                    User = null
+                }
             });
         }
 
         if (user.IsValid != true || user.User == null)
         {
-            logger.LogWarning("Échec de connexion pour l'utilisateur: {Login}", request.Login);
+            logger.LogWarning("Utilisateur ou mot de passe incorrect");
 
-            return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
+            return Unauthorized(new { message = "Utilisateur ou mot de passe incorrect" });
         }
 
         var token = GenerateJwtToken(user.User);
@@ -82,7 +85,91 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
     }
 
     /// <summary>
-    /// Refresk token
+    /// Authenticates a user based on the provided credentials and returns a JWT token if authentication is successful.
+    /// </summary>
+    /// <param name="request">The user credentials to authenticate. Must include a valid username and password.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>An HTTP 200 response containing a JWT token and user information if authentication succeeds; otherwise, an HTTP
+    /// 401 response indicating invalid credentials.</returns>
+    [HttpPost("updatepassword")]
+    public async Task<IActionResult> UpdatePassword([FromBody] PasswordGetRequest request, CancellationToken ct)
+    {
+        var user = await authenticateService.ValidateUserAsync(request, ct);
+
+        if (!user.IsSuccess)
+        {
+            logger.LogError("Erreur lors de la tentative de changement de mot de passe, impossible de valider l'utilisateur");
+
+            return Ok(new PasswordResponse
+            {
+                IsSuccess = false,
+                IsValid = false,
+                Message = $"Erreur lors de la tentative de changement de mot de passe, impossible de valider l'utilisateur",
+                Login = new LoginModel { Token = string.Empty, User = null }
+            });
+        }
+
+        if (user.IsValid != true || user.User == null)
+        {
+            logger.LogWarning("Échec de connexion pour l'utilisateur, impossible de valider l'utilisateur");
+
+            return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
+        }
+
+        user.User.Password = SecurityHelper.HashPassword(request.NewPassword); 
+        user.User.IsFirstConnection = false;
+
+        UserSaveRequest updateSaveRequest = new UserSaveRequest
+        {
+            User = user.User
+        };
+
+        var result = await userService.UpdateUser(updateSaveRequest, ct);
+
+        if (result.IsSuccess)
+        {
+            var token = GenerateJwtToken(user.User);
+            var refreshToken = GenerateSecureRefreshToken();
+
+            authenticateService.StoreRefreshToken(refreshToken, user);
+
+            var message = $"Connexion réussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
+
+            logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
+
+            return Ok(new PasswordResponse
+            {
+                IsSuccess = true,
+                IsValid = true,
+                Message = message,
+                Login = new LoginModel
+                {
+                    Token = token,
+                    RefreshToken = refreshToken,
+                    User = user.User
+                }
+            });
+        }
+        else
+        {
+            logger.LogError("Erreur lors de la tentative de changement de mot de passe pour l'utilisateur: {Login}", request.Login);
+
+            return Ok(new PasswordResponse
+            {
+                IsSuccess = false,
+                IsValid = false,
+                Message = $"Erreur lors de la tentative de changement de mot de passe pour l'utilisateur: {request.Login}",
+                Login = new LoginModel 
+                { 
+                    Token = string.Empty, 
+                    User = null 
+                }
+            });
+        }
+    }
+
+    /// <summary>
+    /// Refresh token
     /// </summary>
     /// <param name="request"></param>
     /// <param name="ct"></param>

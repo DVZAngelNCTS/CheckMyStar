@@ -144,29 +144,28 @@ export class UserPageComponent {
 	}
 
 	onPopupConfirm() {
-
-	if (this.popupMode === 'create') {
-		if (this.userForm.form.invalid) {
-		this.userForm.form.markAllAsTouched();
-		return; // ❗ NE PAS FERMER LA POPUP
+		if (this.popupMode === 'create') {
+			if (this.userForm.form.invalid) {
+			this.userForm.form.markAllAsTouched();
+			return; // ❗ NE PAS FERMER LA POPUP
+			}
+			this.onCreateConfirmed();
+			return;
 		}
-		this.onCreateConfirmed();
-		return;
-	}
 
-	if (this.popupMode === 'edit') {
-		if (this.userForm.form.invalid) {
-		this.userForm.form.markAllAsTouched();
-		return; // ❗ NE PAS FERMER LA POPUP
+		if (this.popupMode === 'edit') {
+			if (this.userForm.form.invalid) {
+			this.userForm.form.markAllAsTouched();
+			return; // ❗ NE PAS FERMER LA POPUP
+			}
+			this.onEditConfirmed();
+			return;
 		}
-		this.onEditConfirmed();
-		return;
-	}
 
-	if (this.popupMode === 'delete') {
-		this.onDeleteConfirmed();
-		return;
-	}
+		if (this.popupMode === 'delete') {
+			this.onDeleteConfirmed();
+			return;
+		}
 
 	if (this.popupMode === 'createSociety') {
       if (this.societyForm.invalid) {
@@ -195,7 +194,9 @@ export class UserPageComponent {
 	this.loading = true;
 
 	const newUser = this.getValue();
-		
+	newUser.role = Number(newUser.role) as EnumRole;
+	newUser.civility = Number(newUser.civility) as EnumCivility;
+
 	this.userBll.addUser$(newUser).subscribe({
 		next: response => {
 				if (!response.isSuccess) {
@@ -225,6 +226,8 @@ export class UserPageComponent {
 		this.loading = true;
 
 		const updatedUser = this.getValue();
+		updatedUser.role = Number(updatedUser.role) as EnumRole;
+		updatedUser.civility = Number(updatedUser.civility) as EnumCivility;
 
 		this.userBll.updateUser$(updatedUser).subscribe({
 			next: response => {
