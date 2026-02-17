@@ -40,7 +40,7 @@
       <app-user-form [user]="selectedUser" [readonlyIdentifier]="true" (createSociety)="openCreateSociety()"></app-user-form>
     </ng-container>
     <ng-container *ngIf="popupMode === 'create'">
-      <app-user-form [readonlyIdentifier]="true"></app-user-form>
+      <app-user-form [readonlyIdentifier]="true" (createSociety)="openCreateSociety()"></app-user-form>
     </ng-container>
   </ng-container>
 
