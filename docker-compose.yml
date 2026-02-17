@@ -20,6 +20,7 @@ services:
   angular:
     build:
       context: ./CheckMyStar.Angular
+      dockerfile: Dockerfile
     container_name: checkmystar-angular
     expose:
       - "80"
