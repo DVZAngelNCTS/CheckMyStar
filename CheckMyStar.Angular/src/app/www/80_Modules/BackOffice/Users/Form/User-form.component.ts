@@ -52,6 +52,10 @@ export class UserFormComponent implements OnInit, OnChanges {
     }
   }
 
+  onCreateSocietyClick() {
+    this.createSociety.emit();
+  }
+
   ngOnInit() {
     this.buildForm();
     this.loadCountries();

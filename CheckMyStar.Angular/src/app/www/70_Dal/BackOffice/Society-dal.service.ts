@@ -14,7 +14,13 @@ export class SocietyDalService {
     return this.http.post<SocietiesResponse>(`${this.apiUrl}/Societies/getSocieties`, {});
   }
 
-  addSociety$(payload: { societies: any[] }): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Societies/addSociety`, payload);
+  addSociety$(payload: { societies: any[] } | any[] | any): Observable<any> {
+    let body = payload;
+    if (Array.isArray(payload)) {
+      body = payload[0] ?? {};
+    } else if (payload && 'societies' in payload) {
+      body = payload.societies?.[0] ?? {};
+    }
+    return this.http.post<any>(`${this.apiUrl}/Societies/addSociety`, body);
   }
 }
