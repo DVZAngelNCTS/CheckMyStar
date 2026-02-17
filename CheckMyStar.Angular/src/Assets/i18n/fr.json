@@ -123,5 +123,11 @@
     "EditCriterion": "Modifier un critère",
     "DeleteSuccess": "Critère supprimé avec succès.",
     "DeleteAsk": "Êtes-vous sûr de vouloir supprimer le critère :"
+  },
+    "SocietySection": {
+    "Create": "Créer une société",
+    "Name": "Nom",
+    "Email": "Email",
+    "Phone": "Téléphone"
   }
 }

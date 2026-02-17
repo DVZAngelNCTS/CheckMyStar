@@ -37,11 +37,28 @@
 
   <ng-container *ngIf="popupVisible">
     <ng-container *ngIf="popupMode === 'edit'">
-      <app-user-form [user]="selectedUser" [readonlyIdentifier]="true"></app-user-form>
+      <app-user-form [user]="selectedUser" [readonlyIdentifier]="true" (createSociety)="openCreateSociety()"></app-user-form>
     </ng-container>
     <ng-container *ngIf="popupMode === 'create'">
       <app-user-form [readonlyIdentifier]="true"></app-user-form>
     </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="popupMode === 'createSociety'">
+    <form [formGroup]="societyForm" class="d-flex flex-column gap-3">
+      <div class="form-group">
+        <label>{{ 'SocietySection.Name' | translate }}</label>
+        <input type="text" class="form-control" formControlName="name" required>
+      </div>
+      <div class="form-group">
+        <label>{{ 'SocietySection.Email' | translate }}</label>
+        <input type="email" class="form-control" formControlName="email">
+      </div>
+      <div class="form-group">
+        <label>{{ 'SocietySection.Phone' | translate }}</label>
+        <input type="text" class="form-control" formControlName="phone">
+      </div>
+    </form>
   </ng-container>
 </app-popup>
 
