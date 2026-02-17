@@ -13,4 +13,8 @@ export class SocietyDalService {
   getSocieties$(): Observable<SocietiesResponse> {
     return this.http.post<SocietiesResponse>(`${this.apiUrl}/Societies/getSocieties`, {});
   }
+
+  addSociety$(payload: { societies: any[] }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Societies/addSociety`, payload);
+  }
 }

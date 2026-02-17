@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserModel } from '../../../../20_Models/Common/User.model';
@@ -23,6 +23,7 @@ import { AuthenticateService } from '../../../../90_Services/Authenticate/Authen
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() user: UserModel | null = null;
   @Input() readonlyIdentifier: boolean = true;
+  @Output() createSociety = new EventEmitter<void>();
 
   form!: FormGroup;
 
@@ -44,6 +45,13 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   societies: any[] = [];
 
+  onSocietyChange(event: any) {
+    const value = event.target.value;
+    if (value === '') {
+      this.createSociety.emit();
+    }
+  }
+
   ngOnInit() {
     this.buildForm();
     this.loadCountries();
@@ -64,9 +72,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   loadSocieties() {
     this.societyBll.getSocieties$().subscribe({
       next: (response) => {
-        console.log('Sociétés reçues :', response);
         this.societies = response.societies || [];
-        console.log('Tableau societies :', this.societies);
       },
       error: (err) => console.error('Erreur chargement sociétés', err)
     });

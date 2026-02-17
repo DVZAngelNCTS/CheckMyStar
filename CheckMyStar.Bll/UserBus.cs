@@ -183,25 +183,34 @@ namespace CheckMyStar.Bll
 
                     if (userResult.IsSuccess)
                     {
-                        userModel.Address.CreatedDate = dateTime;
-                        userModel.Address.UpdatedDate = dateTime;
-
-                        var addressEntity = mapper.Map<Address>(userModel.Address);
-
-                        var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
-
-                        if (addressResult.IsSuccess)
+                        if (userModel.Address != null)
                         {
-                            result.IsSuccess = true;
-                            result.Message = userResult.Message + "<br>" + addressResult.Message;
+                            userModel.Address.CreatedDate = dateTime;
+                            userModel.Address.UpdatedDate = dateTime;
+
+                            var addressEntity = mapper.Map<Address>(userModel.Address);
+                            var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
+
+                            if (addressResult.IsSuccess)
+                            {
+                                result.IsSuccess = true;
+                                result.Message = userResult.Message + "<br>" + addressResult.Message;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = userResult.Message + "<br>" + addressResult.Message;
+                            }
+
+                            await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
                         }
                         else
                         {
-                            result.IsSuccess = false;
-                            result.Message = userResult.Message + "<br>" + addressResult.Message;
+                            result.IsSuccess = true;
+                            result.Message = userResult.Message;
                         }
 
-                        await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
+                        await activityBus.AddActivity(userResult.Message, dateTime, currentUser, userResult.IsSuccess, ct);
                     }
                     else
                     {

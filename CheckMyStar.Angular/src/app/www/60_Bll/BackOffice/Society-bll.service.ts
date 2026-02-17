@@ -8,4 +8,8 @@ export class SocietyBllService {
   getSocieties$() {
     return this.societyDal.getSocieties$();
   }
+
+  addSociety$(payload: { societies: any[] }) {
+    return this.societyDal.addSociety$(payload);
+  }
 }

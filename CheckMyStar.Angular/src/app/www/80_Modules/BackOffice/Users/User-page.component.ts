@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserFilterComponent } from './Filter/User-filter.component';
 import { UserBllService } from '../../../60_Bll/BackOffice/User-bll.service';
 import { UserModel } from '../../../20_Models/Common/User.model';
@@ -14,16 +14,17 @@ import { EnumCivility } from '../../../10_Common/Enumerations/EnumCivility';
 import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
 import { ToastService } from '../../../90_Services/Toast/Toast.service';
 import { SocietyBllService } from '../../../60_Bll/BackOffice/Society-bll.service';
+import { FieldComponent } from '../../Components/Field/Field.component';
 
 @Component({
 	selector: 'app-user-page',
 	standalone: true,
-	imports: [CommonModule, UserFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, UserFormComponent],
+	imports: [CommonModule, UserFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, UserFormComponent, FieldComponent],
 	templateUrl: './User-page.component.html'
 })
 export class UserPageComponent {
 	popupVisible = false; 
-	popupMode: 'create' | 'edit' | 'delete' | null = null; 
+	popupMode: 'create' | 'edit' | 'delete' | 'createSociety' | null = null;
 	popupTitle = ''; 
 	popupConfirmLabel = ''; 
 	popupCancelLabel = ''; 
@@ -34,6 +35,7 @@ export class UserPageComponent {
 	loading = false;
 	loadingSearch = false; 
 	loadingReset = false;
+	societyForm!: FormGroup;
 
 	columns = [
 		{ icon: 'bi bi-list-ol', field: 'identifier', header: 'UserSection.Identifier', sortable: true, filterable: true, width: '10%' },
@@ -54,7 +56,7 @@ export class UserPageComponent {
 
 	societies: any[] = [];
 
-	constructor(private userBll: UserBllService, private translate: TranslateService, private toast: ToastService, private societyBll: SocietyBllService) { 
+	constructor(private fb: FormBuilder, private userBll: UserBllService, private translate: TranslateService, private toast: ToastService, private societyBll: SocietyBllService) { 
 	}
 
 	ngOnInit() {
@@ -165,8 +167,17 @@ export class UserPageComponent {
 			return;
 		}
 
-		// 👉 Ici seulement si tout est OK
-		this.popupVisible = false;
+	if (this.popupMode === 'createSociety') {
+      if (this.societyForm.invalid) {
+        this.societyForm.markAllAsTouched();
+        return;
+      }
+      this.onCreateSocietyConfirmed();
+      return;
+    }
+
+	// 👉 Ici seulement si tout est OK
+	this.popupVisible = false;
 	}
 
 
@@ -296,5 +307,54 @@ export class UserPageComponent {
 					console.error(err);
 				}
 			});
+	}
+
+	openCreateSociety() {
+		this.societyForm = this.fb.group({
+		name: ['', Validators.required],
+		email: ['', [Validators.email]],
+		phone: ['']
+		});
+
+		this.popupMode = 'createSociety';
+		this.popupTitle = this.translate.instant('SocietySection.Create');
+		this.popupConfirmLabel = this.translate.instant('PopupSection.Validate');
+		this.popupCancelLabel = this.translate.instant('PopupSection.Cancel');
+		this.popupError = null;
+		this.loading = false;
+		this.popupVisible = true;
+	}
+
+	onCreateSocietyConfirmed() {
+		this.loading = true;
+		const newSociety = this.societyForm.value;
+		const payload = { societies: [newSociety] };
+
+		this.societyBll.addSociety$(payload).subscribe({
+		next: (response: any) => {
+			if (!response.isSuccess) {
+			this.loading = false;
+			this.popupError = response.message;
+			return;
+			}
+
+			this.loadSocieties();
+			if (this.userForm) {
+			this.userForm.loadSocieties();
+			}
+
+			const createdSociety = response.societies?.[0];
+			if (createdSociety && this.userForm) {
+			this.userForm.form.get('societyIdentifier')?.patchValue(createdSociety.identifier);
+			}
+
+			this.toast.show(response.message, 'success', 5000);
+			this.popupVisible = false;
+		},
+		error: (err: any) => {
+			this.loading = false;
+			this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
+		}
+		});
 	}
 }
