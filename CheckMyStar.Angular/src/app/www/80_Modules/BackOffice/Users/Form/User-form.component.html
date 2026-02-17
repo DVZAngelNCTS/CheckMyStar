@@ -26,12 +26,16 @@
               labelClass="w-8rem start fw-bold"
               labelTextPosition="start"
               controlClass="w-100">
-      <select class="form-select" formControlName="societyIdentifier" (change)="onSocietyChange($event)">
-        <option [value]="''">{{ 'UserSection.AddNewSociety' | translate }}</option>
-        <option *ngFor="let society of societies" [value]="society.identifier">
-          {{ society.name }}
-        </option>
-      </select>
+      <div class="input-group">
+        <select class="form-select" formControlName="societyIdentifier" (change)="onSocietyChange($event)">
+          <option *ngFor="let society of societies" [value]="society.identifier">
+            {{ society.name }}
+          </option>
+        </select>
+        <button type="button" class="btn btn-outline-secondary" (click)="onCreateSocietyClick()">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </div>
     </app-field>
     <!-- EMAIL -->
     <app-field controlName="email" label="{{ 'UserSection.Email' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">

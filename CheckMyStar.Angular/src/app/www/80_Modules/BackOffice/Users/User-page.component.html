@@ -58,6 +58,34 @@
         <label>{{ 'SocietySection.Phone' | translate }}</label>
         <input type="text" class="form-control" formControlName="phone">
       </div>
+      <div class="border-top pt-3" formGroupName="address">
+        <div class="form-group">
+          <label>{{ 'AddressSection.Number' | translate }}</label>
+          <input type="text" class="form-control" formControlName="number">
+        </div>
+        <div class="form-group">
+          <label>{{ 'AddressSection.AddressLine' | translate }}</label>
+          <input type="text" class="form-control" formControlName="addressLine" required>
+        </div>
+        <div class="form-group">
+          <label>{{ 'AddressSection.City' | translate }}</label>
+          <input type="text" class="form-control" formControlName="city" required>
+        </div>
+        <div class="form-group">
+          <label>{{ 'AddressSection.ZipCode' | translate }}</label>
+          <input type="text" class="form-control" formControlName="zipCode" required>
+        </div>
+        <div class="form-group">
+          <label>{{ 'AddressSection.Region' | translate }}</label>
+          <input type="text" class="form-control" formControlName="region">
+        </div>
+        <div class="form-group">
+          <label>{{ 'AddressSection.Country' | translate }}</label>
+          <select class="form-select" formControlName="countryIdentifier" required>
+            <option *ngFor="let c of countries" [value]="c.identifier">{{ c.name }}</option>
+          </select>
+        </div>
+      </div>
     </form>
   </ng-container>
 </app-popup>

@@ -15,6 +15,9 @@ import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
 import { ToastService } from '../../../90_Services/Toast/Toast.service';
 import { SocietyBllService } from '../../../60_Bll/BackOffice/Society-bll.service';
 import { FieldComponent } from '../../Components/Field/Field.component';
+import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
+import { CountryBllService } from '../../../60_Bll/BackOffice/Country-bll.service';
+import { CountryModel } from '../../../20_Models/Common/Country.model';
 
 @Component({
 	selector: 'app-user-page',
@@ -55,13 +58,15 @@ export class UserPageComponent {
 		] as TableColumn<UserModel>[];
 
 	societies: any[] = [];
+	countries: CountryModel[] = [];
 
-	constructor(private fb: FormBuilder, private userBll: UserBllService, private translate: TranslateService, private toast: ToastService, private societyBll: SocietyBllService) { 
+	constructor(private fb: FormBuilder, private userBll: UserBllService, private translate: TranslateService, private toast: ToastService, private societyBll: SocietyBllService, private addressBll: AddressBllService, private countryBll: CountryBllService) { 
 	}
 
 	ngOnInit() {
 		this.loadUsers();
 		this.loadSocieties();
+		this.loadCountries();
 	}
 
 	loadUsers() {
@@ -77,6 +82,16 @@ export class UserPageComponent {
 			this.societies = res.societies || [];
 		},
 		error: (err) => console.error(err)
+		});
+	}
+
+	loadCountries() {
+		this.countryBll.getCountries$().subscribe({
+			next: (res) => {
+				this.countries = res.countries || [];
+				this.setDefaultSocietyCountry();
+			},
+			error: (err) => console.error(err)
 		});
 	}
 
@@ -313,7 +328,15 @@ export class UserPageComponent {
 		this.societyForm = this.fb.group({
 		name: ['', Validators.required],
 		email: ['', [Validators.email]],
-		phone: ['']
+		phone: [''],
+		address: this.fb.group({
+			number: [''],
+			addressLine: ['', Validators.required],
+			city: ['', Validators.required],
+			zipCode: ['', Validators.required],
+			region: [''],
+			countryIdentifier: [0, Validators.required]
+		})
 		});
 
 		this.popupMode = 'createSociety';
@@ -323,38 +346,103 @@ export class UserPageComponent {
 		this.popupError = null;
 		this.loading = false;
 		this.popupVisible = true;
+		this.setDefaultSocietyCountry();
+	}
+
+	private setDefaultSocietyCountry() {
+		if (!this.societyForm) return;
+		const currentCountryId = this.societyForm.get('address.countryIdentifier')?.value;
+		const france = this.countries.find(c => c.code === 'FR');
+		if ((!currentCountryId || currentCountryId === 0) && france) {
+			this.societyForm.get('address.countryIdentifier')?.patchValue(france.identifier);
+		}
 	}
 
 	onCreateSocietyConfirmed() {
 		this.loading = true;
-		const newSociety = this.societyForm.value;
-		const payload = { societies: [newSociety] };
+		const societyValue = this.societyForm.value;
+		const addressValue = societyValue.address || {};
+		const countryId = Number(addressValue.countryIdentifier || 0);
+		const country = this.countries.find(c => c.identifier === countryId);
 
-		this.societyBll.addSociety$(payload).subscribe({
-		next: (response: any) => {
-			if (!response.isSuccess) {
-			this.loading = false;
-			this.popupError = response.message;
-			return;
+		this.addressBll.getNextIdentifier$().subscribe({
+			next: (nextResponse: any) => {
+				const nextId = nextResponse.address?.identifier ?? nextResponse.user?.identifier;
+				const idSuccess = nextResponse?.isSuccess !== false && !!nextId;
+				if (!idSuccess) {
+					this.loading = false;
+					this.popupError = nextResponse.message || 'Adresse: identifiant non recupere.';
+					return;
+				}
+
+				const addressPayload = {
+					address: {
+						identifier: nextId,
+						number: addressValue.number || '',
+						addressLine: addressValue.addressLine || '',
+						city: addressValue.city || '',
+						zipCode: addressValue.zipCode || '',
+						region: addressValue.region || '',
+						country: country
+							? { identifier: country.identifier, code: country.code, name: country.name }
+							: { identifier: 0, code: '', name: '' }
+					}
+				};
+
+				this.addressBll.addAddress$(addressPayload).subscribe({
+					next: (addressResponse: any) => {
+						const createdAddressId = addressResponse?.address?.identifier ?? nextId;
+						const addressSuccess = addressResponse?.isSuccess !== false && !!createdAddressId;
+						if (!addressSuccess) {
+							this.loading = false;
+							this.popupError = addressResponse?.message || 'Adresse: creation impossible.';
+							return;
+						}
+
+						const newSociety = {
+							name: societyValue.name,
+							email: societyValue.email,
+							phone: societyValue.phone,
+							addressIdentifier: createdAddressId
+						};
+
+						this.societyBll.addSociety$(newSociety).subscribe({
+							next: (response: any) => {
+								if (!response.isSuccess) {
+									this.loading = false;
+									this.popupError = response.message || 'Societe: creation impossible.';
+									return;
+								}
+
+								this.loadSocieties();
+								if (this.userForm) {
+									this.userForm.loadSocieties();
+								}
+
+								const createdSociety = response.societies?.[0];
+								if (createdSociety && this.userForm) {
+									this.userForm.form.get('societyIdentifier')?.patchValue(createdSociety.identifier);
+								}
+
+								this.toast.show(response.message, 'success', 5000);
+								this.popupVisible = false;
+							},
+							error: (err: any) => {
+								this.loading = false;
+								this.popupError = err.error?.message || 'Societe: erreur lors de la creation.';
+							}
+						});
+					},
+					error: (err: any) => {
+						this.loading = false;
+						this.popupError = err.error?.message || 'Adresse: erreur lors de la creation.';
+					}
+				});
+			},
+			error: (err: any) => {
+				this.loading = false;
+				this.popupError = err.error?.message || 'Adresse: erreur lors de la recuperation de l identifiant.';
 			}
-
-			this.loadSocieties();
-			if (this.userForm) {
-			this.userForm.loadSocieties();
-			}
-
-			const createdSociety = response.societies?.[0];
-			if (createdSociety && this.userForm) {
-			this.userForm.form.get('societyIdentifier')?.patchValue(createdSociety.identifier);
-			}
-
-			this.toast.show(response.message, 'success', 5000);
-			this.popupVisible = false;
-		},
-		error: (err: any) => {
-			this.loading = false;
-			this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
-		}
 		});
 	}
 }

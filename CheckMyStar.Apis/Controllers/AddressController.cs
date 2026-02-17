@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using CheckMyStar.Apis.Services.Abstractions;
+using CheckMyStar.Bll.Requests;
 
 namespace CheckMyStar.Apis.Controllers
 {
@@ -27,6 +28,21 @@ namespace CheckMyStar.Apis.Controllers
             var identifier = await addressService.GetNextIdentifier(ct);
 
             return Ok(identifier);
+        }
+
+        /// <summary>
+        /// Creates a new address using the specified request data.
+        /// </summary>
+        /// <param name="request">The details of the address to create (numéro de rue, rue, ville, code postal, région, pays). Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the result of the address creation.</returns>
+        [HttpPost("addaddress")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AddAddress([FromBody] AddressSaveRequest request, CancellationToken ct)
+        {
+            var result = await addressService.AddAddress(request, ct);
+
+            return Ok(result);
         }
     }
 }
