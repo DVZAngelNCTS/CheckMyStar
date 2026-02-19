@@ -32,8 +32,7 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
-              ,
+              },
               {
                 "glob": "**/*",
                 "input": "src/Assets",
@@ -47,6 +46,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/Environment/environment.ts",
+                  "with": "src/Environment/environment.production.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
