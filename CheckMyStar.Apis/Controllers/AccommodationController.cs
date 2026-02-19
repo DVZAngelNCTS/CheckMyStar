@@ -22,7 +22,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the next available accommodation identifier.</returns>
         [HttpPost("getnextidentifier")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> GetNextIdentifier(CancellationToken ct)
         {
             var identifier = await accommodationService.GetNextIdentifier(ct);
@@ -37,7 +37,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the list of active accommodations.</returns>
         [HttpGet("getaccommodations")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> GetAccommodations(CancellationToken ct)
         {
             var result = await accommodationService.GetAccommodations(ct);
@@ -58,7 +58,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the result of the accommodation creation.</returns>
         [HttpPost("createaccommodation")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> CreateAccommodation([FromBody] AccommodationSaveRequest request, CancellationToken ct)
         {
             var result = await accommodationService.CreateAccommodation(request, ct);
@@ -77,7 +77,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the result of the deletion operation.</returns>
         [HttpDelete("deleteaccommodation/{accommodationIdentifier}")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> DeleteAccommodation(int accommodationIdentifier, CancellationToken ct)
         {
             var result = await accommodationService.DeleteAccommodation(accommodationIdentifier, ct);
