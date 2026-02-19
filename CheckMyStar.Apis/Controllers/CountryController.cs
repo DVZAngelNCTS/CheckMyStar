@@ -18,7 +18,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">The cancellation token used to cancel the operation.</param>
         /// <returns>An IActionResult containing a collection of countries.</returns>
         [HttpPost("getcountries")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> GetCountries(CancellationToken ct)
         {
             var countries = await countryService.GetCountries(ct);
