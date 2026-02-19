@@ -1,0 +1,139 @@
+<div class="d-flex flex-column flex-grow-1">
+  <!-- Chargement -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <div *ngIf="!loading && folder" class="d-flex flex-column gap-4">
+
+    <!-- En-tête du dossier -->
+    <div class="d-flex flex-row rounded p-4 bg-secondary-light justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h4 class="mb-1">
+          <i class="bi bi-folder2-open me-2 text-primary"></i>
+          {{ 'DossierDetailSection.Folder' | translate }} <strong>#{{ folder.identifier }}</strong>
+        </h4>
+        <span class="text-muted">{{ folder.accommodation?.accommodationName }}</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex flex-row flex-wrap gap-3 p-4 rounded bg-secondary-light">
+      <h5 class="w-100 mb-2">{{ 'DossierDetailSection.Actions' | translate }}</h5>
+
+      <button class="btn btn-outline-secondary" (click)="onViewInvoice()">
+        <i class="bi bi-file-earmark-text me-2"></i>
+        {{ 'DossierDetailSection.ViewInvoice' | translate }}
+      </button>
+
+      <button class="btn btn-outline-secondary" (click)="onViewQuote()">
+        <i class="bi bi-file-earmark-ruled me-2"></i>
+        {{ 'DossierDetailSection.ViewQuote' | translate }}
+      </button>
+
+      <button class="btn btn-primary" (click)="onEvaluate()">
+        <i class="bi bi-star me-2"></i>
+        {{ 'DossierDetailSection.Evaluate' | translate }}
+      </button>
+    </div>
+
+    <!-- Informations client -->
+    <div class="rounded p-4 bg-secondary-light">
+      <h5 class="mb-3">
+        <i class="bi bi-person me-2 text-primary"></i>
+        {{ 'DossierDetailSection.ClientInfo' | translate }}
+      </h5>
+
+      <div class="row g-3" *ngIf="folder.ownerUser; else noClient">
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'UserSection.Civility' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">
+            {{ getCivilityLabel(folder.ownerUser.civility) || ('CommonSection.NotProvided' | translate) }}
+          </p>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'UserSection.LastName' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ folder.ownerUser.lastName || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'UserSection.FirstName' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ folder.ownerUser.firstName || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'UserSection.Email' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ folder.ownerUser.email || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'UserSection.Phone' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ folder.ownerUser.phone || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+      </div>
+
+      <ng-template #noClient>
+        <p class="text-muted fst-italic">{{ 'CommonSection.NotProvided' | translate }}</p>
+      </ng-template>
+    </div>
+
+    <!-- Statut et rendez-vous -->
+    <div class="rounded p-4 bg-secondary-light">
+      <h5 class="mb-3">
+        <i class="bi bi-info-circle me-2 text-primary"></i>
+        {{ 'DossierDetailSection.FolderInfo' | translate }}
+      </h5>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'DossiersSection.Status' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">
+            <span class="badge px-3 py-2" [ngClass]="getStatusBadgeClass()">
+              {{ getStatusLabel() }}
+            </span>
+          </p>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'DossierDetailSection.AppointmentDate' | translate }}
+          </label>
+          <p class="mb-0 fw-medium" *ngIf="getAppointmentDate(); else noAppointment">
+            <i class="bi bi-calendar-check me-2 text-success"></i>
+            {{ getAppointmentDate() | date:'dd/MM/yyyy HH:mm' }}
+          </p>
+          <ng-template #noAppointment>
+            <p class="mb-0 text-muted fst-italic">
+              <i class="bi bi-calendar-x me-2"></i>
+              {{ 'DossierDetailSection.NoAppointment' | translate }}
+            </p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dossier introuvable -->
+  <div *ngIf="!loading && !folder" class="text-center py-5 text-muted">
+    <i class="bi bi-folder-x fs-1 d-block mb-3"></i>
+    {{ 'DossierDetailSection.NotFound' | translate }}
+  </div>
+
+</div>

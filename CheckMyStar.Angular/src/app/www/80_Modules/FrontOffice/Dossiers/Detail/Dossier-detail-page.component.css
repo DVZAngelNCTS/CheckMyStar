@@ -1,0 +1,8 @@
+.detail-header {
+  border-left: 4px solid var(--bs-primary, #0d6efd);
+}
+
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}

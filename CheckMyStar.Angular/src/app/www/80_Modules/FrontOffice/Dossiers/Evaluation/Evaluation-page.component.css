@@ -1,0 +1,256 @@
+/* ─── Page scroll container ─────────────────────────── */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.eval-scroll-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.25rem 1rem;
+}
+
+.eval-content {
+  width: 100%;
+}
+
+/* ─── Step indicator ─────────────────────────────────── */
+.step-indicator {
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #dee2e6;
+  color: #6c757d;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.step-item.active .step-number {
+  background-color: #FBB900;
+  color: #fff;
+}
+
+.step-item.done .step-number {
+  background-color: #198754;
+  color: #fff;
+}
+
+.step-label {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.step-item.active .step-label {
+  color: #212529;
+  font-weight: 600;
+}
+
+.step-divider {
+  height: 2px;
+  flex-grow: 1;
+  background-color: #dee2e6;
+  min-width: 20px;
+}
+
+/* ─── Step indicator ─────────────────────────────────── */
+.step-indicator {
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #dee2e6;
+  color: #6c757d;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.step-item.active .step-number {
+  background-color: #FBB900;
+  color: #fff;
+}
+
+.step-item.done .step-number {
+  background-color: #198754;
+  color: #fff;
+}
+
+.step-label {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.step-item.active .step-label {
+  color: #212529;
+  font-weight: 600;
+}
+
+.step-divider {
+  height: 2px;
+  flex-grow: 1;
+  background-color: #dee2e6;
+  min-width: 20px;
+}
+
+/* ─── Star selector ──────────────────────────────────── */
+.star-btn {
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  padding: 8px 18px;
+  background: #fff;
+  font-weight: 500;
+  color: #6c757d;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s, transform 0.1s;
+}
+
+.star-btn:hover {
+  border-color: #FBB900;
+  color: #FBB900;
+  transform: translateY(-1px);
+}
+
+.star-btn.selected {
+  border-color: #FBB900;
+  background-color: #FBB900;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(251, 185, 0, 0.35);
+}
+
+/* ─── Constraint checkboxes ──────────────────────────── */
+.constraint-check {
+  background-color: #fff;
+  border: 1.5px solid #e9ecef;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  user-select: none;
+  min-height: 52px;
+}
+
+.constraint-check:hover {
+  border-color: #adb5bd;
+}
+
+.constraint-check.checked {
+  border-color: #FBB900;
+  background-color: #fffbef;
+}
+
+.constraint-check .form-check-input {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  margin-top: 0;
+}
+
+/* ─── Criteria table ─────────────────────────────────── */
+.criteria-table thead th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.criteria-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.criteria-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.criteria-table tbody tr.row-validated {
+  background-color: rgba(25, 135, 84, 0.06);
+}
+
+.criteria-table td {
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.criteria-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* ─── Progress bar ───────────────────────────────────── */
+.progress {
+  background-color: #e9ecef;
+}
+
+/* ─── Result banner ──────────────────────────────────── */
+.result-banner {
+  border: 2px solid transparent;
+  transition: background-color 0.3s;
+}
+
+.result-accepted {
+  background-color: rgba(25, 135, 84, 0.10);
+  border-color: rgba(25, 135, 84, 0.35);
+  color: #0f5132;
+}
+
+.result-refused {
+  background-color: rgba(220, 53, 69, 0.10);
+  border-color: rgba(220, 53, 69, 0.35);
+  color: #842029;
+}
+
+/* ─── Result detail table ────────────────────────────── */
+.result-detail-table thead th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.result-detail-table tbody td {
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.pad-top-1 {
+    padding-top: 1px !important;
+}

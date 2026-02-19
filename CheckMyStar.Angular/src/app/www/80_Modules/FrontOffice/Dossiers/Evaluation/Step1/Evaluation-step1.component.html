@@ -1,0 +1,181 @@
+<!-- Étoile visée -->
+<div class="rounded p-4 bg-secondary-light">
+  <h5 class="mb-1">
+    <i class="bi bi-star me-2 text-primary"></i>
+    {{ 'EvaluationSection.TargetStarTitle' | translate }}
+    <span class="text-danger ms-1">*</span>
+  </h5>
+  <p class="text-muted small mb-3">{{ 'EvaluationSection.TargetStarHint' | translate }}</p>
+
+  <div class="d-flex flex-wrap gap-2">
+    <button *ngFor="let s of stars"
+            type="button"
+            class="btn star-btn"
+            [class.selected]="form.targetStar === s"
+            (click)="form.targetStar = s">
+      <i *ngFor="let _ of getStarArray(s)" class="bi bi-star-fill me-1"></i>
+      <span class="ms-1 fw-semibold">{{ s }} ★</span>
+    </button>
+  </div>
+
+  <div *ngIf="submitted && !form.targetStar" class="text-danger small mt-2">
+    <i class="bi bi-exclamation-circle-fill me-1"></i>
+    {{ 'EvaluationSection.StarRequired' | translate }}
+  </div>
+</div>
+
+<!-- Informations générales -->
+<div class="rounded p-4 bg-secondary-light">
+  <h5 class="mb-3">
+    <i class="bi bi-house me-2 text-primary"></i>
+    {{ 'EvaluationSection.GeneralInfoTitle' | translate }}
+  </h5>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">
+        {{ 'EvaluationSection.MaxCapacity' | translate }}
+        <span class="text-danger">*</span>
+      </label>
+      <input type="number" class="form-control" [(ngModel)]="form.maxCapacity"
+             [class.is-invalid]="submitted && (!form.maxCapacity || form.maxCapacity < 1)"
+             min="1" [placeholder]="'EvaluationSection.MaxCapacityPlaceholder' | translate">
+      <div class="invalid-feedback">{{ 'EvaluationSection.FieldRequired' | translate }}</div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">
+        {{ 'EvaluationSection.Floors' | translate }}
+        <span class="text-danger">*</span>
+      </label>
+      <input type="number" class="form-control" [(ngModel)]="form.floors"
+             [class.is-invalid]="isFloorsInvalid()"
+             min="0" [placeholder]="'EvaluationSection.FloorsPlaceholder' | translate">
+      <div class="invalid-feedback">{{ 'EvaluationSection.FloorsError' | translate }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Contraintes spécifiques -->
+<div class="rounded p-4 bg-secondary-light">
+  <h5 class="mb-1">
+    <i class="bi bi-shield-exclamation me-2 text-primary"></i>
+    {{ 'EvaluationSection.ConstraintsTitle' | translate }}
+  </h5>
+  <p class="text-muted small mb-3">{{ 'EvaluationSection.ConstraintsHint' | translate }}</p>
+
+  <div class="row g-2">
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isZoneBlanche">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isZoneBlanche">
+        <span><i class="bi bi-reception-0 me-2 text-warning"></i>{{ 'EvaluationSection.ZoneBlanche' | translate }}</span>
+      </label>
+    </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isDromTom">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isDromTom">
+        <span><i class="bi bi-globe me-2 text-info"></i>{{ 'EvaluationSection.DromTom' | translate }}</span>
+      </label>
+    </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isHauteMontagne">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isHauteMontagne">
+        <span><i class="bi bi-snow me-2 text-primary"></i>{{ 'EvaluationSection.HauteMontagne' | translate }}</span>
+      </label>
+    </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isBatimentClasse">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isBatimentClasse">
+        <span><i class="bi bi-building-check me-2 text-secondary"></i>{{ 'EvaluationSection.BatimentClasse' | translate }}</span>
+      </label>
+    </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isStudioSansSejouur">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isStudioSansSejouur">
+        <span><i class="bi bi-door-open me-2 text-muted"></i>{{ 'EvaluationSection.StudioSansSejouur' | translate }}</span>
+      </label>
+    </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isStationnementImpossible">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isStationnementImpossible">
+        <span><i class="bi bi-p-circle me-2 text-danger"></i>{{ 'EvaluationSection.StationnementImpossible' | translate }}</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Surfaces -->
+<div class="rounded p-4 bg-secondary-light">
+  <h5 class="mb-3">
+    <i class="bi bi-rulers me-2 text-primary"></i>
+    {{ 'EvaluationSection.SurfacesTitle' | translate }}
+  </h5>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">
+        {{ 'EvaluationSection.TotalArea' | translate }} <span class="text-danger">*</span>
+      </label>
+      <div class="input-group">
+        <input type="number" class="form-control" [(ngModel)]="form.totalArea"
+               [class.is-invalid]="submitted && (!form.totalArea || form.totalArea < 1)"
+               min="1" placeholder="Ex: 80">
+        <span class="input-group-text">m²</span>
+        <div class="invalid-feedback">{{ 'EvaluationSection.FieldRequired' | translate }}</div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">
+        {{ 'EvaluationSection.RoomCount' | translate }} <span class="text-danger">*</span>
+      </label>
+      <input type="number" class="form-control" [(ngModel)]="form.roomCount"
+             [class.is-invalid]="submitted && (!form.roomCount || form.roomCount < 1)"
+             min="1" placeholder="Ex: 3">
+      <div class="invalid-feedback">{{ 'EvaluationSection.FieldRequired' | translate }}</div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">
+        {{ 'EvaluationSection.TotalRoomsArea' | translate }} <span class="text-danger">*</span>
+      </label>
+      <div class="input-group">
+        <input type="number" class="form-control" [(ngModel)]="form.totalRoomsArea"
+               [class.is-invalid]="submitted && (!form.totalRoomsArea || form.totalRoomsArea < 1)"
+               min="1" placeholder="Ex: 45">
+        <span class="input-group-text">m²</span>
+        <div class="invalid-feedback">{{ 'EvaluationSection.FieldRequired' | translate }}</div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">
+        {{ 'EvaluationSection.SmallestRoomArea' | translate }} <span class="text-danger">*</span>
+      </label>
+      <div class="input-group">
+        <input type="number" class="form-control" [(ngModel)]="form.smallestRoomArea"
+               [class.is-invalid]="isSmallestRoomInvalid()"
+               min="1" placeholder="Ex: 9">
+        <span class="input-group-text">m²</span>
+        <div class="invalid-feedback">
+          <ng-container *ngIf="!form.smallestRoomArea || form.smallestRoomArea < 1">
+            {{ 'EvaluationSection.FieldRequired' | translate }}
+          </ng-container>
+          <ng-container *ngIf="form.smallestRoomArea && form.smallestRoomArea >= 1 && form.totalRoomsArea !== null && form.smallestRoomArea > form.totalRoomsArea">
+            {{ 'EvaluationSection.SmallestRoomError' | translate }}
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bouton valider -->
+<div class="d-flex justify-content-end gap-2 pb-3">
+  <div *ngIf="submitted && !isFormValid" class="text-danger small d-flex align-items-center me-auto">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ 'EvaluationSection.FormInvalid' | translate }}
+  </div>
+  <button type="button" class="btn btn-primary px-4" (click)="validate()">
+    {{ 'EvaluationSection.ValidateStep1' | translate }}
+    <i class="bi bi-arrow-right ms-2"></i>
+  </button>
+</div>

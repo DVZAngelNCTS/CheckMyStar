@@ -4,7 +4,7 @@
     {
         public int CriterionId { get; set; }
         public string? Description { get; set; }
-        public decimal BasePoints { get; set; }
+        public int BasePoints { get; set; }
 
     }
 }
