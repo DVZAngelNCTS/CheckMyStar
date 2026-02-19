@@ -13,6 +13,15 @@
         IQueryable<Criterion> Criterias { get; }
         IQueryable<CriterionType> CriterionTypes { get; }
         IQueryable<Society> Societies { get; }
+        IQueryable<Accommodation> Accommodations { get; }
+        IQueryable<AccommodationType> AccommodationTypes { get; }
+        IQueryable<Folder> Folders { get; }
+        IQueryable<FolderStatus> FolderStatuses { get; }
+        IQueryable<Quote> Quotes { get; }
+        IQueryable<Invoice> Invoices { get; }
+        IQueryable<Appointment> Appointments { get; }
+        IQueryable<Assessment> Assessments { get; }
+        IQueryable<AssessmentCriterion> AssessmentCriteria { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 

@@ -15,6 +15,10 @@ public partial class CheckMyStarDbContext : DbContext
 
     public virtual DbSet<Activity> Activities { get; set; }
 
+    public virtual DbSet<Accommodation> Accommodations { get; set; }
+
+    public virtual DbSet<AccommodationType> AccommodationTypes { get; set; }
+
     public virtual DbSet<Address> Addresses { get; set; }
 
     public virtual DbSet<Civility> Civilities { get; set; }
@@ -35,6 +39,20 @@ public partial class CheckMyStarDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<Folder> Folders { get; set; }
+
+    public virtual DbSet<FolderStatus> FolderStatuses { get; set; }
+
+    public virtual DbSet<Quote> Quotes { get; set; }
+
+    public virtual DbSet<Invoice> Invoices { get; set; }
+
+    public virtual DbSet<Appointment> Appointments { get; set; }
+
+    public virtual DbSet<Assessment> Assessments { get; set; }
+
+    public virtual DbSet<AssessmentCriterion> AssessmentCriteria { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Activity>(entity =>
@@ -48,6 +66,33 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Accommodation>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Accommodation");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.AccommodationName)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.AccommodationPhone)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<AccommodationType>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("AccommodationType");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Address>(entity =>
@@ -110,7 +155,7 @@ public partial class CheckMyStarDbContext : DbContext
         {
             entity.ToTable("Criterion");
 
-            entity.Property(e => e.BasePoints).HasColumnType("decimal(9, 2)");
+            entity.Property(e => e.BasePoints).HasColumnType("int");
             entity.Property(e => e.Description)
                 .HasMaxLength(500)
                 .IsUnicode(false);
@@ -213,6 +258,102 @@ public partial class CheckMyStarDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Folder>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Folder");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<FolderStatus>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("FolderStatus");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Quote>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Quote");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.ValidUntilDate).HasColumnType("datetime");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Invoice>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Invoice");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.InvoiceNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.DueDate).HasColumnType("datetime");
+            entity.Property(e => e.IsPaid).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<Appointment>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Appointment");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.AppointmentDate).HasColumnType("datetime");
+            entity.Property(e => e.Location)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Notes).IsUnicode(false);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Assessment>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("Assessment");
+
+            entity.Property(e => e.Identifier).ValueGeneratedOnAdd();
+            entity.Property(e => e.TotalArea).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalRoomsArea).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.SmallestRoomArea).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.IsComplete).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<AssessmentCriterion>(entity =>
+        {
+            entity.HasKey(e => new { e.AssessmentIdentifier, e.CriterionId });
+
+            entity.ToTable("AssessmentCriterion");
+
+            entity.Property(e => e.Status)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.Comment)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.IsValidated).HasDefaultValue(false);
         });
 
         OnModelCreatingPartial(modelBuilder);

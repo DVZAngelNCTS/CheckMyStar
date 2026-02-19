@@ -1,0 +1,127 @@
+<!-- Résumé étape 1 (readonly) -->
+<div class="rounded p-3 bg-secondary-light d-flex flex-wrap gap-3 align-items-center justify-content-between">
+  <div class="d-flex flex-wrap gap-3 align-items-center">
+    <span class="fw-semibold">
+      <i *ngFor="let _ of getStarArray(form.targetStar ?? 0)" class="bi bi-star-fill text-warning me-1"></i>
+      <span class="ms-1">{{ form.targetStar }} ★</span>
+    </span>
+    <span class="text-muted">|</span>
+    <span class="small"><i class="bi bi-people me-1"></i>{{ 'EvaluationSection.MaxCapacity' | translate }}: <strong>{{ form.maxCapacity }}</strong></span>
+    <span class="small"><i class="bi bi-building me-1"></i>{{ 'EvaluationSection.Floors' | translate }}: <strong>{{ form.floors }}</strong></span>
+    <span class="small"><i class="bi bi-rulers me-1"></i>{{ 'EvaluationSection.TotalArea' | translate }}: <strong>{{ form.totalArea }} m²</strong></span>
+    <span class="small"><i class="bi bi-door-closed me-1"></i>{{ 'EvaluationSection.RoomCount' | translate }}: <strong>{{ form.roomCount }}</strong></span>
+
+    <!-- Contraintes actives -->
+    <ng-container *ngIf="form.isZoneBlanche || form.isDromTom || form.isHauteMontagne || form.isBatimentClasse || form.isStudioSansSejouur || form.isStationnementImpossible">
+      <span class="text-muted">|</span>
+      <span *ngIf="form.isZoneBlanche" class="badge bg-warning text-dark"><i class="bi bi-reception-0 me-1"></i>Zone blanche</span>
+      <span *ngIf="form.isDromTom" class="badge bg-info text-dark"><i class="bi bi-globe me-1"></i>DROM-TOM</span>
+      <span *ngIf="form.isHauteMontagne" class="badge bg-primary"><i class="bi bi-snow me-1"></i>Haute montagne</span>
+      <span *ngIf="form.isBatimentClasse" class="badge bg-secondary"><i class="bi bi-building-check me-1"></i>Classé</span>
+      <span *ngIf="form.isStudioSansSejouur" class="badge bg-light text-dark border"><i class="bi bi-door-open me-1"></i>Studio</span>
+      <span *ngIf="form.isStationnementImpossible" class="badge bg-danger"><i class="bi bi-p-circle me-1"></i>Sans parking</span>
+    </ng-container>
+  </div>
+  <button class="btn btn-outline-secondary btn-sm" (click)="goBack.emit()">
+    <i class="bi bi-pencil me-1"></i>
+    {{ 'EvaluationSection.EditStep1' | translate }}
+  </button>
+</div>
+
+<!-- Barre de progression -->
+<div class="rounded p-3 bg-secondary-light">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="fw-semibold small">
+      <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+      {{ 'EvaluationSection.Progress' | translate }}
+    </span>
+    <span class="small text-muted">
+      <strong>{{ getValidatedCount() }}</strong> / {{ criteriaEvaluations.length }} {{ 'EvaluationSection.CriteriaValidated' | translate }}
+      &nbsp;—&nbsp;
+      <strong class="text-success">{{ getTotalPoints() }} pts</strong>
+    </span>
+  </div>
+  <div class="progress" style="height: 10px; border-radius: 6px;">
+    <div class="progress-bar bg-success"
+         [style.width.%]="criteriaEvaluations.length ? (getValidatedCount() / criteriaEvaluations.length * 100) : 0"
+         style="transition: width 0.4s ease; border-radius: 6px;">
+    </div>
+  </div>
+</div>
+
+<!-- Tableau des critères -->
+<div class="rounded p-4 bg-secondary-light">
+  <h5 class="mb-3">
+    <i class="bi bi-list-check me-2 text-primary"></i>
+    {{ 'EvaluationSection.CriteriaTitle' | translate }}
+    <span class="badge bg-primary ms-2">{{ criteriaEvaluations.length }} {{ 'EvaluationSection.Criteria' | translate }}</span>
+  </h5>
+
+  <div class="criteria-table-wrapper">
+    <table class="table table-bordered table-hover criteria-table mb-0">
+      <thead>
+        <tr>
+          <th style="width: 42px" class="text-center">#</th>
+          <th style="width: 38%">{{ 'EvaluationSection.CriteriaLabel' | translate }}</th>
+          <th style="width: 8%" class="text-center">{{ 'EvaluationSection.Points' | translate }}</th>
+          <th style="width: 12%" class="text-center">{{ 'EvaluationSection.Type' | translate }}</th>
+          <th style="width: 10%" class="text-center">{{ 'EvaluationSection.Validated' | translate }}</th>
+          <th>{{ 'EvaluationSection.Comment' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of criteriaEvaluations; let i = index" [class.row-validated]="c.validated">
+          <td class="text-center align-middle text-muted small fw-semibold">{{ i + 1 }}</td>
+          <td class="align-middle">
+            <span [class.fw-semibold]="c.validated">{{ c.description }}</span>
+          </td>
+          <td class="text-center align-middle fw-bold">
+            <ng-container *ngIf="i === 1; else staticPoints">
+              <input type="number" class="form-control form-control-sm text-center points-input"
+                     [(ngModel)]="c.basePoints"
+                     min="1" max="5"
+                     style="width: 64px; margin: 0 auto;">
+            </ng-container>
+            <ng-template #staticPoints>{{ c.basePoints }}</ng-template>
+          </td>
+          <td class="text-center align-middle">
+            <span [class]="getTypeBadgeClass(c.typeCode)" [title]="c.typeLabel">{{ c.typeCode }}</span>
+          </td>
+          <td class="text-center align-middle">
+            <div class="form-check d-flex justify-content-center m-0">
+              <input class="form-check-input criteria-checkbox" type="checkbox" [(ngModel)]="c.validated">
+            </div>
+          </td>
+          <td class="align-middle">
+            <input type="text" class="form-control form-control-sm"
+                   [(ngModel)]="c.comment"
+                   [placeholder]="'EvaluationSection.CommentPlaceholder' | translate">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Actions -->
+<div class="d-flex justify-content-between gap-3 pb-3">
+  <button class="btn btn-outline-secondary" (click)="goBack.emit()">
+    <i class="bi bi-arrow-left me-2"></i>
+    {{ 'EvaluationSection.Back' | translate }}
+  </button>
+
+  <div class="d-flex flex-column align-items-center gap-1">
+    <button class="btn btn-outline-warning" (click)="saveEval.emit()">
+      <i class="bi bi-floppy me-2"></i>
+      {{ 'EvaluationSection.Save' | translate }}
+    </button>
+    <span *ngIf="lastSavedAt" class="text-muted" style="font-size: 11px;">
+      <i class="bi bi-clock me-1"></i>{{ 'EvaluationSection.SavedAt' | translate }} {{ lastSavedAt }}
+    </span>
+  </div>
+
+  <button class="btn btn-success px-4" (click)="submitEval.emit()">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ 'EvaluationSection.Submit' | translate }}
+  </button>
+</div>

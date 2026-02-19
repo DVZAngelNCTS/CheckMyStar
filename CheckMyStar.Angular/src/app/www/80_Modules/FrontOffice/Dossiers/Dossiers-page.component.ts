@@ -1,0 +1,443 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { TranslationModule } from '../../../10_Common/Translation.module';
+import { TableComponent } from '../../Components/Table/Table.component';
+import { TableColumn } from '../../Components/Table/Models/TableColumn.model';
+import { FolderBllService } from '../../../60_Bll/BackOffice/Folder-bll.service';
+import { AccommodationBllService } from '../../../60_Bll/BackOffice/Accommodation-bll.service';
+import { FolderModel, AccommodationModel } from '../../../20_Models/BackOffice/Folder.model';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastService } from '../../../90_Services/Toast/Toast.service';
+import { PopupComponent } from '../../Components/Popup/Popup.component';
+import { FrontFolderFilterComponent } from './Filter/Folder-filter.component';
+import { FolderFilter } from '../../../30_Filters/BackOffice/Folder.filter';
+import { DossierFormComponent } from '../../../80_Modules/BackOffice/Dossiers/Form/Dossiers-form.component';
+import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
+import { AddressModel } from '../../../20_Models/Common/Address.model';
+import { AuthenticateService } from '../../../90_Services/Authenticate/Authenticate.service';
+
+@Component({
+  selector: 'app-front-dossiers-page',
+  standalone: true,
+  imports: [CommonModule, TranslationModule, TableComponent, FormsModule, ReactiveFormsModule, PopupComponent, FrontFolderFilterComponent, DossierFormComponent],
+  templateUrl: './Dossiers-page.component.html',
+  styleUrl: './Dossiers-page.component.css'
+})
+export class FrontDossiersPageComponent implements OnInit {
+  loading = false;
+  loadingSearch = false;
+  loadingReset = false;
+  popupVisible = false;
+  popupError: string | null = null;
+  folders: FolderModel[] = [];
+  tableRows: FrontFolderTableRow[] = [];
+  currentInspectorIdentifier: number | null = null;
+  @ViewChild(DossierFormComponent) dossierForm?: DossierFormComponent;
+  isCreatingFolder = false;
+  isDeletingFolder = false;
+  selectedFolderIdentifier: number | null = null;
+
+  newAccommodation: Partial<AccommodationModel> = this.buildDefaultAccommodation();
+  newFolder: Partial<FolderModel> = this.buildDefaultFolder();
+
+  columns = [
+    { icon: 'bi bi-list-ol', field: 'identifier', header: 'DossiersSection.Identifier', sortable: true, filterable: true, width: '7%' },
+    { icon: 'bi bi-tag', field: 'accommodationTypeIdentifier', header: 'DossiersSection.AccommodationTypeIdentifier', sortable: true, filterable: true, width: '8%' },
+    { icon: 'bi bi-house', field: 'accommodationName', header: 'DossiersSection.AccommodationName', sortable: true, filterable: true, width: '14%' },
+    { icon: 'bi bi-award', field: 'accommodationCurrentStar', header: 'DossiersSection.AccommodationCurrentStar', sortable: true, filterable: true, width: '8%' },
+    { icon: 'bi bi-geo-alt', field: 'accommodationAddress', header: 'DossiersSection.AccommodationAddress', sortable: true, filterable: true, width: '18%' },
+    { icon: 'bi bi-person', field: 'ownerLastName', header: 'DossiersSection.OwnerLastName', sortable: true, filterable: true, width: '12%' },
+    { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '12%' }
+  ] as TableColumn<FrontFolderTableRow>[];
+
+  constructor(
+    private folderBll: FolderBllService,
+    private accommodationBll: AccommodationBllService,
+    private addressBll: AddressBllService,
+    private translate: TranslateService,
+    private toast: ToastService,
+    private authService: AuthenticateService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const currentUser = this.authService.getCurrentUser();
+    this.currentInspectorIdentifier = currentUser?.identifier ?? null;
+    this.loadFolders();
+  }
+
+  loadFolders(isReset: boolean = false) {
+    if (isReset) {
+      this.loadingReset = true;
+    } else {
+      this.loading = true;
+    }
+
+    this.folderBll.getFolders$().subscribe({
+      next: response => {
+        const allFolders = response.folders ?? [];
+        // Filtrer uniquement les dossiers où l'inspecteur connecté est l'inspecteur attitré
+        this.folders = allFolders.filter(folder =>
+          folder.inspectorUser?.identifier === this.currentInspectorIdentifier ||
+          folder.inspectorUserIdentifier === this.currentInspectorIdentifier
+        );
+        this.tableRows = this.folders.map(folder => this.mapToRow(folder));
+        if (isReset) {
+          this.loadingReset = false;
+        } else {
+          this.loading = false;
+        }
+      },
+      error: err => {
+        if (isReset) {
+          this.loadingReset = false;
+        } else {
+          this.loading = false;
+        }
+        console.error(err);
+        this.toast.show(this.translate.instant('CommonSection.UnknownError'), 'error', 5000);
+      }
+    });
+  }
+
+  onFilter(filter: FolderFilter) {
+    if (filter.reset) {
+      this.loadFolders(true);
+      return;
+    }
+
+    this.loadingSearch = true;
+
+    const statusFilter = filter.folderStatus != null ? Number(filter.folderStatus) : null;
+
+    this.tableRows = this.folders.filter(folder => {
+      const accommodation = folder.accommodation;
+      const owner = folder.ownerUser;
+
+      if (filter.accommodationName && !accommodation?.accommodationName?.toLowerCase().includes(filter.accommodationName.toLowerCase())) {
+        return false;
+      }
+      if (filter.ownerLastName && !owner?.lastName?.toLowerCase().includes(filter.ownerLastName.toLowerCase())) {
+        return false;
+      }
+      if (statusFilter && statusFilter > 0) {
+        const folderStatusId = this.extractStatusId(folder.folderStatus);
+        if (folderStatusId !== statusFilter) {
+          return false;
+        }
+      }
+
+      return true;
+    }).map(folder => this.mapToRow(folder));
+
+    this.loadingSearch = false;
+  }
+
+  openCreate() {
+    this.isCreatingFolder = true;
+    this.popupError = null;
+    this.newAccommodation = this.buildDefaultAccommodation();
+    this.newFolder = this.buildDefaultFolder();
+    // Pré-remplir l'inspecteur avec l'inspecteur connecté
+    this.newFolder.inspectorUserIdentifier = this.currentInspectorIdentifier ?? 0;
+    this.popupVisible = true;
+  }
+
+  openUpdate(_row: FrontFolderTableRow) {
+    this.onRowClick(_row);
+  }
+
+  onRowClick(row: FrontFolderTableRow) {
+    const fullFolder = this.folders.find(f => f.identifier === row.identifier) ?? null;
+    this.router.navigate(['/fronthome/dossiers', row.identifier], { state: { folder: fullFolder } });
+  }
+
+  openDelete(row: FrontFolderTableRow) {
+    this.isDeletingFolder = true;
+    this.isCreatingFolder = false;
+    this.selectedFolderIdentifier = row.identifier;
+    this.popupError = null;
+    this.popupVisible = true;
+  }
+
+  toggleEnabled(_row: FrontFolderTableRow) {
+    this.toast.show(this.translate.instant('DossiersSection.ActionNotAvailable'), 'info', 4000);
+  }
+
+  onPopupConfirm() {
+    if (this.isCreatingFolder) {
+      this.saveFolder();
+    } else if (this.isDeletingFolder) {
+      this.onDeleteConfirmed();
+    } else {
+      this.popupVisible = false;
+    }
+  }
+
+  onPopupCancel() {
+    this.popupVisible = false;
+    this.isCreatingFolder = false;
+    this.isDeletingFolder = false;
+    this.selectedFolderIdentifier = null;
+  }
+
+  private onDeleteConfirmed() {
+    if (!this.selectedFolderIdentifier) return;
+
+    this.loading = true;
+    this.folderBll.deleteFolder$(this.selectedFolderIdentifier).subscribe({
+      next: (response: any) => {
+        this.loading = false;
+        if (response && response.isSuccess === false) {
+          this.popupError = response.message || this.translate.instant('CommonSection.UnknownError');
+          return;
+        }
+        this.popupVisible = false;
+        this.isDeletingFolder = false;
+        this.selectedFolderIdentifier = null;
+        this.toast.show(this.translate.instant('DossiersSection.DeleteSuccess'), 'success', 4000);
+        this.loadFolders();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.popupError = err?.error?.message || this.translate.instant('CommonSection.UnknownError');
+      }
+    });
+  }
+
+  private saveFolder() {
+    this.loading = true;
+    this.popupError = null;
+
+    // Forcer l'inspecteur à l'inspecteur connecté
+    this.newFolder.inspectorUserIdentifier = this.currentInspectorIdentifier ?? 0;
+
+    this.addressBll.getNextIdentifier$().subscribe({
+      next: (addressResponse) => {
+        const addressId = addressResponse.address?.identifier ?? 0;
+        const address: AddressModel = {
+          identifier: addressId,
+          number: this.newAccommodation.address?.number ?? '',
+          addressLine: this.newAccommodation.address?.addressLine ?? '',
+          city: this.newAccommodation.address?.city ?? '',
+          zipCode: this.newAccommodation.address?.zipCode ?? '',
+          region: this.newAccommodation.address?.region ?? '',
+          country: {
+            identifier: this.newAccommodation.address?.country?.identifier ?? 0,
+            code: this.newAccommodation.address?.country?.code ?? '',
+            name: this.newAccommodation.address?.country?.name ?? ''
+          }
+        };
+
+        this.addressBll.addAddress$({ address }).subscribe({
+          next: () => {
+            this.newAccommodation.address = { ...this.newAccommodation.address, identifier: addressId } as any;
+
+            this.accommodationBll.getNextIdentifier$().subscribe({
+              next: (accommodationId) => {
+                this.newAccommodation.identifier = accommodationId;
+
+                this.accommodationBll.createAccommodation$(this.newAccommodation as AccommodationModel).subscribe({
+                  next: (accommodationResponse) => {
+                    this.newFolder.accommodationIdentifier = accommodationResponse.identifier;
+                    this.newFolder.accommodationTypeIdentifier = accommodationResponse.accommodationType?.identifier ?? 0;
+
+                    this.folderBll.getNextIdentifier$().subscribe({
+                      next: (folderId) => {
+                        this.newFolder.identifier = folderId;
+
+                        this.folderBll.createFolder$(this.newFolder as FolderModel).subscribe({
+                          next: () => {
+                            this.loading = false;
+                            this.popupVisible = false;
+                            this.isCreatingFolder = false;
+                            this.toast.show(this.translate.instant('DossiersSection.CreateSuccess'), 'success', 4000);
+                            this.loadFolders();
+                          },
+                          error: (err) => {
+                            this.loading = false;
+                            const errorMessage = err?.message || err?.error?.message || JSON.stringify(err);
+                            this.popupError = this.translate.instant('DossiersSection.FolderCreateError') + ': ' + errorMessage;
+                          }
+                        });
+                      },
+                      error: () => {
+                        this.loading = false;
+                        this.popupError = 'Erreur lors de la récupération de l\'identifiant du dossier';
+                      }
+                    });
+                  },
+                  error: (err) => {
+                    this.loading = false;
+                    const errorMessage = err?.message || err?.error?.message || JSON.stringify(err);
+                    this.popupError = this.translate.instant('DossiersSection.AccommodationCreateError') + ': ' + errorMessage;
+                  }
+                });
+              },
+              error: () => {
+                this.loading = false;
+                this.popupError = 'Erreur lors de la récupération de l\'identifiant de l\'hébergement';
+              }
+            });
+          },
+          error: (err) => {
+            this.loading = false;
+            const errorMessage = err?.message || err?.error?.message || JSON.stringify(err);
+            this.popupError = 'Erreur lors de la création de l\'adresse : ' + errorMessage;
+          }
+        });
+      },
+      error: () => {
+        this.loading = false;
+        this.popupError = 'Erreur lors de la récupération de l\'identifiant de l\'adresse';
+      }
+    });
+  }
+
+  private buildDefaultAccommodation(): Partial<AccommodationModel> {
+    return {
+      identifier: 0,
+      accommodationName: '',
+      accommodationPhone: '',
+      accommodationType: { identifier: 0 },
+      accommodationCurrentStar: 0,
+      address: {
+        identifier: 0,
+        number: '',
+        addressLine: '',
+        city: '',
+        zipCode: '',
+        region: '',
+        country: { identifier: 0, code: '', name: '' }
+      },
+      isActive: true,
+      createdDate: new Date().toISOString(),
+      updatedDate: new Date().toISOString()
+    } as any;
+  }
+
+  private buildDefaultFolder(): Partial<FolderModel> {
+    return {
+      identifier: 0,
+      accommodationTypeIdentifier: 0,
+      accommodationIdentifier: 0,
+      ownerUserIdentifier: 0,
+      inspectorUserIdentifier: this.currentInspectorIdentifier ?? 0,
+      folderStatusIdentifier: 0,
+      quoteIdentifier: null,
+      invoiceIdentifier: null,
+      appointmentIdentifier: null,
+      createdDate: new Date().toISOString(),
+      updatedDate: new Date().toISOString()
+    } as any;
+  }
+
+  private extractStatusId(status: unknown): number | null {
+    if (!status) return null;
+
+    if (typeof status === 'number') return status;
+
+    if (typeof status === 'object' && 'identifier' in status) {
+      const id = (status as any).identifier;
+      if (typeof id === 'number') return id;
+      if (typeof id === 'string') {
+        const parsed = parseInt(id, 10);
+        return !isNaN(parsed) ? parsed : null;
+      }
+    }
+
+    if (typeof status === 'string') {
+      const parsed = parseInt(status, 10);
+      return !isNaN(parsed) ? parsed : null;
+    }
+
+    return null;
+  }
+
+  private mapToRow(folder: FolderModel): FrontFolderTableRow {
+    const accommodation = folder.accommodation;
+    const owner = folder.ownerUser;
+    const address = accommodation?.address;
+
+    return {
+      identifier: folder.identifier,
+      accommodationTypeIdentifier: folder.accommodationType?.identifier ?? '',
+      accommodationName: accommodation?.accommodationName ?? '',
+      accommodationCurrentStar: this.formatStar(accommodation?.accommodationCurrentStar),
+      accommodationAddress: this.formatAddress(address),
+      ownerLastName: owner?.lastName ?? '',
+      folderStatus: this.formatFolderStatus(folder.folderStatus),
+    };
+  }
+
+  private formatAddress(address?: FrontFolderAddressModel | null): string {
+    if (!address) return '';
+    const line1 = [address.number, address.addressLine].filter(Boolean).join(' ');
+    const line2 = [address.zipCode, address.city].filter(Boolean).join(' ');
+    const country = address.country?.name ?? '';
+    return [line1, line2, country].filter(Boolean).join(', ') || '';
+  }
+
+  private formatStar(star: number | null | undefined): string {
+    if (star == null) return '';
+    return star === 1 ? '1 étoile' : `${star} étoiles`;
+  }
+
+  private formatFolderStatus(status: unknown): string {
+    if (status == null) return '';
+
+    let numericStatus: number | null = null;
+
+    if (typeof status === 'object' && status !== null && 'identifier' in status) {
+      const id = (status as any).identifier;
+      if (typeof id === 'number') numericStatus = id;
+      else if (typeof id === 'string') {
+        const parsed = parseInt(id, 10);
+        if (!isNaN(parsed)) numericStatus = parsed;
+      }
+    } else if (typeof status === 'number') {
+      numericStatus = status;
+    } else if (typeof status === 'string') {
+      const parsed = parseInt(status, 10);
+      if (!isNaN(parsed)) numericStatus = parsed;
+    }
+
+    if (numericStatus !== null) {
+      const statusMap: { [key: number]: string } = {
+        1: 'FrontDossiersSection.StatusInProgress',
+        2: 'FrontDossiersSection.StatusWaitingQuote',
+        3: 'FrontDossiersSection.StatusWaitingPayment',
+        4: 'FrontDossiersSection.StatusCompleted',
+        5: 'FrontDossiersSection.StatusCancelled'
+      };
+      const translationKey = statusMap[numericStatus];
+      if (translationKey) return this.translate.instant(translationKey);
+      return numericStatus.toString();
+    }
+
+    return '';
+  }
+}
+
+interface FrontFolderTableRow {
+  identifier: number;
+  accommodationTypeIdentifier: number | '';
+  accommodationName: string;
+  accommodationCurrentStar: string;
+  accommodationAddress: string;
+  ownerLastName: string;
+  folderStatus: string;
+}
+
+interface FrontFolderAddressModel {
+  identifier?: number | null;
+  number?: string | null;
+  addressLine?: string | null;
+  city?: string | null;
+  zipCode?: string | null;
+  region?: string | null;
+  country?: { name?: string | null } | null;
+}
+

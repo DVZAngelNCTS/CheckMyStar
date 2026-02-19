@@ -47,3 +47,12 @@ th input {
   max-width: 160px;
 }
 
+.table-row-clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.table-row-clickable:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+

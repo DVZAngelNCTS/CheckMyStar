@@ -9,5 +9,5 @@ public partial class Criterion
 
     public string Description { get; set; } = null!;
 
-    public decimal BasePoints { get; set; }
+    public int BasePoints { get; set; }
 }

@@ -1,5 +1,5 @@
 <div class="popup-overlay" *ngIf="visible">
-  <div class="popup-box">
+  <div [class]="large ? 'popup-box popup-large-box' : 'popup-box'">
     <div class="popup-header">
       <h3>{{ title }}</h3>
     </div>

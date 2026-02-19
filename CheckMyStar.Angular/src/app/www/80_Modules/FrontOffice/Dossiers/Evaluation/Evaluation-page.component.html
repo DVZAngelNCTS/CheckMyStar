@@ -1,0 +1,180 @@
+﻿<div class="eval-scroll-container">
+<div class="eval-content d-flex flex-column gap-4">
+
+  <!-- Titre de la page -->
+  <div class="d-flex align-items-center gap-3">
+    <i class="bi bi-star-half fs-4 text-primary"></i>
+    <div>
+      <h4 class="mb-0">{{ 'EvaluationSection.Title' | translate }}</h4>
+      <span class="text-muted small">{{ 'EvaluationSection.Subtitle' | translate }} #{{ folderId }}</span>
+    </div>
+  </div>
+
+  <!-- Indicateur d'étapes -->
+  <div class="step-indicator d-flex align-items-center p-3 rounded bg-secondary-light">
+    <div class="step-item" [class.active]="step >= 1" [class.done]="step > 1">
+      <div class="step-number">
+        <i *ngIf="step > 1" class="bi bi-check-lg"></i>
+        <span *ngIf="step <= 1">1</span>
+      </div>
+      <span class="step-label">{{ 'EvaluationSection.Step1Label' | translate }}</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step-item" [class.active]="step >= 2" [class.done]="step > 2">
+      <div class="step-number">
+        <i *ngIf="step > 2" class="bi bi-check-lg"></i>
+        <span *ngIf="step <= 2">2</span>
+      </div>
+      <span class="step-label">{{ 'EvaluationSection.Step2Label' | translate }}</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step-item" [class.active]="step >= 3">
+      <div class="step-number">3</div>
+      <span class="step-label">{{ 'EvaluationSection.Step3Label' | translate }}</span>
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- étape 1 : informations du bien -->
+    <app-eval-step1
+      *ngIf="step === 1"
+      [form]="form"
+      (validated)="onStep1Validated()">
+    </app-eval-step1>
+
+    <!-- Étape 2 : grille des critères -->
+    <app-eval-step2
+      *ngIf="step === 2"
+      [form]="form"
+      [criteriaEvaluations]="criteriaEvaluations"
+      [lastSavedAt]="lastSavedAt"
+      (goBack)="onGoBack()"
+      (saveEval)="onSave()"
+      (submitEval)="onSubmit()">
+    </app-eval-step2>
+
+    <!-- Étape 3 : résultat du calcul -->
+    <ng-container *ngIf="step === 3 && result">
+
+      <!-- Bandeau principal accepté / refusé -->
+      <div class="rounded p-4 text-center result-banner"
+           [class.result-accepted]="result.accepted"
+           [class.result-refused]="!result.accepted">
+        <i class="bi fs-1 d-block mb-2"
+           [class.bi-patch-check-fill]="result.accepted"
+           [class.bi-x-circle-fill]="!result.accepted"></i>
+        <h4 class="fw-bold mb-1">
+          {{ (result.accepted ? 'EvaluationSection.ResultAccepted' : 'EvaluationSection.ResultRefused') | translate }}
+        </h4>
+        <p class="mb-0 small opacity-75">
+          {{ (result.accepted ? 'EvaluationSection.ResultAcceptedHint' : 'EvaluationSection.ResultRefusedHint') | translate : { star: form.targetStar } }}
+        </p>
+      </div>
+
+      <!-- Détail du calcul -->
+      <div class="rounded p-4 bg-secondary-light pad-top-1">
+        <h5 class="mb-3">
+          <i class="bi bi-calculator me-2 text-primary"></i>
+          {{ 'EvaluationSection.ResultDetailTitle' | translate }}
+        </h5>
+
+        <table class="table table-bordered result-detail-table mb-0">
+          <thead>
+            <tr>
+              <th>{{ 'EvaluationSection.ResultCondition' | translate }}</th>
+              <th class="text-center" style="width: 120px">{{ 'EvaluationSection.ResultObtained' | translate }}</th>
+              <th class="text-center" style="width: 120px">{{ 'EvaluationSection.ResultRequired' | translate }}</th>
+              <th class="text-center" style="width: 90px">{{ 'EvaluationSection.ResultStatus' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- Obligatoires -->
+            <tr [class.table-success]="result.mandatoryOk" [class.table-danger]="!result.mandatoryOk">
+              <td>
+                <strong>{{ 'EvaluationSection.ResultMandatoryTitle' | translate }}</strong>
+                <div class="text-muted small">
+                  {{ 'EvaluationSection.ResultMandatoryHint' | translate : { total: result.totalMandatoryPoints } }}
+                </div>
+              </td>
+              <td class="text-center align-middle fw-bold">{{ result.earnedMandatoryPoints }} pts</td>
+              <td class="text-center align-middle">≥ {{ result.mandatoryThreshold }} pts <span class="text-muted small">(95%)</span></td>
+              <td class="text-center align-middle">
+                <i class="bi fs-5" [class.bi-check-circle-fill]="result.mandatoryOk" [class.text-success]="result.mandatoryOk"
+                   [class.bi-x-circle-fill]="!result.mandatoryOk" [class.text-danger]="!result.mandatoryOk"></i>
+              </td>
+            </tr>
+
+            <!-- ONC -->
+            <tr [class.table-success]="result.oncOk" [class.table-danger]="!result.oncOk">
+              <td>
+                <strong>{{ 'EvaluationSection.ResultOncTitle' | translate }}</strong>
+                <div class="text-muted small">
+                  <ng-container *ngIf="result.oncOk">{{ 'EvaluationSection.ResultOncOk' | translate : { count: result.oncCount } }}</ng-container>
+                  <ng-container *ngIf="!result.oncOk">{{ 'EvaluationSection.ResultOncFail' | translate : { count: result.oncFailedCount } }}</ng-container>
+                </div>
+              </td>
+              <td class="text-center align-middle fw-bold">{{ result.oncCount - result.oncFailedCount }} / {{ result.oncCount }}</td>
+              <td class="text-center align-middle">{{ result.oncCount }} / {{ result.oncCount }}</td>
+              <td class="text-center align-middle">
+                <i class="bi fs-5" [class.bi-check-circle-fill]="result.oncOk" [class.text-success]="result.oncOk"
+                   [class.bi-x-circle-fill]="!result.oncOk" [class.text-danger]="!result.oncOk"></i>
+              </td>
+            </tr>
+
+            <!-- Optionnels -->
+            <tr [class.table-success]="result.optionalOk" [class.table-danger]="!result.optionalOk">
+              <td>
+                <strong>{{ 'EvaluationSection.ResultOptionalTitle' | translate }}</strong>
+                <div class="text-muted small">
+                  {{ 'EvaluationSection.ResultOptionalHint' | translate : {
+                    min: result.minOptionalRequired,
+                    bonus: result.bonus,
+                    missing: result.missingMandatory,
+                    total: result.totalOptionalPoints
+                  } }}
+                </div>
+              </td>
+              <td class="text-center align-middle fw-bold">{{ result.earnedOptionalPoints }} pts</td>
+              <td class="text-center align-middle">
+                ≥ {{ result.requiredOptional }} pts
+                <div class="text-muted small" *ngIf="result.bonus > 0">
+                  ({{ result.minOptionalRequired }} + {{ result.bonus }} bonus)
+                </div>
+              </td>
+              <td class="text-center align-middle">
+                <i class="bi fs-5" [class.bi-check-circle-fill]="result.optionalOk" [class.text-success]="result.optionalOk"
+                   [class.bi-x-circle-fill]="!result.optionalOk" [class.text-danger]="!result.optionalOk"></i>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-between gap-3 pb-3">
+        <button class="btn btn-outline-secondary" (click)="step = 2">
+          <i class="bi bi-arrow-left me-2"></i>
+          {{ 'EvaluationSection.ResultBackToCriteria' | translate }}
+        </button>
+        <button class="btn btn-outline-primary" (click)="onRestart()">
+          <i class="bi bi-arrow-repeat me-2"></i>
+          {{ 'EvaluationSection.ResultNewEvaluation' | translate }}
+        </button>
+      </div>
+
+    </ng-container>
+
+  </ng-container>
+
+</div>
+</div>

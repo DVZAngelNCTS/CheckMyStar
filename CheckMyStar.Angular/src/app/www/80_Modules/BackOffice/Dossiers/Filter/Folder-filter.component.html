@@ -1,0 +1,41 @@
+<div class="ms-3 d-flex flex-column gap-2" (keydown.enter)="search()">
+  <div [formGroup]="form">
+    <!-- Ligne 1 : Nom hébergement + Propriétaire -->
+    <div class="d-flex flex-row flex-nowrap align-items-center row-fields mb-2">
+      <app-field controlName="accommodationName" icon="bi bi-house" label="{{ 'DossiersSection.AccommodationName' | translate }}" labelClass="w-14rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <input type="text" class="form-control" formControlName="accommodationName">
+      </app-field>
+      <app-field controlName="ownerLastName" icon="bi bi-person" label="{{ 'DossiersSection.OwnerLastName' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <input type="text" class="form-control" formControlName="ownerLastName">
+      </app-field>
+    </div>
+    <!-- Ligne 2 : Inspecteur + Statut + boutons -->
+    <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+      <app-field controlName="inspectorLastName" icon="bi bi-person-badge" label="{{ 'DossiersSection.InspectorLastName' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <input type="text" class="form-control" formControlName="inspectorLastName">
+      </app-field>
+      <app-field controlName="folderStatus" icon="bi bi-info-circle" label="{{ 'DossiersSection.Status' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+        <select class="form-select" formControlName="folderStatus">
+          <option [value]="null">{{ 'CommonSection.All' | translate }}</option>
+          <option *ngFor="let status of folderStatuses" [value]="status.id">{{ status.label | translate }}</option>
+        </select>
+      </app-field>
+      <div class="ms-auto d-flex flex-nowrap ms-3">
+        <button type="button" class="btn btn-primary me-2 d-flex align-items-center justify-content-center gap-4 w-9rem" [disabled]="loadingSearch" (click)="search()">
+          <app-loader-mini *ngIf="loadingSearch"></app-loader-mini>
+          <span class="d-flex align-items-center">
+            <i class="bi bi-search me-2"></i>
+            {{ 'CommonSection.Search' | translate }}
+          </span>
+        </button>
+        <button type="button" class="btn btn-tertiary me-2 d-flex align-items-center justify-content-center gap-4 w-9rem" [disabled]="loadingReset" (click)="reset()">
+          <app-loader-mini *ngIf="loadingReset"></app-loader-mini>
+          <span class="d-flex align-items-center">
+            <i class="bi bi-funnel me-2"></i>
+            {{ 'CommonSection.Reset' | translate }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -18,7 +18,7 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>Criteria status</returns>
     [HttpPost("getstarcriteriastatus")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator, Inspector")]
     public async Task<IActionResult> GetStarCriteriaStatus(CancellationToken ct)
     {
         var criterias = await criteriaService.GetStarCriteriaStatus(ct);
@@ -32,7 +32,7 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>Criteria details</returns>
     [HttpPost("getstarcriteriadetails")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator, Inspector")]
     public async Task<IActionResult> GetStarCriteriaDetails(CancellationToken ct)
     {
         var result = await criteriaService.GetStarCriteriaDetails(ct);
