@@ -37,7 +37,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the result of the address creation.</returns>
         [HttpPost("addaddress")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> AddAddress([FromBody] AddressSaveRequest request, CancellationToken ct)
         {
             var result = await addressService.AddAddress(request, ct);
