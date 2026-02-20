@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angul
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { FolderFilter } from '../../../../30_Filters/BackOffice/Folder.filter';
 import { FieldComponent } from '../../../Components/Field/Field.component';
-import { MiniLoaderComponent } from '../../../Components/Loader/Mini/Loader-mini.component';
+import { FilterComponent } from '../../../Components/Filter/Filter.component';
 
 @Component({
   selector: 'app-front-folder-filter',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslationModule, FieldComponent, MiniLoaderComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslationModule, FieldComponent, FilterComponent],
   templateUrl: './Folder-filter.component.html'
 })
 export class FrontFolderFilterComponent {
