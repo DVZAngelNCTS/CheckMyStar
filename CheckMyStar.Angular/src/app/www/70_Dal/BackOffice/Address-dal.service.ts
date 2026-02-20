@@ -21,4 +21,8 @@ export class AddressDalService {
   addAddress$(payload: { address: AddressModel }): Observable<AddressResponse> {
     return this.http.post<AddressResponse>(`${this.apiUrl}/Address/addaddress`, payload);
   }
+
+  updateAddress$(payload: { address: AddressModel }): Observable<AddressResponse> {
+    return this.http.put<AddressResponse>(`${this.apiUrl}/Address/updateaddress`, payload);
+  }
 }

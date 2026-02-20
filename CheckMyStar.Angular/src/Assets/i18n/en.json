@@ -120,6 +120,12 @@
     "Create": "Create a case",
     "CreateNotAvailable": "Case creation is not yet available. This feature will be enabled soon.",
     "CreateSuccess": "Case created successfully",
+    "Update": "Edit case",
+    "UpdateSuccess": "Case updated successfully",
+    "AccommodationUpdateError": "Error updating accommodation",
+    "FolderUpdateError": "Error updating case",
+    "AccommodationEdition": "Edit accommodation",
+    "FolderEdition": "Edit case",
     "Delete": "Delete case",
     "DeleteAsk": "Are you sure you want to delete case",
     "DeleteSuccess": "Case deleted successfully",
@@ -167,8 +173,22 @@
   },
   "FrontOfficeMenuSection": {
     "Home": "Home",
+    "Dashboard": "Dashboard",
     "Dossiers": "My Cases",
     "Disconnect": "Disconnect"
+  },
+  "InspectorDashboardSection": {
+    "Title": "Inspector Dashboard",
+    "Description": "Overview of your inspection cases",
+    "TotalDossiers": "My Cases",
+    "AssignedDossiers": "cases assigned to you",
+    "ActiveInspections": "active inspections",
+    "Pending": "Pending",
+    "CompletionRate": "of cases completed",
+    "RecentDossiers": "Recent Cases",
+    "ViewAllDossiers": "View all my cases",
+    "StatusBreakdown": "Status breakdown",
+    "NoDossiers": "No cases assigned"
   },
   "FrontDossiersSection": {
     "Title": "My Inspection Cases",

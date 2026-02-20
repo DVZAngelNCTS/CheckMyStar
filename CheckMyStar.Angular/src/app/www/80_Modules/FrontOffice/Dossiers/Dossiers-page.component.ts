@@ -13,7 +13,7 @@ import { ToastService } from '../../../90_Services/Toast/Toast.service';
 import { PopupComponent } from '../../Components/Popup/Popup.component';
 import { FrontFolderFilterComponent } from './Filter/Folder-filter.component';
 import { FolderFilter } from '../../../30_Filters/BackOffice/Folder.filter';
-import { DossierFormComponent } from '../../../80_Modules/BackOffice/Dossiers/Form/Dossiers-form.component';
+import { FrontDossierFormComponent } from './Form/Front-Dossier-form.component';
 import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
 import { AddressModel } from '../../../20_Models/Common/Address.model';
 import { AuthenticateService } from '../../../90_Services/Authenticate/Authenticate.service';
@@ -21,7 +21,7 @@ import { AuthenticateService } from '../../../90_Services/Authenticate/Authentic
 @Component({
   selector: 'app-front-dossiers-page',
   standalone: true,
-  imports: [CommonModule, TranslationModule, TableComponent, FormsModule, ReactiveFormsModule, PopupComponent, FrontFolderFilterComponent, DossierFormComponent],
+  imports: [CommonModule, TranslationModule, TableComponent, FormsModule, ReactiveFormsModule, PopupComponent, FrontFolderFilterComponent, FrontDossierFormComponent],
   templateUrl: './Dossiers-page.component.html',
   styleUrl: './Dossiers-page.component.css'
 })
@@ -34,22 +34,27 @@ export class FrontDossiersPageComponent implements OnInit {
   folders: FolderModel[] = [];
   tableRows: FrontFolderTableRow[] = [];
   currentInspectorIdentifier: number | null = null;
-  @ViewChild(DossierFormComponent) dossierForm?: DossierFormComponent;
+  @ViewChild(FrontDossierFormComponent) dossierForm?: FrontDossierFormComponent;
   isCreatingFolder = false;
+  isUpdatingFolder = false;
   isDeletingFolder = false;
   selectedFolderIdentifier: number | null = null;
 
   newAccommodation: Partial<AccommodationModel> = this.buildDefaultAccommodation();
   newFolder: Partial<FolderModel> = this.buildDefaultFolder();
 
+  editAccommodation: Partial<AccommodationModel> = this.buildDefaultAccommodation();
+  editFolder: Partial<FolderModel> = this.buildDefaultFolder();
+
   columns = [
-    { icon: 'bi bi-list-ol', field: 'identifier', header: 'DossiersSection.Identifier', sortable: true, filterable: true, width: '7%' },
-    { icon: 'bi bi-tag', field: 'accommodationTypeIdentifier', header: 'DossiersSection.AccommodationTypeIdentifier', sortable: true, filterable: true, width: '8%' },
-    { icon: 'bi bi-house', field: 'accommodationName', header: 'DossiersSection.AccommodationName', sortable: true, filterable: true, width: '14%' },
+    { icon: 'bi bi-list-ol', field: 'identifier', header: 'DossiersSection.Identifier', sortable: true, filterable: true, width: '8%' },
+    { icon: 'bi bi-tag', field: 'accommodationTypeIdentifier', header: 'DossiersSection.AccommodationTypeIdentifier', sortable: true, filterable: true, width: '12%' },
+    { icon: 'bi bi-house', field: 'accommodationName', header: 'DossiersSection.AccommodationName', sortable: true, filterable: true, width: '12%' },
     { icon: 'bi bi-award', field: 'accommodationCurrentStar', header: 'DossiersSection.AccommodationCurrentStar', sortable: true, filterable: true, width: '8%' },
-    { icon: 'bi bi-geo-alt', field: 'accommodationAddress', header: 'DossiersSection.AccommodationAddress', sortable: true, filterable: true, width: '18%' },
-    { icon: 'bi bi-person', field: 'ownerLastName', header: 'DossiersSection.OwnerLastName', sortable: true, filterable: true, width: '12%' },
-    { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '12%' }
+    { icon: 'bi bi-geo-alt', field: 'accommodationAddress', header: 'DossiersSection.AccommodationAddress', sortable: true, filterable: true},
+    { icon: 'bi bi-person', field: 'ownerLastName', header: 'DossiersSection.OwnerLastName', sortable: true, filterable: true, width: '10%' },
+    { icon: 'bi bi-person-badge', field: 'inspectorLastName', header: 'DossiersSection.InspectorLastName', sortable: true, filterable: true, width: '10%' },
+    { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '10%' }
   ] as TableColumn<FrontFolderTableRow>[];
 
   constructor(
@@ -145,8 +150,54 @@ export class FrontDossiersPageComponent implements OnInit {
     this.popupVisible = true;
   }
 
-  openUpdate(_row: FrontFolderTableRow) {
-    this.onRowClick(_row);
+  openUpdate(row: FrontFolderTableRow) {
+    const fullFolder = this.folders.find(f => f.identifier === row.identifier);
+    if (!fullFolder) {
+      this.toast.show(this.translate.instant('CommonSection.UnknownError'), 'error', 4000);
+      return;
+    }
+    const acc = fullFolder.accommodation;
+    this.editAccommodation = {
+      identifier: acc?.identifier ?? 0,
+      accommodationName: acc?.accommodationName ?? '',
+      accommodationPhone: acc?.accommodationPhone ?? '',
+      accommodationType: { identifier: acc?.accommodationType?.identifier || fullFolder.accommodationTypeIdentifier || fullFolder.accommodationType?.identifier || 0 },
+      accommodationCurrentStar: acc?.accommodationCurrentStar ?? 0,
+      address: {
+        identifier: acc?.address?.identifier ?? 0,
+        number: acc?.address?.number ?? '',
+        addressLine: acc?.address?.addressLine ?? '',
+        city: acc?.address?.city ?? '',
+        zipCode: acc?.address?.zipCode ?? '',
+        region: acc?.address?.region ?? '',
+        country: {
+          identifier: acc?.address?.country?.identifier ?? 0,
+          code: acc?.address?.country?.code ?? '',
+          name: acc?.address?.country?.name ?? ''
+        }
+      },
+      isActive: acc?.isActive ?? true,
+      createdDate: acc?.createdDate ?? new Date().toISOString(),
+      updatedDate: new Date().toISOString()
+    } as any;
+    this.editFolder = {
+      identifier: fullFolder.identifier,
+      accommodationTypeIdentifier: fullFolder.accommodationType?.identifier ?? fullFolder.accommodationTypeIdentifier ?? 0,
+      accommodationIdentifier: acc?.identifier ?? fullFolder.accommodationIdentifier ?? 0,
+      ownerUserIdentifier: fullFolder.ownerUser?.identifier ?? fullFolder.ownerUserIdentifier ?? 0,
+      inspectorUserIdentifier: fullFolder.inspectorUser?.identifier ?? fullFolder.inspectorUserIdentifier ?? this.currentInspectorIdentifier ?? 0,
+      folderStatusIdentifier: this.extractStatusId(fullFolder.folderStatus) ?? fullFolder.folderStatusIdentifier ?? 0,
+      quoteIdentifier: (fullFolder as any).quoteIdentifier ?? null,
+      invoiceIdentifier: (fullFolder as any).invoiceIdentifier ?? null,
+      appointmentIdentifier: (fullFolder as any).appointmentIdentifier ?? null,
+      createdDate: (fullFolder as any).createdDate ?? new Date().toISOString(),
+      updatedDate: new Date().toISOString()
+    } as any;
+    this.isUpdatingFolder = true;
+    this.isCreatingFolder = false;
+    this.isDeletingFolder = false;
+    this.popupError = null;
+    this.popupVisible = true;
   }
 
   onRowClick(row: FrontFolderTableRow) {
@@ -169,6 +220,8 @@ export class FrontDossiersPageComponent implements OnInit {
   onPopupConfirm() {
     if (this.isCreatingFolder) {
       this.saveFolder();
+    } else if (this.isUpdatingFolder) {
+      this.updateFolderSave();
     } else if (this.isDeletingFolder) {
       this.onDeleteConfirmed();
     } else {
@@ -179,6 +232,7 @@ export class FrontDossiersPageComponent implements OnInit {
   onPopupCancel() {
     this.popupVisible = false;
     this.isCreatingFolder = false;
+    this.isUpdatingFolder = false;
     this.isDeletingFolder = false;
     this.selectedFolderIdentifier = null;
   }
@@ -203,6 +257,72 @@ export class FrontDossiersPageComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         this.popupError = err?.error?.message || this.translate.instant('CommonSection.UnknownError');
+      }
+    });
+  }
+
+  private updateFolderSave() {
+    this.loading = true;
+    this.popupError = null;
+
+    // Step 1: update address
+    const address = {
+      identifier: (this.editAccommodation.address as any)?.identifier ?? 0,
+      number: this.editAccommodation.address?.number ?? '',
+      addressLine: this.editAccommodation.address?.addressLine ?? '',
+      city: this.editAccommodation.address?.city ?? '',
+      zipCode: this.editAccommodation.address?.zipCode ?? '',
+      region: this.editAccommodation.address?.region ?? '',
+      country: {
+        identifier: this.editAccommodation.address?.country?.identifier ?? 0,
+        code: this.editAccommodation.address?.country?.code ?? '',
+        name: this.editAccommodation.address?.country?.name ?? ''
+      },
+      createdDate: (this.editAccommodation.address as any)?.createdDate ?? new Date().toISOString(),
+      updatedDate: new Date().toISOString()
+    };
+
+    this.addressBll.updateAddress$({ address }).subscribe({
+      next: () => {
+        // Step 2: update accommodation
+        const accommodation = {
+          ...this.editAccommodation,
+          address,
+          updatedDate: new Date().toISOString()
+        } as AccommodationModel;
+
+        this.accommodationBll.updateAccommodation$(accommodation).subscribe({
+          next: () => {
+            // Step 3: update folder
+            this.editFolder.accommodationTypeIdentifier = this.editAccommodation.accommodationType?.identifier ?? (this.editFolder.accommodationTypeIdentifier ?? 0);
+            this.editFolder.updatedDate = new Date().toISOString();
+
+            this.folderBll.updateFolder$(this.editFolder as FolderModel).subscribe({
+              next: () => {
+                this.loading = false;
+                this.popupVisible = false;
+                this.isUpdatingFolder = false;
+                this.toast.show(this.translate.instant('DossiersSection.UpdateSuccess'), 'success', 4000);
+                this.loadFolders();
+              },
+              error: (err) => {
+                this.loading = false;
+                const errorMessage = err?.message || err?.error?.message || JSON.stringify(err);
+                this.popupError = this.translate.instant('DossiersSection.FolderCreateError') + ': ' + errorMessage;
+              }
+            });
+          },
+          error: (err) => {
+            this.loading = false;
+            const errorMessage = err?.message || err?.error?.message || JSON.stringify(err);
+            this.popupError = this.translate.instant('DossiersSection.AccommodationCreateError') + ': ' + errorMessage;
+          }
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        const errorMessage = err?.message || err?.error?.message || JSON.stringify(err);
+        this.popupError = 'Erreur lors de la mise à jour de l\'adresse : ' + errorMessage;
       }
     });
   }

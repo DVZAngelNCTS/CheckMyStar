@@ -22,6 +22,11 @@ namespace CheckMyStar.Apis.Services
             return accommodationBusForService.CreateAccommodation(request, ct);
         }
 
+        public Task<BaseResponse> UpdateAccommodation(AccommodationSaveRequest request, CancellationToken ct)
+        {
+            return accommodationBusForService.UpdateAccommodation(request, ct);
+        }
+
         public Task<BaseResponse> DeleteAccommodation(int accommodationIdentifier, CancellationToken ct)
         {
             return accommodationBusForService.DeleteAccommodation(accommodationIdentifier, ct);

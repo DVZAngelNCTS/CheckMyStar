@@ -17,5 +17,12 @@ namespace CheckMyStar.Bll
 
             return this.AddAddress(request.Address, user, ct);
         }
+
+        public Task<BaseResponse> UpdateAddress(AddressSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.UpdateAddress(request.Address, user, ct);
+        }
     }
 }

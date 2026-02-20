@@ -23,6 +23,13 @@ namespace CheckMyStar.Bll
             return this.AddAccommodation(request.Accommodation, user, ct);
         }
 
+        public Task<BaseResponse> UpdateAccommodation(AccommodationSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.UpdateAccommodation(request.Accommodation, user, ct);
+        }
+
         public Task<BaseResponse> DeleteAccommodation(int accommodationIdentifier, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;

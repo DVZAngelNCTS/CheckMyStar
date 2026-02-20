@@ -67,6 +67,27 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Updates an existing accommodation using the specified request data.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint validates:
+        /// - The accommodation must exist
+        /// - The AccommodationTypeIdentifier must exist in the AccommodationType table
+        /// - The AddressIdentifier must exist in the Address table
+        /// </remarks>
+        /// <param name="request">The details of the accommodation to update. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the result of the accommodation update.</returns>
+        [HttpPut("updateaccommodation")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> UpdateAccommodation([FromBody] AccommodationSaveRequest request, CancellationToken ct)
+        {
+            var result = await accommodationService.UpdateAccommodation(request, ct);
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Deletes an accommodation by its identifier.
         /// </summary>
         /// <remarks>

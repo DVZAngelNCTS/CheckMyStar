@@ -38,16 +38,19 @@
 
 <app-popup
   [visible]="popupVisible"
-  [title]="isDeletingFolder ? ('DossiersSection.Delete' | translate) : ('DossiersSection.Create' | translate)"
+  [title]="isDeletingFolder ? ('DossiersSection.Delete' | translate) : isUpdatingFolder ? ('DossiersSection.Update' | translate) : ('DossiersSection.Create' | translate)"
   [confirmLabel]="'PopupSection.Validate' | translate"
   [cancelLabel]="'PopupSection.Cancel' | translate"
   [errorMessage]="popupError"
   [loading]="loading"
-  [large]="isCreatingFolder"
+  [large]="isCreatingFolder || isUpdatingFolder"
   (confirm)="onPopupConfirm()"
   (cancel)="onPopupCancel()">
   <ng-container *ngIf="isCreatingFolder">
-    <app-dossier-form [accommodation]="newAccommodation" [folder]="newFolder" [loading]="loading"></app-dossier-form>
+    <app-front-dossier-form [accommodation]="newAccommodation" [folder]="newFolder" [loading]="loading" [lockInspector]="true"></app-front-dossier-form>
+  </ng-container>
+  <ng-container *ngIf="isUpdatingFolder">
+    <app-front-dossier-form [accommodation]="editAccommodation" [folder]="editFolder" [loading]="loading" [lockInspector]="true"></app-front-dossier-form>
   </ng-container>
   <ng-container *ngIf="isDeletingFolder">
     <p>{{ 'DossiersSection.DeleteAsk' | translate }} <strong>#{{ selectedFolderIdentifier }}</strong> ?</p>

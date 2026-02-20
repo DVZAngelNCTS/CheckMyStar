@@ -23,6 +23,13 @@ namespace CheckMyStar.Bll
             return this.AddFolder(request.Folder, user, ct);
         }
 
+        public Task<BaseResponse> UpdateFolder(FolderSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.UpdateFolder(request.Folder, user, ct);
+        }
+
         public Task<BaseResponse> DeleteFolder(int folderIdentifier, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
