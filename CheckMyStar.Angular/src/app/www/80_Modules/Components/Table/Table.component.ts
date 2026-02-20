@@ -22,7 +22,6 @@ export class TableComponent<T> implements OnChanges {
 
   columns = input<TableColumn<T>[]>([]);
   data = input<T[]>([]);
-  showActions = input<boolean>(true);
   rowLink = input<((row: T) => any[]) | null>(null);
 
   displayData = signal<T[]>([]);
@@ -112,16 +111,15 @@ export class TableComponent<T> implements OnChanges {
   }
 
   
-initTooltips() { 
+  initTooltips() { 
     setTimeout(() => { document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => { 
       bootstrap.Tooltip.getInstance(el)?.dispose(); 
       new bootstrap.Tooltip(el); }); 
     }, 0); 
   }
-    }
 
-    getRowLink(row: T): any[] | null {
-      const fn = this.rowLink();
-      return fn ? fn(row) : null;
-    }
+  getRowLink(row: T): any[] | null {
+    const fn = this.rowLink();
+    return fn ? fn(row) : null;
+  }
 }

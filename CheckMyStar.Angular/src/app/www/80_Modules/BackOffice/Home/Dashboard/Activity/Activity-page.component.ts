@@ -7,7 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, TranslateModule],
   templateUrl: './Activity-page.component.html',
-  styleUrls: ['./Activity-page.component.css']
 })
 export class ActivityComponent {
 }
