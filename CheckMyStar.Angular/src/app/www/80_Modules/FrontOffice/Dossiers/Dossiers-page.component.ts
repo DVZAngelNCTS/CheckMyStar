@@ -43,13 +43,14 @@ export class FrontDossiersPageComponent implements OnInit {
   newFolder: Partial<FolderModel> = this.buildDefaultFolder();
 
   columns = [
-    { icon: 'bi bi-list-ol', field: 'identifier', header: 'DossiersSection.Identifier', sortable: true, filterable: true, width: '7%' },
-    { icon: 'bi bi-tag', field: 'accommodationTypeIdentifier', header: 'DossiersSection.AccommodationTypeIdentifier', sortable: true, filterable: true, width: '8%' },
-    { icon: 'bi bi-house', field: 'accommodationName', header: 'DossiersSection.AccommodationName', sortable: true, filterable: true, width: '14%' },
+    { icon: 'bi bi-list-ol', field: 'identifier', header: 'DossiersSection.Identifier', sortable: true, filterable: true, width: '8%' },
+    { icon: 'bi bi-tag', field: 'accommodationTypeIdentifier', header: 'DossiersSection.AccommodationTypeIdentifier', sortable: true, filterable: true, width: '12%' },
+    { icon: 'bi bi-house', field: 'accommodationName', header: 'DossiersSection.AccommodationName', sortable: true, filterable: true, width: '12%' },
     { icon: 'bi bi-award', field: 'accommodationCurrentStar', header: 'DossiersSection.AccommodationCurrentStar', sortable: true, filterable: true, width: '8%' },
-    { icon: 'bi bi-geo-alt', field: 'accommodationAddress', header: 'DossiersSection.AccommodationAddress', sortable: true, filterable: true, width: '18%' },
-    { icon: 'bi bi-person', field: 'ownerLastName', header: 'DossiersSection.OwnerLastName', sortable: true, filterable: true, width: '12%' },
-    { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '12%' }
+    { icon: 'bi bi-geo-alt', field: 'accommodationAddress', header: 'DossiersSection.AccommodationAddress', sortable: true, filterable: true},
+    { icon: 'bi bi-person', field: 'ownerLastName', header: 'DossiersSection.OwnerLastName', sortable: true, filterable: true, width: '10%' },
+    { icon: 'bi bi-person-badge', field: 'inspectorLastName', header: 'DossiersSection.InspectorLastName', sortable: true, filterable: true, width: '10%' },
+    { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '10%' }
   ] as TableColumn<FrontFolderTableRow>[];
 
   constructor(
