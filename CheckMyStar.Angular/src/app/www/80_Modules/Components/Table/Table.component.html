@@ -27,12 +27,12 @@
         <th class="text-end p-2">
         </th>
         <th class="text-end p-2">
+          <button id="testTooltip" class="btn btn-primary btn-sm me-2" (click)="exportCsv()" [attr.data-bs-title]="'CommonSection.CsvExport' | translate" data-bs-toggle="tooltip">
+            <i class="bi bi-filetype-csv"></i>
+          </button>          
         </th>
         <th class="text-end p-2">    
-          <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()">
-            <i class="bi bi-filetype-csv"></i>
-          </button>
-          <button class="btn btn-primary btn-sm" (click)="exportXlsx()">
+          <button class="btn btn-primary btn-sm" (click)="exportXlsx()" [attr.data-bs-title]="'CommonSection.ExcelExport' | translate" data-bs-toggle="tooltip">
             <i class="bi bi-file-earmark-excel"></i>
           </button>    
         </th>
@@ -58,28 +58,20 @@
         </td>
 
         <td class="p-2 action-col-update">
-          <button class="btn btn-primary me-2 w-9rem" (click)="update.emit(row)">
-            <i class="bi bi-pencil me-2"></i>
-            {{ 'CommonSection.Update' | translate }}
+          <button class="btn btn-primary" (click)="update.emit(row)" title="" [attr.data-bs-title]="device.isDesktop ? ('CommonSection.Update' | translate) : ''" data-bs-toggle="tooltip">
+            <i class="bi bi-pencil"></i>            
           </button>
         </td>
 
         <td class="p-2 action-col-enabled">
-          <button class="btn btn-tertiary me-2 w-9rem" (click)="enabled.emit(row)">
-            <i class="bi"
-              [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'">
-            </i>
-
-            {{ $any(row).isActive
-                ? ('CommonSection.Disabled' | translate)
-                : ('CommonSection.Enabled' | translate) }}
+          <button class="btn btn-tertiary" (click)="enabled.emit(row)" title="" [attr.data-bs-title]="device.isDesktop ? ($any(row).isActive ? ('CommonSection.Disabled' | translate) : ('CommonSection.Enable' | translate)) : ''" data-bs-toggle="tooltip">
+            <i class="bi" [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'"></i>
           </button>
         </td>
 
         <td class="p-2 action-col-delete">
-          <button class="btn btn-tertiary me-2 w-9rem" (click)="delete.emit(row)">
-            <i class="bi bi-trash me-2"></i>
-            {{ 'CommonSection.Delete' | translate }}
+          <button class="btn btn-tertiary" (click)="delete.emit(row)" title="" [attr.data-bs-title]="device.isDesktop ? ('CommonSection.Delete' | translate) : ''" data-bs-toggle="tooltip">
+            <i class="bi bi-trash"></i>
           </button>
         </td>
       </tr>

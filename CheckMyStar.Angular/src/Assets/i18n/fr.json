@@ -21,7 +21,9 @@
     "No": "Non",
     "UnknownError": "Erreur inconnue",
     "All": "Tous",
-    "NoResults": "Aucun résultat"
+    "NoResults": "Aucun résultat",
+    "CsvExport": "Exporter en CSV",
+    "ExcelExport": "Exporter en Excel"
   },
   "LoginSection": {
     "Email": "E-mail",

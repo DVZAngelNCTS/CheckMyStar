@@ -246,36 +246,46 @@ namespace CheckMyStar.Bll
             {
                 if (user.User != null)
                 {
-                    var userEntity = mapper.Map<User>(user.User);
+                    var activityResult = await activityBus.DeleteUserActivities(identifier, ct);
 
-                    var userResult = await userDal.DeleteUser(userEntity, ct);
-
-                    if (userResult.IsSuccess)
+                    if (activityResult.IsSuccess)
                     {
-                        result.IsSuccess = true;
-                        result.Message = userResult.Message;
+                        var userEntity = mapper.Map<User>(user.User);
 
-                        if (user.User.AddressIdentifier != null)
+                        var userResult = await userDal.DeleteUser(userEntity, ct);
+
+                        if (userResult.IsSuccess)
                         {
-                            var addressResult = await addressDal.GetAddress(user.User.AddressIdentifier.Value, ct);
+                            result.IsSuccess = true;
+                            result.Message = userResult.Message;
 
-                            if (addressResult.IsSuccess)
+                            if (user.User.AddressIdentifier != null)
                             {
-                                if (addressResult.Address != null)
-                                {
-                                    var baseResult = await addressDal.DeleteAddress(addressResult.Address, ct);
+                                var addressResult = await addressDal.GetAddress(user.User.AddressIdentifier.Value, ct);
 
-                                    if (baseResult.IsSuccess)
+                                if (addressResult.IsSuccess)
+                                {
+                                    if (addressResult.Address != null)
                                     {
-                                        result.Message += "<br>" + addressResult.Message;
+                                        var baseResult = await addressDal.DeleteAddress(addressResult.Address, ct);
+
+                                        if (baseResult.IsSuccess)
+                                        {
+                                            result.Message += "<br>" + baseResult.Message;
+                                        }
+                                        else
+                                        {
+                                            result.IsSuccess = false;
+                                            result.Message += "<br>" + baseResult.Message;
+                                        }
+
+                                        await activityBus.AddActivity(baseResult.Message, DateTime.Now, currentUser, baseResult.IsSuccess, ct);
                                     }
                                     else
                                     {
                                         result.IsSuccess = false;
-                                        result.Message += "<br>" + baseResult.Message;
+                                        result.Message += "<br>" + addressResult.Message;
                                     }
-
-                                    await activityBus.AddActivity(baseResult.Message, DateTime.Now, currentUser, baseResult.IsSuccess, ct);
                                 }
                                 else
                                 {
@@ -283,20 +293,20 @@ namespace CheckMyStar.Bll
                                     result.Message += "<br>" + addressResult.Message;
                                 }
                             }
-                            else
-                            {
-                                result.IsSuccess = false;
-                                result.Message += "<br>" + addressResult.Message;
-                            }
+
+                            await activityBus.AddActivity(userResult.Message, DateTime.Now, currentUser, userResult.IsSuccess, ct);
+                        }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Message = userResult.Message;
                         }
                     }
                     else
                     {
                         result.IsSuccess = false;
-                        result.Message = userResult.Message;
+                        result.Message = activityResult.Message;
                     }
-
-                    await activityBus.AddActivity(userResult.Message, DateTime.Now, currentUser, userResult.IsSuccess, ct);
                 }
                 else
                 {

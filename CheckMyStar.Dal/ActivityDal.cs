@@ -118,5 +118,49 @@ namespace CheckMyStar.Dal
 
             return baseResult;
         }
+
+        public async Task<BaseResult> DeleteUserActivities(int userIdentifier, CancellationToken ct)
+        {
+            BaseResult baseResult = new BaseResult();
+
+            try
+            {
+                var activities = await (from a in dbContext.Activities
+                                        where a.User == userIdentifier
+                                        select a).ToListAsync(ct);
+
+                if (activities != null && activities.Count > 0)
+                {
+                    foreach (var activity in activities)
+                    {
+                        await dbContext.RemoveAsync(activity);
+                    }
+
+                    bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                    if (result)
+                    {
+                        baseResult.IsSuccess = true;
+                        baseResult.Message = "Activités supprimées avec succès";
+                    }
+                    else
+                    {
+                        baseResult.IsSuccess = false;
+                        baseResult.Message = "Impossible de supprimer les activités";
+                    }
+                }
+                else
+                {
+                    baseResult.IsSuccess = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = "Impossible de supprimer les activités : " + ex.Message;
+            }
+
+            return baseResult;
+        }
     }
 }

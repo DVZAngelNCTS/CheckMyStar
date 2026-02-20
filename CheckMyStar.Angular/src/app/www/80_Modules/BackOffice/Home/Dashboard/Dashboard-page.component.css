@@ -6,3 +6,24 @@
   transform: translateY(-3px);
   box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
 }
+
+.activity-scroll {
+  max-height: 300px; /* ajuste selon ton design */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px; /* évite que la scrollbar mange le contenu */
+}
+
+/* Scrollbar fine et propre (Chrome/Edge) */
+.activity-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.activity-scroll::-webkit-scrollbar-thumb {
+  background: #FBB900;
+  border-radius: 4px;
+}
+
+.activity-scroll::-webkit-scrollbar-thumb:hover {
+  background: #c48f00;
+}

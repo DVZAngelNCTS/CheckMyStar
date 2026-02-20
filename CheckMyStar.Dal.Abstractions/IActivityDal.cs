@@ -8,5 +8,6 @@ namespace CheckMyStar.Dal.Abstractions
         Task<ActivityResult> GetNextIdentifier(CancellationToken ct);
         Task<ActivitiesResult> GetActivities(int numberDays, CancellationToken ct);
         Task<BaseResult> AddActivity(Activity activity, CancellationToken ct);
+        Task<BaseResult> DeleteUserActivities(int userIdentifier, CancellationToken ct);
     }
 }

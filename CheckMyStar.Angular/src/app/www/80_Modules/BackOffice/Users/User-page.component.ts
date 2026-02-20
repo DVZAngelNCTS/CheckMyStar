@@ -22,7 +22,7 @@ import { CountryModel } from '../../../20_Models/Common/Country.model';
 @Component({
 	selector: 'app-user-page',
 	standalone: true,
-	imports: [CommonModule, UserFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, UserFormComponent, FieldComponent],
+	imports: [CommonModule, UserFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, UserFormComponent],
 	templateUrl: './User-page.component.html'
 })
 export class UserPageComponent {

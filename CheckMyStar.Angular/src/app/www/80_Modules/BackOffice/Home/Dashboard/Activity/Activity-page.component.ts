@@ -6,7 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, TranslateModule],
-  templateUrl: './Activity-page.component.html'
+  templateUrl: './Activity-page.component.html',
+  styleUrls: ['./Activity-page.component.css']
 })
 export class ActivityComponent {
 }

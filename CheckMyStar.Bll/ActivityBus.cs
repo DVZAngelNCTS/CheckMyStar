@@ -20,15 +20,15 @@ namespace CheckMyStar.Bll
         {
             ActivityResponse activityResponse = new ActivityResponse();
 
-            var activity = await activityDal.GetNextIdentifier(ct);
+            var result = await activityDal.GetNextIdentifier(ct);
 
-            if (activity.IsSuccess)
+            if (result.IsSuccess)
             {
-                if (activity.Activity != null)
+                if (result.Activity != null)
                 {
                     Activity activityEntity = new Activity()
                     {
-                        Identifier = activity.Activity.Identifier,
+                        Identifier = result.Activity.Identifier,
                         Description = description,
                         Date = date,
                         User = user,
@@ -57,7 +57,27 @@ namespace CheckMyStar.Bll
             else
             {
                 activityResponse.IsSuccess = false;
-                activityResponse.Message = activity.Message;
+                activityResponse.Message = result.Message;
+            }
+
+            return activityResponse;
+        }
+
+        public async Task<BaseResponse> DeleteUserActivities(int userIdentifier, CancellationToken ct)
+        {
+            ActivityResponse activityResponse = new ActivityResponse();
+
+            var result = await activityDal.DeleteUserActivities(userIdentifier, ct);
+
+            if (result.IsSuccess)
+            {
+                activityResponse.IsSuccess = true;
+                activityResponse.Message = "Activités supprimé avec succès";
+            }
+            else
+            {
+                activityResponse.IsSuccess = false;
+                activityResponse.Message = result.Message;
             }
 
             return activityResponse;

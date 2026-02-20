@@ -51,7 +51,7 @@ export function HttpLoaderFactory(http: HttpClient) { return new TranslateHttpLo
     },
     provideBrowserGlobalErrorListeners()
   ],
-  bootstrap: [App]
+  bootstrap: []
 })
 export class AppModule {
   constructor(private translationInit: TranslationInitService) {}

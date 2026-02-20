@@ -4,6 +4,7 @@ import { TranslationModule } from '../../../10_Common/Translation.module';
 import { TableColumn } from './Models/TableColumn.model';
 import { CsvExportService } from '../../../90_Services/Export/Csv-export.service';
 import { XlsxExportService } from '../../../90_Services/Export/Xlsx-export.service';
+import { DeviceService } from '../../../90_Services/Device/Device.service';
 
 @Component({ 
   selector: 'app-table', 
@@ -27,11 +28,18 @@ export class TableComponent<T> implements OnChanges {
 
   filters: Record<string, string> = {};
 
-  constructor(private csv: CsvExportService, private xlsx: XlsxExportService) {
+  constructor(private csv: CsvExportService, private xlsx: XlsxExportService, public device: DeviceService) {
 
   }
 
+  ngAfterViewInit() 
+  { 
+    this.initTooltips(); 
+  }
+
   ngOnChanges() {
+    this.initTooltips();
+    
     this.displayData.set(this.data());
 
     // Tri premium : appliquer un tri par défaut si défini
@@ -97,5 +105,13 @@ export class TableComponent<T> implements OnChanges {
     
     exportXlsx() { 
       this.xlsx.exportToExcel('export', this.displayData()); 
-    }
+  }
+
+  
+initTooltips() { 
+    setTimeout(() => { document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => { 
+      bootstrap.Tooltip.getInstance(el)?.dispose(); 
+      new bootstrap.Tooltip(el); }); 
+    }, 0); 
+  }
 }
