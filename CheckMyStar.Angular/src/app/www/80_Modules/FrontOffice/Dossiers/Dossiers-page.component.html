@@ -1,0 +1,55 @@
+<div class="d-flex flex-column flex-grow-1">
+  <!-- Filtres -->
+  <div class="d-flex flex-row">
+    <div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
+      <app-front-folder-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (filter)="onFilter($event)"></app-front-folder-filter>
+    </div>
+  </div>
+
+  <!-- Contenu principal extensible -->
+  <div class="d-flex flex-column flex-grow-1">
+    <!-- Tableau extensible -->
+    <div class="d-flex flex-column flex-grow-1">
+      <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
+        <app-table
+          [columns]="columns"
+          [data]="tableRows"
+          (rowClick)="onRowClick($event)"
+          (update)="openUpdate($event)"
+          (delete)="openDelete($event)"
+          (enabled)="toggleEnabled($event)">
+        </app-table>
+      </div>
+    </div>
+
+    <!-- Bouton Ajouter -->
+    <div class="d-flex flex-row border-top">
+      <div class="d-flex flex-column p-4 flex-grow-1 bg-secondary-light">
+        <div class="ms-auto">
+          <button type="button" class="btn btn-secondary w-9rem" (click)="openCreate()">
+            <i class="bi bi-plus-lg me-2"></i>
+            {{ 'CommonSection.Add' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-popup
+  [visible]="popupVisible"
+  [title]="isDeletingFolder ? ('DossiersSection.Delete' | translate) : ('DossiersSection.Create' | translate)"
+  [confirmLabel]="'PopupSection.Validate' | translate"
+  [cancelLabel]="'PopupSection.Cancel' | translate"
+  [errorMessage]="popupError"
+  [loading]="loading"
+  [large]="isCreatingFolder"
+  (confirm)="onPopupConfirm()"
+  (cancel)="onPopupCancel()">
+  <ng-container *ngIf="isCreatingFolder">
+    <app-dossier-form [accommodation]="newAccommodation" [folder]="newFolder" [loading]="loading"></app-dossier-form>
+  </ng-container>
+  <ng-container *ngIf="isDeletingFolder">
+    <p>{{ 'DossiersSection.DeleteAsk' | translate }} <strong>#{{ selectedFolderIdentifier }}</strong> ?</p>
+  </ng-container>
+</app-popup>

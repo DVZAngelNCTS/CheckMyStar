@@ -15,6 +15,15 @@ namespace CheckMyStar.Data
         IQueryable<Criterion> ICheckMyStarDbContext.Criterias => this.Criteria;
         IQueryable<CriterionType> ICheckMyStarDbContext.CriterionTypes => this.CriterionTypes;
         IQueryable<Society> ICheckMyStarDbContext.Societies => this.Societies;
+        IQueryable<Accommodation> ICheckMyStarDbContext.Accommodations => this.Accommodations;
+        IQueryable<AccommodationType> ICheckMyStarDbContext.AccommodationTypes => this.AccommodationTypes;
+        IQueryable<Folder> ICheckMyStarDbContext.Folders => this.Folders;
+        IQueryable<FolderStatus> ICheckMyStarDbContext.FolderStatuses => this.FolderStatuses;
+        IQueryable<Quote> ICheckMyStarDbContext.Quotes => this.Quotes;
+        IQueryable<Invoice> ICheckMyStarDbContext.Invoices => this.Invoices;
+        IQueryable<Appointment> ICheckMyStarDbContext.Appointments => this.Appointments;
+        IQueryable<Assessment> ICheckMyStarDbContext.Assessments => this.Assessments;
+        IQueryable<AssessmentCriterion> ICheckMyStarDbContext.AssessmentCriteria => this.AssessmentCriteria;
 
         public Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
         {

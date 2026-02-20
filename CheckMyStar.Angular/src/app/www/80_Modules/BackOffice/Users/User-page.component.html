@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<app-popup class="popup-large" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+<app-popup [large]="true" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
   <!-- Contenu dynamique -->
   <ng-container *ngIf="popupMode === 'delete'">
     <p>{{ 'UserSection.DeleteAsk' | translate }} <strong>{{ selectedUser?.lastName }} {{ selectedUser?.firstName }}</strong> ?</p>
@@ -45,40 +45,64 @@
   </ng-container>
 
   <ng-container *ngIf="popupMode === 'createSociety'">
-    <form [formGroup]="societyForm" class="d-flex flex-column gap-3">
+    <form [formGroup]="societyForm" class="d-flex flex-column gap-2">
+      <!-- NAME (pleine largeur) -->
       <div class="form-group">
         <label>{{ 'SocietySection.Name' | translate }}</label>
         <input type="text" class="form-control" formControlName="name" required>
       </div>
-      <div class="form-group">
-        <label>{{ 'SocietySection.Email' | translate }}</label>
-        <input type="email" class="form-control" formControlName="email">
-      </div>
-      <div class="form-group">
-        <label>{{ 'SocietySection.Phone' | translate }}</label>
-        <input type="text" class="form-control" formControlName="phone">
-      </div>
-      <div class="border-top pt-3" formGroupName="address">
-        <div class="form-group">
-          <label>{{ 'AddressSection.Number' | translate }}</label>
-          <input type="text" class="form-control" formControlName="number">
+      <!-- EMAIL + PHONE sur la même ligne -->
+      <div class="row g-2">
+        <div class="col-6">
+          <div class="form-group">
+            <label>{{ 'SocietySection.Email' | translate }}</label>
+            <input type="email" class="form-control" formControlName="email">
+          </div>
         </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label>{{ 'SocietySection.Phone' | translate }}</label>
+            <input type="text" class="form-control" formControlName="phone">
+          </div>
+        </div>
+      </div>
+      <div class="border-top pt-2" formGroupName="address">
+        <!-- NUMBER + ZIP CODE sur la même ligne -->
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="form-group">
+              <label>{{ 'AddressSection.Number' | translate }}</label>
+              <input type="text" class="form-control" formControlName="number">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>{{ 'AddressSection.ZipCode' | translate }}</label>
+              <input type="text" class="form-control" formControlName="zipCode" required>
+            </div>
+          </div>
+        </div>
+        <!-- ADDRESS LINE (pleine largeur) -->
         <div class="form-group">
           <label>{{ 'AddressSection.AddressLine' | translate }}</label>
           <input type="text" class="form-control" formControlName="addressLine" required>
         </div>
-        <div class="form-group">
-          <label>{{ 'AddressSection.City' | translate }}</label>
-          <input type="text" class="form-control" formControlName="city" required>
+        <!-- CITY + REGION sur la même ligne -->
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="form-group">
+              <label>{{ 'AddressSection.City' | translate }}</label>
+              <input type="text" class="form-control" formControlName="city" required>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label>{{ 'AddressSection.Region' | translate }}</label>
+              <input type="text" class="form-control" formControlName="region">
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>{{ 'AddressSection.ZipCode' | translate }}</label>
-          <input type="text" class="form-control" formControlName="zipCode" required>
-        </div>
-        <div class="form-group">
-          <label>{{ 'AddressSection.Region' | translate }}</label>
-          <input type="text" class="form-control" formControlName="region">
-        </div>
+        <!-- COUNTRY (pleine largeur) -->
         <div class="form-group">
           <label>{{ 'AddressSection.Country' | translate }}</label>
           <select class="form-select" formControlName="countryIdentifier" required>

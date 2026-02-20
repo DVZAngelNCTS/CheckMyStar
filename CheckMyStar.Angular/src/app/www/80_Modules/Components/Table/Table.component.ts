@@ -1,5 +1,6 @@
 import { Component, input, output, signal, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { TranslationModule } from '../../../10_Common/Translation.module';
 import { TableColumn } from './Models/TableColumn.model';
 import { CsvExportService } from '../../../90_Services/Export/Csv-export.service';
@@ -9,7 +10,7 @@ import { DeviceService } from '../../../90_Services/Device/Device.service';
 @Component({ 
   selector: 'app-table', 
   standalone: true, 
-  imports: [CommonModule, TranslationModule], 
+  imports: [CommonModule, RouterModule, TranslationModule], 
   templateUrl: './Table.component.html',
   styleUrls: ['./Table.component.css']
 })
@@ -17,9 +18,12 @@ export class TableComponent<T> implements OnChanges {
   update = output<T>();
   delete = output<T>();
   enabled = output<T>();
+  rowClick = output<T>();
 
   columns = input<TableColumn<T>[]>([]);
   data = input<T[]>([]);
+  showActions = input<boolean>(true);
+  rowLink = input<((row: T) => any[]) | null>(null);
 
   displayData = signal<T[]>([]);
 
@@ -114,4 +118,10 @@ initTooltips() {
       new bootstrap.Tooltip(el); }); 
     }, 0); 
   }
+    }
+
+    getRowLink(row: T): any[] | null {
+      const fn = this.rowLink();
+      return fn ? fn(row) : null;
+    }
 }

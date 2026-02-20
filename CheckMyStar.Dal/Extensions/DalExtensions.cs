@@ -18,7 +18,15 @@ namespace CheckMyStar.Dal.Extensions
                 .AddScoped<IDashboardDal, DashboardDal>()
                 .AddScoped<IActivityDal, ActivityDal>()
                 .AddScoped<ICriteresDal, CriteriaDal>()
-                .AddScoped<ISocietyDal, SocietyDal>();
+                .AddScoped<ISocietyDal, SocietyDal>()
+                .AddScoped<IAccommodationDal, AccommodationDal>()
+                .AddScoped<IAccommodationTypeDal, AccommodationTypeDal>()
+                .AddScoped<IFolderDal, FolderDal>()
+                .AddScoped<IFolderStatusDal, FolderStatusDal>()
+                .AddScoped<IQuoteDal, QuoteDal>()
+                .AddScoped<IInvoiceDal, InvoiceDal>()
+                .AddScoped<IAppointmentDal, AppointmentDal>()
+                .AddScoped<IAssessmentDal, AssessmentDal>();
 
             return services;
         }

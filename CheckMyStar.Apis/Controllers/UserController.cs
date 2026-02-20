@@ -37,7 +37,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>A list of users matching the specified criteria.</returns>
         [HttpPost("getusers")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> GetUsers([FromBody] UserGetRequest request, CancellationToken ct)
         {
             var users = await userService.GetUsers(request, ct);

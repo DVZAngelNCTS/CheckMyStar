@@ -28,7 +28,7 @@ export class BreadcrumbComponent {
         const segments = url.split('/').filter(s => s);
 
         // 2. Pas de bouton retour sur le tableau de bord
-        if (segments.length <= 1 || url === '/backhome') {
+        if (segments.length <= 1 || url === '/backhome' || url === '/fronthome') {
           this.parentUrl = null;
           return;
         }
@@ -72,20 +72,30 @@ export class BreadcrumbComponent {
         url += `/${routeURL}`;
       }
 
-      // 🔥 Préfixage immédiat
-      const fullUrl = url.startsWith('/backhome') ? url : '/backhome' + url;
+      const fullUrl = url;
 
       const label = child.snapshot.data['breadcrumb'];
       const icon = child.snapshot.data['icon'];
       const parent = child.snapshot.data['parent'];
 
-      // 🔥 Parent logique pour l'affichage ET navigation correcte
-      if (parent) {
+      // 🔥 Parent(s) logique(s) pour l'affichage ET navigation correcte
+      const parents: { label: string, icon: string, urlOffset: number }[] | undefined = child.snapshot.data['parents'];
+
+      if (parents && parents.length > 0) {
+        // Multi-level parents: urlOffset = nb of segments to strip from the end of fullUrl
+        for (const p of parents) {
+          const segments = fullUrl.split('/');
+          const ancestorUrl = segments.slice(0, segments.length - p.urlOffset).join('/');
+          if (!breadcrumbs.some(b => b.label === p.label)) {
+            breadcrumbs.push({ label: p.label, icon: p.icon, url: ancestorUrl });
+          }
+        }
+      } else if (parent) {
         const parentUrl = fullUrl.split('/').slice(0, -1).join('/');
 
         const parentBreadcrumb = {
           label: parent,
-          icon: 'bi bi-speedometer2',
+          icon: child.snapshot.data['icon'] ?? 'bi bi-house',
           url: parentUrl
         };
 

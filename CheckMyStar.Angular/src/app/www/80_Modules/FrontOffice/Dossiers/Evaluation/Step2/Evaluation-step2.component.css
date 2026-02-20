@@ -1,0 +1,62 @@
+/* ─── Criteria table wrapper (10 rows max, scrollable) ─ */
+.criteria-table-wrapper {
+  max-height: 450px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+
+/* ─── Criteria table ─────────────────────────────────── */
+.criteria-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.criteria-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.criteria-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.criteria-table tbody tr.row-validated {
+  background-color: rgba(25, 135, 84, 0.06);
+}
+
+.criteria-table td {
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+.criteria-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* ─── Editable points input ──────────────────────────── */
+.points-input {
+  text-align: center;
+  font-weight: 700;
+  padding: 2px 4px;
+}
+
+/* Remove spinners on number input */
+.points-input::-webkit-inner-spin-button,
+.points-input::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+/* ─── Progress bar ───────────────────────────────────── */
+.progress {
+  background-color: #e9ecef;
+}

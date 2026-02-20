@@ -10,9 +10,9 @@
             <span *ngIf="sortDirection === 'desc'">▼</span>
           </ng-container>
         </th>
-        <th class="p-3 action-col-update"></th>
-        <th class="p-3 action-col-enabled"></th>
-        <th class="p-3 action-col-delete"></th>
+        <th *ngIf="showActions()" class="p-3 action-col-update"></th>
+        <th *ngIf="showActions()" class="p-3 action-col-enabled"></th>
+        <th *ngIf="showActions()" class="p-3 action-col-delete"></th>
       </tr>
       <tr>
         <th *ngFor="let col of columns()" class="p-2">
@@ -24,10 +24,12 @@
             (input)="onFilterChange(col, $event.target.value)"
           />
         </th>
-        <th class="text-end p-2">
+        <th *ngIf="showActions()" class="text-end p-2">
         </th>
-        <th class="text-end p-2">
-          <button id="testTooltip" class="btn btn-primary btn-sm me-2" (click)="exportCsv()" [attr.data-bs-title]="'CommonSection.CsvExport' | translate" data-bs-toggle="tooltip">
+        <th *ngIf="showActions()" class="text-end p-2">
+        </th>
+        <th class="text-end p-2">    
+          <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()">
             <i class="bi bi-filetype-csv"></i>
           </button>          
         </th>
@@ -40,7 +42,11 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let row of displayData()" class="border-top">
+      <tr *ngFor="let row of displayData()"
+          class="border-top"
+          [class.table-row-clickable]="!!rowLink()"
+          [routerLink]="getRowLink(row)"
+          (click)="rowClick.emit(row)">
         <td *ngFor="let col of columns()" class="p-2">
           <ng-container [ngSwitch]="col.field">
 
@@ -57,21 +63,29 @@
           </ng-container>
         </td>
 
-        <td class="p-2 action-col-update">
-          <button class="btn btn-primary" (click)="update.emit(row)" title="" [attr.data-bs-title]="device.isDesktop ? ('CommonSection.Update' | translate) : ''" data-bs-toggle="tooltip">
-            <i class="bi bi-pencil"></i>            
+        <td *ngIf="showActions()" class="p-2 action-col-update">
+          <button class="btn btn-primary me-2 w-9rem" (click)="$event.stopPropagation(); update.emit(row)">
+            <i class="bi bi-pencil me-2"></i>
+            {{ 'CommonSection.Update' | translate }}
           </button>
         </td>
 
-        <td class="p-2 action-col-enabled">
-          <button class="btn btn-tertiary" (click)="enabled.emit(row)" title="" [attr.data-bs-title]="device.isDesktop ? ($any(row).isActive ? ('CommonSection.Disabled' | translate) : ('CommonSection.Enable' | translate)) : ''" data-bs-toggle="tooltip">
-            <i class="bi" [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'"></i>
+        <td *ngIf="showActions()" class="p-2 action-col-enabled">
+          <button class="btn btn-tertiary me-2 w-9rem" (click)="$event.stopPropagation(); enabled.emit(row)">
+            <i class="bi"
+              [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'">
+            </i>
+
+            {{ $any(row).isActive
+                ? ('CommonSection.Disabled' | translate)
+                : ('CommonSection.Enabled' | translate) }}
           </button>
         </td>
 
-        <td class="p-2 action-col-delete">
-          <button class="btn btn-tertiary" (click)="delete.emit(row)" title="" [attr.data-bs-title]="device.isDesktop ? ('CommonSection.Delete' | translate) : ''" data-bs-toggle="tooltip">
-            <i class="bi bi-trash"></i>
+        <td *ngIf="showActions()" class="p-2 action-col-delete">
+          <button class="btn btn-tertiary me-2 w-9rem" (click)="$event.stopPropagation(); delete.emit(row)">
+            <i class="bi bi-trash me-2"></i>
+            {{ 'CommonSection.Delete' | translate }}
           </button>
         </td>
       </tr>

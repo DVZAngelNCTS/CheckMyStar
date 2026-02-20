@@ -7,6 +7,6 @@
 
         public int CriterionId { get; set; }
         public string Description { get; set; } = string.Empty;
-        public decimal BasePoints { get; set; }
+        public int BasePoints { get; set; }
     }
 }

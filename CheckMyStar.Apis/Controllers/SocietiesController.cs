@@ -32,7 +32,7 @@ public class SocietiesController(ISocietyService societyService) : ControllerBas
     /// </summary>
     /// <param name="ct">Jeton d'annulation</param>
     [HttpPost("getSocieties")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator, Inspector")]
     public async Task<IActionResult> GetSocieties(CancellationToken ct)
     {
         var result = await societyService.GetSocieties(ct);
