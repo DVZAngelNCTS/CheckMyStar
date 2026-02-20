@@ -64,6 +64,53 @@ namespace CheckMyStar.Bll
 
             return result;
         }
+
+        public async Task<BaseResponse> UpdateAddress(AddressModel addressModel, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var address = await addressDal.GetAddress(addressModel.Identifier, ct);
+
+            if (address.IsSuccess)
+            {
+                if (address.Address != null)
+                {
+                    var dateTime = DateTime.Now;
+
+                    addressModel.CreatedDate = (DateTime)address.Address.CreatedDate;
+                    addressModel.UpdatedDate = dateTime;
+
+                    var addressEntity = mapper.Map<Address>(addressModel);
+
+                    var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
+
+                    if (addressResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = addressResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = addressResult.Message;
+                    }
+
+                    await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "L'adresse spécifiée n'existe pas, impossible de la modifier";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = address.Message;
+            }
+
+            return result;
+        }
     }
 }
 

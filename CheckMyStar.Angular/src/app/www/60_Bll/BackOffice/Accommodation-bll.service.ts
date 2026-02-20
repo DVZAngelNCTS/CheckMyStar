@@ -15,4 +15,8 @@ export class AccommodationBllService {
   createAccommodation$(accommodation: AccommodationModel) {
     return this.accommodationDal.createAccommodation$(accommodation);
   }
+
+  updateAccommodation$(accommodation: AccommodationModel) {
+    return this.accommodationDal.updateAccommodation$(accommodation);
+  }
 }

@@ -16,5 +16,10 @@ namespace CheckMyStar.Apis.Services
         {
             return addressBusForService.AddAddress(request, ct);
         }
+
+        public Task<BaseResponse> UpdateAddress(AddressSaveRequest request, CancellationToken ct)
+        {
+            return addressBusForService.UpdateAddress(request, ct);
+        }
     }
 }

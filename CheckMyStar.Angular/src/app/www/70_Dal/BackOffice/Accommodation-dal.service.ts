@@ -56,4 +56,16 @@ export class AccommodationDalService {
       })
     );
   }
+
+  updateAccommodation$(accommodation: AccommodationModel): Observable<AccommodationModel> {
+    const url = `${this.apiUrl}/Accommodation/updateaccommodation`;
+    return this.http.put<any>(url, { accommodation }).pipe(
+      switchMap(response => {
+        if (!response.isSuccess) {
+          return throwError(() => new Error(response.message || 'Erreur lors de la mise à jour de l\'hébergement'));
+        }
+        return of(accommodation);
+      })
+    );
+  }
 }

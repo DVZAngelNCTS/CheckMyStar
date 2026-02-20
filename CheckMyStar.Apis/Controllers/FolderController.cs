@@ -73,6 +73,33 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Updates an existing folder using the specified request data.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint validates:
+        /// - The folder must exist
+        /// - AccommodationTypeIdentifier must exist in AccommodationType table
+        /// - AccommodationIdentifier must exist in Accommodation table
+        /// - OwnerUserIdentifier must exist in User table
+        /// - InspectorUserIdentifier must exist in User table
+        /// - FolderStatusIdentifier must exist in FolderStatus table
+        /// - QuoteIdentifier (optional) must exist in Quote table
+        /// - InvoiceIdentifier (optional) must exist in Invoice table
+        /// - AppointmentIdentifier (optional) must exist in Appointment table
+        /// </remarks>
+        /// <param name="request">The details of the folder to update. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the result of the folder update.</returns>
+        [HttpPut("updatefolder")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> UpdateFolder([FromBody] FolderSaveRequest request, CancellationToken ct)
+        {
+            var result = await folderService.UpdateFolder(request, ct);
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Deletes an existing folder by identifier.
         /// </summary>
         /// <remarks>This endpoint deletes a folder from the system. The operation is logged to the activity table for audit purposes.</remarks>

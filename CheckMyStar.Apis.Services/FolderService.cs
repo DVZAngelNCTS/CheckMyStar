@@ -22,6 +22,11 @@ namespace CheckMyStar.Apis.Services
             return folderBusForService.CreateFolder(request, ct);
         }
 
+        public Task<BaseResponse> UpdateFolder(FolderSaveRequest request, CancellationToken ct)
+        {
+            return folderBusForService.UpdateFolder(request, ct);
+        }
+
         public Task<BaseResponse> DeleteFolder(int folderIdentifier, CancellationToken ct)
         {
             return folderBusForService.DeleteFolder(folderIdentifier, ct);
