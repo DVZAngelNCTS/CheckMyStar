@@ -75,13 +75,17 @@
 
     <!-- Critères -->
     <div class="col-md-3">
-      <div class="stat-card p-3 border rounded shadow-sm h-100">
+      <div class="stat-card p-3 border rounded shadow-sm h-100" style="cursor:pointer;" (click)="openCriteresModule()">
         <div class="d-flex justify-content-between">
           <h6 class="text-muted">{{ 'DashboardSection.Criterias' | translate }}</h6>
           <i class="bi bi-star-half fs-4 text-info"></i>
         </div>
         <h3 class="fw-bold">{{ totalCriteria }}</h3>
-        <small class="text-muted">Module en développement</small>
+        <small class="text-muted">
+          <span *ngFor="let item of criteriaPerStar; let last = last">
+            {{ item.label }}&nbsp;({{ item.count }})<span *ngIf="!last"> · </span>
+          </span>
+        </small>
       </div>
     </div>
 

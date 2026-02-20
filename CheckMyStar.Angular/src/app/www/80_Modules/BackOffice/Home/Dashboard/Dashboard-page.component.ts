@@ -7,6 +7,7 @@ import { ActivityBllService } from '../../../../60_Bll/BackOffice/Activity-bll.s
 import { UserBllService } from '../../../../60_Bll/BackOffice/User-bll.service';
 import { UserEvolutionModel } from '../../../../20_Models/BackOffice/UserEvolution.model';
 import { Router } from '@angular/router';
+import { CriteresBllService } from '../../../../60_Bll/BackOffice/Criteres-bll.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,6 +29,7 @@ export class DashboardComponent {
   activeUsers = 0;
   totalRoles = 0;
   totalCriteria = 0;
+  criteriaPerStar: { label: string, count: number }[] = [];
 
   recentActivities: ActivityModel[] = [];
   userEvolutionData: UserEvolutionModel[] = [];
@@ -35,7 +37,13 @@ export class DashboardComponent {
   usersTrend = +12; // +12% ce mois
   activeRate = Math.round((this.activeUsers / this.totalUsers) * 100);
 
-  constructor(private dashboardBll: DashboardBllService, private activityBll: ActivityBllService, private userBll: UserBllService, private router: Router) {}
+  constructor(
+    private dashboardBll: DashboardBllService,
+    private activityBll: ActivityBllService,
+    private userBll: UserBllService,
+    private criteresBll: CriteresBllService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
       this.dashboardBll.getDashboard$().subscribe(d => {
@@ -56,6 +64,7 @@ export class DashboardComponent {
 
       this.loadActivities();
       this.loadUserEvolutions();
+      this.loadCriteria();
     });
   }
 
@@ -177,5 +186,24 @@ export class DashboardComponent {
 
 	openActivityDetails() {
     this.router.navigate(['/backhome/activities']);
-	}  
+	}
+
+  openCriteresModule() {
+    this.router.navigate(['/backhome/criteres']);
+  }
+
+  loadCriteria() {
+    this.criteresBll.getStarCriterias$().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.starCriterias) {
+          this.criteriaPerStar = response.starCriterias.map(star => ({
+            label: star.label,
+            count: star.statuses.reduce((sum, s) => sum + s.count, 0)
+          }));
+          this.totalCriteria = this.criteriaPerStar.reduce((total, s) => total + s.count, 0);
+        }
+      },
+      error: (err) => console.error('Erreur chargement critères', err)
+    });
+  }
 }
