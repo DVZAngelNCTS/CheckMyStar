@@ -26,12 +26,12 @@
         </th>
         <th class="text-end p-2"></th>
         <th class="text-end p-2">    
-          <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()" [attr.data-bs-title]="'CommonSection.CsvExport' | translate" data-bs-toggle="tooltip">
+          <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()" [appTooltip]="'CommonSection.CsvExport' | translate">
             <i class="bi bi-filetype-csv"></i>
           </button>          
         </th>
         <th class="text-end p-2">    
-          <button class="btn btn-primary btn-sm" (click)="exportXlsx()" [attr.data-bs-title]="'CommonSection.ExcelExport' | translate" data-bs-toggle="tooltip">
+          <button class="btn btn-primary btn-sm" (click)="exportXlsx()" [appTooltip]="'CommonSection.ExcelExport' | translate">
             <i class="bi bi-file-earmark-excel"></i>
           </button>    
         </th>
@@ -61,19 +61,19 @@
         </td>
 
         <td class="p-2 action-col-update">
-          <button class="btn btn-primary" (click)="$event.stopPropagation(); update.emit(row)" [attr.data-bs-title]="'CommonSection.Update' | translate" data-bs-toggle="tooltip">
+          <button class="btn btn-primary" (click)="$event.stopPropagation(); update.emit(row)" [appTooltip]="'CommonSection.Update' | translate">
             <i class="bi bi-pencil"></i>
           </button>
         </td>
 
         <td class="p-2 action-col-enabled">
-          <button class="btn btn-tertiary" (click)="$event.stopPropagation(); enabled.emit(row)" [attr.data-bs-title]="'CommonSection.Enabled' | translate" data-bs-toggle="tooltip">
+          <button class="btn btn-tertiary" (click)="$event.stopPropagation(); enabled.emit(row)" [appTooltip]="'CommonSection.Enabled' | translate">
             <i class="bi" [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'"></i>
           </button>
         </td>
 
         <td class="p-2 action-col-delete">
-          <button class="btn btn-tertiary" (click)="$event.stopPropagation(); delete.emit(row)" [attr.data-bs-title]="'CommonSection.Delete' | translate" data-bs-toggle="tooltip">
+          <button class="btn btn-tertiary" (click)="$event.stopPropagation(); delete.emit(row)" [appTooltip]="'CommonSection.Delete' | translate">
             <i class="bi bi-trash"></i>
           </button>
         </td>
