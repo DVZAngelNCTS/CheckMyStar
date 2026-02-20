@@ -91,11 +91,14 @@
   <div class="row g-4">
 
     <!-- Activité récente -->
-    <div class="col-md-6">
-      <div class="p-4 border rounded shadow-sm h-100">
-        <h4 class="fw-bold mb-3">
-          <i class="bi bi-clock-history me-2"></i>Activité récente
-        </h4>
+  <div class="col-md-6">
+    <div class="p-4 border rounded shadow-sm h-100">
+      <h4 class="fw-bold mb-3">
+        <i class="bi bi-clock-history me-2"></i>Activité récente
+      </h4>
+
+      <!-- WRAPPER SCROLLABLE -->
+      <div class="activity-scroll">
         <ul class="list-group small">
           <li *ngFor="let activity of recentActivities" class="list-group-item">
             <div class="fw-bold">
@@ -106,29 +109,32 @@
               — {{ 'ActivitySection.From' | translate }} {{ activity.user.firstName }} {{ activity.user.lastName }}
             </div>
           </li>
+
           <li *ngIf="recentActivities.length === 0" class="list-group-item text-muted">
             {{ 'ActivitySection.NoActivity' | translate }}
           </li>
         </ul>
-        <button type="button" class="btn btn-primary w-100" (click)="openActivityDetails()">
-          <i class="bi bi-clock-history me-2"></i>
-          {{ 'ActivitySection.Details' | translate }}
-        </button>
       </div>
-    </div>
 
-    <!-- Mini‑graphique (sans librairie externe) -->
-    <div class="col-md-6">
-      <div class="p-4 border rounded shadow-sm h-100">
-        <h4 class="fw-bold mb-3">
-          <i class="bi bi-graph-up-arrow me-2"></i>{{ 'ActivitySection.UserEvolution' | translate }}
-        </h4>
-        <canvas #usersChart width="600" height="200" style="width: 100%;"></canvas>
-        <p class="text-muted small mt-3">
-          {{ 'ActivitySection.Variation' | translate }}
-        </p>
-      </div>
+      <button type="button" class="btn btn-primary w-100 mt-3" (click)="openActivityDetails()">
+        <i class="bi bi-clock-history me-2"></i>
+        {{ 'ActivitySection.Details' | translate }}
+      </button>
     </div>
+  </div>
+
+  <!-- Mini‑graphique (sans librairie externe) -->
+  <div class="col-md-6">
+    <div class="p-4 border rounded shadow-sm h-100">
+      <h4 class="fw-bold mb-3">
+        <i class="bi bi-graph-up-arrow me-2"></i>{{ 'ActivitySection.UserEvolution' | translate }}
+      </h4>
+      <canvas #usersChart width="600" height="200" style="width: 100%;"></canvas>
+      <p class="text-muted small mt-3">
+        {{ 'ActivitySection.Variation' | translate }}
+      </p>
+    </div>
+  </div>
 
   </div>
 

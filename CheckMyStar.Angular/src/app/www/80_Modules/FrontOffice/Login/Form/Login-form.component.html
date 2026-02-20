@@ -3,11 +3,11 @@
         <form [formGroup]="form" (ngSubmit)="login()" class="p-4 border rounded login-form">
             <img src="../../../../../../Assets/Images/Logo 350.png" alt="Logo" class="login-logo mb-4">
             <app-field controlName="login" icon="bi bi-person" label="{{ 'LoginSection.Login' | translate }}" labelClass="w-9rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="text" class="form-control" formControlName="login" required>               
+                <input type="text" class="form-control" formControlName="login" required autocomplete="username">
             </app-field>
             <app-field controlName="password" icon="bi bi-lock" label="{{ 'LoginSection.Password' | translate }}" labelClass="w-9rem start fw-bold" labelTextPosition="start" controlClass="w-100">
                 <div class="input-group">
-                    <input [type]="passwordVisible ? 'text' : 'password'" class="form-control" formControlName="password" required>
+                    <input [type]="passwordVisible ? 'text' : 'password'" class="form-control" formControlName="password" required autocomplete="current-password">
                     <button type="button" class="btn btn-primary" (click)="togglePasswordVisibility()">
                         <i class="bi" [ngClass]="passwordVisible ? 'bi-eye-slash' : 'bi-eye'"></i>
                     </button>  

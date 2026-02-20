@@ -404,3 +404,19 @@ a {
 	width:100px;
 	flex:0 0 100px;
 }
+
+/* Tooltip style harmonisé avec le toast */
+.tooltip,
+.tooltip.show,
+.tooltip .tooltip-inner,
+.tooltip.show .tooltip-inner {
+  background-color: #FBB900 !important; /* même jaune que ton toast */
+  color: #000 !important;               /* texte noir */
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid #FBB900 !important; /* bordure jaune */
+  box-shadow: 0 0 10px rgba(251, 185, 0, 0.4) !important; /* ombre jaune douce */
+}
+
+

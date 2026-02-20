@@ -30,21 +30,21 @@ th input {
 }
 
 .action-col-update {
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
 }
 
 .action-col-enabled {
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
 }
 
 .action-col-delete {
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
 }
 
 .table-row-clickable {
