@@ -250,6 +250,136 @@ namespace CheckMyStar.Bll
             return result;
         }
 
+        public async Task<BaseResponse> UpdateFolder(FolderCreateModel folderCreateModel, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var folder = await folderDal.GetFolder(folderCreateModel.Identifier, ct);
+
+            if (folder.IsSuccess)
+            {
+                if (folder.Folder != null)
+                {
+                    var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(folderCreateModel.AccommodationTypeIdentifier, ct);
+                    if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "Le type d'hébergement spécifié n'existe pas";
+                        return result;
+                    }
+
+                    var accommodationResponse = await accommodationDal.GetAccommodation(folderCreateModel.AccommodationIdentifier, ct);
+                    if (!accommodationResponse.IsSuccess || accommodationResponse.Accommodation == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "L'hébergement spécifié n'existe pas";
+                        return result;
+                    }
+
+                    var ownerUserResponse = await userDal.GetUser(folderCreateModel.OwnerUserIdentifier, ct);
+                    if (!ownerUserResponse.IsSuccess || ownerUserResponse.User == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "L'utilisateur propriétaire spécifié n'existe pas";
+                        return result;
+                    }
+
+                    var inspectorUserResponse = await userDal.GetUser(folderCreateModel.InspectorUserIdentifier, ct);
+                    if (!inspectorUserResponse.IsSuccess || inspectorUserResponse.User == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "L'utilisateur inspecteur spécifié n'existe pas";
+                        return result;
+                    }
+
+                    var folderStatusResponse = await folderStatusDal.GetFolderStatus(folderCreateModel.FolderStatusIdentifier, ct);
+                    if (!folderStatusResponse.IsSuccess || folderStatusResponse.FolderStatus == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "Le statut du dossier spécifié n'existe pas";
+                        return result;
+                    }
+
+                    if (folderCreateModel.QuoteIdentifier.HasValue)
+                    {
+                        var quoteResponse = await quoteDal.GetQuote(folderCreateModel.QuoteIdentifier.Value, ct);
+                        if (!quoteResponse.IsSuccess || quoteResponse.Quote == null)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "Le devis spécifié n'existe pas";
+                            return result;
+                        }
+                    }
+
+                    if (folderCreateModel.InvoiceIdentifier.HasValue)
+                    {
+                        var invoiceResponse = await invoiceDal.GetInvoice(folderCreateModel.InvoiceIdentifier.Value, ct);
+                        if (!invoiceResponse.IsSuccess || invoiceResponse.Invoice == null)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "La facture spécifiée n'existe pas";
+                            return result;
+                        }
+                    }
+
+                    if (folderCreateModel.AppointmentIdentifier.HasValue)
+                    {
+                        var appointmentResponse = await appointmentDal.GetAppointment(folderCreateModel.AppointmentIdentifier.Value, ct);
+                        if (!appointmentResponse.IsSuccess || appointmentResponse.Appointment == null)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "Le rendez-vous spécifié n'existe pas";
+                            return result;
+                        }
+                    }
+
+                    var dateTime = DateTime.Now;
+
+                    var folderEntity = new Folder
+                    {
+                        Identifier = folderCreateModel.Identifier,
+                        AccommodationTypeIdentifier = folderCreateModel.AccommodationTypeIdentifier,
+                        AccommodationIdentifier = folderCreateModel.AccommodationIdentifier,
+                        OwnerUserIdentifier = folderCreateModel.OwnerUserIdentifier,
+                        InspectorUserIdentifier = folderCreateModel.InspectorUserIdentifier,
+                        FolderStatusIdentifier = folderCreateModel.FolderStatusIdentifier,
+                        QuoteIdentifier = folderCreateModel.QuoteIdentifier,
+                        InvoiceIdentifier = folderCreateModel.InvoiceIdentifier,
+                        AppointmentIdentifier = folderCreateModel.AppointmentIdentifier,
+                        CreatedDate = folder.Folder.CreatedDate,
+                        UpdatedDate = dateTime
+                    };
+
+                    var folderResult = await folderDal.UpdateFolder(folderEntity, ct);
+
+                    if (folderResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = folderResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = folderResult.Message;
+                    }
+
+                    await activityBus.AddActivity(folderResult.Message, dateTime, currentUser, folderResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Le dossier spécifié n'existe pas, impossible de le modifier";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = folder.Message;
+            }
+
+            return result;
+        }
+
         public async Task<BaseResponse> DeleteFolder(int folderIdentifier, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();

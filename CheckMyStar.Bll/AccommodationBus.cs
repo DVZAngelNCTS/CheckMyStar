@@ -125,6 +125,70 @@ namespace CheckMyStar.Bll
             return result;
         }
 
+        public async Task<BaseResponse> UpdateAccommodation(AccommodationModel accommodationModel, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var accommodation = await accommodationDal.GetAccommodation(accommodationModel.Identifier, ct);
+
+            if (accommodation.IsSuccess)
+            {
+                if (accommodation.Accommodation != null)
+                {
+                    var addressResponse = await addressDal.GetAddress(accommodationModel.Address.Identifier, ct);
+
+                    if (!addressResponse.IsSuccess || addressResponse.Address == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "L'adresse spécifiée n'existe pas";
+                        return result;
+                    }
+
+                    var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(accommodationModel.AccommodationType.Identifier, ct);
+
+                    if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "Le type d'hébergement spécifié n'existe pas";
+                        return result;
+                    }
+
+                    var dateTime = DateTime.Now;
+
+                    accommodationModel.UpdatedDate = dateTime;
+
+                    var accommodationEntity = mapper.Map<Accommodation>(accommodationModel);
+
+                    var accommodationResult = await accommodationDal.UpdateAccommodation(accommodationEntity, ct);
+
+                    if (accommodationResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = accommodationResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = accommodationResult.Message;
+                    }
+
+                    await activityBus.AddActivity(accommodationResult.Message, dateTime, currentUser, accommodationResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "L'hébergement n'existe pas, impossible de le modifier";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = accommodation.Message;
+            }
+
+            return result;
+        }
+
         public async Task<BaseResponse> DeleteAccommodation(int accommodationIdentifier, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();

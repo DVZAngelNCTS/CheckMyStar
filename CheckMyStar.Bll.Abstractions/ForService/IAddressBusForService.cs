@@ -7,5 +7,6 @@ namespace CheckMyStar.Bll.Abstractions.ForService
     {
         Task<AddressResponse> GetNextIdentifier(CancellationToken ct);
         Task<BaseResponse> AddAddress(AddressSaveRequest request, CancellationToken ct);
+        Task<BaseResponse> UpdateAddress(AddressSaveRequest request, CancellationToken ct);
     }
 }

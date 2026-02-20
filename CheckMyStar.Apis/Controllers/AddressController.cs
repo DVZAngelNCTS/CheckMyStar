@@ -44,5 +44,23 @@ namespace CheckMyStar.Apis.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Updates an existing address using the specified request data.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint validates that the address exists before updating it.
+        /// </remarks>
+        /// <param name="request">The details of the address to update (numéro de rue, rue, ville, code postal, région, pays). Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the result of the address update.</returns>
+        [HttpPut("updateaddress")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> UpdateAddress([FromBody] AddressSaveRequest request, CancellationToken ct)
+        {
+            var result = await addressService.UpdateAddress(request, ct);
+
+            return Ok(result);
+        }
     }
 }

@@ -1,0 +1,104 @@
+<div class="d-flex flex-row gap-3">
+
+  <!-- MAIN LEFT: Hébergement (2 sous-colonnes) -->
+  <div class="d-flex flex-column" style="flex: 2; border-right: 1px solid #dee2e6; padding-right: 1.25rem;">
+    <h6 class="mb-3">{{ 'DossiersSection.AccommodationCreation' | translate }}</h6>
+    <div class="d-flex flex-row gap-3">
+
+      <!-- Sous-colonne 1 : infos générales hébergement -->
+      <div class="d-flex flex-column flex-grow-1">
+        <div class="form-group mb-2">
+          <label for="frontAccommodationName" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationName' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationName" [(ngModel)]="accommodation.accommodationName" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationPhone" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationPhone' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationPhone" [(ngModel)]="accommodation.accommodationPhone" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationTypeId" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationTypeIdentifier' | translate }}</label>
+          <select class="form-select form-select-sm" id="frontAccommodationTypeId" [(ngModel)]="accommodation.accommodationType!.identifier" [disabled]="loading">
+            <option [value]="0" disabled>-- {{ 'DossiersSection.AccommodationTypeIdentifier' | translate }} --</option>
+            <option *ngFor="let type of accommodationTypes" [ngValue]="type.identifier">{{ type.name }}</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationStar" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationCurrentStar' | translate }}</label>
+          <select class="form-select form-select-sm" id="frontAccommodationStar" [(ngModel)]="accommodation.accommodationCurrentStar" [disabled]="loading">
+            <option [value]="null" disabled>-- {{ 'DossiersSection.AccommodationCurrentStar' | translate }} --</option>
+            <option *ngFor="let star of starOptions" [ngValue]="star">{{ star }} ★</option>
+          </select>
+        </div>
+
+        <div class="form-group mt-1">
+          <div class="form-check form-check-sm">
+            <input type="checkbox" class="form-check-input" id="frontAccommodationActive" [(ngModel)]="accommodation.isActive" [disabled]="loading">
+            <label class="form-check-label" for="frontAccommodationActive">{{ 'DossiersSection.AccommodationActive' | translate }}</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sous-colonne 2 : adresse -->
+      <div class="d-flex flex-column flex-grow-1">
+        <div class="form-group mb-2">
+          <label for="frontAccommodationNumber" class="form-label form-label-sm">{{ 'AddressSection.Number' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationNumber" [(ngModel)]="accommodation.address!.number" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationAddressLine" class="form-label form-label-sm">{{ 'AddressSection.AddressLine' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationAddressLine" [(ngModel)]="accommodation.address!.addressLine" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationCity" class="form-label form-label-sm">{{ 'AddressSection.City' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationCity" [(ngModel)]="accommodation.address!.city" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationZipCode" class="form-label form-label-sm">{{ 'AddressSection.ZipCode' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationZipCode" [(ngModel)]="accommodation.address!.zipCode" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationRegion" class="form-label form-label-sm">{{ 'AddressSection.Region' | translate }}</label>
+          <input type="text" class="form-control form-control-sm" id="frontAccommodationRegion" [(ngModel)]="accommodation.address!.region" [disabled]="loading">
+        </div>
+
+        <div class="form-group mb-2">
+          <label for="frontAccommodationCountry" class="form-label form-label-sm">{{ 'AddressSection.Country' | translate }}</label>
+          <select class="form-select form-select-sm" id="frontAccommodationCountry" [(ngModel)]="accommodation.address!.country!.identifier" [disabled]="loading">
+            <option [value]="null" disabled>-- {{ 'AddressSection.Country' | translate }} --</option>
+            <option *ngFor="let country of countries" [ngValue]="country.identifier">{{ country.name }}</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAIN RIGHT: Dossier -->
+  <div class="d-flex flex-column" style="flex: 1; padding-left: 1rem;">
+    <h6 class="mb-3">{{ 'DossiersSection.FolderCreation' | translate }}</h6>
+
+    <div class="form-group mb-2">
+      <label for="frontOwnerUserId" class="form-label form-label-sm">{{ 'DossiersSection.OwnerUserIdentifier' | translate }}</label>
+      <select class="form-select form-select-sm" id="frontOwnerUserId" [(ngModel)]="folder.ownerUserIdentifier" [disabled]="loading">
+        <option [value]="null" disabled>-- {{ 'DossiersSection.OwnerUserIdentifier' | translate }} --</option>
+        <option *ngFor="let owner of owners" [ngValue]="owner.identifier">{{ owner.lastName }} {{ owner.firstName }}</option>
+      </select>
+    </div>
+
+    <div class="form-group mb-2">
+      <label for="frontFolderStatusId" class="form-label form-label-sm">{{ 'DossiersSection.FolderStatusIdentifier' | translate }}</label>
+      <select class="form-select form-select-sm" id="frontFolderStatusId" [(ngModel)]="folder.folderStatusIdentifier" [disabled]="loading">
+        <option [value]="null" disabled>-- {{ 'DossiersSection.FolderStatusIdentifier' | translate }} --</option>
+        <option *ngFor="let status of folderStatuses" [ngValue]="status.identifier">{{ status.name }}</option>
+      </select>
+    </div>
+  </div>
+
+</div>

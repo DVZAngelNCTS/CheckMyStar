@@ -27,6 +27,10 @@ export class FolderBllService {
     return this.folderDal.createFolder$(folder);
   }
 
+  updateFolder$(folder: FolderModel) {
+    return this.folderDal.updateFolder$(folder);
+  }
+
   deleteFolder$(folderIdentifier: number) {
     return this.folderDal.deleteFolder$(folderIdentifier);
   }

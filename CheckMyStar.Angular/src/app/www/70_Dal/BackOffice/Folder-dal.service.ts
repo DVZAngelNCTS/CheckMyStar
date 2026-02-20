@@ -81,6 +81,18 @@ export class FolderDalService {
     );
   }
 
+  updateFolder$(folder: FolderModel): Observable<FolderModel> {
+    const url = `${this.apiUrl}/Folder/updatefolder`;
+    return this.http.put<any>(url, { folder }).pipe(
+      switchMap(response => {
+        if (!response.isSuccess) {
+          return throwError(() => new Error(response.message || 'Erreur lors de la mise à jour du dossier'));
+        }
+        return of(folder);
+      })
+    );
+  }
+
   deleteFolder$(folderIdentifier: number): Observable<BaseResponse> {
     const url = `${this.apiUrl}/Folder/deletefolder/${folderIdentifier}`;
     return this.http.delete<BaseResponse>(url);

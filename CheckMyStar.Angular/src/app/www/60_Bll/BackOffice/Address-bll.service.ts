@@ -16,4 +16,8 @@ export class AddressBllService {
   addAddress$(payload: { address: AddressModel }) {
     return this.addressDal.addAddress$(payload);
   }
+
+  updateAddress$(payload: { address: AddressModel }) {
+    return this.addressDal.updateAddress$(payload);
+  }
 }
