@@ -1,0 +1,211 @@
+<div class="container py-4">
+
+  <!-- Titre -->
+  <div class="mb-4">
+    <h2 class="fw-bold">{{ 'InspectorDashboardSection.Title' | translate }}</h2>
+    <p class="text-muted">{{ 'InspectorDashboardSection.Description' | translate }}</p>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-warning" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- KPIs -->
+    <div class="row g-4 mb-4">
+
+      <!-- Total dossiers -->
+      <div class="col-md-3">
+        <div class="stat-card p-3 border rounded shadow-sm h-100">
+          <div class="d-flex justify-content-between">
+            <h6 class="text-muted">{{ 'InspectorDashboardSection.TotalDossiers' | translate }}</h6>
+            <i class="bi bi-folder2-open fs-4 text-primary"></i>
+          </div>
+          <h3 class="fw-bold">{{ totalDossiers }}</h3>
+          <small class="text-muted">{{ 'InspectorDashboardSection.AssignedDossiers' | translate }}</small>
+        </div>
+      </div>
+
+      <!-- Dossiers en cours -->
+      <div class="col-md-3">
+        <div class="stat-card p-3 border rounded shadow-sm h-100">
+          <div class="d-flex justify-content-between">
+            <h6 class="text-muted">{{ 'FrontDossiersSection.StatusInProgress' | translate }}</h6>
+            <i class="bi bi-hourglass-split fs-4 text-primary"></i>
+          </div>
+          <h3 class="fw-bold">{{ countInProgress }}</h3>
+          <small class="text-muted">{{ 'InspectorDashboardSection.ActiveInspections' | translate }}</small>
+        </div>
+      </div>
+
+      <!-- En attente (devis + paiement) -->
+      <div class="col-md-3">
+        <div class="stat-card p-3 border rounded shadow-sm h-100">
+          <div class="d-flex justify-content-between">
+            <h6 class="text-muted">{{ 'InspectorDashboardSection.Pending' | translate }}</h6>
+            <i class="bi bi-clock fs-4 text-warning"></i>
+          </div>
+          <h3 class="fw-bold">{{ countWaitingQuote + countWaitingPayment }}</h3>
+          <ul class="list-unstyled small mt-2 mb-0">
+            <li>
+              <strong>{{ 'FrontDossiersSection.StatusWaitingQuote' | translate }} :</strong>
+              {{ countWaitingQuote }}
+            </li>
+            <li>
+              <strong>{{ 'FrontDossiersSection.StatusWaitingPayment' | translate }} :</strong>
+              {{ countWaitingPayment }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Terminés -->
+      <div class="col-md-3">
+        <div class="stat-card p-3 border rounded shadow-sm h-100">
+          <div class="d-flex justify-content-between">
+            <h6 class="text-muted">{{ 'FrontDossiersSection.StatusCompleted' | translate }}</h6>
+            <i class="bi bi-check-circle fs-4 text-success"></i>
+          </div>
+          <h3 class="fw-bold">{{ countCompleted }}</h3>
+          <small class="text-muted">
+            {{ completionRate }}% {{ 'InspectorDashboardSection.CompletionRate' | translate }}
+          </small>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Dossiers récents + barre de statuts -->
+    <div class="row g-4">
+
+      <!-- Dossiers récents -->
+      <div class="col-md-7">
+        <div class="p-4 border rounded shadow-sm h-100">
+          <h4 class="fw-bold mb-3">
+            <i class="bi bi-clock-history me-2"></i>{{ 'InspectorDashboardSection.RecentDossiers' | translate }}
+          </h4>
+
+          <div class="activity-scroll">
+            <ul class="list-group small">
+              <li *ngFor="let folder of recentDossiers" class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="fw-bold">
+                      <i class="bi bi-house me-1"></i>{{ folder.accommodation?.accommodationName ?? ('CommonSection.NotProvided' | translate) }}
+                    </div>
+                    <div class="text-muted">
+                      {{ 'DossiersSection.Identifier' | translate }} : {{ folder.identifier }}
+                      &mdash;
+                      {{ folder.updatedDate | date:'dd/MM/yyyy HH:mm' }}
+                    </div>
+                  </div>
+                  <span [class]="getStatusClass(folder)">
+                    {{ getStatusLabel(folder) | translate }}
+                  </span>
+                </div>
+              </li>
+
+              <li *ngIf="recentDossiers.length === 0" class="list-group-item text-muted">
+                {{ 'InspectorDashboardSection.NoDossiers' | translate }}
+              </li>
+            </ul>
+          </div>
+
+          <button type="button" class="btn btn-primary w-100 mt-3" (click)="goToDossiers()">
+            <i class="bi bi-folder2-open me-2"></i>
+            {{ 'InspectorDashboardSection.ViewAllDossiers' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Répartition par statut -->
+      <div class="col-md-5">
+        <div class="p-4 border rounded shadow-sm h-100">
+          <h4 class="fw-bold mb-3">
+            <i class="bi bi-pie-chart me-2"></i>{{ 'InspectorDashboardSection.StatusBreakdown' | translate }}
+          </h4>
+
+          <div *ngIf="totalDossiers === 0" class="text-muted small">
+            {{ 'InspectorDashboardSection.NoDossiers' | translate }}
+          </div>
+
+          <ng-container *ngIf="totalDossiers > 0">
+
+            <!-- En cours -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>{{ 'FrontDossiersSection.StatusInProgress' | translate }}</span>
+                <span class="fw-bold">{{ countInProgress }}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-primary" role="progressbar"
+                  [style.width.%]="totalDossiers > 0 ? (countInProgress / totalDossiers * 100) : 0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Attente devis -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>{{ 'FrontDossiersSection.StatusWaitingQuote' | translate }}</span>
+                <span class="fw-bold">{{ countWaitingQuote }}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-warning" role="progressbar"
+                  [style.width.%]="totalDossiers > 0 ? (countWaitingQuote / totalDossiers * 100) : 0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Attente paiement -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>{{ 'FrontDossiersSection.StatusWaitingPayment' | translate }}</span>
+                <span class="fw-bold">{{ countWaitingPayment }}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-info" role="progressbar"
+                  [style.width.%]="totalDossiers > 0 ? (countWaitingPayment / totalDossiers * 100) : 0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Terminés -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>{{ 'FrontDossiersSection.StatusCompleted' | translate }}</span>
+                <span class="fw-bold">{{ countCompleted }}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-success" role="progressbar"
+                  [style.width.%]="totalDossiers > 0 ? (countCompleted / totalDossiers * 100) : 0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Annulés -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>{{ 'FrontDossiersSection.StatusCancelled' | translate }}</span>
+                <span class="fw-bold">{{ countCancelled }}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-danger" role="progressbar"
+                  [style.width.%]="totalDossiers > 0 ? (countCancelled / totalDossiers * 100) : 0">
+                </div>
+              </div>
+            </div>
+
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

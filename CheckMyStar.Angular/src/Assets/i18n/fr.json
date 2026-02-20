@@ -203,8 +203,22 @@
   },
   "FrontOfficeMenuSection": {
     "Home": "Accueil",
+    "Dashboard": "Tableau de bord",
     "Dossiers": "Mes dossiers",
     "Disconnect":"Se déconnecter"
+  },
+  "InspectorDashboardSection": {
+    "Title": "Tableau de bord inspecteur",
+    "Description": "Vue d'ensemble de vos dossiers d'inspection",
+    "TotalDossiers": "Mes dossiers",
+    "AssignedDossiers": "dossiers qui vous sont assignés",
+    "ActiveInspections": "inspections en cours",
+    "Pending": "En attente",
+    "CompletionRate": "des dossiers terminés",
+    "RecentDossiers": "Dossiers récents",
+    "ViewAllDossiers": "Voir tous mes dossiers",
+    "StatusBreakdown": "Répartition par statut",
+    "NoDossiers": "Aucun dossier assigné"
   },
   "FrontDossiersSection": {
     "Title": "Mes dossiers d'inspection",
