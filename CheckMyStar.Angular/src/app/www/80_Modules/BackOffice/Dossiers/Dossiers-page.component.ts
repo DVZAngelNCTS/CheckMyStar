@@ -95,7 +95,8 @@ export class DossiersPageComponent implements OnInit {
     }
 
     if (filter.reset) {
-      this.loadFolders();
+      this.loadingReset = true;
+      this.loadFolders(true);
       return;
     }
 

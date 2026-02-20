@@ -6,11 +6,12 @@ import { TableColumn } from './Models/TableColumn.model';
 import { CsvExportService } from '../../../90_Services/Export/Csv-export.service';
 import { XlsxExportService } from '../../../90_Services/Export/Xlsx-export.service';
 import { DeviceService } from '../../../90_Services/Device/Device.service';
+import { TooltipDirective } from '../Tooltip/Tooltip.directive';
 
 @Component({ 
   selector: 'app-table', 
   standalone: true, 
-  imports: [CommonModule, RouterModule, TranslationModule], 
+  imports: [CommonModule, RouterModule, TranslationModule, TooltipDirective], 
   templateUrl: './Table.component.html',
   styleUrls: ['./Table.component.css']
 })

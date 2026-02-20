@@ -1,50 +1,36 @@
-<div class="ms-3 d-flex align-items-center" (keydown.enter)="search()">
-    <div class="d-flex flex-column" [formGroup]="form">
-        <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
-            <app-field controlName="lastName" icon="bi bi-person" label="{{ 'UserSection.LastName' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="text" class="form-control" formControlName="lastName">               
-            </app-field>
-            <app-field controlName="firstName" icon="bi bi-person" label="{{ 'UserSection.FirstName' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="text" class="form-control" formControlName="firstName">               
-            </app-field>
-            <app-field controlName="societyIdentifier"
-                    icon="bi bi-building"
-                    label="{{ 'UserSection.Society' | translate }}"
-                    labelClass="w-6rem start fw-bold"
-                    labelTextPosition="start"
-                    controlClass="w-100">
-                <select class="form-select" formControlName="societyIdentifier">
-                    <option [value]="null">{{ 'CommonSection.All' | translate }}</option>
-                    <option *ngFor="let society of societies" [value]="society.identifier">{{ society.name }}</option>
-                </select>
-            </app-field>
+<div class="ms-3 w-100" (keydown.enter)="search()">
+    <app-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (searchClicked)="search()" (resetClicked)="reset()">
+        <div class="d-flex flex-column" [formGroup]="form">
+            <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+                <app-field controlName="lastName" icon="bi bi-person" label="{{ 'UserSection.LastName' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="lastName">               
+                </app-field>
+                <app-field controlName="firstName" icon="bi bi-person" label="{{ 'UserSection.FirstName' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="firstName">               
+                </app-field>
+                <app-field controlName="societyIdentifier"
+                        icon="bi bi-building"
+                        label="{{ 'UserSection.Society' | translate }}"
+                        labelClass="w-6rem start fw-bold"
+                        labelTextPosition="start"
+                        controlClass="w-100">
+                    <select class="form-select" formControlName="societyIdentifier">
+                        <option [value]="null">{{ 'CommonSection.All' | translate }}</option>
+                        <option *ngFor="let society of societies" [value]="society.identifier">{{ society.name }}</option>
+                    </select>
+                </app-field>
+            </div>
+            <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+                <app-field controlName="email" icon="bi bi-envelope-at" label="{{ 'UserSection.Email' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="email">               
+                </app-field>
+                <app-field controlName="phone" icon="bi bi-telephone" label="{{ 'UserSection.Phone' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="phone">               
+                </app-field>
+                <app-field controlName="address" icon="bi bi-envelope" label="{{ 'UserSection.Address' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="address">               
+                </app-field>            
+            </div>                            
         </div>
-        <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
-            <app-field controlName="email" icon="bi bi-envelope-at" label="{{ 'UserSection.Email' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="text" class="form-control" formControlName="email">               
-            </app-field>
-            <app-field controlName="phone" icon="bi bi-telephone" label="{{ 'UserSection.Phone' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="text" class="form-control" formControlName="phone">               
-            </app-field>
-            <app-field controlName="address" icon="bi bi-envelope" label="{{ 'UserSection.Address' | translate }}" labelClass="w-6rem start fw-bold" labelTextPosition="start" controlClass="w-100">
-                <input type="text" class="form-control" formControlName="address">               
-            </app-field>            
-        </div>                            
-    </div>
-    <div class="ms-auto d-flex flex-nowrap">
-        <button type="button" class="btn btn-primary me-2 d-flex align-items- justify-content-center gap-4 w-9rem" [disabled]="loadingSearch" (click)="search()">
-            <app-loader-mini *ngIf="loadingSearch"></app-loader-mini>
-            <span class="d-flex align-items-center">
-                <i class="bi bi-search me-2"></i>
-                {{ 'CommonSection.Search' | translate }}
-            </span>
-        </button>
-        <button type="button" class="btn btn-tertiary me-2 d-flex align-items-center justify-content-center gap-4 w-9rem" [disabled]="loadingReset" (click)="reset()">
-            <app-loader-mini *ngIf="loadingReset"></app-loader-mini>
-            <span class="d-flex align-items-center">
-                <i class="bi bi-funnel me-2"></i>
-                {{ 'CommonSection.Reset' | translate }}
-            </span>
-        </button>       
-    </div>
+    </app-filter>
 </div>

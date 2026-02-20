@@ -4,13 +4,12 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } 
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { UserFilter } from '../../../../30_Filters/BackOffice/User-filter';
 import { FieldComponent } from '../../../Components/Field/Field.component';
-import { MiniLoaderComponent } from '../../../Components/Loader/Mini/Loader-mini.component';
-import { last } from 'rxjs';
+import { FilterComponent } from '../../../Components/Filter/Filter.component';
 
 @Component({
 	selector: 'app-user-filter',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslationModule, FieldComponent, MiniLoaderComponent],
+	imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslationModule, FieldComponent, FilterComponent],
 	templateUrl: './User-filter.component.html'
 })
 export class UserFilterComponent {

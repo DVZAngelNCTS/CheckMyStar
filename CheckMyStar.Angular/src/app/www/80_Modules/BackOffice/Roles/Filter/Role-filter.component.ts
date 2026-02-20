@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } 
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { RoleFilter } from '../../../../30_Filters/BackOffice/Role.filter';
 import { FieldComponent } from '../../../Components/Field/Field.component';
-import { MiniLoaderComponent } from '../../../Components/Loader/Mini/Loader-mini.component';
+import { FilterComponent } from '../../../Components/Filter/Filter.component';
 
 @Component({
 	selector: 'app-role-filter',
 	standalone: true,
-	imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslationModule, FieldComponent, MiniLoaderComponent],
+	imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslationModule, FieldComponent, FilterComponent],
 	templateUrl: './Role-filter.component.html'
 })
 export class RoleFilterComponent {
