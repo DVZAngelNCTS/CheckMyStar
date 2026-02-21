@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CriteresDalService } from '../../70_Dal/BackOffice/Criteres-dal.service';
-import { CreateCriterionRequest } from '../../20_Models/BackOffice/Criteres.model';
-import { Observable } from 'rxjs';
-import { UpdateCriterionRequest } from '../../20_Models/BackOffice/Criteres.model';
+import { CriterionSaveRequest } from '../../40_Requests/BackOffice/Criterion-save.request';
+import { CriterionUpdateRequest } from '../../40_Requests/BackOffice/Criterion-update.request';
+import { CriterionModel } from '../../20_Models/BackOffice/Criterion.model';
+import { StarLevelModel } from '../../20_Models/BackOffice/StarLevel.model';
+import { StarLevelCriterionModel } from '../../20_Models/BackOffice/StarLevelCriterion.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +20,19 @@ export class CriteresBllService {
     return this.criteriaDal.getStarCriteriaDetails$();
   }
 
-  createCriterion$(request: CreateCriterionRequest): Observable<any> {
-    return this.criteriaDal.createCriterion$(request);
+  addCriterion$(criterion: CriterionModel, starLevelCriterion: StarLevelCriterionModel) {
+    const request = { starLevel: criterion, starLevelCriterion } as CriterionSaveRequest;
+
+    return this.criteriaDal.addCriterion$(request);
   }
 
-  deleteCriterion$(id: number): Observable<any> {
+  deleteCriterion$(id: number) {
     return this.criteriaDal.deleteCriterion$(id);
   }
 
-  updateCriterion$(id: number, request: UpdateCriterionRequest): Observable<any> {
-    return this.criteriaDal.updateCriterion$(id, request);
+  updateCriterion$(criterion: CriterionModel, starLevel: StarLevelModel, starLevelCriterion: StarLevelCriterionModel) {
+    const request = { criterion, starLevel, starLevelCriterion } as CriterionUpdateRequest;
+
+    return this.criteriaDal.updateCriterion$(request);
   }
 }

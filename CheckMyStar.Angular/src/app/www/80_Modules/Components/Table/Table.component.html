@@ -10,9 +10,10 @@
             <span *ngIf="sortDirection === 'desc'">▼</span>
           </ng-container>
         </th>
-        <th class="p-3 action-col-update"></th>
-        <th class="p-3 action-col-enabled"></th>
-        <th class="p-3 action-col-delete"></th>
+        <th class="p-3 action-col-detail" *ngIf="showDetail"></th>
+        <th class="p-3 action-col-update" *ngIf="showUpdate"></th>
+        <th class="p-3 action-col-enabled" *ngIf="showEnabled"></th>
+        <th class="p-3 action-col-delete" *ngIf="showDelete"></th>
       </tr>
       <tr>
         <th *ngFor="let col of columns()" class="p-2">
@@ -24,13 +25,14 @@
             (input)="onFilterChange(col, $event.target.value)"
           />
         </th>
-        <th class="text-end p-2"></th>
-        <th class="text-end p-2">    
+        <th class="text-end p-2" *ngIf="showDetail"></th>
+        <th class="text-end p-2" *ngIf="showUpdate"></th>
+        <th class="text-end p-2" *ngIf="showCsvExport">    
           <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()" [appTooltip]="'CommonSection.CsvExport' | translate">
             <i class="bi bi-filetype-csv"></i>
           </button>          
         </th>
-        <th class="text-end p-2">    
+        <th class="text-end p-2" *ngIf="showXlsxExport">    
           <button class="btn btn-primary btn-sm" (click)="exportXlsx()" [appTooltip]="'CommonSection.ExcelExport' | translate">
             <i class="bi bi-file-earmark-excel"></i>
           </button>    
@@ -60,19 +62,25 @@
           </ng-container>
         </td>
 
-        <td class="p-2 action-col-update">
+        <td class="p-2 action-col-detail" *ngIf="showDetail">
+          <button class="btn btn-primary" (click)="$event.stopPropagation(); detail.emit(row)" [appTooltip]="'CommonSection.Detail' | translate">
+            <i class="bi bi-eye"></i>
+          </button>
+        </td>
+
+        <td class="p-2 action-col-update" *ngIf="showUpdate">
           <button class="btn btn-primary" (click)="$event.stopPropagation(); update.emit(row)" [appTooltip]="'CommonSection.Update' | translate">
             <i class="bi bi-pencil"></i>
           </button>
         </td>
 
-        <td class="p-2 action-col-enabled">
+        <td class="p-2 action-col-enabled" *ngIf="showEnabled">
           <button class="btn btn-tertiary" (click)="$event.stopPropagation(); enabled.emit(row)" [appTooltip]="'CommonSection.Enabled' | translate">
             <i class="bi" [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'"></i>
           </button>
         </td>
 
-        <td class="p-2 action-col-delete">
+        <td class="p-2 action-col-delete" *ngIf="showDelete">
           <button class="btn btn-tertiary" (click)="$event.stopPropagation(); delete.emit(row)" [appTooltip]="'CommonSection.Delete' | translate">
             <i class="bi bi-trash"></i>
           </button>

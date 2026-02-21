@@ -176,26 +176,23 @@ namespace CheckMyStar.Bll
             var response = new BaseResponse();
             try
             {
-                var criterion = new Criterion
-                {
-                    CriterionId = request.CriterionId,
-                    Description = request.Description,
-                    BasePoints = request.BasePoints
-                };
+                var criterion = mapper.Map<Criterion>(request.Criterion);
 
-                var updateLastUpdateResult = await criteresDal.UpdateStarLevelLastUpdate(request.StarLevelId, ct);
+                var starLevel = mapper.Map<StarLevel>(request.StarLevel);
+
+                var starLevelCriterion = mapper.Map<StarLevelCriterion>(request.StarLevelCriterion);
+
+                var updateLastUpdateResult = await criteresDal.UpdateStarLevelLastUpdate(starLevel.StarLevelId, ct);
+
                 if (!updateLastUpdateResult.IsSuccess)
                 {
                     response.IsSuccess = false;
                     response.Message = updateLastUpdateResult.Message;
+
                     return response;
                 }
 
-                var updateTypeResult = await criteresDal.UpdateStarLevelCriterionType(
-                    request.CriterionId,
-                    request.StarLevelId,
-                    request.TypeCode,
-                    ct);
+                var updateTypeResult = await criteresDal.UpdateStarLevelCriterionType(starLevelCriterion.CriterionId, starLevelCriterion.StarLevelId, starLevelCriterion.TypeCode, ct);
 
                 if (!updateTypeResult.IsSuccess)
                 {
@@ -205,7 +202,7 @@ namespace CheckMyStar.Bll
                 }
 
                 response.IsSuccess = true;
-                response.Message = $"Critère {request.CriterionId} modifié avec succès.";
+                response.Message = $"Critère {request.Criterion?.CriterionId} modifié avec succès.";
             }
             catch (Exception ex)
             {

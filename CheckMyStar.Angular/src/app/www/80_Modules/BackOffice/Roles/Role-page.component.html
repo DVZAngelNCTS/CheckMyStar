@@ -11,7 +11,7 @@
     <!-- Tableau extensible -->
     <div class="d-flex flex-column flex-grow-1">
       <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
-        <app-table [columns]="columns" [data]="roles!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)"></app-table>
+        <app-table [columns]="columns" [data]="roles!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" [showDetail]="false"></app-table>
       </div>
     </div>
 

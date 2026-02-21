@@ -11,7 +11,7 @@ export class SocietyDalService {
   constructor(private http: HttpClient) {}
 
   getSocieties$(): Observable<SocietiesResponse> {
-    return this.http.post<SocietiesResponse>(`${this.apiUrl}/Societies/getSocieties`, {});
+    return this.http.get<SocietiesResponse>(`${this.apiUrl}/Societies/getSocieties`, {});
   }
 
   addSociety$(payload: { societies: any[] } | any[] | any): Observable<any> {

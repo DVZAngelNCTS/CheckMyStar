@@ -9,6 +9,8 @@ import { ToastService } from '../../../../90_Services/Toast/Toast.service';
 import { EvaluationStep1Component } from './Step1/Evaluation-step1.component';
 import { EvaluationStep2Component } from './Step2/Evaluation-step2.component';
 import { EvaluationResult, EvaluationFormData, CriterionEvaluation } from "../../../../20_Models/FrontOffice/Evaluation.models";
+import { AssessmentModel } from '../../../../20_Models/BackOffice/Assessment.model';
+import { AssessmentCriterionModel } from '../../../../20_Models/BackOffice/AssessmentCriterion.model';
 
 @Component({
   selector: 'app-evaluation-page',
@@ -85,7 +87,7 @@ export class EvaluationPageComponent implements OnInit {
 
   onSave(): void {
     const savedAt = new Date().toISOString();
-    this.assessmentBll.createAssessment$(this.buildAssessmentRequest(false)).subscribe({
+    this.assessmentBll.addAssessment$(this.buildAssessmentModel(false)).subscribe({
       next: (response) => {
         if (response?.assessmentId) {
           this.draftAssessmentId = response.assessmentId;
@@ -101,8 +103,8 @@ export class EvaluationPageComponent implements OnInit {
     });
   }
 
-  private buildAssessmentRequest(isComplete: boolean) {
-    return {
+  private buildAssessmentModel(isComplete: boolean) {
+    const assessment: AssessmentModel = {
       folderIdentifier:     this.folderId ?? 0,
       targetStarLevel:      this.form.targetStar ?? 0,
       capacity:             this.form.maxCapacity ?? 0,
@@ -124,8 +126,9 @@ export class EvaluationPageComponent implements OnInit {
         status:      c.typeCode,
         isValidated: c.validated,
         comment:     c.comment
-      }))
+      }) as AssessmentCriterionModel)
     };
+    return assessment;
   }
 
   private saveToLocalStorage(savedAt: string): void {
@@ -241,7 +244,7 @@ export class EvaluationPageComponent implements OnInit {
       this.assessmentBll.deleteAssessment$(draftId).subscribe({
         next: () => {
           this.draftAssessmentId = null;
-          this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
+          this.assessmentBll.addAssessment$(this.buildAssessmentModel(true)).subscribe({
             next: () => {
               localStorage.removeItem(this.storageKey);
               this.lastSavedAt = null;
@@ -252,7 +255,7 @@ export class EvaluationPageComponent implements OnInit {
         error: err => {
           console.error('Draft delete error:', err);
           // On tente quand même de soumettre la version finale
-          this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
+          this.assessmentBll.addAssessment$(this.buildAssessmentModel(true)).subscribe({
             next: () => {
               localStorage.removeItem(this.storageKey);
               this.lastSavedAt = null;
@@ -262,7 +265,7 @@ export class EvaluationPageComponent implements OnInit {
         }
       });
     } else {
-      this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
+      this.assessmentBll.addAssessment$(this.buildAssessmentModel(true)).subscribe({
         next: () => {
           localStorage.removeItem(this.storageKey);
           this.lastSavedAt = null;

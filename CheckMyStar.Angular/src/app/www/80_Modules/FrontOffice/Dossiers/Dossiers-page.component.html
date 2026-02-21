@@ -14,7 +14,7 @@
         <app-table
           [columns]="columns"
           [data]="tableRows"
-          (rowClick)="onRowClick($event)"
+          (detail)="onDetail($event)"
           (update)="openUpdate($event)"
           (delete)="openDelete($event)"
           (enabled)="toggleEnabled($event)">

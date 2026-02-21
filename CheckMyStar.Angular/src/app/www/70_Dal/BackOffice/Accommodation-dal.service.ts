@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Environment } from '../../../../Environment/environment';
 import { AccommodationModel } from '../../20_Models/BackOffice/Folder.model';
+import { AccommodationResponse } from '../../50_Responses/BackOffice/Accommodation.response';
 
 @Injectable({
   providedIn: 'root'
@@ -13,32 +14,8 @@ export class AccommodationDalService {
 
   constructor(private http: HttpClient) {}
 
-  getNextIdentifier$(): Observable<number> {
-    const url = `${this.apiUrl}/Accommodation/getnextidentifier`;
-    return this.http.post<any>(url, {}).pipe(
-      switchMap(response => {
-        console.log('Next accommodation identifier response:', response);
-        
-        // Extract the actual numeric identifier from the response
-        let identifier: number;
-        
-        if (response.accommodation && response.accommodation.identifier) {
-          identifier = response.accommodation.identifier;
-        } else if (response.identifier) {
-          identifier = response.identifier;
-        } else if (response.nextIdentifier) {
-          identifier = response.nextIdentifier;
-        } else if (typeof response === 'number') {
-          identifier = response;
-        } else {
-          console.error('Unable to extract identifier from response:', response);
-          return throwError(() => new Error('Format de réponse invalide pour l\'identifiant'));
-        }
-        
-        console.log('Extracted accommodation identifier:', identifier);
-        return of(identifier);
-      })
-    );
+  getNextIdentifier$(): Observable<AccommodationResponse> {
+    return this.http.get<AccommodationResponse>(`${this.apiUrl}/Accommodation/getnextidentifier`, {});
   }
 
   createAccommodation$(accommodation: AccommodationModel): Observable<AccommodationModel> {

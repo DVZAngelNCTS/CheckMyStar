@@ -20,9 +20,9 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="request">The criteria for retrieving activities. Must not be null</param>
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>Activity</returns>
-        [HttpPost("getactivities")]
+        [HttpGet("getactivities")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> GetActivities(ActivityGetRequest request, CancellationToken ct)
+        public async Task<IActionResult> GetActivities([FromQuery] ActivityGetRequest request, CancellationToken ct)
         {
             var activities = await activityService.GetActivities(request, ct);
 

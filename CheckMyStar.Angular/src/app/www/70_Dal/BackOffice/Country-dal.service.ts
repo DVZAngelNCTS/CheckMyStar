@@ -14,6 +14,6 @@ export class CountryDalService {
   }
 
   getCountries$(): Observable<CountriesResponse> {
-    return this.http.post<CountriesResponse>(`${this.apiUrl}/Country/getcountries`, {});
+    return this.http.get<CountriesResponse>(`${this.apiUrl}/Country/getcountries`, {});
   }
 }

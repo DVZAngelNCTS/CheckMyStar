@@ -40,34 +40,28 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="request">The assessment details including criteria. Must not be null.</param>
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the created assessment with its generated identifier.</returns>
-        [HttpPost("createassessment")]
+        [HttpPost("addassessment")]
         [Authorize(Roles = "Administrator, Inspector")]
-        public async Task<IActionResult> CreateAssessment([FromBody] AssessmentCreateRequest request, CancellationToken ct)
+        public async Task<IActionResult> AddAssessment([FromBody] AssessmentSaveRequest request, CancellationToken ct)
         {
-            var assessment = await assessmentService.CreateAssessment(request, ct);
+            var assessment = await assessmentService.AddAssessment(request, ct);
 
             return Ok(assessment);
         }
 
         /// <summary>
-        /// Deletes an assessment by its identifier.
+        /// Deletes an assessment specified by the provided request.
         /// </summary>
-        /// <remarks>
-        /// Deletes the assessment with the specified ID along with all its associated criteria.
-        /// </remarks>
-        /// <param name="id">The identifier of the assessment to delete.</param>
-        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
-        /// <returns>An <see cref="IActionResult"/> indicating the result of the deletion operation.</returns>
-        [HttpDelete("deleteassessment/{id}")]
+        /// <remarks>This method requires the caller to have either the Administrator or Inspector role.
+        /// The operation is performed asynchronously and returns an appropriate response based on the result.</remarks>
+        /// <param name="request">The request containing the details and identifier of the assessment to be deleted.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the delete operation.</param>
+        /// <returns>An IActionResult that indicates the outcome of the delete operation.</returns>
+        [HttpDelete("deleteassessment")]
         [Authorize(Roles = "Administrator, Inspector")]
-        public async Task<IActionResult> DeleteAssessment(int id, CancellationToken ct)
+        public async Task<IActionResult> DeleteAssessment(AssessmentDeleteRequest request, CancellationToken ct)
         {
-            var result = await assessmentService.DeleteAssessment(id, ct);
-
-            if (!result.IsSuccess)
-            {
-                return NotFound(result);
-            }
+            var result = await assessmentService.DeleteAssessment(request, ct);
 
             return Ok(result);
         }

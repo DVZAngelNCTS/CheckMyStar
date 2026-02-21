@@ -11,6 +11,15 @@ export class TooltipDirective {
 
   constructor(private host: ElementRef, private renderer: Renderer2) {}
 
+  ngOnDestroy() {
+    this.hide();
+  }
+
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    this.hide();
+  }
+
   @HostListener('mouseenter')
   show() {
     if (!this.text) return;

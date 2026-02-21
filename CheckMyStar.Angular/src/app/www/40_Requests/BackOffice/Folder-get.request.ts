@@ -3,4 +3,6 @@ export interface FolderGetRequest {
   ownerLastName?: string;
   inspectorLastName?: string;
   folderStatus?: number;
+  folderIdentifier?: number;
+  inspectorIdentifier?: number;
 }

@@ -9,19 +9,7 @@ using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
-    public partial class FolderBus(
-        IUserContextService userContext,
-        IActivityBus activityBus,
-        IFolderDal folderDal,
-        IFolderStatusDal folderStatusDal,
-        IAccommodationDal accommodationDal,
-        IAccommodationTypeDal accommodationTypeDal,
-        IUserDal userDal,
-        IQuoteDal quoteDal,
-        IInvoiceDal invoiceDal,
-        IAppointmentDal appointmentDal,
-        IAddressDal addressDal,
-        IMapper mapper) : IFolderBus
+    public partial class FolderBus(IUserContextService userContext, IActivityBus activityBus, IFolderDal folderDal, IFolderStatusDal folderStatusDal, IAccommodationDal accommodationDal, IAccommodationTypeDal accommodationTypeDal, IUserDal userDal, IQuoteDal quoteDal, IInvoiceDal invoiceDal, IAppointmentDal appointmentDal, IAddressDal addressDal, IMapper mapper) : IFolderBus
     {
         public async Task<FolderResponse> GetIdentifier(CancellationToken ct)
         {
@@ -30,86 +18,65 @@ namespace CheckMyStar.Bll
             return mapper.Map<FolderResponse>(folder);
         }
 
-        public async Task<FoldersResponse> GetFolders(CancellationToken ct)
+        public async Task<FolderResponse> GetFolder(int folderIdentifier, CancellationToken ct)
+        {
+            FolderResponse folderResponse = new FolderResponse();
+
+            var folder = await folderDal.GetFolder(folderIdentifier, ct);
+
+            if (folder.IsSuccess && folder.Folder != null)
+            {
+                var folderModel = await LoadFolder(folder.Folder, ct);
+
+                folderResponse.IsSuccess = true;
+                folderResponse.Message = folder.Message;
+                folderResponse.Folder = folderModel;
+            }
+            else
+            {
+                folderResponse.IsSuccess = false;
+                folderResponse.Message = folder.Message;
+            }
+
+            return folderResponse;
+        }
+
+        public async Task<FoldersResponse> GetFoldersByInspector(int inspectorIdentifier, CancellationToken ct)
         {
             FoldersResponse foldersResponse = new FoldersResponse();
 
-            var folders = await folderDal.GetFolders(ct);
+            var folders = await folderDal.GetFoldersByInspectore(inspectorIdentifier, ct);
 
             if (folders.IsSuccess && folders.Folders != null)
             {
-                foreach (Folder folder in folders.Folders)
-                {
-                    var folderModel = mapper.Map<FolderModel>(folder);
-
-                    var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(folder.AccommodationTypeIdentifier, ct);
-                    if (accommodationTypeResponse.IsSuccess && accommodationTypeResponse.AccommodationType != null)
-                    {
-                        folderModel.AccommodationType = mapper.Map<AccommodationTypeModel>(accommodationTypeResponse.AccommodationType);
-                    }
-
-                    var accommodationResponse = await accommodationDal.GetAccommodation(folder.AccommodationIdentifier, ct);
-                    if (accommodationResponse.IsSuccess && accommodationResponse.Accommodation != null)
-                    {
-                        folderModel.Accommodation = mapper.Map<AccommodationModel>(accommodationResponse.Accommodation);
-
-                        var addressResponse = await addressDal.GetAddress(accommodationResponse.Accommodation.AddressIdentifier, ct);
-                        if (addressResponse.IsSuccess && addressResponse.Address != null)
-                        {
-                            folderModel.Accommodation.Address = mapper.Map<AddressModel>(addressResponse.Address);
-                        }
-                    }
-
-                    var ownerUserResponse = await userDal.GetUser(folder.OwnerUserIdentifier, ct);
-                    if (ownerUserResponse.IsSuccess && ownerUserResponse.User != null)
-                    {
-                        folderModel.OwnerUser = mapper.Map<UserModel>(ownerUserResponse.User);
-                    }
-
-                    var inspectorUserResponse = await userDal.GetUser(folder.InspectorUserIdentifier, ct);
-                    if (inspectorUserResponse.IsSuccess && inspectorUserResponse.User != null)
-                    {
-                        folderModel.InspectorUser = mapper.Map<UserModel>(inspectorUserResponse.User);
-                    }
-
-                    var folderStatusResponse = await folderStatusDal.GetFolderStatus(folder.FolderStatusIdentifier, ct);
-                    if (folderStatusResponse.IsSuccess && folderStatusResponse.FolderStatus != null)
-                    {
-                        folderModel.FolderStatus = mapper.Map<FolderStatusModel>(folderStatusResponse.FolderStatus);
-                    }
-
-                    if (folder.QuoteIdentifier.HasValue)
-                    {
-                        var quoteResponse = await quoteDal.GetQuote(folder.QuoteIdentifier.Value, ct);
-                        if (quoteResponse.IsSuccess && quoteResponse.Quote != null)
-                        {
-                            folderModel.Quote = mapper.Map<QuoteModel>(quoteResponse.Quote);
-                        }
-                    }
-
-                    if (folder.InvoiceIdentifier.HasValue)
-                    {
-                        var invoiceResponse = await invoiceDal.GetInvoice(folder.InvoiceIdentifier.Value, ct);
-                        if (invoiceResponse.IsSuccess && invoiceResponse.Invoice != null)
-                        {
-                            folderModel.Invoice = mapper.Map<InvoiceModel>(invoiceResponse.Invoice);
-                        }
-                    }
-
-                    if (folder.AppointmentIdentifier.HasValue)
-                    {
-                        var appointmentResponse = await appointmentDal.GetAppointment(folder.AppointmentIdentifier.Value, ct);
-                        if (appointmentResponse.IsSuccess && appointmentResponse.Appointment != null)
-                        {
-                            folderModel.Appointment = mapper.Map<AppointmentModel>(appointmentResponse.Appointment);
-                        }
-                    }
-
-                    foldersResponse.Folders.Add(folderModel);
-                }
+                var foldesrModel = await LoadFolders(folders.Folders, ct);
 
                 foldersResponse.IsSuccess = true;
                 foldersResponse.Message = folders.Message;
+                foldersResponse.Folders = foldesrModel;
+            }
+            else
+            {
+                foldersResponse.IsSuccess = false;
+                foldersResponse.Message = folders.Message;
+            }
+
+            return foldersResponse;
+        }
+
+        public async Task<FoldersResponse> GetFolders(string? accommodationName, string? ownerLastName, string? inspectorLastName, int? folderStatus, CancellationToken ct)
+        {
+            FoldersResponse foldersResponse = new FoldersResponse();
+
+            var folders = await folderDal.GetFolders(accommodationName, ownerLastName, inspectorLastName, folderStatus, ct);
+
+            if (folders.IsSuccess && folders.Folders != null)
+            {
+                var folderModels = await LoadFolders(folders.Folders, ct);
+
+                foldersResponse.IsSuccess = true;
+                foldersResponse.Message = folders.Message;
+                foldersResponse.Folders = folderModels;
             }
             else
             {
@@ -131,52 +98,64 @@ namespace CheckMyStar.Bll
                 if (folder.Folder == null)
                 {
                     var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(folderCreateModel.AccommodationTypeIdentifier, ct);
+
                     if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "Le type d'hébergement spécifié n'existe pas";
+
                         return result;
                     }
 
                     var accommodationResponse = await accommodationDal.GetAccommodation(folderCreateModel.AccommodationIdentifier, ct);
+
                     if (!accommodationResponse.IsSuccess || accommodationResponse.Accommodation == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "L'hébergement spécifié n'existe pas";
+
                         return result;
                     }
 
                     var ownerUserResponse = await userDal.GetUser(folderCreateModel.OwnerUserIdentifier, ct);
+
                     if (!ownerUserResponse.IsSuccess || ownerUserResponse.User == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "L'utilisateur propriétaire spécifié n'existe pas";
+
                         return result;
                     }
 
                     var inspectorUserResponse = await userDal.GetUser(folderCreateModel.InspectorUserIdentifier, ct);
+
                     if (!inspectorUserResponse.IsSuccess || inspectorUserResponse.User == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "L'utilisateur inspecteur spécifié n'existe pas";
+
                         return result;
                     }
 
                     var folderStatusResponse = await folderStatusDal.GetFolderStatus(folderCreateModel.FolderStatusIdentifier, ct);
+
                     if (!folderStatusResponse.IsSuccess || folderStatusResponse.FolderStatus == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "Le statut du dossier spécifié n'existe pas";
+
                         return result;
                     }
 
                     if (folderCreateModel.QuoteIdentifier.HasValue)
                     {
                         var quoteResponse = await quoteDal.GetQuote(folderCreateModel.QuoteIdentifier.Value, ct);
+
                         if (!quoteResponse.IsSuccess || quoteResponse.Quote == null)
                         {
                             result.IsSuccess = false;
                             result.Message = "Le devis spécifié n'existe pas";
+
                             return result;
                         }
                     }
@@ -184,10 +163,12 @@ namespace CheckMyStar.Bll
                     if (folderCreateModel.InvoiceIdentifier.HasValue)
                     {
                         var invoiceResponse = await invoiceDal.GetInvoice(folderCreateModel.InvoiceIdentifier.Value, ct);
+
                         if (!invoiceResponse.IsSuccess || invoiceResponse.Invoice == null)
                         {
                             result.IsSuccess = false;
                             result.Message = "La facture spécifiée n'existe pas";
+
                             return result;
                         }
                     }
@@ -195,10 +176,12 @@ namespace CheckMyStar.Bll
                     if (folderCreateModel.AppointmentIdentifier.HasValue)
                     {
                         var appointmentResponse = await appointmentDal.GetAppointment(folderCreateModel.AppointmentIdentifier.Value, ct);
+
                         if (!appointmentResponse.IsSuccess || appointmentResponse.Appointment == null)
                         {
                             result.IsSuccess = false;
                             result.Message = "Le rendez-vous spécifié n'existe pas";
+
                             return result;
                         }
                     }
@@ -261,52 +244,64 @@ namespace CheckMyStar.Bll
                 if (folder.Folder != null)
                 {
                     var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(folderCreateModel.AccommodationTypeIdentifier, ct);
+
                     if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "Le type d'hébergement spécifié n'existe pas";
+
                         return result;
                     }
 
                     var accommodationResponse = await accommodationDal.GetAccommodation(folderCreateModel.AccommodationIdentifier, ct);
+
                     if (!accommodationResponse.IsSuccess || accommodationResponse.Accommodation == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "L'hébergement spécifié n'existe pas";
+
                         return result;
                     }
 
                     var ownerUserResponse = await userDal.GetUser(folderCreateModel.OwnerUserIdentifier, ct);
+
                     if (!ownerUserResponse.IsSuccess || ownerUserResponse.User == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "L'utilisateur propriétaire spécifié n'existe pas";
+
                         return result;
                     }
 
                     var inspectorUserResponse = await userDal.GetUser(folderCreateModel.InspectorUserIdentifier, ct);
+
                     if (!inspectorUserResponse.IsSuccess || inspectorUserResponse.User == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "L'utilisateur inspecteur spécifié n'existe pas";
+
                         return result;
                     }
 
                     var folderStatusResponse = await folderStatusDal.GetFolderStatus(folderCreateModel.FolderStatusIdentifier, ct);
+
                     if (!folderStatusResponse.IsSuccess || folderStatusResponse.FolderStatus == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "Le statut du dossier spécifié n'existe pas";
+
                         return result;
                     }
 
                     if (folderCreateModel.QuoteIdentifier.HasValue)
                     {
                         var quoteResponse = await quoteDal.GetQuote(folderCreateModel.QuoteIdentifier.Value, ct);
+
                         if (!quoteResponse.IsSuccess || quoteResponse.Quote == null)
                         {
                             result.IsSuccess = false;
                             result.Message = "Le devis spécifié n'existe pas";
+
                             return result;
                         }
                     }
@@ -314,10 +309,12 @@ namespace CheckMyStar.Bll
                     if (folderCreateModel.InvoiceIdentifier.HasValue)
                     {
                         var invoiceResponse = await invoiceDal.GetInvoice(folderCreateModel.InvoiceIdentifier.Value, ct);
+
                         if (!invoiceResponse.IsSuccess || invoiceResponse.Invoice == null)
                         {
                             result.IsSuccess = false;
                             result.Message = "La facture spécifiée n'existe pas";
+
                             return result;
                         }
                     }
@@ -325,10 +322,12 @@ namespace CheckMyStar.Bll
                     if (folderCreateModel.AppointmentIdentifier.HasValue)
                     {
                         var appointmentResponse = await appointmentDal.GetAppointment(folderCreateModel.AppointmentIdentifier.Value, ct);
+
                         if (!appointmentResponse.IsSuccess || appointmentResponse.Appointment == null)
                         {
                             result.IsSuccess = false;
                             result.Message = "Le rendez-vous spécifié n'existe pas";
+
                             return result;
                         }
                     }
@@ -421,6 +420,101 @@ namespace CheckMyStar.Bll
             }
 
             return result;
+        }
+
+        private async Task<List<FolderModel>> LoadFolders(List<Folder> folders, CancellationToken ct)
+        {
+            List<FolderModel> folderModels = new List<FolderModel>();
+
+            foreach (var folder in folders)
+            {
+                var folderModel = mapper.Map<FolderModel>(folder);
+
+                if (folderModel != null)
+                {
+                    folderModels.Add(await LoadFolder(folder, ct));
+                }
+            }
+
+            return folderModels;
+        }
+
+        private async Task<FolderModel> LoadFolder(Folder folder, CancellationToken ct)
+        {
+            var folderModel = mapper.Map<FolderModel>(folder);
+
+            var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(folder.AccommodationTypeIdentifier, ct);
+
+            if (accommodationTypeResponse.IsSuccess && accommodationTypeResponse.AccommodationType != null)
+            {
+                folderModel.AccommodationType = mapper.Map<AccommodationTypeModel>(accommodationTypeResponse.AccommodationType);
+            }
+
+            var accommodationResponse = await accommodationDal.GetAccommodation(folder.AccommodationIdentifier, ct);
+
+            if (accommodationResponse.IsSuccess && accommodationResponse.Accommodation != null)
+            {
+                folderModel.Accommodation = mapper.Map<AccommodationModel>(accommodationResponse.Accommodation);
+
+                var addressResponse = await addressDal.GetAddress(accommodationResponse.Accommodation.AddressIdentifier, ct);
+                if (addressResponse.IsSuccess && addressResponse.Address != null)
+                {
+                    folderModel.Accommodation.Address = mapper.Map<AddressModel>(addressResponse.Address);
+                }
+            }
+
+            var ownerUserResponse = await userDal.GetUser(folder.OwnerUserIdentifier, ct);
+
+            if (ownerUserResponse.IsSuccess && ownerUserResponse.User != null)
+            {
+                folderModel.OwnerUser = mapper.Map<UserModel>(ownerUserResponse.User);
+            }
+
+            var inspectorUserResponse = await userDal.GetUser(folder.InspectorUserIdentifier, ct);
+
+            if (inspectorUserResponse.IsSuccess && inspectorUserResponse.User != null)
+            {
+                folderModel.InspectorUser = mapper.Map<UserModel>(inspectorUserResponse.User);
+            }
+
+            var folderStatusResponse = await folderStatusDal.GetFolderStatus(folder.FolderStatusIdentifier, ct);
+
+            if (folderStatusResponse.IsSuccess && folderStatusResponse.FolderStatus != null)
+            {
+                folderModel.FolderStatus = mapper.Map<FolderStatusModel>(folderStatusResponse.FolderStatus);
+            }
+
+            if (folder.QuoteIdentifier.HasValue)
+            {
+                var quoteResponse = await quoteDal.GetQuote(folder.QuoteIdentifier.Value, ct);
+
+                if (quoteResponse.IsSuccess && quoteResponse.Quote != null)
+                {
+                    folderModel.Quote = mapper.Map<QuoteModel>(quoteResponse.Quote);
+                }
+            }
+
+            if (folder.InvoiceIdentifier.HasValue)
+            {
+                var invoiceResponse = await invoiceDal.GetInvoice(folder.InvoiceIdentifier.Value, ct);
+
+                if (invoiceResponse.IsSuccess && invoiceResponse.Invoice != null)
+                {
+                    folderModel.Invoice = mapper.Map<InvoiceModel>(invoiceResponse.Invoice);
+                }
+            }
+
+            if (folder.AppointmentIdentifier.HasValue)
+            {
+                var appointmentResponse = await appointmentDal.GetAppointment(folder.AppointmentIdentifier.Value, ct);
+
+                if (appointmentResponse.IsSuccess && appointmentResponse.Appointment != null)
+                {
+                    folderModel.Appointment = mapper.Map<AppointmentModel>(appointmentResponse.Appointment);
+                }
+            }
+
+            return folderModel;
         }
     }
 }

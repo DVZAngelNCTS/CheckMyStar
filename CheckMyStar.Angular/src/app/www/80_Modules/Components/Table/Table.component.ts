@@ -1,4 +1,4 @@
-import { Component, input, output, signal, OnChanges } from '@angular/core';
+import { Component, Input, input, output, signal, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslationModule } from '../../../10_Common/Translation.module';
@@ -16,10 +16,18 @@ import { TooltipDirective } from '../Tooltip/Tooltip.directive';
   styleUrls: ['./Table.component.css']
 })
 export class TableComponent<T> implements OnChanges {
+  detail = output<T>();
   update = output<T>();
   delete = output<T>();
   enabled = output<T>();
   rowClick = output<T>();
+
+  @Input() showDetail = true;
+  @Input() showUpdate = true;
+  @Input() showEnabled = true;
+  @Input() showDelete = true;
+  @Input() showCsvExport = true;
+  @Input() showXlsxExport = true;
 
   columns = input<TableColumn<T>[]>([]);
   data = input<T[]>([]);

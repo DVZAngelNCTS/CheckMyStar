@@ -31,7 +31,7 @@ public class SocietiesController(ISocietyService societyService) : ControllerBas
     /// Récupère toutes les sociétés.
     /// </summary>
     /// <param name="ct">Jeton d'annulation</param>
-    [HttpPost("getSocieties")]
+    [HttpGet("getSocieties")]
     [Authorize(Roles = "Administrator, Inspector")]
     public async Task<IActionResult> GetSocieties(CancellationToken ct)
     {

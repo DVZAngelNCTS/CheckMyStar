@@ -1,6 +1,6 @@
-import { StarCriteriaDetail } from "../../20_Models/BackOffice/Criteres.model";
+import { StarCriteriaDetailModel } from "../../20_Models/BackOffice/StarCriteriaDetail.model";
 import { BaseResponse } from "../BaseResponse";
 
 export interface CriteriaDetailsResponse extends BaseResponse {
-    starCriterias?: StarCriteriaDetail[]
+    starCriterias?: StarCriteriaDetailModel[]
 }

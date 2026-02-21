@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Environment } from '../../../../Environment/environment';
 import { UserGetRequest } from '../../40_Requests/BackOffice/User-get.request';
@@ -20,7 +20,16 @@ export class UserDalService {
   }
 
   getUsers$(request: UserGetRequest): Observable<UsersResponse> {
-    return this.http.post<UsersResponse>(`${this.apiUrl}/User/getusers`, request);
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.get<UsersResponse>(`${this.apiUrl}/User/getusers`, { params });
   }
 
   addUser$(request: UserSaveRequest) {   
@@ -28,18 +37,27 @@ export class UserDalService {
   }
   
   updateUser$(request: UserSaveRequest) {
-    return this.http.post<BaseResponse>(`${this.apiUrl}/User/updateuser`, request);
+    return this.http.put<BaseResponse>(`${this.apiUrl}/User/updateuser`, request);
   }
   
   deleteUser$(request: UserDeleteRequest) {
-        return this.http.post<BaseResponse>(`${this.apiUrl}/User/deleteuser`, request);
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/User/deleteuser`, { params });
   }
 
   getNextIdentifier$(): Observable<UserResponse> {
-    return this.http.post<UserResponse>(`${this.apiUrl}/User/getnextidentifier`, {});
+    return this.http.get<UserResponse>(`${this.apiUrl}/User/getnextidentifier`, {});
   }
 
   getUserEvolutions$(): Observable<UserEvolutionsResponse> {
-    return this.http.post<UserEvolutionsResponse>(`${this.apiUrl}/User/getuserevolutions`, {});
+    return this.http.get<UserEvolutionsResponse>(`${this.apiUrl}/User/getuserevolutions`, {});
   }
 }
