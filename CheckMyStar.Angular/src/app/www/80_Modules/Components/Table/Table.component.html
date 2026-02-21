@@ -88,4 +88,11 @@
       </tr>
     </tbody>
   </table>
+  <div class="d-flex flex-row border-top" *ngIf="showAdd">
+    <div class="p-2 action-add ms-auto">
+      <button type="button" class="btn btn-secondary" (click)="openCreate.emit()" [appTooltip]="'CommonSection.Add' | translate">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
+  </div>
 </div>

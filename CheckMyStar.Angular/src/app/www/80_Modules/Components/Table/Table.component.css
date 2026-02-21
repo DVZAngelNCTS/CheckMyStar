@@ -53,6 +53,12 @@ th input {
   max-width: 50px;
 }
 
+.action-add {
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
+}
+
 .table-row-clickable {
   cursor: pointer;
   transition: background-color 0.15s ease;

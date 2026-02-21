@@ -21,6 +21,7 @@ export class TableComponent<T> implements OnChanges {
   delete = output<T>();
   enabled = output<T>();
   rowClick = output<T>();
+  openCreate = output<void>();
 
   @Input() showDetail = true;
   @Input() showUpdate = true;
@@ -28,7 +29,8 @@ export class TableComponent<T> implements OnChanges {
   @Input() showDelete = true;
   @Input() showCsvExport = true;
   @Input() showXlsxExport = true;
-
+  @Input() showAdd = true;
+  
   columns = input<TableColumn<T>[]>([]);
   data = input<T[]>([]);
   rowLink = input<((row: T) => any[]) | null>(null);
