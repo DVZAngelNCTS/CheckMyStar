@@ -20,6 +20,7 @@ namespace CheckMyStar.Apis.Services
 
             return criterias;
         }
+
         public async Task<BaseResponse> AddCriterion(CriterionSaveRequest request, CancellationToken ct)
         {
             var response = await criteriaBusForService.AddCriterion(request, ct);
