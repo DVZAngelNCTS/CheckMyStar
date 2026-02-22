@@ -10,5 +10,10 @@ namespace CheckMyStar.Bll
         {
             return this.GetActivities(request.NumberDays, ct);
         }
+
+        public Task<ActivitiesResponse> GetActivities(ActivitiesGetRequest request, CancellationToken ct)
+        {
+            return this.GetActivities(request.LastName, request.FirstName, request.Description, request.CreatedDate, request.IsSuccess, ct);
+        }
     }
 }

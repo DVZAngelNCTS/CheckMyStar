@@ -6,14 +6,24 @@ namespace CheckMyStar.Bll
 {
     public partial class FolderBus : IFolderBusForService
     {
-        Task<FolderResponse> IFolderBusForService.GetNextIdentifier(CancellationToken ct)
+        public Task<FolderResponse> GetNextIdentifier(CancellationToken ct)
         {
             return this.GetIdentifier(ct);
         }
 
-        Task<FoldersResponse> IFolderBusForService.GetFolders(CancellationToken ct)
+        public Task<FoldersResponse> GetFolders(FolderGetRequest request, CancellationToken ct)
         {
-            return this.GetFolders(ct);
+            return this.GetFolders(request.AccommodationName, request.OwnerLastName, request.InspectorLastName, request.FolderStatus, ct);
+        }
+
+        public Task<FolderResponse> GetFolder(FolderGetRequest request, CancellationToken ct)
+        {
+            return this.GetFolder(request.FolderIdentifier!.Value, ct);
+        }
+
+        public Task<FoldersResponse> GetFoldersByInspector(FolderGetRequest request, CancellationToken ct)
+        {
+            return this.GetFoldersByInspector(request.InspectorIdentifier!.Value, ct);
         }
 
         public Task<BaseResponse> CreateFolder(FolderSaveRequest request, CancellationToken ct)
@@ -30,11 +40,11 @@ namespace CheckMyStar.Bll
             return this.UpdateFolder(request.Folder, user, ct);
         }
 
-        public Task<BaseResponse> DeleteFolder(int folderIdentifier, CancellationToken ct)
+        public Task<BaseResponse> DeleteFolder(FolderDeleteRequest request, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
 
-            return this.DeleteFolder(folderIdentifier, user, ct);
+            return this.DeleteFolder(request.Identifier, user, ct);
         }
     }
 }

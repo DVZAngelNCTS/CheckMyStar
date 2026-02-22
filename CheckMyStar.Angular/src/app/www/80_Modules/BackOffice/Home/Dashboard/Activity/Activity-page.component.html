@@ -1,0 +1,18 @@
+<div class="d-flex flex-column flex-grow-1">
+  <!-- Filtres -->
+  <div class="d-flex flex-row">
+    <div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
+      <app-activity-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (filter)="onFilter($event)"></app-activity-filter>
+    </div>
+  </div>
+
+  <!-- Contenu principal extensible -->
+  <div class="d-flex flex-column flex-grow-1">
+    <!-- Tableau extensible -->
+    <div class="d-flex flex-column flex-grow-1">
+      <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light activity-scroll">
+        <app-table [columns]="columns" [data]="activities!" [showAdd]="false" [showDelete]="false" [showUpdate]="false" [showEnabled]="false" [showDetail]="false"></app-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { CriteresBllService } from '../../../../60_Bll/BackOffice/Criteres-bll.service';
-import { StarCriteria, StarCriterionDetail } from '../../../../20_Models/BackOffice/Criteres.model';
+import { StarCriteriaModel } from '../../../../20_Models/BackOffice/Criteres.model';
+import { StarCriterionDetailModel } from '../../../../20_Models/BackOffice/StarCriterionsDetail.model';
 import { CriteresFilterComponent } from './Filter/Criteres-filter.component';
 import { CriteresFormComponent } from './Form/Criteres-form.component';
 import { TableComponent } from '../../../Components/Table/Table.component';
@@ -13,7 +14,9 @@ import { RatingContextService } from '../Service/Rating-context.service';
 import { ToastService } from '../../../../90_Services/Toast/Toast.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { CreateCriterionRequest, UpdateCriterionRequest } from '../../../../20_Models/BackOffice/Criteres.model';
+import { StarCriterionModel } from '../../../../20_Models/BackOffice//Criterion.model';
+import { StarLevelModel } from '../../../../20_Models/BackOffice/StarLevel.model';
+import { StarLevelCriterionModel } from '../../../../20_Models/BackOffice/StarLevelCriterion.model';
 
 @Component({
   selector: 'app-criteres-management-page',
@@ -35,15 +38,15 @@ export class CriteresManagementPageComponent implements OnInit
 {
   @ViewChild(CriteresFormComponent) formComponent!: CriteresFormComponent;
   
-  selectedStar: StarCriteria | null = null;
-  allCriteria: StarCriterionDetail[] = [];
-  filteredCriteria: StarCriterionDetail[] = [];
+  selectedStar: StarCriteriaModel | null = null;
+  allCriteria: StarCriterionDetailModel[] = [];
+  filteredCriteria: StarCriterionDetailModel[] = [];
   starRating: number = 0;
   
   loadingSearch = false;
   loadingReset = false;
   
-  columns: TableColumn<StarCriterionDetail>[] = 
+  columns: TableColumn<StarCriterionDetailModel>[] = 
   [
     { field: 'criterionId', header: 'Id', icon: '', sortable: true, width: '80px' },
     { field: 'description', header: 'Description', icon: '', sortable: true },
@@ -61,7 +64,7 @@ export class CriteresManagementPageComponent implements OnInit
   loading = false;
   popupWidth = '600px';
   popupHeight = 'auto';
-  currentCriterion: StarCriterionDetail | null = null;
+  currentCriterion: StarCriterionDetailModel | null = null;
   isEdit = false;
 
   constructor(
@@ -153,7 +156,7 @@ export class CriteresManagementPageComponent implements OnInit
     this.showPopup = true;
   }
 
-  onEdit(criterion: StarCriterionDetail): void 
+  onEdit(criterion: StarCriterionDetailModel): void 
   {
     this.loadingSearch = false;
     this.loadingReset = false;
@@ -169,7 +172,7 @@ export class CriteresManagementPageComponent implements OnInit
     this.showPopup = true;
   }
 
-  onDelete(criterion: StarCriterionDetail): void 
+  onDelete(criterion: StarCriterionDetailModel): void 
   {
     this.popupMode = 'delete';
     this.currentCriterion = criterion;
@@ -214,15 +217,16 @@ export class CriteresManagementPageComponent implements OnInit
     this.loading = true;
     const formValue = this.formComponent.getValue();
     
-    const request: CreateCriterionRequest = {
-      starCriterion: {
+    const criterion: StarCriterionModel = {
+        criterionId: this.currentCriterion ? this.currentCriterion.criterionId : 0,        
         description: formValue.description,
         basePoints: formValue.basePoints
-      },
-      starLevelCriterion: {
+      };
+    
+    const starLevelCriterion: StarLevelCriterionModel = {
+        criterionId: this.currentCriterion ? this.currentCriterion.criterionId : 0,
         starLevelId: this.starRating,
         typeCode: formValue.typeCode
-      }
     };
 
     if (this.popupMode === 'edit') {
@@ -235,15 +239,25 @@ export class CriteresManagementPageComponent implements OnInit
       this.loading = true;
       const formValue = this.formComponent.getValue();
 
-      const request: UpdateCriterionRequest = {
-        criterionId: this.currentCriterion.criterionId,
-        description: formValue.description,
-        basePoints: formValue.basePoints,
-        typeCode: formValue.typeCode,
-        starLevelId: this.starRating
+      const criterion: StarCriterionModel = {
+          criterionId: this.currentCriterion.criterionId,
+          description: formValue.description,
+          basePoints: formValue.basePoints
+      };
+      
+      const starLevel: StarLevelModel = {
+        starLevelId: this.starRating,
+        label: this.selectedStar?.label || '',
+        lastUpdate: new Date()
       };
 
-      this.criteresBll.updateCriterion$(this.currentCriterion.criterionId, request).subscribe({
+      const starLevelCriterion: StarLevelCriterionModel = {
+        criterionId: this.currentCriterion.criterionId,
+        starLevelId: this.starRating,
+        typeCode: formValue.typeCode
+      };
+
+      this.criteresBll.updateCriterion$(criterion, starLevel, starLevelCriterion).subscribe({
         next: () => {
           this.loading = false;
           this.toast.show(
@@ -264,7 +278,7 @@ export class CriteresManagementPageComponent implements OnInit
     } 
 
     else if (this.popupMode === 'create') {
-      this.criteresBll.createCriterion$(request).subscribe({
+      this.criteresBll.addCriterion$(criterion, starLevelCriterion).subscribe({
       next: (response: { isSuccess: boolean; message?: string }) => {
         this.loading = false;
         if (response.isSuccess) {

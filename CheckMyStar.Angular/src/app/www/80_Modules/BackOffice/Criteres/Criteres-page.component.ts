@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TranslationModule } from '../../../10_Common/Translation.module';
 import { CriteresBllService } from '../../../60_Bll/BackOffice/Criteres-bll.service';
-import { StarCriteria } from '../../../20_Models/BackOffice/Criteres.model';
+import { StarCriteriaModel } from '../../../20_Models/BackOffice/Criteres.model';
 import { RatingContextService } from './Service/Rating-context.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { RatingContextService } from './Service/Rating-context.service';
   styleUrls: ['./Criteres-page.component.css']
 })
 export class CriteresPageComponent implements OnInit {
-  stars?: StarCriteria[] = [];
+  stars?: StarCriteriaModel[] = [];
 
   constructor(private criteresBll: CriteresBllService, private router: Router, private ratingContext: RatingContextService) {
   }
@@ -40,7 +40,7 @@ export class CriteresPageComponent implements OnInit {
     return classes[code] || 'badge bg-secondary';
   }
 
-  onManageCriteria(star: StarCriteria): void {
+  onManageCriteria(star: StarCriteriaModel): void {
     this.ratingContext.rating = star.rating;
     this.router.navigate(['/backhome/criteres/management']);
   }

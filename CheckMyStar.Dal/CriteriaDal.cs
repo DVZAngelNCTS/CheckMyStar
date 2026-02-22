@@ -165,9 +165,8 @@ namespace CheckMyStar.Dal
             var baseResult = new BaseResult();
             try
             {
-                criterion.CriterionId = 0;
-
                 await dbContext.AddAsync(criterion, ct);
+
                 int affected = await dbContext.SaveChangesAsync(ct);
 
                 if (affected > 0)
@@ -292,6 +291,7 @@ namespace CheckMyStar.Dal
                 {
                     result.IsSuccess = false;
                     result.Message = $"Association critère {criterionId} / niveau {starLevelId} introuvable.";
+
                     return result;
                 }
 
@@ -312,26 +312,40 @@ namespace CheckMyStar.Dal
 
         public async Task<List<byte>> GetStarLevelIdsByCriterionId(int criterionId, CancellationToken ct)
         {
-            return await dbContext.StarLevelCriterias
+            var starLevelIds = await dbContext.StarLevelCriterias
                 .Where(slc => slc.CriterionId == criterionId)
                 .Select(slc => slc.StarLevelId)
                 .Distinct()
                 .ToListAsync(ct);
+
+            return starLevelIds;
         }
 
         public async Task<BaseResult> UpdateStarLevelLastUpdate(byte starLevelId, CancellationToken ct)
         {
             var result = new BaseResult();
+
             try
             {
                 var starLevel = await dbContext.StarLevels
                     .FirstOrDefaultAsync(s => s.StarLevelId == starLevelId, ct);
+
                 if (starLevel != null)
                 {
                     starLevel.LastUpdate = DateTime.UtcNow;
-                    await dbContext.SaveChangesAsync(ct);
-                    result.IsSuccess = true;
-                    result.Message = "Date de mise à jour actualisée.";
+
+                    bool saveResult = await dbContext.SaveChangesAsync(ct) > 0;
+
+                    if (saveResult)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = "Date de mise à jour actualisée.";
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "Impossible d'actualiser la date de mise à jour.";
+                    }
                 }
                 else
                 {
@@ -344,6 +358,7 @@ namespace CheckMyStar.Dal
                 result.IsSuccess = false;
                 result.Message = $"Erreur mise à jour LastUpdate : {ex.Message}";
             }
+
             return result;
         }
     }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FieldComponent } from '../../../../Components/Field/Field.component';
 import { TranslationModule } from '../../../../../10_Common/Translation.module';
-import { StarCriterionDetail } from '../../../../../20_Models/BackOffice/Criteres.model';
+import { StarCriterionDetailModel } from '../../../../../20_Models/BackOffice/StarCriterionsDetail.model';
 
 @Component({
   selector: 'app-criteres-form',
@@ -12,7 +12,7 @@ import { StarCriterionDetail } from '../../../../../20_Models/BackOffice/Critere
   templateUrl: './Criteres-form.component.html'
 })
 export class CriteresFormComponent implements OnInit, OnChanges {
-  @Input() criterion: StarCriterionDetail | null = null;
+  @Input() criterion: StarCriterionDetailModel | null = null;
   @Input() readonlyIdentifier: boolean = true;
 
   form!: FormGroup;
@@ -47,8 +47,8 @@ export class CriteresFormComponent implements OnInit, OnChanges {
     }
   }
 
-  getValue(): StarCriterionDetail {
-    return this.form.getRawValue() as StarCriterionDetail;
+  getValue(): StarCriterionDetailModel {
+    return this.form.getRawValue() as StarCriterionDetailModel;
   }
 
   private buildForm() {

@@ -77,7 +77,7 @@ namespace CheckMyStar.Bll
                 {
                     var dateTime = DateTime.Now;
 
-                    addressModel.CreatedDate = (DateTime)address.Address.CreatedDate;
+                    addressModel.CreatedDate = address.Address.CreatedDate;
                     addressModel.UpdatedDate = dateTime;
 
                     var addressEntity = mapper.Map<Address>(addressModel);

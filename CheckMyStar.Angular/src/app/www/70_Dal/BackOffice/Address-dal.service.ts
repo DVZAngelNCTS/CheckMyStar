@@ -15,7 +15,7 @@ export class AddressDalService {
   }
 
   getNextIdentifier$(): Observable<AddressResponse> {
-    return this.http.post<AddressResponse>(`${this.apiUrl}/Address/getnextidentifier`, {});
+    return this.http.get<AddressResponse>(`${this.apiUrl}/Address/getnextidentifier`, {});
   }
 
   addAddress$(payload: { address: AddressModel }): Observable<AddressResponse> {

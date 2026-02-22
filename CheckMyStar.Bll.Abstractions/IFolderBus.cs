@@ -6,7 +6,9 @@ namespace CheckMyStar.Bll.Abstractions
     public interface IFolderBus
     {
         Task<FolderResponse> GetIdentifier(CancellationToken ct);
-        Task<FoldersResponse> GetFolders(CancellationToken ct);
+        Task<FoldersResponse> GetFolders(string? accommodationName, string? ownerLastName, string? inspectorLastName, int? folderStatus, CancellationToken ct);
+        Task<FolderResponse> GetFolder(int folderIdentifier, CancellationToken ct);
+        Task<FoldersResponse> GetFoldersByInspector(int inspectorIdentifier, CancellationToken ct);
         Task<BaseResponse> AddFolder(FolderCreateModel folderCreateModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> DeleteFolder(int folderIdentifier, int currentUser, CancellationToken ct);
     }

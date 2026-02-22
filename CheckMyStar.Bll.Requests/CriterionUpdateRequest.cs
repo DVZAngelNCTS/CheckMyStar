@@ -4,10 +4,8 @@ namespace CheckMyStar.Bll.Requests
 {
     public class CriterionUpdateRequest
     {
-        public int CriterionId { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public int BasePoints { get; set; }
-        public string TypeCode { get; set; } = string.Empty;
-        public byte StarLevelId { get; set; }
+        public StarCriterionModel? Criterion { get; set; }
+        public StarLevelModel? StarLevel { get; set; }
+        public StarLevelCriterionModel? StarLevelCriterion { get; set; }
     }
 }

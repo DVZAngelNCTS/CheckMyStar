@@ -9,6 +9,6 @@ namespace CheckMyStar.Apis.Services.Abstractions
         Task<AccommodationsResponse> GetAccommodations(CancellationToken ct);
         Task<BaseResponse> CreateAccommodation(AccommodationSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateAccommodation(AccommodationSaveRequest request, CancellationToken ct);
-        Task<BaseResponse> DeleteAccommodation(int accommodationIdentifier, CancellationToken ct);
+        Task<BaseResponse> DeleteAccommodation(AccommodationDeleteRequest request, CancellationToken ct);
     }
 }

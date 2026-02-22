@@ -13,6 +13,7 @@
   "CommonSection": {
     "Search": "Rechercher",
     "Reset": "Effacer",
+    "Detail": "Détails",
     "Update": "Modifier",
     "Delete": "Supprimer",
     "Add": "Ajouter",
@@ -117,8 +118,12 @@
     "Criterias": "Critères"
   },
   "ActivitySection": {
+    "Identifier": "Identifiant",
+    "Description": "Description",
+    "CreatedDate": "Date de création",
+    "IsSuccess": "Succès",
     "Title": "Activités récentes",
-    "Description": "Les 7 dernières activités sur votre compte",
+    "DescriptionLastSevenDays": "Les 7 dernières activités sur votre compte",
     "NoActivity": "Aucune activité récente",
     "From": "par",
     "Details": "Détails des activités",
@@ -135,6 +140,8 @@
     "AddCriterion": "Ajouter un critère",
     "EditCriterion": "Modifier un critère",
     "DeleteSuccess": "Critère supprimé avec succès.",
+    "EditSuccess": "Critère mis à jour avec succès.",
+    "CreateSuccess": "Critère créé avec succès.",
     "DeleteAsk": "Êtes-vous sûr de vouloir supprimer le critère :"
   },
   "DossiersSection": {

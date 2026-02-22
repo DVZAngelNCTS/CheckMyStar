@@ -20,6 +20,7 @@ namespace CheckMyStar.Apis.Services
 
             return criterias;
         }
+
         public async Task<BaseResponse> AddCriterion(CriterionSaveRequest request, CancellationToken ct)
         {
             var response = await criteriaBusForService.AddCriterion(request, ct);
@@ -27,14 +28,18 @@ namespace CheckMyStar.Apis.Services
             return response;
         }
 
-        public async Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct)
+        public async Task<BaseResponse> DeleteCriterion(CriterionDeleteRequest request, CancellationToken ct)
         {
-            return await criteriaBusForService.DeleteCriterion(criterionId, ct);
+            var response = await criteriaBusForService.DeleteCriterion(request, ct);
+
+            return response;
         }
 
         public async Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct)
         {
-            return await criteriaBusForService.UpdateCriterion(request, ct);
+            var response = await criteriaBusForService.UpdateCriterion(request, ct);
+
+            return response;
         }
     }
 }

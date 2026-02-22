@@ -80,14 +80,10 @@ export class FrontDossiersPageComponent implements OnInit {
       this.loading = true;
     }
 
-    this.folderBll.getFolders$().subscribe({
+    this.folderBll.getfoldersByInspector$(this.currentInspectorIdentifier!).subscribe({
       next: response => {
-        const allFolders = response.folders ?? [];
-        // Filtrer uniquement les dossiers où l'inspecteur connecté est l'inspecteur attitré
-        this.folders = allFolders.filter(folder =>
-          folder.inspectorUser?.identifier === this.currentInspectorIdentifier ||
-          folder.inspectorUserIdentifier === this.currentInspectorIdentifier
-        );
+        const folders = response.folders ?? [];
+        this.folders = folders;
         this.tableRows = this.folders.map(folder => this.mapToRow(folder));
         if (isReset) {
           this.loadingReset = false;
@@ -200,7 +196,7 @@ export class FrontDossiersPageComponent implements OnInit {
     this.popupVisible = true;
   }
 
-  onRowClick(row: FrontFolderTableRow) {
+  onDetail(row: FrontFolderTableRow) {
     const fullFolder = this.folders.find(f => f.identifier === row.identifier) ?? null;
     this.router.navigate(['/fronthome/dossiers', row.identifier], { state: { folder: fullFolder } });
   }
@@ -356,17 +352,17 @@ export class FrontDossiersPageComponent implements OnInit {
             this.newAccommodation.address = { ...this.newAccommodation.address, identifier: addressId } as any;
 
             this.accommodationBll.getNextIdentifier$().subscribe({
-              next: (accommodationId) => {
-                this.newAccommodation.identifier = accommodationId;
+              next: (accommodationResponse) => {                
+                this.newAccommodation.identifier = accommodationResponse.accommodation?.identifier ?? 0;
 
                 this.accommodationBll.createAccommodation$(this.newAccommodation as AccommodationModel).subscribe({
                   next: (accommodationResponse) => {
-                    this.newFolder.accommodationIdentifier = accommodationResponse.identifier;
-                    this.newFolder.accommodationTypeIdentifier = accommodationResponse.accommodationType?.identifier ?? 0;
+                    this.newFolder.accommodationIdentifier = this.newAccommodation.identifier;
+                    this.newFolder.accommodationTypeIdentifier = this.newAccommodation.accommodationType?.identifier ?? 0;
 
                     this.folderBll.getNextIdentifier$().subscribe({
-                      next: (folderId) => {
-                        this.newFolder.identifier = folderId;
+                      next: (folder) => {
+                        this.newFolder.identifier = folder.folder?.identifier ?? 0;
 
                         this.folderBll.createFolder$(this.newFolder as FolderModel).subscribe({
                           next: () => {

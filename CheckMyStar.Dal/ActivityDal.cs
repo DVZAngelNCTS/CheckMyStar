@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Dal.Abstractions;
-using CheckMyStar.Dal.Results;
-using CheckMyStar.Data.Abstractions;
-using CheckMyStar.Data;
+﻿using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Models;
+using CheckMyStar.Dal.Results;
+using CheckMyStar.Data;
+using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CheckMyStar.Dal
 {
@@ -89,6 +89,40 @@ namespace CheckMyStar.Dal
             return activityResult;
         }
 
+        public async Task<ActivitiesResult> GetActivities(string? lastName, string? firstName, string? description, DateTime? date, bool? isSuccess, CancellationToken ct)
+        {
+            ActivitiesResult activityResult = new ActivitiesResult();
+
+            try
+            {
+                var activities = await (from a in dbContext.Activities.AsNoTracking()
+                                        join u in dbContext.Users.AsNoTracking() on a.User equals u.Identifier
+                                        where
+                                               (date == null || a.Date >= date)
+                                            && (u.LastName.Contains(lastName ?? string.Empty))
+                                            && (u.FirstName.Contains(firstName ?? string.Empty))
+                                            && (a.Description.Contains(description ?? string.Empty))
+                                            && (isSuccess == null || a.IsSuccess == isSuccess)
+                                        select new UserActivity()
+                                        {
+                                            Date = a.Date,
+                                            Description = a.Description,
+                                            Identifier = a.Identifier,
+                                            IsSuccess = a.IsSuccess,
+                                            User = u
+                                        }).ToListAsync();
+
+                activityResult.IsSuccess = true;
+                activityResult.Activities = activities;
+            }
+            catch (Exception ex)
+            {
+                activityResult.IsSuccess = false;
+                activityResult.Message = ex.Message;
+            }
+
+            return activityResult;
+        }
         public async Task<BaseResult> AddActivity(Activity activity, CancellationToken ct)
         {
             BaseResult baseResult = new BaseResult();

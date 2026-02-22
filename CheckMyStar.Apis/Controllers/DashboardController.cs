@@ -18,7 +18,7 @@ namespace CheckMyStar.Apis.Controllers
         /// </summary>
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>Dashboard</returns>
-        [HttpPost("getdashboard")]
+        [HttpGet("getdashboard")]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetDashboard(CancellationToken ct)
         {

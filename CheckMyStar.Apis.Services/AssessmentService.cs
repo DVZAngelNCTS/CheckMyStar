@@ -14,16 +14,16 @@ namespace CheckMyStar.Apis.Services
             return assessments;
         }
 
-        public async Task<AssessmentResponse> CreateAssessment(AssessmentCreateRequest request, CancellationToken ct)
+        public async Task<AssessmentResponse> AddAssessment(AssessmentSaveRequest request, CancellationToken ct)
         {
-            var assessment = await assessmentBusForService.CreateAssessment(request, ct);
+            var assessment = await assessmentBusForService.AddAssessment(request, ct);
 
             return assessment;
         }
 
-        public async Task<AssessmentResponse> DeleteAssessment(int id, CancellationToken ct)
+        public async Task<BaseResponse> DeleteAssessment(AssessmentDeleteRequest request, CancellationToken ct)
         {
-            var response = await assessmentBusForService.DeleteAssessment(id, ct);
+            var response = await assessmentBusForService.DeleteAssessment(request, ct);
 
             return response;
         }

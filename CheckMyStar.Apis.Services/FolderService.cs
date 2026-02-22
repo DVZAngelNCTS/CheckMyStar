@@ -12,9 +12,19 @@ namespace CheckMyStar.Apis.Services
             return folderBusForService.GetNextIdentifier(ct);
         }
 
-        public Task<FoldersResponse> GetFolders(CancellationToken ct)
+        public Task<FoldersResponse> GetFolders(FolderGetRequest request, CancellationToken ct)
         {
-            return folderBusForService.GetFolders(ct);
+            return folderBusForService.GetFolders(request, ct);
+        }
+
+        public Task<FolderResponse> GetFolder(FolderGetRequest request, CancellationToken ct)
+        {
+            return folderBusForService.GetFolder(request, ct);
+        }
+
+        public Task<FoldersResponse> GetFoldersByInspector(FolderGetRequest request, CancellationToken ct)
+        {
+            return folderBusForService.GetFoldersByInspector(request, ct);
         }
 
         public Task<BaseResponse> CreateFolder(FolderSaveRequest request, CancellationToken ct)
@@ -27,9 +37,9 @@ namespace CheckMyStar.Apis.Services
             return folderBusForService.UpdateFolder(request, ct);
         }
 
-        public Task<BaseResponse> DeleteFolder(int folderIdentifier, CancellationToken ct)
+        public Task<BaseResponse> DeleteFolder(FolderDeleteRequest request, CancellationToken ct)
         {
-            return folderBusForService.DeleteFolder(folderIdentifier, ct);
+            return folderBusForService.DeleteFolder(request, ct);
         }
     }
 }

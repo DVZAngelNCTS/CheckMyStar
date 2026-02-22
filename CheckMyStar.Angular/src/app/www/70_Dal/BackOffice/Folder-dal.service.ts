@@ -4,7 +4,9 @@ import { Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Environment } from '../../../../Environment/environment';
 import { FoldersResponse } from '../../50_Responses/BackOffice/Folders.response';
+import { FolderResponse } from '../../50_Responses/BackOffice/Folder.response';
 import { FolderGetRequest } from '../../40_Requests/BackOffice/Folder-get.request';
+import { FolderDeleteRequest } from '../../40_Requests/BackOffice/Folder-delete.request';
 import { FolderModel } from '../../20_Models/BackOffice/Folder.model';
 import { BaseResponse } from '../../50_Responses/BaseResponse';
 
@@ -16,52 +18,47 @@ export class FolderDalService {
 
   constructor(private http: HttpClient) {}
 
-  getNextIdentifier$(): Observable<number> {
-    const url = `${this.apiUrl}/Folder/getnextidentifier`;
-    return this.http.post<any>(url, {}).pipe(
-      switchMap(response => {
-        console.log('Next folder identifier response:', response);
-        
-        // Extract the actual numeric identifier from the response
-        let identifier: number;
-        
-        if (response.folder && response.folder.identifier) {
-          identifier = response.folder.identifier;
-        } else if (response.identifier) {
-          identifier = response.identifier;
-        } else if (response.nextIdentifier) {
-          identifier = response.nextIdentifier;
-        } else if (typeof response === 'number') {
-          identifier = response;
-        } else {
-          console.error('Unable to extract identifier from response:', response);
-          return throwError(() => new Error('Format de réponse invalide pour l\'identifiant'));
-        }
-        
-        console.log('Extracted folder identifier:', identifier);
-        return of(identifier);
-      })
-    );
+  getNextIdentifier$(): Observable<FolderResponse> {
+    return this.http.get<FolderResponse>(`${this.apiUrl}/Folder/getnextidentifier`, {});
   }
 
   getFolders$(request: FolderGetRequest): Observable<FoldersResponse> {
     let params = new HttpParams();
 
-    if (request.accommodationName) {
-      params = params.set('accommodationName', request.accommodationName);
-    }
-    if (request.ownerLastName) {
-      params = params.set('ownerLastName', request.ownerLastName);
-    }
-    if (request.inspectorLastName) {
-      params = params.set('inspectorLastName', request.inspectorLastName);
-    }
-    if (request.folderStatus) {
-      params = params.set('folderStatus', request.folderStatus.toString());
-    }
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
 
-    const url = `${this.apiUrl}/Folder/getfolders`;
-    return this.http.get<FoldersResponse>(url, { params });
+    return this.http.get<FoldersResponse>(`${this.apiUrl}/Folder/getfolders`, { params });
+  }
+
+  getFolder$(request: FolderGetRequest): Observable<FolderResponse> {
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.get<FolderResponse>(`${this.apiUrl}/Folder/getfolder`, { params });
+  }
+
+  getFoldersByInspector$(request: FolderGetRequest): Observable<FoldersResponse> {
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.get<FoldersResponse>(`${this.apiUrl}/Folder/getfoldersbyinspector`, { params });
   }
 
   createFolder$(folder: FolderModel): Observable<FolderModel> {
@@ -93,8 +90,16 @@ export class FolderDalService {
     );
   }
 
-  deleteFolder$(folderIdentifier: number): Observable<BaseResponse> {
-    const url = `${this.apiUrl}/Folder/deletefolder/${folderIdentifier}`;
-    return this.http.delete<BaseResponse>(url);
+  deleteFolder$(request: FolderDeleteRequest) {
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/Folder/deletefolder`, { params });
   }
 }

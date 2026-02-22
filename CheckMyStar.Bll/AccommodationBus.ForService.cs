@@ -30,11 +30,11 @@ namespace CheckMyStar.Bll
             return this.UpdateAccommodation(request.Accommodation, user, ct);
         }
 
-        public Task<BaseResponse> DeleteAccommodation(int accommodationIdentifier, CancellationToken ct)
+        public Task<BaseResponse> DeleteAccommodation(AccommodationDeleteRequest request, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
 
-            return this.DeleteAccommodation(accommodationIdentifier, user, ct);
+            return this.DeleteAccommodation(request.Identifier, user, ct);
         }
     }
 }
