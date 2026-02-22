@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<app-popup [large]="true" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+<app-popup [large]="true" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()" icon="bi bi-person">
   <!-- Contenu dynamique -->
   <ng-container *ngIf="popupMode === 'delete'">
     <p>{{ 'UserSection.DeleteAsk' | translate }} <strong>{{ selectedUser?.lastName }} {{ selectedUser?.firstName }}</strong> ?</p>

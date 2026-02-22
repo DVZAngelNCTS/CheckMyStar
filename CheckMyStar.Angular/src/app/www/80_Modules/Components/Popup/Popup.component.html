@@ -1,9 +1,9 @@
 <div class="popup-overlay" *ngIf="visible">
   <div [class]="large ? 'popup-box popup-large-box' : 'popup-box'">
     <div class="popup-header">
-      <h3>{{ title }}</h3>
+      <h3><i *ngIf="icon()" [class]="icon()" class="me-2"></i>{{ title }}</h3>
     </div>
-    <div class="popup-body">
+    <div class="popup-body popup-scroll">
       <ng-content></ng-content>
     </div>
     <div class="error-message text-center mt-3" *ngIf="errorMessage">

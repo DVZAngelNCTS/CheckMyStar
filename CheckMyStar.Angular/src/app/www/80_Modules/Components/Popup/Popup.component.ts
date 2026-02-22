@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, input, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MiniLoaderComponent } from '../../Components/Loader/Mini/Loader-mini.component';
@@ -12,6 +12,8 @@ import { MiniLoaderComponent } from '../../Components/Loader/Mini/Loader-mini.co
   encapsulation: ViewEncapsulation.None
 })
 export class PopupComponent {
+  icon = input<string>('');
+
   @Input() loading = false;
   
   @Input() visible = false;
