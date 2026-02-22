@@ -141,7 +141,7 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
-        public async Task<UsersResult> GetUsers(string lastName, string firstName, int? SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct)
+        public async Task<UsersResult> GetUsers(string? lastName, string? firstName, int? SocietyIdentifier, string? email, string? phone, string? address, int? role, CancellationToken ct)
         {
             UsersResult userResult = new UsersResult();
 

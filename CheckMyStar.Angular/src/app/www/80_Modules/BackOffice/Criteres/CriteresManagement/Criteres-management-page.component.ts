@@ -14,7 +14,7 @@ import { RatingContextService } from '../Service/Rating-context.service';
 import { ToastService } from '../../../../90_Services/Toast/Toast.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { CriterionModel } from '../../../../20_Models/BackOffice//Criterion.model';
+import { StarCriterionModel } from '../../../../20_Models/BackOffice//Criterion.model';
 import { StarLevelModel } from '../../../../20_Models/BackOffice/StarLevel.model';
 import { StarLevelCriterionModel } from '../../../../20_Models/BackOffice/StarLevelCriterion.model';
 
@@ -217,7 +217,7 @@ export class CriteresManagementPageComponent implements OnInit
     this.loading = true;
     const formValue = this.formComponent.getValue();
     
-    const criterion: CriterionModel = {
+    const criterion: StarCriterionModel = {
         criterionId: this.currentCriterion ? this.currentCriterion.criterionId : 0,        
         description: formValue.description,
         basePoints: formValue.basePoints
@@ -239,7 +239,7 @@ export class CriteresManagementPageComponent implements OnInit
       this.loading = true;
       const formValue = this.formComponent.getValue();
 
-      const criterion: CriterionModel = {
+      const criterion: StarCriterionModel = {
           criterionId: this.currentCriterion.criterionId,
           description: formValue.description,
           basePoints: formValue.basePoints

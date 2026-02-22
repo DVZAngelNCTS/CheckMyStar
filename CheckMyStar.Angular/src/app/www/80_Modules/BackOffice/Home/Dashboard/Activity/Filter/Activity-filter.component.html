@@ -1,0 +1,29 @@
+<div class="ms-3 w-100" (keydown.enter)="search()">
+    <app-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (searchClicked)="search()" (resetClicked)="reset()">
+        <div class="d-flex flex-column" [formGroup]="form">
+            <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+                <app-field controlName="lastName" icon="bi bi-person" label="{{ 'UserSection.LastName' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="lastName">               
+                </app-field>
+                <app-field controlName="firstName" icon="bi bi-person" label="{{ 'UserSection.FirstName' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="firstName">               
+                </app-field>
+                <app-field controlName="createdDate" icon="bi bi-calendar" label="{{ 'ActivitySection.CreatedDate' | translate }}" labelClass="w-11rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="date" class="form-control" formControlName="createdDate">               
+                </app-field>
+            </div>
+            <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+                <app-field controlName="description" icon="bi bi-envelope-at" label="{{ 'ActivitySection.Description' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="description">               
+                </app-field>
+                <app-field controlName="isSuccess" icon="bi bi-check2" label="{{ 'ActivitySection.IsSuccess' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <select class="form-select" formControlName="isSuccess">
+                        <option [value]="null">{{ 'CommonSection.All' | translate }}</option>
+                        <option [value]="true">{{ 'CommonSection.Yes' | translate }}</option>
+                        <option [value]="false">{{ 'CommonSection.No' | translate }}</option>
+                    </select>
+                </app-field>       
+            </div>                            
+        </div>
+    </app-filter>
+</div>

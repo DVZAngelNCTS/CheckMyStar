@@ -13,14 +13,16 @@ namespace CheckMyStar.Bll
     
         public Task<AssessmentResponse> AddAssessment(AssessmentSaveRequest request, CancellationToken ct)
         {
-            return this.AddAssessment(request.Assessment!, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.AddAssessment(request.Assessment!, user, ct);
         }
     
         public Task<BaseResponse> DeleteAssessment(AssessmentDeleteRequest request, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
     
-            return this.DeleteAssessment(request.Identifier, ct);
+            return this.DeleteAssessment(request.Identifier, user, ct);
         }
     }
 }

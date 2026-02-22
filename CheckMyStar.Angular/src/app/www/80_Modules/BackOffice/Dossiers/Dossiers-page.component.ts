@@ -16,6 +16,7 @@ import { DossierFormComponent } from './Form/Dossiers-form.component';
 import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
 import { AddressModel } from '../../../20_Models/Common/Address.model';
 import { FolderGetRequest } from '../../../40_Requests/BackOffice/Folder-get.request';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dossiers-page',
@@ -51,7 +52,7 @@ export class DossiersPageComponent implements OnInit {
     { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '10%' }
   ] as TableColumn<FolderTableRow>[];
 
-  constructor(private folderBll: FolderBllService, private accommodationBll: AccommodationBllService, private addressBll: AddressBllService, private translate: TranslateService, private toast: ToastService) {}
+  constructor(private folderBll: FolderBllService, private accommodationBll: AccommodationBllService, private addressBll: AddressBllService, private translate: TranslateService, private toast: ToastService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadFolders();
@@ -114,6 +115,11 @@ export class DossiersPageComponent implements OnInit {
 				console.error(err)
 			}
 		});
+  }
+
+  onDetail(row: FolderTableRow) {
+    const fullFolder = this.folders.find(f => f.identifier === row.identifier) ?? null;
+    this.router.navigate(['/backoffice/dossiers', row.identifier], { state: { folder: fullFolder } });
   }
 
   private extractStatusId(status: unknown): number | null {
@@ -236,14 +242,14 @@ export class DossiersPageComponent implements OnInit {
             // Step 3: Get next accommodation identifier
             this.accommodationBll.getNextIdentifier$().subscribe({
               next: (accommodationResponse) => {
-                this.newAccommodation.identifier = accommodationResponse.accommodations?.[0]?.identifier ?? 0;
+                this.newAccommodation.identifier = accommodationResponse.accommodation?.identifier ?? 0;
 
                 // Step 4: Create the accommodation
                 this.accommodationBll.createAccommodation$(this.newAccommodation as AccommodationModel).subscribe({
                   next: (accommodationResponse) => {
                     // Set the accommodation ID and type ID in the folder
-                    this.newFolder.accommodationIdentifier = accommodationResponse.identifier;
-                    this.newFolder.accommodationTypeIdentifier = accommodationResponse.accommodationType?.identifier ?? 0;
+                    this.newFolder.accommodationIdentifier = this.newAccommodation.identifier;
+                    this.newFolder.accommodationTypeIdentifier = this.newAccommodation.accommodationType?.identifier ?? 0;
 
                     // Step 5: Get next folder identifier
                     this.folderBll.getNextIdentifier$().subscribe({

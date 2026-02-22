@@ -405,6 +405,7 @@ namespace CheckMyStar.Bll
                     }
 
                     var dateTime = DateTime.Now;
+
                     await activityBus.AddActivity(folderResult.Message, dateTime, currentUser, folderResult.IsSuccess, ct);
                 }
                 else

@@ -20,7 +20,7 @@ public class SocietiesController(ISocietyService societyService) : ControllerBas
     /// <returns>Résultat de la création</returns>
     [HttpPost("addSociety")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> CreateSociety([FromBody] SocietyCreateRequest request, CancellationToken ct)
+    public async Task<IActionResult> CreateSociety([FromBody] SocietySaveRequest request, CancellationToken ct)
     {
         var result = await societyService.CreateSociety(request, ct);
 

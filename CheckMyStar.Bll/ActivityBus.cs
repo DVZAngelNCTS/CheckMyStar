@@ -16,6 +16,13 @@ namespace CheckMyStar.Bll
             return mapper.Map<ActivitiesResponse>(activities);
         }
 
+        public async Task<ActivitiesResponse> GetActivities(string? lastName, string? firstName, string? description, DateTime? date, bool? isSuccess, CancellationToken ct)
+        {
+            var activities = await activityDal.GetActivities(lastName, firstName, description, date, isSuccess, ct);
+
+            return mapper.Map<ActivitiesResponse>(activities);
+        }
+
         public async Task<ActivityResponse> AddActivity(string description, DateTime date, int user, bool isSuccess, CancellationToken ct)
         {
             ActivityResponse activityResponse = new ActivityResponse();

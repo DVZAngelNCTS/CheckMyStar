@@ -1,8 +1,9 @@
-﻿using CheckMyStar.Dal.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+
+using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace CheckMyStar.Dal;
 
@@ -13,8 +14,8 @@ public class SocietyDal(ICheckMyStarDbContext dbContext) : ISocietyDal
         var result = new SocietyResult();
         try
         {
-            society.CreatedDate = DateTime.UtcNow;
-            society.UpdatedDate = DateTime.UtcNow;
+            society.CreatedDate = DateTime.Now;
+            society.UpdatedDate = DateTime.Now;
             society.IsActive = true;
 
             await dbContext.AddAsync(society, ct);

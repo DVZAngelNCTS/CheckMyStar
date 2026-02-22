@@ -18,17 +18,23 @@ namespace CheckMyStar.Bll
 
         public Task<BaseResponse> AddCriterion(CriterionSaveRequest request, CancellationToken ct)
         {
-            return this.AddCriterion(request.StarCriterion!, request.StarLevelCriterion!, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.AddCriterion(request.StarCriterion!, request.StarLevelCriterion!, user, ct);
         }
 
-        Task<BaseResponse> ICriteriaBusForService.DeleteCriterion(int criterionId, CancellationToken ct)
+        public Task<BaseResponse> DeleteCriterion(CriterionDeleteRequest request, CancellationToken ct)
         {
-            return this.DeleteCriterion(criterionId, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.DeleteCriterion(request.Identifier, user, ct);
         }
 
-        Task<BaseResponse> ICriteriaBusForService.UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct)
+        public Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct)
         {
-            return this.UpdateCriterion(request, ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.UpdateCriterion(request, user, ct);
         }
     }
 }

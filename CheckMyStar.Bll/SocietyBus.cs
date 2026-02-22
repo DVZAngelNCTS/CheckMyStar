@@ -1,23 +1,22 @@
 ﻿using AutoMapper;
+using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
-using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Models;
-using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Data;
-using CheckMyStar.Data.Abstractions;
 
 namespace CheckMyStar.Bll;
 
-public class SocietyBus(ISocietyDal societyDal, IMapper mapper) : ISocietyBus, ISocietyBusForService
+public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserContextService userContext, IActivityBus activityBus) : ISocietyBus
 {
-    public async Task<SocietyCreateResponse> CreateSociety(SocietyCreateRequest request, CancellationToken ct)
+    public async Task<SocietyCreateResponse> CreateSociety(SocietyModel societyModel, int currentUser, CancellationToken ct)
     {
         var response = new SocietyCreateResponse();
+
         try
         {
-            var society = mapper.Map<Society>(request);
+            var society = mapper.Map<Society>(societyModel);
 
             var dalResult = await societyDal.AddSociety(society, ct);
 
@@ -32,21 +31,26 @@ public class SocietyBus(ISocietyDal societyDal, IMapper mapper) : ISocietyBus, I
                 response.IsSuccess = false;
                 response.Message = dalResult.Message;
             }
+            
+            await activityBus.AddActivity(dalResult.Message, DateTime.Now, currentUser, dalResult.IsSuccess, ct);
         }
         catch (Exception ex)
         {
             response.IsSuccess = false;
             response.Message = $"Erreur inattendue : {ex.Message}";
         }
+
         return response;
     }
 
-    public async Task<SocietiesResponse> GetSocieties(CancellationToken ct)
+    public async Task<SocietiesResponse> GetAllSocieties(CancellationToken ct)
     {
         var response = new SocietiesResponse();
+
         try
         {
             var dalResult = await societyDal.GetSocieties(ct);
+
             if (dalResult.IsSuccess)
             {
                 response.IsSuccess = true;
@@ -63,6 +67,7 @@ public class SocietyBus(ISocietyDal societyDal, IMapper mapper) : ISocietyBus, I
             response.IsSuccess = false;
             response.Message = ex.Message;
         }
+
         return response;
     }
 }

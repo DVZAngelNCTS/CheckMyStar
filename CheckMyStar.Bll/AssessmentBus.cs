@@ -5,11 +5,12 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
-    public partial class AssessmentBus(IUserContextService userContext, IAssessmentDal assessmentDal, IMapper mapper) : IAssessmentBus
+    public partial class AssessmentBus(IUserContextService userContext, IAssessmentDal assessmentDal, IMapper mapper, IActivityBus activityBus) : IAssessmentBus
     {
         public async Task<AssessmentsResponse> GetAllAssessments(CancellationToken ct)
         {
@@ -34,7 +35,7 @@ namespace CheckMyStar.Bll
             return assessmentsResponse;
         }
 
-        public async Task<AssessmentResponse> AddAssessment(AssessmentModel assessmentModel, CancellationToken ct)
+        public async Task<AssessmentResponse> AddAssessment(AssessmentModel assessmentModel, int currentUser, CancellationToken ct)
         {
             var assessment = mapper.Map<Assessment>(assessmentModel);
 
@@ -56,10 +57,12 @@ namespace CheckMyStar.Bll
                 Assessment = result.Assessment != null ? mapper.Map<AssessmentModel>(result.Assessment) : null
             };
 
+            await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
+
             return response;
         }
 
-        public async Task<BaseResponse> DeleteAssessment(int identifier, CancellationToken ct)
+        public async Task<BaseResponse> DeleteAssessment(int identifier, int currentUser, CancellationToken ct)
         {
             BaseResponse result = new BaseResponse();
 
@@ -81,6 +84,8 @@ namespace CheckMyStar.Bll
                         result.IsSuccess = false;
                         result.Message = baseResult.Message;
                     }
+
+                    await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
                 }
                 else
                 {

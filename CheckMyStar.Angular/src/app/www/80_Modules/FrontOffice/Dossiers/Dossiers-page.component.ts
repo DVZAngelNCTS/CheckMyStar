@@ -352,13 +352,13 @@ export class FrontDossiersPageComponent implements OnInit {
             this.newAccommodation.address = { ...this.newAccommodation.address, identifier: addressId } as any;
 
             this.accommodationBll.getNextIdentifier$().subscribe({
-              next: (accommodationResponse) => {
-                this.newAccommodation.identifier = accommodationResponse.accommodations?.[0]?.identifier ?? 0;
+              next: (accommodationResponse) => {                
+                this.newAccommodation.identifier = accommodationResponse.accommodation?.identifier ?? 0;
 
                 this.accommodationBll.createAccommodation$(this.newAccommodation as AccommodationModel).subscribe({
                   next: (accommodationResponse) => {
-                    this.newFolder.accommodationIdentifier = accommodationResponse.identifier;
-                    this.newFolder.accommodationTypeIdentifier = accommodationResponse.accommodationType?.identifier ?? 0;
+                    this.newFolder.accommodationIdentifier = this.newAccommodation.identifier;
+                    this.newFolder.accommodationTypeIdentifier = this.newAccommodation.accommodationType?.identifier ?? 0;
 
                     this.folderBll.getNextIdentifier$().subscribe({
                       next: (folder) => {

@@ -165,9 +165,8 @@ namespace CheckMyStar.Dal
             var baseResult = new BaseResult();
             try
             {
-                criterion.CriterionId = 0;
-
                 await dbContext.AddAsync(criterion, ct);
+
                 int affected = await dbContext.SaveChangesAsync(ct);
 
                 if (affected > 0)

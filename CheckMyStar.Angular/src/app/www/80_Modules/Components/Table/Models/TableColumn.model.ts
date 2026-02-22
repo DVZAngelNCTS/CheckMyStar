@@ -8,5 +8,5 @@ export interface TableColumn<T> {
   defaultSort?: boolean;
   sortDirection?: 'asc' | 'desc';
   filterable?: boolean;
-  pipe?: (value: any, row?: T) => any;
+  pipe?: (value: any, row: T) => any;
 }

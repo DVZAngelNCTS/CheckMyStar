@@ -55,18 +55,21 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     }
 
     /// <summary>
-    /// Deletes a criterion by its identifier.
+    /// Deletes a criterion identified by the specified request parameters.
     /// </summary>
-    /// <param name="id">Criterion identifier</param>
-    /// <param name="ct">Cancellation token</param>
-    /// <returns>Operation result</returns>
-    [HttpDelete("{id}")]
+    /// <remarks>This method requires the caller to have Administrator role permissions. The deletion
+    /// operation is asynchronous and may be canceled using the provided cancellation token.</remarks>
+    /// <param name="request">The request containing the details of the criterion to be deleted, including the identifier of the criterion.</param>
+    /// <param name="ct">A cancellation token that can be used to cancel the operation if needed.</param>
+    /// <returns>An IActionResult indicating the result of the deletion operation. Returns Ok if the deletion is successful;
+    /// otherwise, returns BadRequest.</returns>
+    [HttpDelete("deletecriterion")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> DeleteCriterion(int id, CancellationToken ct)
+    public async Task<IActionResult> DeleteCriterion([FromQuery] CriterionDeleteRequest request, CancellationToken ct)
     {
-        var result = await criteriaService.DeleteCriterion(id, ct);
+        var result = await criteriaService.DeleteCriterion(request, ct);
 
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return Ok(result);
     }
 
     /// <summary>
@@ -81,6 +84,6 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     {
         var result = await criteriaService.UpdateCriterion(request, ct);
 
-        return result.IsSuccess ? Ok(result) : BadRequest(result);
+        return Ok(result);
     }
 }
