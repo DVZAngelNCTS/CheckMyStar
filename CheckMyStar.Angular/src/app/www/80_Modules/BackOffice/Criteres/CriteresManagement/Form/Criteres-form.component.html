@@ -17,17 +17,17 @@
     </app-field>
     
     <!-- DESCRIPTION -->
-    <app-field controlName="description" label="{{ 'CriteresSection.Description' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <app-field controlName="description" label="{{ 'CriteresSection.Description' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-text-left">
       <input type="text" class="form-control" formControlName="description" required>
     </app-field>
     
     <!-- POINTS -->
-    <app-field controlName="basePoints" label="{{ 'CriteresSection.Points' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <app-field controlName="basePoints" label="{{ 'CriteresSection.Points' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-123">
       <input type="number" class="form-control" formControlName="basePoints" required min="1" max="10">
     </app-field>
     
     <!-- TYPE CODE -->
-    <app-field controlName="typeCode" label="{{ 'CriteresSection.Type' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+    <app-field controlName="typeCode" label="{{ 'CriteresSection.Type' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-tag">
       <select class="form-select" formControlName="typeCode" required>
         <option *ngFor="let type of typeCodes" [value]="type.value">{{ type.label }}</option>
       </select>
