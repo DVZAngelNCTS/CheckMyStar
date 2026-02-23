@@ -21,6 +21,13 @@ namespace CheckMyStar.Apis.Services
             return assessment;
         }
 
+        public async Task<AssessmentResponse> UpdateAssessment(AssessmentUpdateRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentBusForService.UpdateAssessment(request, ct);
+
+            return assessment;
+        }
+
         public async Task<AssessmentResponse> DeleteAssessment(int id, CancellationToken ct)
         {
             var response = await assessmentBusForService.DeleteAssessment(id, ct);

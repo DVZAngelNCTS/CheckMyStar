@@ -127,6 +127,13 @@ export class FrontDossiersPageComponent implements OnInit {
       if (filter.ownerLastName && !owner?.lastName?.toLowerCase().includes(filter.ownerLastName.toLowerCase())) {
         return false;
       }
+      if (filter.inspectorLastName) {
+        const inspector = folder.inspectorUser;
+        const inspectorFullName = [inspector?.firstName, inspector?.lastName].filter(Boolean).join(' ').toLowerCase();
+        if (!inspectorFullName.includes(filter.inspectorLastName.toLowerCase())) {
+          return false;
+        }
+      }
       if (statusFilter && statusFilter > 0) {
         const folderStatusId = this.extractStatusId(folder.folderStatus);
         if (folderStatusId !== statusFilter) {
@@ -487,7 +494,8 @@ export class FrontDossiersPageComponent implements OnInit {
       accommodationName: accommodation?.accommodationName ?? '',
       accommodationCurrentStar: this.formatStar(accommodation?.accommodationCurrentStar),
       accommodationAddress: this.formatAddress(address),
-      ownerLastName: owner?.lastName ?? '',
+      ownerLastName: [owner?.firstName, owner?.lastName].filter(Boolean).join(' '),
+      inspectorLastName: [folder.inspectorUser?.firstName, folder.inspectorUser?.lastName].filter(Boolean).join(' '),
       folderStatus: this.formatFolderStatus(folder.folderStatus),
     };
   }
@@ -548,6 +556,7 @@ interface FrontFolderTableRow {
   accommodationCurrentStar: string;
   accommodationAddress: string;
   ownerLastName: string;
+  inspectorLastName: string;
   folderStatus: string;
 }
 

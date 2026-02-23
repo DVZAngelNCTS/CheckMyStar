@@ -7,6 +7,7 @@ namespace CheckMyStar.Bll.Abstractions.ForService
     {
         Task<AssessmentsResponse> GetAssessments(CancellationToken ct);
         Task<AssessmentResponse> CreateAssessment(AssessmentCreateRequest request, CancellationToken ct);
+        Task<AssessmentResponse> UpdateAssessment(AssessmentUpdateRequest request, CancellationToken ct);
         Task<AssessmentResponse> DeleteAssessment(int id, CancellationToken ct);
     }
 }

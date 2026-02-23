@@ -85,20 +85,38 @@ export class EvaluationPageComponent implements OnInit {
 
   onSave(): void {
     const savedAt = new Date().toISOString();
-    this.assessmentBll.createAssessment$(this.buildAssessmentRequest(false)).subscribe({
-      next: (response) => {
-        if (response?.assessmentId) {
-          this.draftAssessmentId = response.assessmentId;
+
+    if (this.draftAssessmentId !== null) {
+      // Un brouillon existe déjà en BDD → on le met à jour
+      const updateRequest = { identifier: this.draftAssessmentId, ...this.buildAssessmentRequest(false) };
+      this.assessmentBll.updateAssessment$(updateRequest).subscribe({
+        next: () => {
+          this.saveToLocalStorage(savedAt);
+          this.toast.show(this.translate.instant('EvaluationSection.SaveSuccess'), 'success', 2500);
+        },
+        error: err => {
+          console.error('Assessment update save error:', err);
+          this.saveToLocalStorage(savedAt);
+          this.toast.show(this.translate.instant('EvaluationSection.SaveApiError'), 'warning', 4000);
         }
-        this.saveToLocalStorage(savedAt);
-        this.toast.show(this.translate.instant('EvaluationSection.SaveSuccess'), 'success', 2500);
-      },
-      error: err => {
-        console.error('Assessment save error:', err);
-        this.saveToLocalStorage(savedAt);
-        this.toast.show(this.translate.instant('EvaluationSection.SaveApiError'), 'warning', 4000);
-      }
-    });
+      });
+    } else {
+      this.assessmentBll.createAssessment$(this.buildAssessmentRequest(false)).subscribe({
+        next: (response) => {
+          const returnedId = response?.assessmentId || response?.identifier;
+          if (returnedId) {
+            this.draftAssessmentId = returnedId;
+          }
+          this.saveToLocalStorage(savedAt);
+          this.toast.show(this.translate.instant('EvaluationSection.SaveSuccess'), 'success', 2500);
+        },
+        error: err => {
+          console.error('Assessment save error:', err);
+          this.saveToLocalStorage(savedAt);
+          this.toast.show(this.translate.instant('EvaluationSection.SaveApiError'), 'warning', 4000);
+        }
+      });
+    }
   }
 
   private buildAssessmentRequest(isComplete: boolean) {
@@ -236,30 +254,15 @@ export class EvaluationPageComponent implements OnInit {
 
     // ── Persistance finale (isComplete = true) ──────────────────────────
     if (this.draftAssessmentId !== null) {
-      // Supprimer le brouillon BDD avant de créer l'évaluation finale
-      const draftId = this.draftAssessmentId;
-      this.assessmentBll.deleteAssessment$(draftId).subscribe({
+      // Un brouillon existe déjà en BDD → on le met à jour avec isComplete = true
+      const updateRequest = { identifier: this.draftAssessmentId, ...this.buildAssessmentRequest(true) };
+      this.assessmentBll.updateAssessment$(updateRequest).subscribe({
         next: () => {
           this.draftAssessmentId = null;
-          this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
-            next: () => {
-              localStorage.removeItem(this.storageKey);
-              this.lastSavedAt = null;
-            },
-            error: err => console.error('Assessment submit error:', err)
-          });
+          localStorage.removeItem(this.storageKey);
+          this.lastSavedAt = null;
         },
-        error: err => {
-          console.error('Draft delete error:', err);
-          // On tente quand même de soumettre la version finale
-          this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
-            next: () => {
-              localStorage.removeItem(this.storageKey);
-              this.lastSavedAt = null;
-            },
-            error: e => console.error('Assessment submit error:', e)
-          });
-        }
+        error: err => console.error('Assessment update submit error:', err)
       });
     } else {
       this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({

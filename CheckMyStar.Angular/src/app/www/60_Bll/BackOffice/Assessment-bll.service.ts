@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AssessmentDalService } from '../../70_Dal/BackOffice/Assessment-dal.service';
-import { CreateAssessmentRequest } from '../../40_Requests/BackOffice/Assessment-create.request';
+import { CreateAssessmentRequest, UpdateAssessmentRequest } from '../../40_Requests/BackOffice/Assessment-create.request';
 import { AssessmentResponse } from '../../50_Responses/BackOffice/Assessment.response';
 
 @Injectable({
@@ -12,6 +12,10 @@ export class AssessmentBllService {
 
   createAssessment$(request: CreateAssessmentRequest): Observable<AssessmentResponse> {
     return this.assessmentDal.createAssessment$(request);
+  }
+
+  updateAssessment$(request: UpdateAssessmentRequest): Observable<AssessmentResponse> {
+    return this.assessmentDal.updateAssessment$(request);
   }
 
   deleteAssessment$(id: number): Observable<AssessmentResponse> {

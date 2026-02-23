@@ -69,6 +69,76 @@ namespace CheckMyStar.Dal
             return result;
         }
 
+        public async Task<AssessmentResult> UpdateAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
+        {
+            AssessmentResult result = new AssessmentResult();
+
+            try
+            {
+                var existingAssessment = await dbContext.Assessments
+                    .Include(a => ((Assessment)a).AssessmentCriteria)
+                    .FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
+
+                if (existingAssessment == null)
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Évaluation introuvable";
+                    return result;
+                }
+
+                var assessmentEntity = existingAssessment as Assessment;
+
+                assessmentEntity.FolderIdentifier = assessment.FolderIdentifier;
+                assessmentEntity.TargetStarLevel = assessment.TargetStarLevel;
+                assessmentEntity.Capacity = assessment.Capacity;
+                assessmentEntity.NumberOfFloors = assessment.NumberOfFloors;
+                assessmentEntity.IsWhiteZone = assessment.IsWhiteZone;
+                assessmentEntity.IsDromTom = assessment.IsDromTom;
+                assessmentEntity.IsHighMountain = assessment.IsHighMountain;
+                assessmentEntity.IsBuildingClassified = assessment.IsBuildingClassified;
+                assessmentEntity.IsStudioNoLivingRoom = assessment.IsStudioNoLivingRoom;
+                assessmentEntity.IsParkingImpossible = assessment.IsParkingImpossible;
+                assessmentEntity.TotalArea = assessment.TotalArea;
+                assessmentEntity.NumberOfRooms = assessment.NumberOfRooms;
+                assessmentEntity.TotalRoomsArea = assessment.TotalRoomsArea;
+                assessmentEntity.SmallestRoomArea = assessment.SmallestRoomArea;
+                assessmentEntity.IsComplete = assessment.IsComplete;
+                assessmentEntity.UpdatedDate = DateTime.Now;
+
+                await dbContext.UpdateAsync(assessmentEntity, ct);
+
+                if (assessmentEntity.AssessmentCriteria != null && assessmentEntity.AssessmentCriteria.Any())
+                {
+                    await dbContext.RemoveRangeAsync(assessmentEntity.AssessmentCriteria, ct);
+                }
+
+                await dbContext.SaveChangesAsync(ct);
+
+                foreach (var criterion in criteria)
+                {
+                    criterion.AssessmentIdentifier = assessmentEntity.Identifier;
+                    await dbContext.AddAsync(criterion, ct);
+                }
+
+                await dbContext.SaveChangesAsync(ct);
+
+                var updatedAssessment = await dbContext.Assessments
+                    .Include(a => ((Assessment)a).AssessmentCriteria)
+                    .FirstOrDefaultAsync(a => a.Identifier == assessmentEntity.Identifier, ct);
+
+                result.Assessment = updatedAssessment as Assessment;
+                result.IsSuccess = true;
+                result.Message = "Évaluation mise à jour avec succès";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur lors de la mise à jour de l'évaluation : {ex.Message}";
+            }
+
+            return result;
+        }
+
         public async Task<AssessmentResult> DeleteAssessment(int id, CancellationToken ct)
         {
             AssessmentResult result = new AssessmentResult();

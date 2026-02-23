@@ -50,6 +50,30 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Updates an existing assessment with its associated criteria.
+        /// </summary>
+        /// <remarks>
+        /// Updates an assessment with all required fields. The updated date is automatically set to the current date and time.
+        /// All existing criteria are replaced with the new ones provided in the request.
+        /// </remarks>
+        /// <param name="request">The assessment details including the identifier and updated criteria. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the updated assessment.</returns>
+        [HttpPut("updateassessment")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> UpdateAssessment([FromBody] AssessmentUpdateRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentService.UpdateAssessment(request, ct);
+
+            if (!assessment.IsSuccess)
+            {
+                return NotFound(assessment);
+            }
+
+            return Ok(assessment);
+        }
+
+        /// <summary>
         /// Deletes an assessment by its identifier.
         /// </summary>
         /// <remarks>

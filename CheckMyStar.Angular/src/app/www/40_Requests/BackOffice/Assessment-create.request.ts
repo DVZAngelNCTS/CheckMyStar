@@ -24,3 +24,7 @@ export interface CreateAssessmentRequest {
   isComplete: boolean;
   criteria: AssessmentCriterionRequest[];
 }
+
+export interface UpdateAssessmentRequest extends CreateAssessmentRequest {
+  identifier: number;
+}
