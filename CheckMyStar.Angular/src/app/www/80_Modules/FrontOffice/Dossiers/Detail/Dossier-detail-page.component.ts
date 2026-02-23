@@ -44,10 +44,9 @@ export class DossierDetailPageComponent implements OnInit {
 
   loadFolder(): void {
     this.loading = true;
-    this.folderBll.getFolders$().subscribe({
+    this.folderBll.getfolder$(this.folderId!).subscribe({
       next: response => {
-        const allFolders = response.folders ?? [];
-        this.folder = allFolders.find(f => f.identifier === this.folderId) ?? null;
+        this.folder = response.folder ?? null;
         this.loading = false;
       },
       error: err => {

@@ -77,14 +77,44 @@ namespace CheckMyStar.Dal
             return folderResult;
         }
 
-        public async Task<FoldersResult> GetFolders(CancellationToken ct)
+        public async Task<FoldersResult> GetFoldersByInspectore(int inspectorIdentifier, CancellationToken ct)
         {
             FoldersResult foldersResult = new FoldersResult();
 
             try
             {
                 var folders = await (from f in dbContext.Folders.AsNoTracking()
+                                    where f.InspectorUserIdentifier == inspectorIdentifier
                                     select f).ToListAsync(ct);
+
+                foldersResult.IsSuccess = true;
+                foldersResult.Folders = folders;
+            }
+            catch (Exception ex)
+            {
+                foldersResult.IsSuccess = false;
+                foldersResult.Message = ex.Message;
+            }
+
+            return foldersResult;
+        }
+
+        public async Task<FoldersResult> GetFolders(string? accommodationName, string? ownerLastName, string? inspectorLastName, int? folderStatus, CancellationToken ct)
+        {
+            FoldersResult foldersResult = new FoldersResult();
+
+            try
+            {
+                var folders = await (from f in dbContext.Folders.AsNoTracking()
+                                     join a in dbContext.Accommodations.AsNoTracking() on f.AccommodationIdentifier equals a.Identifier
+                                     join o in dbContext.Users.AsNoTracking() on f.OwnerUserIdentifier equals o.Identifier
+                                     join i in dbContext.Users.AsNoTracking() on f.InspectorUserIdentifier equals i.Identifier
+                                     where                                        
+                                        (string.IsNullOrEmpty(accommodationName) || a.AccommodationName.Contains(accommodationName)) &&
+                                        (string.IsNullOrEmpty(ownerLastName) || o.LastName.Contains(ownerLastName) || o.FirstName.Contains(ownerLastName) &&
+                                        (string.IsNullOrEmpty(inspectorLastName) || i.LastName.Contains(inspectorLastName) || i.FirstName.Contains(inspectorLastName)) &&
+                                        (folderStatus == null || folderStatus == 0 || f.FolderStatusIdentifier == folderStatus))
+                                     select f).ToListAsync(ct);
 
                 foldersResult.IsSuccess = true;
                 foldersResult.Folders = folders;

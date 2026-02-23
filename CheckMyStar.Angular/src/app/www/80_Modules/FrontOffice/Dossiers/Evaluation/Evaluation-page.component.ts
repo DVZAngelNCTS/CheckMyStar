@@ -9,6 +9,8 @@ import { ToastService } from '../../../../90_Services/Toast/Toast.service';
 import { EvaluationStep1Component } from './Step1/Evaluation-step1.component';
 import { EvaluationStep2Component } from './Step2/Evaluation-step2.component';
 import { EvaluationResult, EvaluationFormData, CriterionEvaluation } from "../../../../20_Models/FrontOffice/Evaluation.models";
+import { AssessmentModel } from '../../../../20_Models/BackOffice/Assessment.model';
+import { AssessmentCriterionModel } from '../../../../20_Models/BackOffice/AssessmentCriterion.model';
 
 @Component({
   selector: 'app-evaluation-page',
@@ -85,42 +87,24 @@ export class EvaluationPageComponent implements OnInit {
 
   onSave(): void {
     const savedAt = new Date().toISOString();
-
-    if (this.draftAssessmentId !== null) {
-      // Un brouillon existe déjà en BDD → on le met à jour
-      const updateRequest = { identifier: this.draftAssessmentId, ...this.buildAssessmentRequest(false) };
-      this.assessmentBll.updateAssessment$(updateRequest).subscribe({
-        next: () => {
-          this.saveToLocalStorage(savedAt);
-          this.toast.show(this.translate.instant('EvaluationSection.SaveSuccess'), 'success', 2500);
-        },
-        error: err => {
-          console.error('Assessment update save error:', err);
-          this.saveToLocalStorage(savedAt);
-          this.toast.show(this.translate.instant('EvaluationSection.SaveApiError'), 'warning', 4000);
+    this.assessmentBll.addAssessment$(this.buildAssessmentModel(false)).subscribe({
+      next: (response) => {
+        if (response?.assessmentId) {
+          this.draftAssessmentId = response.assessmentId;
         }
-      });
-    } else {
-      this.assessmentBll.createAssessment$(this.buildAssessmentRequest(false)).subscribe({
-        next: (response) => {
-          const returnedId = response?.assessmentId || response?.identifier;
-          if (returnedId) {
-            this.draftAssessmentId = returnedId;
-          }
-          this.saveToLocalStorage(savedAt);
-          this.toast.show(this.translate.instant('EvaluationSection.SaveSuccess'), 'success', 2500);
-        },
-        error: err => {
-          console.error('Assessment save error:', err);
-          this.saveToLocalStorage(savedAt);
-          this.toast.show(this.translate.instant('EvaluationSection.SaveApiError'), 'warning', 4000);
-        }
-      });
-    }
+        this.saveToLocalStorage(savedAt);
+        this.toast.show(this.translate.instant('EvaluationSection.SaveSuccess'), 'success', 2500);
+      },
+      error: err => {
+        console.error('Assessment save error:', err);
+        this.saveToLocalStorage(savedAt);
+        this.toast.show(this.translate.instant('EvaluationSection.SaveApiError'), 'warning', 4000);
+      }
+    });
   }
 
-  private buildAssessmentRequest(isComplete: boolean) {
-    return {
+  private buildAssessmentModel(isComplete: boolean) {
+    const assessment: AssessmentModel = {
       folderIdentifier:     this.folderId ?? 0,
       targetStarLevel:      this.form.targetStar ?? 0,
       capacity:             this.form.maxCapacity ?? 0,
@@ -142,8 +126,9 @@ export class EvaluationPageComponent implements OnInit {
         status:      c.typeCode,
         isValidated: c.validated,
         comment:     c.comment
-      }))
+      }) as AssessmentCriterionModel)
     };
+    return assessment;
   }
 
   private saveToLocalStorage(savedAt: string): void {
@@ -259,13 +244,28 @@ export class EvaluationPageComponent implements OnInit {
       this.assessmentBll.updateAssessment$(updateRequest).subscribe({
         next: () => {
           this.draftAssessmentId = null;
-          localStorage.removeItem(this.storageKey);
-          this.lastSavedAt = null;
+          this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
+            next: () => {
+              localStorage.removeItem(this.storageKey);
+              this.lastSavedAt = null;
+            },
+            error: err => console.error('Assessment submit error:', err)
+          });
         },
-        error: err => console.error('Assessment update submit error:', err)
+        error: err => {
+          console.error('Draft delete error:', err);
+          // On tente quand même de soumettre la version finale
+          this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
+            next: () => {
+              localStorage.removeItem(this.storageKey);
+              this.lastSavedAt = null;
+            },
+            error: e => console.error('Assessment submit error:', e)
+          });
+        }
       });
     } else {
-      this.assessmentBll.createAssessment$(this.buildAssessmentRequest(true)).subscribe({
+      this.assessmentBll.addAssessment$(this.buildAssessmentModel(true)).subscribe({
         next: () => {
           localStorage.removeItem(this.storageKey);
           this.lastSavedAt = null;

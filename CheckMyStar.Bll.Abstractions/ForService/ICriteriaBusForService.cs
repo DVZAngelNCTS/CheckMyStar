@@ -8,7 +8,7 @@ namespace CheckMyStar.Bll.Abstractions.ForService
         Task<StarCriteriaStatusResponse> GetStarCriteriaStatus(CancellationToken ct);
         Task<StarCriteriaDetailsResponse> GetStarCriteriaDetails(CancellationToken ct);
         Task<BaseResponse> AddCriterion(CriterionSaveRequest request, CancellationToken ct);
-        Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct);
+        Task<BaseResponse> DeleteCriterion(CriterionDeleteRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct);
     }
 }

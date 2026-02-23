@@ -8,8 +8,8 @@ namespace CheckMyStar.Bll.Abstractions
     {
         Task<StarCriteriaStatusResponse> GetCriteriaStatus(CancellationToken ct);
         Task<StarCriteriaDetailsResponse> GetCriteriaDetails(CancellationToken ct);
-        Task<BaseResponse> AddCriterion(StarCriterionModel starCriterionModel, StarLevelCriterionModel starLevelCriterionModel, CancellationToken ct);
-        Task<BaseResponse> DeleteCriterion(int criterionId, CancellationToken ct);
-        Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, CancellationToken ct);
+        Task<BaseResponse> AddCriterion(StarCriterionModel starCriterionModel, StarLevelCriterionModel starLevelCriterionModel, int currentUser, CancellationToken ct);
+        Task<BaseResponse> DeleteCriterion(int criterionId, int currentUser, CancellationToken ct);
+        Task<BaseResponse> UpdateCriterion(CriterionUpdateRequest request, int currentUser, CancellationToken ct);
     }
 }

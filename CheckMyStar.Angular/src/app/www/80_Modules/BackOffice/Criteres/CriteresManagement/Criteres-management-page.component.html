@@ -28,7 +28,9 @@
           [data]="filteredCriteria" 
           [columns]="columns"
           (delete)="onDelete($event)"
-          (update)="onEdit($event)"> 
+          (update)="onEdit($event)"
+          (openCreate)="onAdd()"
+          [showDetail]="false"> 
         </app-table>
 
         <div *ngIf="filteredCriteria.length === 0" class="text-center text-muted py-4">
@@ -49,7 +51,8 @@
   [errorMessage]="popupError" 
   [loading]="loading" 
   (confirm)="onSavePopup()" 
-  (cancel)="closePopup()">
+  (cancel)="closePopup()"
+  icon="bi bi-star">
   
   <!-- Mode DELETE -->
   <ng-container *ngIf="popupMode === 'delete'">

@@ -46,15 +46,9 @@ export class FrontDashboardComponent implements OnInit {
     this.inspectorFirstName = currentUser?.firstName ?? '';
     const inspectorId = currentUser?.identifier ?? null;
 
-    this.folderBll.getFolders$().subscribe({
+    this.folderBll.getfoldersByInspector$(inspectorId!).subscribe({
       next: response => {
-        const allFolders = response.folders ?? [];
-
-        const myFolders = allFolders.filter(folder =>
-          folder.inspectorUser?.identifier === inspectorId ||
-          folder.inspectorUserIdentifier === inspectorId
-        );
-
+        const myFolders = response.folders ?? [];
         this.totalDossiers = myFolders.length;
 
         this.countInProgress      = this.countByStatus(myFolders, this.STATUS_IN_PROGRESS);

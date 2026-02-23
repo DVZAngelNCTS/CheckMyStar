@@ -14,6 +14,6 @@ export class DashboardDalService {
   }
 
   getDashboard$(): Observable<DashboardResponse> {
-    return this.http.post<DashboardResponse>(`${this.apiUrl}/Dashboard/getdashboard`, {});
+    return this.http.get<DashboardResponse>(`${this.apiUrl}/Dashboard/getdashboard`, {});
   }
 }

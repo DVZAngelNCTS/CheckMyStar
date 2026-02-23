@@ -1,53 +1,45 @@
 using AutoMapper;
 
+using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
-using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Models;
-using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
-    public class AssessmentBus(IAssessmentDal assessmentDal, IMapper mapper) : IAssessmentBus, IAssessmentBusForService
+    public partial class AssessmentBus(IUserContextService userContext, IAssessmentDal assessmentDal, IMapper mapper, IActivityBus activityBus) : IAssessmentBus
     {
-        public async Task<AssessmentsResponse> GetAssessments(CancellationToken ct)
+        public async Task<AssessmentsResponse> GetAllAssessments(CancellationToken ct)
         {
+            AssessmentsResponse assessmentsResponse = new AssessmentsResponse();
+
             var result = await assessmentDal.GetAssessments(ct);
 
-            var response = new AssessmentsResponse
+            if (result.IsSuccess && result.Assessments != null)
             {
-                IsSuccess = result.IsSuccess,
-                Message = result.Message,
-                Assessments = result.Assessments?.Select(a => mapper.Map<AssessmentModel>(a)).ToList()
-            };
+                var assessmentModel = mapper.Map<List<AssessmentModel>>(result.Assessments);
 
-            return response;
+                assessmentsResponse.IsSuccess = true;
+                assessmentsResponse.Message = result.Message;
+                assessmentsResponse.Assessments = assessmentModel;
+            }
+            else
+            {
+                assessmentsResponse.IsSuccess = false;
+                assessmentsResponse.Message = result.Message;
+            }
+
+            return assessmentsResponse;
         }
 
-        public async Task<AssessmentResponse> CreateAssessment(AssessmentCreateRequest request, CancellationToken ct)
+        public async Task<AssessmentResponse> AddAssessment(AssessmentModel assessmentModel, int currentUser, CancellationToken ct)
         {
-            var assessment = new Assessment
-            {
-                FolderIdentifier = request.FolderIdentifier,
-                TargetStarLevel = request.TargetStarLevel,
-                Capacity = request.Capacity,
-                NumberOfFloors = request.NumberOfFloors,
-                IsWhiteZone = request.IsWhiteZone,
-                IsDromTom = request.IsDromTom,
-                IsHighMountain = request.IsHighMountain,
-                IsBuildingClassified = request.IsBuildingClassified,
-                IsStudioNoLivingRoom = request.IsStudioNoLivingRoom,
-                IsParkingImpossible = request.IsParkingImpossible,
-                TotalArea = request.TotalArea,
-                NumberOfRooms = request.NumberOfRooms,
-                TotalRoomsArea = request.TotalRoomsArea,
-                SmallestRoomArea = request.SmallestRoomArea,
-                IsComplete = request.IsComplete
-            };
+            var assessment = mapper.Map<Assessment>(assessmentModel);
 
-            var criteria = request.Criteria.Select(c => new AssessmentCriterion
+            var criteria = assessmentModel.Criteria.Select(c => new AssessmentCriterion
             {
                 CriterionId = c.CriterionId,
                 Points = c.Points,
@@ -56,7 +48,7 @@ namespace CheckMyStar.Bll
                 Comment = c.Comment
             }).ToList();
 
-            var result = await assessmentDal.CreateAssessment(assessment, criteria, ct);
+            var result = await assessmentDal.AddAssessment(assessment, criteria, ct);
 
             var response = new AssessmentResponse
             {
@@ -65,63 +57,49 @@ namespace CheckMyStar.Bll
                 Assessment = result.Assessment != null ? mapper.Map<AssessmentModel>(result.Assessment) : null
             };
 
-            return response;
-        }
-
-        public async Task<AssessmentResponse> UpdateAssessment(AssessmentUpdateRequest request, CancellationToken ct)
-        {
-            var assessment = new Assessment
-            {
-                Identifier = request.Identifier,
-                FolderIdentifier = request.FolderIdentifier,
-                TargetStarLevel = request.TargetStarLevel,
-                Capacity = request.Capacity,
-                NumberOfFloors = request.NumberOfFloors,
-                IsWhiteZone = request.IsWhiteZone,
-                IsDromTom = request.IsDromTom,
-                IsHighMountain = request.IsHighMountain,
-                IsBuildingClassified = request.IsBuildingClassified,
-                IsStudioNoLivingRoom = request.IsStudioNoLivingRoom,
-                IsParkingImpossible = request.IsParkingImpossible,
-                TotalArea = request.TotalArea,
-                NumberOfRooms = request.NumberOfRooms,
-                TotalRoomsArea = request.TotalRoomsArea,
-                SmallestRoomArea = request.SmallestRoomArea,
-                IsComplete = request.IsComplete
-            };
-
-            var criteria = request.Criteria.Select(c => new AssessmentCriterion
-            {
-                CriterionId = c.CriterionId,
-                Points = c.Points,
-                Status = c.Status,
-                IsValidated = c.IsValidated,
-                Comment = c.Comment
-            }).ToList();
-
-            var result = await assessmentDal.UpdateAssessment(assessment, criteria, ct);
-
-            var response = new AssessmentResponse
-            {
-                IsSuccess = result.IsSuccess,
-                Message = result.Message,
-                Assessment = result.Assessment != null ? mapper.Map<AssessmentModel>(result.Assessment) : null
-            };
+            await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
 
             return response;
         }
 
-        public async Task<AssessmentResponse> DeleteAssessment(int id, CancellationToken ct)
+        public async Task<BaseResponse> DeleteAssessment(int identifier, int currentUser, CancellationToken ct)
         {
-            var result = await assessmentDal.DeleteAssessment(id, ct);
+            BaseResponse result = new BaseResponse();
 
-            var response = new AssessmentResponse
+            var assessment = await assessmentDal.GetAssessment(identifier, ct);
+
+            if (assessment.IsSuccess)
             {
-                IsSuccess = result.IsSuccess,
-                Message = result.Message
-            };
+                if (assessment.Assessment != null)
+                {
+                    var baseResult = await assessmentDal.DeleteAssessment(assessment.Assessment, ct);
 
-            return response;
+                    if (baseResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = baseResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = baseResult.Message;
+                    }
+
+                    await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Assessment not found.";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = "Failed to retrieve the assessment.";
+            }
+
+            return result;
         }
     }
 }

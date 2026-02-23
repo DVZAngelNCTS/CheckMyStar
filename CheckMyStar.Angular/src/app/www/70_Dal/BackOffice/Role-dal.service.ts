@@ -19,7 +19,16 @@ export class RoleDalService {
   }
 
   getRoles$(request: RoleGetRequest): Observable<RolesResponse> {
-    return this.http.post<RolesResponse>(`${this.apiUrl}/Role/getroles`, request);
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.get<RolesResponse>(`${this.apiUrl}/Role/getroles`, { params});
   }
 
   addRole$(request: RoleSaveRequest) {
@@ -27,14 +36,24 @@ export class RoleDalService {
   }
 
   updateRole$(request: RoleSaveRequest) {
-    return this.http.post<BaseResponse>(`${this.apiUrl}/Role/updaterole`, request);
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Role/updaterole`, request);
   }
 
   deleteRole$(request: RoleDeleteRequest) {
-        return this.http.post<BaseResponse>(`${this.apiUrl}/Role/deleterole`, request);
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.delete<BaseResponse>(`${this.apiUrl}/Role/deleterole`, { params });
   }
 
+
   getNextIdentifier$(): Observable<RoleResponse> {
-    return this.http.post<RoleResponse>(`${this.apiUrl}/Role/getnextidentifier`, {});
+    return this.http.get<RoleResponse>(`${this.apiUrl}/Role/getnextidentifier`, {});
   }
 }

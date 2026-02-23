@@ -37,7 +37,7 @@ namespace CheckMyStar.Bll
             return userResult;
         }
 
-        public async Task<UsersResponse> GetUsers(string lastName, string firstName, int? SocietyIdentifier, string email, string phone, string address, int? role, CancellationToken ct)
+        public async Task<UsersResponse> GetUsers(string? lastName, string? firstName, int? SocietyIdentifier, string? email, string? phone, string? address, int? role, CancellationToken ct)
         {
             UsersResponse usersResponse = new UsersResponse();
 

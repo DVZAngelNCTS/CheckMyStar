@@ -15,6 +15,8 @@ import { FolderFilter } from '../../../30_Filters/BackOffice/Folder.filter';
 import { DossierFormComponent } from './Form/Dossiers-form.component';
 import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
 import { AddressModel } from '../../../20_Models/Common/Address.model';
+import { FolderGetRequest } from '../../../40_Requests/BackOffice/Folder-get.request';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dossiers-page',
@@ -50,7 +52,7 @@ export class DossiersPageComponent implements OnInit {
     { icon: 'bi bi-info-circle', field: 'folderStatus', header: 'DossiersSection.Status', sortable: true, filterable: true, width: '10%' }
   ] as TableColumn<FolderTableRow>[];
 
-  constructor(private folderBll: FolderBllService, private accommodationBll: AccommodationBllService, private addressBll: AddressBllService, private translate: TranslateService, private toast: ToastService) {}
+  constructor(private folderBll: FolderBllService, private accommodationBll: AccommodationBllService, private addressBll: AddressBllService, private translate: TranslateService, private toast: ToastService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadFolders();
@@ -62,6 +64,8 @@ export class DossiersPageComponent implements OnInit {
     } else {
       this.loading = true;
     }
+    
+    const request: FolderGetRequest = {};
 
     this.folderBll.getFolders$().subscribe({
       next: response => {
@@ -94,42 +98,28 @@ export class DossiersPageComponent implements OnInit {
       this.loadingSearch = true;
     }
 
-    if (filter.reset) {
-      this.loadingReset = true;
-      this.loadFolders(true);
-      return;
-    }
+    this.folderBll.getFolders$(filter.accommodationName, filter.ownerLastName, filter.inspectorLastName, filter.folderStatus ?? undefined).subscribe({
+			next: folders => {
+				if (filter.reset)
+						this.loadingReset = false;
+					else
+						this.loadingSearch = false;
+				    this.folders = folders.folders ?? [];
+            this.tableRows = this.folders.map(folder => this.mapToRow(folder));
+			},
+			error: err => {
+				if (filter.reset)
+						this.loadingReset = false;
+					else
+						this.loadingSearch = false;
+				console.error(err)
+			}
+		});
+  }
 
-    this.loadingSearch = true;
-
-    console.log('All filter values:', { accommodationName: filter.accommodationName, ownerLastName: filter.ownerLastName, inspectorLastName: filter.inspectorLastName, folderStatus: filter.folderStatus });
-
-    this.tableRows = this.folders.filter(folder => {
-      const accommodation = folder.accommodation;
-      const owner = folder.ownerUser;
-      const inspector = folder.inspectorUser;
-
-      if (filter.accommodationName && !accommodation?.accommodationName?.toLowerCase().includes(filter.accommodationName.toLowerCase())) {
-        return false;
-      }
-      if (filter.ownerLastName && !owner?.lastName?.toLowerCase().includes(filter.ownerLastName.toLowerCase())) {
-        return false;
-      }
-      if (filter.inspectorLastName && !inspector?.lastName?.toLowerCase().includes(filter.inspectorLastName.toLowerCase())) {
-        return false;
-      }
-      if (statusFilter && statusFilter > 0) {
-        const folderStatusId = this.extractStatusId(folder.folderStatus);
-        if (folderStatusId !== statusFilter) {
-          return false;
-        }
-      }
-
-      return true;
-    }).map(folder => this.mapToRow(folder));
-
-    this.loadingSearch = false;
-    console.log('Filtered results:', this.tableRows.length);
+  onDetail(row: FolderTableRow) {
+    const fullFolder = this.folders.find(f => f.identifier === row.identifier) ?? null;
+    this.router.navigate(['/backoffice/dossiers', row.identifier], { state: { folder: fullFolder } });
   }
 
   private extractStatusId(status: unknown): number | null {
@@ -251,20 +241,20 @@ export class DossiersPageComponent implements OnInit {
 
             // Step 3: Get next accommodation identifier
             this.accommodationBll.getNextIdentifier$().subscribe({
-              next: (accommodationId) => {
-                this.newAccommodation.identifier = accommodationId;
+              next: (accommodationResponse) => {
+                this.newAccommodation.identifier = accommodationResponse.accommodation?.identifier ?? 0;
 
                 // Step 4: Create the accommodation
                 this.accommodationBll.createAccommodation$(this.newAccommodation as AccommodationModel).subscribe({
                   next: (accommodationResponse) => {
                     // Set the accommodation ID and type ID in the folder
-                    this.newFolder.accommodationIdentifier = accommodationResponse.identifier;
-                    this.newFolder.accommodationTypeIdentifier = accommodationResponse.accommodationType?.identifier ?? 0;
+                    this.newFolder.accommodationIdentifier = this.newAccommodation.identifier;
+                    this.newFolder.accommodationTypeIdentifier = this.newAccommodation.accommodationType?.identifier ?? 0;
 
                     // Step 5: Get next folder identifier
                     this.folderBll.getNextIdentifier$().subscribe({
-                      next: (folderId) => {
-                        this.newFolder.identifier = folderId;
+                      next: (folder) => {
+                        this.newFolder.identifier = folder.folder?.identifier ?? 0;
 
                         // Step 6: Create the folder
                         this.folderBll.createFolder$(this.newFolder as FolderModel).subscribe({

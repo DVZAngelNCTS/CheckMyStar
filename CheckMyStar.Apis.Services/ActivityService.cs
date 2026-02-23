@@ -9,9 +9,16 @@ namespace CheckMyStar.Apis.Services
     {
         public async Task<ActivitiesResponse> GetActivities(ActivityGetRequest request, CancellationToken ct)
         {
-            var dashboard = await activityBusForService.GetActivities(request, ct);
+            var activities = await activityBusForService.GetActivities(request, ct);
 
-            return dashboard;
+            return activities;
+        }
+
+        public async Task<ActivitiesResponse> GetActivities(ActivitiesGetRequest request, CancellationToken ct)
+        {
+            var activities = await activityBusForService.GetActivities(request, ct);
+
+            return activities;
         }
     }
 }

@@ -14,10 +14,10 @@ import { EnumCivility } from '../../../10_Common/Enumerations/EnumCivility';
 import { EnumRole } from '../../../10_Common/Enumerations/EnumRole';
 import { ToastService } from '../../../90_Services/Toast/Toast.service';
 import { SocietyBllService } from '../../../60_Bll/BackOffice/Society-bll.service';
-import { FieldComponent } from '../../Components/Field/Field.component';
 import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
 import { CountryBllService } from '../../../60_Bll/BackOffice/Country-bll.service';
 import { CountryModel } from '../../../20_Models/Common/Country.model';
+import { SocietyModel } from '../../../20_Models/BackOffice/Society.model';
 
 @Component({
 	selector: 'app-user-page',
@@ -201,34 +201,34 @@ export class UserPageComponent {
 	}
 
 	onCreateConfirmed() {
-	if (this.userForm.form.invalid) {
-		this.userForm.form.markAllAsTouched();
-		return;
-	}
+		if (this.userForm.form.invalid) {
+			this.userForm.form.markAllAsTouched();
+			return;
+		}
 
-	this.loading = true;
+		this.loading = true;
 
-	const newUser = this.getValue();
-	newUser.role = Number(newUser.role) as EnumRole;
-	newUser.civility = Number(newUser.civility) as EnumCivility;
+		const newUser = this.getValue();
+		newUser.role = Number(newUser.role) as EnumRole;
+		newUser.civility = Number(newUser.civility) as EnumCivility;
 
-	this.userBll.addUser$(newUser).subscribe({
-		next: response => {
-				if (!response.isSuccess) {
+		this.userBll.addUser$(newUser).subscribe({
+			next: response => {
+					if (!response.isSuccess) {
+						this.loading = false;
+						this.popupError = response.message;
+						return; // ❗ ne pas fermer la popup
+					}
+
+					this.popupError = null;
+					this.loadUsers();
+					this.toast.show(response.message, "success", 5000);
+					this.popupVisible = false;
+				},
+				error: err => {
 					this.loading = false;
-					this.popupError = response.message;
-					return; // ❗ ne pas fermer la popup
+					this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
 				}
-
-				this.popupError = null;
-				this.loadUsers();
-				this.toast.show(response.message, "success", 5000);
-				this.popupVisible = false;
-			},
-			error: err => {
-				this.loading = false;
-				this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
-			}
 		});
 	}
 
@@ -293,6 +293,10 @@ export class UserPageComponent {
   		return this.userForm.form.getRawValue() as UserModel;
 	}
 
+	societyGetValue(): SocietyModel {
+  		return this.societyForm.getRawValue() as SocietyModel;
+	}
+
 	toggleEnabled(user: UserModel) {
 		this.loading = true;
 
@@ -302,41 +306,41 @@ export class UserPageComponent {
 		};
 
 		this.userBll.updateUser$(updatedUser).subscribe({
-				next: response => {
-					this.loading = false;
+			next: response => {
+				this.loading = false;
 
-					if (!response.isSuccess) {
-						this.toast.show(response.message, "error", 5000);	
-						return;
-					}
-
-					// Mise à jour locale
-					this.users = this.users?.map(r =>
-						r.identifier === user.identifier ? updatedUser : r
-					);
-
-					this.toast.show(response.message, "success", 5000);	
-				},
-				error: err => {
-					this.loading = false;
-					console.error(err);
+				if (!response.isSuccess) {
+					this.toast.show(response.message, "error", 5000);	
+					return;
 				}
-			});
+
+				// Mise à jour locale
+				this.users = this.users?.map(r =>
+					r.identifier === user.identifier ? updatedUser : r
+				);
+
+				this.toast.show(response.message, "success", 5000);	
+			},
+			error: err => {
+				this.loading = false;
+				console.error(err);
+			}
+		});
 	}
 
 	openCreateSociety() {
 		this.societyForm = this.fb.group({
-		name: ['', Validators.required],
-		email: ['', [Validators.email]],
-		phone: [''],
-		address: this.fb.group({
-			number: [''],
-			addressLine: ['', Validators.required],
-			city: ['', Validators.required],
-			zipCode: ['', Validators.required],
-			region: [''],
-			countryIdentifier: [0, Validators.required]
-		})
+			name: ['', Validators.required],
+			email: ['', [Validators.email]],
+			phone: [''],
+			address: this.fb.group({
+				number: [''],
+				addressLine: ['', Validators.required],
+				city: ['', Validators.required],
+				zipCode: ['', Validators.required],
+				region: [''],
+				countryIdentifier: [0, Validators.required]
+			})
 		});
 
 		this.popupMode = 'createSociety';
@@ -399,12 +403,9 @@ export class UserPageComponent {
 							return;
 						}
 
-						const newSociety = {
-							name: societyValue.name,
-							email: societyValue.email,
-							phone: societyValue.phone,
-							addressIdentifier: createdAddressId
-						};
+						const newSociety = this.societyGetValue();
+	
+						newSociety.addressIdentifier = createdAddressId;
 
 						this.societyBll.addSociety$(newSociety).subscribe({
 							next: (response: any) => {

@@ -1,12 +1,6 @@
-export interface AssessmentCriterionRequest {
-  criterionId: number;
-  points: number;
-  status: string;
-  isValidated: boolean;
-  comment: string;
-}
+import { AssessmentCriterionModel } from "./AssessmentCriterion.model";
 
-export interface CreateAssessmentRequest {
+export interface AssessmentModel {
   folderIdentifier: number;
   targetStarLevel: number;
   capacity: number;
@@ -22,9 +16,5 @@ export interface CreateAssessmentRequest {
   totalRoomsArea: number;
   smallestRoomArea: number;
   isComplete: boolean;
-  criteria: AssessmentCriterionRequest[];
-}
-
-export interface UpdateAssessmentRequest extends CreateAssessmentRequest {
-  identifier: number;
+  criteria: AssessmentCriterionModel[];
 }

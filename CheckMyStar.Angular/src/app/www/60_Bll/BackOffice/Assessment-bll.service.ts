@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AssessmentDalService } from '../../70_Dal/BackOffice/Assessment-dal.service';
-import { CreateAssessmentRequest, UpdateAssessmentRequest } from '../../40_Requests/BackOffice/Assessment-create.request';
+import { AssessmentSaveRequest } from '../../40_Requests/BackOffice/Assessment-save.request';
 import { AssessmentResponse } from '../../50_Responses/BackOffice/Assessment.response';
+import { AssessmentDeleteRequest } from '../../40_Requests/BackOffice/Assessment-delete.request';
+import { AssessmentModel } from '../../20_Models/BackOffice/Assessment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,15 +12,15 @@ import { AssessmentResponse } from '../../50_Responses/BackOffice/Assessment.res
 export class AssessmentBllService {
   constructor(private assessmentDal: AssessmentDalService) {}
 
-  createAssessment$(request: CreateAssessmentRequest): Observable<AssessmentResponse> {
-    return this.assessmentDal.createAssessment$(request);
+  addAssessment$(model: AssessmentModel): Observable<AssessmentResponse> {
+    const request = { assessment: model } as AssessmentSaveRequest;
+
+    return this.assessmentDal.addAssessment$(request);    
   }
 
-  updateAssessment$(request: UpdateAssessmentRequest): Observable<AssessmentResponse> {
-    return this.assessmentDal.updateAssessment$(request);
-  }
+  deleteAssessment$(identifier: number) {
+    const request = { identifier: identifier } as AssessmentDeleteRequest;
 
-  deleteAssessment$(id: number): Observable<AssessmentResponse> {
-    return this.assessmentDal.deleteAssessment$(id);
+    return this.assessmentDal.deleteAssessment$(request);
   }
 }

@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CriteresDalService } from '../../70_Dal/BackOffice/Criteres-dal.service';
-import { CreateCriterionRequest } from '../../20_Models/BackOffice/Criteres.model';
-import { Observable } from 'rxjs';
-import { UpdateCriterionRequest } from '../../20_Models/BackOffice/Criteres.model';
+import { CriterionSaveRequest } from '../../40_Requests/BackOffice/Criterion-save.request';
+import { CriterionUpdateRequest } from '../../40_Requests/BackOffice/Criterion-update.request';
+import { StarCriterionModel } from '../../20_Models/BackOffice/Criterion.model';
+import { StarLevelModel } from '../../20_Models/BackOffice/StarLevel.model';
+import { StarLevelCriterionModel } from '../../20_Models/BackOffice/StarLevelCriterion.model';
+import { CriterionDeleteRequest } from '../../40_Requests/BackOffice/Criterion-delete.request';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +21,21 @@ export class CriteresBllService {
     return this.criteriaDal.getStarCriteriaDetails$();
   }
 
-  createCriterion$(request: CreateCriterionRequest): Observable<any> {
-    return this.criteriaDal.createCriterion$(request);
+  addCriterion$(criterion: StarCriterionModel, starLevelCriterion: StarLevelCriterionModel) {
+    const request = { starCriterion: criterion, starLevelCriterion } as CriterionSaveRequest;
+
+    return this.criteriaDal.addCriterion$(request);
   }
 
-  deleteCriterion$(id: number): Observable<any> {
-    return this.criteriaDal.deleteCriterion$(id);
+  deleteCriterion$(identifier: number) {
+    const request = { identifier: identifier } as CriterionDeleteRequest;
+
+    return this.criteriaDal.deleteCriterion$(request);
   }
 
-  updateCriterion$(id: number, request: UpdateCriterionRequest): Observable<any> {
-    return this.criteriaDal.updateCriterion$(id, request);
+  updateCriterion$(criterion: StarCriterionModel, starLevel: StarLevelModel, starLevelCriterion: StarLevelCriterionModel) {
+    const request = { criterion, starLevel, starLevelCriterion } as CriterionUpdateRequest;
+
+    return this.criteriaDal.updateCriterion$(request);
   }
 }

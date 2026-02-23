@@ -9,6 +9,37 @@ namespace CheckMyStar.Dal
 {
     public class AssessmentDal(ICheckMyStarDbContext dbContext) : IAssessmentDal
     {
+        public async Task<AssessmentResult> GetAssessment(int identifier, CancellationToken ct)
+        {
+            AssessmentResult assessmentResult = new AssessmentResult();
+
+            try
+            {
+                var assessment = await (from a in dbContext.Assessments.AsNoTracking()
+                                        where
+                                           a.Identifier == identifier
+                                        select a).FirstOrDefaultAsync(ct);
+
+                if (assessment != null)
+                {
+                    assessmentResult.IsSuccess = true;
+                    assessmentResult.Assessment = assessment;
+                }
+                else
+                {
+                    assessmentResult.IsSuccess = false;
+                    assessmentResult.Message = "Évaluation non trouvée";
+                }
+            }
+            catch (Exception ex)
+            {
+                assessmentResult.IsSuccess = false;
+                assessmentResult.Message = $"Erreur lors de la récupération de l'évaluation : {ex.Message}";
+            }
+
+            return assessmentResult;
+        }
+
         public async Task<AssessmentsResult> GetAssessments(CancellationToken ct)
         {
             AssessmentsResult result = new AssessmentsResult();
@@ -32,7 +63,7 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResult> CreateAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
+        public async Task<AssessmentResult> AddAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
         {
             AssessmentResult result = new AssessmentResult();
 
@@ -69,112 +100,34 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResult> UpdateAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
+        public async Task<BaseResult> DeleteAssessment(Assessment assessment, CancellationToken ct)
         {
-            AssessmentResult result = new AssessmentResult();
+            BaseResult baseResult = new BaseResult();
 
             try
             {
-                var existingAssessment = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
-
-                if (existingAssessment == null)
-                {
-                    result.IsSuccess = false;
-                    result.Message = "Évaluation introuvable";
-                    return result;
-                }
-
-                var assessmentEntity = existingAssessment as Assessment;
-
-                assessmentEntity.FolderIdentifier = assessment.FolderIdentifier;
-                assessmentEntity.TargetStarLevel = assessment.TargetStarLevel;
-                assessmentEntity.Capacity = assessment.Capacity;
-                assessmentEntity.NumberOfFloors = assessment.NumberOfFloors;
-                assessmentEntity.IsWhiteZone = assessment.IsWhiteZone;
-                assessmentEntity.IsDromTom = assessment.IsDromTom;
-                assessmentEntity.IsHighMountain = assessment.IsHighMountain;
-                assessmentEntity.IsBuildingClassified = assessment.IsBuildingClassified;
-                assessmentEntity.IsStudioNoLivingRoom = assessment.IsStudioNoLivingRoom;
-                assessmentEntity.IsParkingImpossible = assessment.IsParkingImpossible;
-                assessmentEntity.TotalArea = assessment.TotalArea;
-                assessmentEntity.NumberOfRooms = assessment.NumberOfRooms;
-                assessmentEntity.TotalRoomsArea = assessment.TotalRoomsArea;
-                assessmentEntity.SmallestRoomArea = assessment.SmallestRoomArea;
-                assessmentEntity.IsComplete = assessment.IsComplete;
-                assessmentEntity.UpdatedDate = DateTime.Now;
-
-                await dbContext.UpdateAsync(assessmentEntity, ct);
-
-                if (assessmentEntity.AssessmentCriteria != null && assessmentEntity.AssessmentCriteria.Any())
-                {
-                    await dbContext.RemoveRangeAsync(assessmentEntity.AssessmentCriteria, ct);
-                }
-
-                await dbContext.SaveChangesAsync(ct);
-
-                foreach (var criterion in criteria)
-                {
-                    criterion.AssessmentIdentifier = assessmentEntity.Identifier;
-                    await dbContext.AddAsync(criterion, ct);
-                }
-
-                await dbContext.SaveChangesAsync(ct);
-
-                var updatedAssessment = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .FirstOrDefaultAsync(a => a.Identifier == assessmentEntity.Identifier, ct);
-
-                result.Assessment = updatedAssessment as Assessment;
-                result.IsSuccess = true;
-                result.Message = "Évaluation mise à jour avec succès";
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.Message = $"Erreur lors de la mise à jour de l'évaluation : {ex.Message}";
-            }
-
-            return result;
-        }
-
-        public async Task<AssessmentResult> DeleteAssessment(int id, CancellationToken ct)
-        {
-            AssessmentResult result = new AssessmentResult();
-
-            try
-            {
-                var assessment = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .FirstOrDefaultAsync(a => a.Identifier == id, ct);
-
-                if (assessment == null)
-                {
-                    result.IsSuccess = false;
-                    result.Message = "Évaluation introuvable";
-                    return result;
-                }
-
-                var assessmentEntity = assessment as Assessment;
-                if (assessmentEntity?.AssessmentCriteria != null && assessmentEntity.AssessmentCriteria.Any())
-                {
-                    await dbContext.RemoveRangeAsync(assessmentEntity.AssessmentCriteria, ct);
-                }
-
                 await dbContext.RemoveAsync(assessment, ct);
-                await dbContext.SaveChangesAsync(ct);
 
-                result.IsSuccess = true;
-                result.Message = "Évaluation supprimée avec succès";
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
+                {
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Assessment {assessment.Identifier} supprimé avec succès";
+                }
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible de supprimer l'assessment {assessment.Identifier}";
+                }
             }
             catch (Exception ex)
             {
-                result.IsSuccess = false;
-                result.Message = $"Erreur lors de la suppression de l'évaluation : {ex.Message}";
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Erreur lors de la suppression de l'assessment : {ex.Message}";
             }
 
-            return result;
+            return baseResult;
         }
     }
 }

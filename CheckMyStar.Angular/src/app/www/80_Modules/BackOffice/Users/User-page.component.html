@@ -11,25 +11,13 @@
     <!-- Tableau extensible -->
     <div class="d-flex flex-column flex-grow-1">
       <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
-        <app-table [columns]="columns" [data]="users!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)"></app-table>
-      </div>
-    </div>
-
-    <!-- Bouton Ajouter -->
-    <div class="d-flex flex-row border-top">
-      <div class="d-flex flex-column p-4 flex-grow-1 bg-secondary-light">
-        <div class="ms-auto">
-          <button type="button" class="btn btn-secondary w-9rem" (click)="openCreate()">
-            <i class="bi bi-plus-lg me-2"></i>
-            {{ 'CommonSection.Add' | translate }}
-          </button>
-        </div>
+        <app-table [columns]="columns" [data]="users!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" [showDetail]="false" (openCreate)="openCreate()"></app-table>
       </div>
     </div>
   </div>
 </div>
 
-<app-popup [large]="true" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()">
+<app-popup [large]="true" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()" icon="bi bi-person">
   <!-- Contenu dynamique -->
   <ng-container *ngIf="popupMode === 'delete'">
     <p>{{ 'UserSection.DeleteAsk' | translate }} <strong>{{ selectedUser?.lastName }} {{ selectedUser?.firstName }}</strong> ?</p>
