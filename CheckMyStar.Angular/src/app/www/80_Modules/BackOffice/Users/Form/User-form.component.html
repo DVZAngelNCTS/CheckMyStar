@@ -85,6 +85,9 @@
   <div class="flex-grow-1 d-flex flex-column column-box" formGroupName="address">
     <h5 class="fw-bold mb-3">{{ 'UserSection.Address' | translate }}</h5>
 
+    <!-- SEARCH ADDRESS -->
+    <app-address-autocomplete (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
+
     <!-- IDENTIFIER + NUMBER sur la même ligne -->
     <app-field controlName="address.identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
       <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>

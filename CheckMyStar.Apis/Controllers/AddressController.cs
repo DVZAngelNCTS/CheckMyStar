@@ -62,5 +62,23 @@ namespace CheckMyStar.Apis.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Search an exinsting address using the specified request data.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint validates that the address exists.
+        /// </remarks>
+        /// <param name="request">The details of the address (numéro de rue, rue, ville, code postal). Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the result of the address.</returns>
+        [HttpGet("searchaddress")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> SearchAddress([FromQuery] GeolocationGetRequest request, CancellationToken ct)
+        {
+            var result = await addressService.SearchAddress(request, ct);
+
+            return Ok(result);
+        }
     }
 }

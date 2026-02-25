@@ -7,6 +7,7 @@ using CheckMyStar.Data;
 using CheckMyStar.Apis.Services.Extensions;
 using CheckMyStar.Dal.Extensions;
 using CheckMyStar.Bll.Extensions;
+using CheckMyStar.Bll.Services.Extensions;
 using CheckMyStar.Bll.Mappings.Extensions;
 
 var applicationName = $"CheckMyStar.Apis";
@@ -81,6 +82,7 @@ builder.Services
     .AddDatabase(builder.Configuration)
     .AddDal()
     .AddBus()
+    .AddService()
     .AddProfile()
     .AddControllers();
 
