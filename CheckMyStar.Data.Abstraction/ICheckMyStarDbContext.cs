@@ -22,6 +22,7 @@
         IQueryable<Appointment> Appointments { get; }
         IQueryable<Assessment> Assessments { get; }
         IQueryable<AssessmentCriterion> AssessmentCriteria { get; }
+        IQueryable<AssessmentResultEntity> AssessmentResults { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 

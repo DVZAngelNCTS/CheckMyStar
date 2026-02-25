@@ -35,6 +35,69 @@ namespace CheckMyStar.Bll
             return assessmentsResponse;
         }
 
+        public async Task<AssessmentResponse> GetAssessment(int identifier, CancellationToken ct)
+        {
+            AssessmentResponse response = new AssessmentResponse();
+
+            var result = await assessmentDal.GetAssessment(identifier, ct);
+
+            if (result.IsSuccess && result.Assessment != null)
+            {
+                response.IsSuccess = true;
+                response.Message = result.Message;
+                response.Assessment = mapper.Map<AssessmentModel>(result.Assessment);
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = result.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<AssessmentResponse> GetAssessmentByFolder(int folderIdentifier, CancellationToken ct)
+        {
+            AssessmentResponse response = new AssessmentResponse();
+
+            var result = await assessmentDal.GetAssessmentByFolder(folderIdentifier, ct);
+
+            if (result.IsSuccess && result.Assessment != null)
+            {
+                response.IsSuccess = true;
+                response.Message = result.Message;
+                response.Assessment = mapper.Map<AssessmentModel>(result.Assessment);
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = result.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<AssessmentCriteriaResponse> GetAssessmentCriteria(int assessmentIdentifier, CancellationToken ct)
+        {
+            AssessmentCriteriaResponse response = new AssessmentCriteriaResponse();
+
+            var result = await assessmentDal.GetAssessmentCriteria(assessmentIdentifier, ct);
+
+            if (result.IsSuccess)
+            {
+                response.IsSuccess = true;
+                response.Message = result.Message;
+                response.AssessmentCriteria = mapper.Map<List<AssessmentCriterionDetailModel>>(result.AssessmentCriteria);
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = result.Message;
+            }
+
+            return response;
+        }
+
         public async Task<AssessmentResponse> AddAssessment(AssessmentModel assessmentModel, int currentUser, CancellationToken ct)
         {
             var assessment = mapper.Map<Assessment>(assessmentModel);
@@ -56,6 +119,43 @@ namespace CheckMyStar.Bll
                 Message = result.Message,
                 Assessment = result.Assessment != null ? mapper.Map<AssessmentModel>(result.Assessment) : null
             };
+
+            await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
+
+            return response;
+        }
+
+        public async Task<AssessmentResponse> UpdateAssessment(AssessmentModel assessmentModel, int currentUser, CancellationToken ct)
+        {
+            AssessmentResponse response = new AssessmentResponse();
+
+            var existingAssessment = await assessmentDal.GetAssessment(assessmentModel.Identifier, ct);
+
+            if (!existingAssessment.IsSuccess || existingAssessment.Assessment == null)
+            {
+                response.IsSuccess = false;
+                response.Message = "Évaluation non trouvée";
+                await activityBus.AddActivity(response.Message, DateTime.Now, currentUser, false, ct);
+                return response;
+            }
+
+            var assessment = mapper.Map<Assessment>(assessmentModel);
+            assessment.CreatedDate = existingAssessment.Assessment.CreatedDate;
+
+            var criteria = assessmentModel.Criteria.Select(c => new AssessmentCriterion
+            {
+                CriterionId = c.CriterionId,
+                Points = c.Points,
+                Status = c.Status,
+                IsValidated = c.IsValidated,
+                Comment = c.Comment
+            }).ToList();
+
+            var result = await assessmentDal.UpdateAssessment(assessment, criteria, ct);
+
+            response.IsSuccess = result.IsSuccess;
+            response.Message = result.Message;
+            response.Assessment = result.Assessment != null ? mapper.Map<AssessmentModel>(result.Assessment) : null;
 
             await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
 

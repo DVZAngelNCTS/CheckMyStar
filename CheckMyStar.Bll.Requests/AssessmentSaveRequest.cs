@@ -4,6 +4,6 @@ namespace CheckMyStar.Bll.Requests
 {
     public class AssessmentSaveRequest
     {
-        public AssessmentModel? Assessment { get; set; }
+        public required AssessmentModel Assessment { get; set; }
     }
 }

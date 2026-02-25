@@ -100,6 +100,18 @@
         <span><i class="bi bi-p-circle me-2 text-danger"></i>{{ 'EvaluationSection.StationnementImpossible' | translate }}</span>
       </label>
     </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isLocalisationNonAdaptee">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isLocalisationNonAdaptee">
+        <span><i class="bi bi-geo-alt me-2 text-warning"></i>{{ 'EvaluationSection.LocalisationNonAdaptee' | translate }}</span>
+      </label>
+    </div>
+    <div class="col-xl-6">
+      <label class="constraint-check d-flex align-items-center gap-3 p-3 rounded" [class.checked]="form.isPasDeTri">
+        <input class="form-check-input flex-shrink-0" type="checkbox" [(ngModel)]="form.isPasDeTri">
+        <span><i class="bi bi-recycle me-2 text-success"></i>{{ 'EvaluationSection.PasDeTri' | translate }}</span>
+      </label>
+    </div>
   </div>
 </div>
 
@@ -174,7 +186,8 @@
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
     {{ 'EvaluationSection.FormInvalid' | translate }}
   </div>
-  <button type="button" class="btn btn-primary px-4" (click)="validate()">
+  <button type="button" class="btn btn-primary px-4" (click)="validate()"
+          [appTooltip]="'EvaluationSection.ValidateStep1' | translate">
     {{ 'EvaluationSection.ValidateStep1' | translate }}
     <i class="bi bi-arrow-right ms-2"></i>
   </button>

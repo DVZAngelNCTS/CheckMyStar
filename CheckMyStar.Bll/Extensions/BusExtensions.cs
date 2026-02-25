@@ -20,7 +20,9 @@ namespace CheckMyStar.Bll.Extensions
                 .AddScoped<ISocietyBus, SocietyBus>()
                 .AddScoped<IAccommodationBus, AccommodationBus>()
                 .AddScoped<IFolderBus, FolderBus>()
-                .AddScoped<IAssessmentBus, AssessmentBus>();
+                .AddScoped<IAssessmentBus, AssessmentBus>()
+                .AddScoped<IAppointmentBus, AppointmentBus>()
+                .AddScoped<IAssessmentResultBus, AssessmentResultBus>();
 
             services
                 .AddScoped<IUserBusForService>(x => (UserBus)x.GetRequiredService<IUserBus>())
@@ -33,7 +35,9 @@ namespace CheckMyStar.Bll.Extensions
                 .AddScoped<ISocietyBusForService>(x => (SocietyBus)x.GetRequiredService<ISocietyBus>())
                 .AddScoped<IAccommodationBusForService>(x => (AccommodationBus)x.GetRequiredService<IAccommodationBus>())
                 .AddScoped<IFolderBusForService>(x => (FolderBus)x.GetRequiredService<IFolderBus>())
-                .AddScoped<IAssessmentBusForService>(x => (AssessmentBus)x.GetRequiredService<IAssessmentBus>());
+                .AddScoped<IAssessmentBusForService>(x => (AssessmentBus)x.GetRequiredService<IAssessmentBus>())
+                .AddScoped<IAppointmentBusForService>(x => (AppointmentBus)x.GetRequiredService<IAppointmentBus>())
+                .AddScoped<IAssessmentResultBusForService>(x => (AssessmentResultBus)x.GetRequiredService<IAssessmentResultBus>());
 
             return services;
         }

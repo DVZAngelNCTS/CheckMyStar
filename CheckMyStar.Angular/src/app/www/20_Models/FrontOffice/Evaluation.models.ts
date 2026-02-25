@@ -8,6 +8,8 @@ export interface EvaluationFormData {
   isBatimentClasse: boolean;
   isStudioSansSejouur: boolean;
   isStationnementImpossible: boolean;
+  isLocalisationNonAdaptee: boolean;
+  isPasDeTri: boolean;
   totalArea: number | null;
   roomCount: number | null;
   totalRoomsArea: number | null;

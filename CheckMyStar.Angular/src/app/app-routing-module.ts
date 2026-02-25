@@ -16,6 +16,7 @@ import { DossiersPageComponent } from './www/80_Modules/BackOffice/Dossiers/Doss
 import { FrontDossiersPageComponent } from './www/80_Modules/FrontOffice/Dossiers/Dossiers-page.component';
 import { DossierDetailPageComponent } from './www/80_Modules/FrontOffice/Dossiers/Detail/Dossier-detail-page.component';
 import { EvaluationPageComponent } from './www/80_Modules/FrontOffice/Dossiers/Evaluation/Evaluation-page.component';
+import { EvaluationViewPageComponent } from './www/80_Modules/FrontOffice/Dossiers/EvaluationView/EvaluationView-page.component';
 import { FrontDashboardComponent } from './www/80_Modules/FrontOffice/Home/Dashboard/Dashboard-page.component';
 
 const routes: Routes = [
@@ -32,7 +33,8 @@ const routes: Routes = [
       { path: '', component: FrontDashboardComponent, data: { breadcrumb: 'FrontOfficeMenuSection.Dashboard', icon: 'bi bi-speedometer2' }},
       { path: 'dossiers', component: FrontDossiersPageComponent, data: { breadcrumb: 'FrontOfficeMenuSection.Dossiers', icon: 'bi bi-clipboard-check' }},
       { path: 'dossiers/:id', component: DossierDetailPageComponent, data: { breadcrumb: 'FrontDossiersSection.DossierDetail', icon: 'bi bi-folder2-open', parent: 'FrontOfficeMenuSection.Dossiers' }},
-      { path: 'dossiers/:id/evaluation', component: EvaluationPageComponent, data: { breadcrumb: 'EvaluationSection.Title', icon: 'bi bi-star', parents: [{ label: 'FrontOfficeMenuSection.Dossiers', icon: 'bi bi-clipboard-check', urlOffset: 2 }, { label: 'FrontDossiersSection.DossierDetail', icon: 'bi bi-folder2-open', urlOffset: 1 }] }}
+      { path: 'dossiers/:id/evaluation', component: EvaluationPageComponent, data: { breadcrumb: 'EvaluationSection.Title', icon: 'bi bi-star', parents: [{ label: 'FrontOfficeMenuSection.Dossiers', icon: 'bi bi-clipboard-check', urlOffset: 2 }, { label: 'FrontDossiersSection.DossierDetail', icon: 'bi bi-folder2-open', urlOffset: 1 }] }},
+      { path: 'dossiers/:id/evaluation-view', component: EvaluationViewPageComponent, data: { breadcrumb: 'EvaluationViewSection.Title', icon: 'bi bi-clipboard-data', parents: [{ label: 'FrontOfficeMenuSection.Dossiers', icon: 'bi bi-clipboard-check', urlOffset: 2 }, { label: 'FrontDossiersSection.DossierDetail', icon: 'bi bi-folder2-open', urlOffset: 1 }] }}
     ]
   },
   {

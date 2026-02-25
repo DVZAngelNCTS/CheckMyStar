@@ -512,6 +512,15 @@ namespace CheckMyStar.Bll
                 if (appointmentResponse.IsSuccess && appointmentResponse.Appointment != null)
                 {
                     folderModel.Appointment = mapper.Map<AppointmentModel>(appointmentResponse.Appointment);
+
+                    if (appointmentResponse.Appointment.AddressIdentifier.HasValue)
+                    {
+                        var addressResponse = await addressDal.GetAddress(appointmentResponse.Appointment.AddressIdentifier.Value, ct);
+                        if (addressResponse.IsSuccess && addressResponse.Address != null)
+                        {
+                            folderModel.Appointment.Address = mapper.Map<AddressModel>(addressResponse.Address);
+                        }
+                    }
                 }
             }
 

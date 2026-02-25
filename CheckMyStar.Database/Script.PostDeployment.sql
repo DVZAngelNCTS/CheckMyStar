@@ -426,6 +426,8 @@ INSERT INTO dbo.Criterion ([Description], [BasePoints])
 SELECT x.[Description], x.[BasePoints]
 FROM (
     VALUES
+    (N'Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d''eau et toilettes', 5),
+    (N'Surface totale majorée', 1),
     (N'Prise de courant libre dans chaque pièce d''habitation', 1),
     (N'Tous les éclairages du logement fonctionnent et sont en bon état', 3),
     (N'Mise à disposition d''un téléphone privatif à l''intérieur du logement', 1),
@@ -481,6 +483,7 @@ FROM (
     (N'Sèche-cheveux électrique en nombre suffisant', 1),
     (N'Evier avec robinet mélangeur ou mitigeur', 3),
     (N'Nombre de foyers respectés', 3),
+    (N'Plaque vitrocéramique, à induction ou à gaz', 2),
     (N'Pour un mini-four', 3),
     (N'Four à micro-ondes', 2),
     (N'Ventilation ou ventilation mécanique contrôlée', 4),
@@ -571,17 +574,29 @@ GO
         x.StatusCode
     FROM (
         VALUES
+        (N'Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d''eau et toilettes', 1, 'X'),
+        (N'Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d''eau et toilettes', 2, 'X'),
+        (N'Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d''eau et toilettes', 3, 'X'),
+        (N'Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d''eau et toilettes', 4, 'X'),
+        (N'Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d''eau et toilettes', 5, 'X'),
+
+        (N'Surface totale majorée', 1, 'O'),
+        (N'Surface totale majorée', 2, 'O'),
+        (N'Surface totale majorée', 3, 'O'),
+        (N'Surface totale majorée', 4, 'O'),
+        (N'Surface totale majorée', 5, 'O'),
+
         (N'Prise de courant libre dans chaque pièce d''habitation', 1, 'X'),
         (N'Prise de courant libre dans chaque pièce d''habitation', 2, 'X'),
         (N'Prise de courant libre dans chaque pièce d''habitation', 3, 'X'),
         (N'Prise de courant libre dans chaque pièce d''habitation', 4, 'X'),
         (N'Prise de courant libre dans chaque pièce d''habitation', 5, 'X'),
 
-        (N' Tous les éclairages du logement fonctionnent et sont en bon état', 1, 'X'),
-        (N' Tous les éclairages du logement fonctionnent et sont en bon état', 2, 'X'),
-        (N' Tous les éclairages du logement fonctionnent et sont en bon état', 3, 'X'),
-        (N' Tous les éclairages du logement fonctionnent et sont en bon état', 4, 'X'),
-        (N' Tous les éclairages du logement fonctionnent et sont en bon état', 5, 'X'),
+        (N'Tous les éclairages du logement fonctionnent et sont en bon état', 1, 'X'),
+        (N'Tous les éclairages du logement fonctionnent et sont en bon état', 2, 'X'),
+        (N'Tous les éclairages du logement fonctionnent et sont en bon état', 3, 'X'),
+        (N'Tous les éclairages du logement fonctionnent et sont en bon état', 4, 'X'),
+        (N'Tous les éclairages du logement fonctionnent et sont en bon état', 5, 'X'),
 
         (N'Mise à disposition d''un téléphone privatif à l''intérieur du logement', 1, 'O'),
         (N'Mise à disposition d''un téléphone privatif à l''intérieur du logement', 2, 'O'),
@@ -619,7 +634,7 @@ GO
         (N'Possibilité d''accéder à au moins deux chaînes internationales ', 4, 'O'),
         (N'Possibilité d''accéder à au moins deux chaînes internationales ', 5, 'X'),
 
-	(N'Radio', 1, 'O'),
+	    (N'Radio', 1, 'O'),
         (N'Radio', 2, 'O'),
         (N'Radio', 3, 'X'),
         (N'Radio', 4, 'X'),
@@ -901,6 +916,13 @@ GO
         (N'Nombre de foyers respectés', 3, 'X'),
         (N'Nombre de foyers respectés', 4, 'X'),
         (N'Nombre de foyers respectés', 5, 'X'),
+
+        (N'Plaque vitrocéramique, à induction ou à gaz', 1, 'O'),
+        (N'Plaque vitrocéramique, à induction ou à gaz', 2, 'O'),
+        (N'Plaque vitrocéramique, à induction ou à gaz', 3, 'O'),
+        (N'Plaque vitrocéramique, à induction ou à gaz', 4, 'O'),
+        (N'Plaque vitrocéramique, à induction ou à gaz', 5, 'O'),
+
         -- Critère 58
         (N'Pour un mini-four', 1, 'X'),
         (N'Pour un mini-four', 2, 'X'),
@@ -1499,5 +1521,56 @@ BEGIN
         CONSTRAINT [FK_AssessmentCriterion_Criterion] 
             FOREIGN KEY ([CriterionId]) REFERENCES [Criterion]([CriterionId])
     );
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Appointment'
+)
+BEGIN
+    CREATE TABLE [dbo].[Appointment] (
+        [Identifier] INT NOT NULL,
+        [AppointmentDate] DATETIME NOT NULL,
+        [AddressIdentifier] INT NULL,
+        [Comment] VARCHAR(255) NULL,
+        [CreatedDate] DATETIME NOT NULL DEFAULT GETDATE(),
+        [UpdatedDate] DATETIME NULL,
+
+        CONSTRAINT [PK_Appointment] PRIMARY KEY ([Identifier]),
+
+        CONSTRAINT [FK_Appointement_Address]
+            FOREIGN KEY ([AddressIdentifier])
+            REFERENCES [Address]([Identifier])
+    );
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'AssessmentResult'
+)
+BEGIN
+    CREATE TABLE [dbo].[AssessmentResult] (
+    [Identifier] INT NOT NULL,
+    [AssesmentIdentifier] int NOT NULL,
+    [IsAccepted] BIT NOT NULL,
+    [MandatoryPointsEarned] INT NOT NULL,
+    [MandatoryThreshold] INT NOT NULL,
+    [OptionalPointsEarned] INT NOT NULL,
+    [OptionalRequired] INT NOT NULL,
+    [OncFailedCount] INT NOT NULL,
+    [CreatedDate] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedDate] DATETIME NULL,
+
+    CONSTRAINT [PK_AssessmentResult] PRIMARY KEY ([Identifier]),
+
+    CONSTRAINT [FK_AssessmentResult_Assessment] 
+        FOREIGN KEY ([AssesmentIdentifier]) 
+        REFERENCES [Assessment]([Identifier])
+    );
+
 END
 GO

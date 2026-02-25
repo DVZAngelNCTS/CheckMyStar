@@ -53,6 +53,8 @@ public partial class CheckMyStarDbContext : DbContext
 
     public virtual DbSet<AssessmentCriterion> AssessmentCriteria { get; set; }
 
+    public virtual DbSet<AssessmentResultEntity> AssessmentResults { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Activity>(entity =>
@@ -319,11 +321,20 @@ public partial class CheckMyStarDbContext : DbContext
 
             entity.Property(e => e.Identifier).ValueGeneratedNever();
             entity.Property(e => e.AppointmentDate).HasColumnType("datetime");
-            entity.Property(e => e.Location)
+            entity.Property(e => e.AddressIdentifier);
+            entity.Property(e => e.Comment)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Notes).IsUnicode(false);
-            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("GETDATE()");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+            entity.HasOne<Address>()
+                .WithMany()
+                .HasForeignKey(e => e.AddressIdentifier)
+                .HasConstraintName("FK_Appointement_Address")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Assessment>(entity =>
@@ -354,6 +365,21 @@ public partial class CheckMyStarDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false);
             entity.Property(e => e.IsValidated).HasDefaultValue(false);
+        });
+
+        modelBuilder.Entity<AssessmentResultEntity>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("AssessmentResult");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+
+            entity.HasOne<Assessment>()
+                .WithMany()
+                .HasForeignKey(e => e.AssesmentIdentifier)
+                .HasConstraintName("FK_AssessmentResult_Assessment")
+                .OnDelete(DeleteBehavior.NoAction);
         });
 
         OnModelCreatingPartial(modelBuilder);

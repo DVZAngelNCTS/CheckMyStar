@@ -34,6 +34,8 @@ namespace CheckMyStar.Bll.Mappings
             CreateMap<AssessmentCriterion, AssessmentCriterionModel>();
 
             CreateMap<AssessmentCriterionModel, AssessmentCriterion>();
+
+            CreateMap<AssessmentCriterionDetail, AssessmentCriterionDetailModel>();
         }
     }
 }
