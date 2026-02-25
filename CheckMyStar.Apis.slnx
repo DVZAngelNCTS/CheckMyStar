@@ -16,6 +16,7 @@
     <Project Path="CheckMyStar.Bll.Models/CheckMyStar.Bll.Models.csproj" Id="8b8634c6-e81e-429a-9a2f-2700dd1b48e9" />
     <Project Path="CheckMyStar.Bll.Requests/CheckMyStar.Bll.Requests.csproj" Id="410f423c-68ca-42f9-8a90-66dba8782de4" />
     <Project Path="CheckMyStar.Bll.Responses/CheckMyStar.Bll.Responses.csproj" />
+    <Project Path="CheckMyStar.Bll.Services/CheckMyStar.Bll.Services.csproj" Id="0c3ffdc9-eb78-4d12-a08f-32fd6b49d407" />
     <Project Path="CheckMyStar.Bll/CheckMyStar.Bll.csproj" Id="0e2f764c-03ac-4965-a164-23e09c29767b" />
   </Folder>
   <Folder Name="/30_Common/">

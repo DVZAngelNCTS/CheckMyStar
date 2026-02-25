@@ -13,11 +13,13 @@ import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll.ser
 import { UserBllService } from '../../../../60_Bll/BackOffice/User-bll.service';
 import { SocietyBllService } from '../../../../60_Bll/BackOffice/Society-bll.service';
 import { AuthenticateService } from '../../../../90_Services/Authenticate/Authenticate.service';
+import { AddressAutocompleteComponent } from '../../../Components/AutoCompletion/Address-autocompletion.component';
+import { GeolocationAddressModel } from '../../../../20_Models/Common/GeolocationAddress.model';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FieldComponent, TranslationModule, DigitsOnlyDirective],
+  imports: [CommonModule, ReactiveFormsModule, FieldComponent, TranslationModule, DigitsOnlyDirective, AddressAutocompleteComponent],
   templateUrl: './User-form.component.html'
 })
 export class UserFormComponent implements OnInit, OnChanges {
@@ -289,5 +291,14 @@ export class UserFormComponent implements OnInit, OnChanges {
       /^(?:0|\+33)[1-9](?:\d{2}){4}$/;
 
     return phoneRegex.test(value) ? null : { invalidPhone: true };
+  }
+
+  onAddressSelected(address: GeolocationAddressModel) {
+    this.form.get('address')?.patchValue({
+      addressLine: address.street,
+      number: address.number,
+      city: address.city,
+      zipCode: address.zipCode,
+    });
   }
 }

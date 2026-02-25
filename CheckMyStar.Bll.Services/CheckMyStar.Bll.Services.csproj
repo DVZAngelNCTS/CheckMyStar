@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CheckMyStar.Bll.Abstractions\CheckMyStar.Bll.Abstractions.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Bll.Models\CheckMyStar.Bll.Models.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Bll.Requests\CheckMyStar.Bll.Requests.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Bll.Responses\CheckMyStar.Bll.Responses.csproj" />
+  </ItemGroup>
+
+</Project>
