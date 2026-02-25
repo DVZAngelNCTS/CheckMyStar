@@ -54,6 +54,7 @@
     <ProjectReference Include="..\CheckMyStar.Apis.Services\CheckMyStar.Apis.Services.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll.Mappings\CheckMyStar.Bll.Mappings.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll.Responses\CheckMyStar.Bll.Responses.csproj" />
+    <ProjectReference Include="..\CheckMyStar.Bll.Services\CheckMyStar.Bll.Services.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll\CheckMyStar.Bll.csproj" />
     <ProjectReference Include="..\CheckMyStar.Dal\CheckMyStar.Dal.csproj" />
     <ProjectReference Include="..\CheckMyStar.Data\CheckMyStar.Data.csproj" />

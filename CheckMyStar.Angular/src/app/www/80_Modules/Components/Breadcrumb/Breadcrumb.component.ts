@@ -36,11 +36,12 @@ export class BreadcrumbComponent {
         // 3. Parent logique via data.parent
         const deepest = this.getDeepestRoute(this.route);
         const parentLabel = deepest.snapshot.data['parent'];
-
+   
         if (parentLabel) {
           const parentCrumb = this.breadcrumbs.find(b => b.label === parentLabel);
+          
           if (parentCrumb) {
-            this.parentUrl = parentCrumb.url;
+            this.parentUrl = parentCrumb.url;        
             return;
           }
         }
@@ -64,7 +65,7 @@ export class BreadcrumbComponent {
     if (children.length === 0) {
       return breadcrumbs;
     }
-
+    
     for (const child of children) {
 
       const routeURL = child.snapshot.url.map(segment => segment.path).join('/');
@@ -78,6 +79,7 @@ export class BreadcrumbComponent {
       const icon = child.snapshot.data['icon'];
       const parent = child.snapshot.data['parent'];
 
+      
       // 🔥 Parent(s) logique(s) pour l'affichage ET navigation correcte
       const parents: { label: string, icon: string, urlOffset: number }[] | undefined = child.snapshot.data['parents'];
 
@@ -91,17 +93,13 @@ export class BreadcrumbComponent {
           }
         }
       } else if (parent) {
-        const parentUrl = fullUrl.split('/').slice(0, -1).join('/');
+          const parentConfig = this.findRouteConfigByLabel(this.router.config, parent);
+          const parentIcon = parentConfig?.data?.icon ?? null;
+          const parentUrl = fullUrl.split('/').slice(0, -1).join('/');
 
-        const parentBreadcrumb = {
-          label: parent,
-          icon: child.snapshot.data['icon'] ?? 'bi bi-house',
-          url: parentUrl
-        };
-
-        if (!breadcrumbs.some(b => b.label === parentBreadcrumb.label)) {
-          breadcrumbs.push(parentBreadcrumb);
-        }
+          if (!breadcrumbs.some(b => b.label === parent)) {
+            breadcrumbs.push({ label: parent, icon: parentIcon, url: parentUrl });
+          }
       }
 
       // Breadcrumb courant
@@ -119,5 +117,18 @@ export class BreadcrumbComponent {
     if (this.parentUrl) {
       this.router.navigate([this.parentUrl]);
     }
+  }
+
+  private findRouteConfigByLabel(routes: any[], label: string): any | null {
+    for (const r of routes) {
+      if (r.data?.breadcrumb === label) {
+        return r;
+      }
+      if (r.children) {
+        const found = this.findRouteConfigByLabel(r.children, label);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 }

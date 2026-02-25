@@ -5,7 +5,7 @@ using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Apis.Services
 {
-    public class AddressService(IAddressBusForService addressBusForService) : IAddressService
+    public class AddressService(IAddressBusForService addressBusForService, IGeolocationBusForService geolocationBusForService) : IAddressService
     {
         public Task<AddressResponse> GetNextIdentifier(CancellationToken ct)
         {
@@ -20,6 +20,11 @@ namespace CheckMyStar.Apis.Services
         public Task<BaseResponse> UpdateAddress(AddressSaveRequest request, CancellationToken ct)
         {
             return addressBusForService.UpdateAddress(request, ct);
+        }
+
+        public Task<GeolocationResponse> SearchAddress(GeolocationGetRequest request, CancellationToken ct)
+        {
+            return geolocationBusForService.SearchAddress(request, ct);
         }
     }
 }
