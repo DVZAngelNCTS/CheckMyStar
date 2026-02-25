@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-grow-1">
+<div class="d-flex flex-column flex-grow-1" style="overflow-y: auto; min-height: 0; padding: 1.5rem;">
   <!-- Chargement -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
@@ -24,19 +24,28 @@
     <div class="d-flex flex-row flex-wrap gap-3 p-4 rounded bg-secondary-light">
       <h5 class="w-100 mb-2">{{ 'DossierDetailSection.Actions' | translate }}</h5>
 
-      <button class="btn btn-outline-secondary" (click)="onViewInvoice()">
+      <button class="btn btn-outline-secondary" (click)="onViewInvoice()"
+              [appTooltip]="'DossierDetailSection.ViewInvoice' | translate">
         <i class="bi bi-file-earmark-text me-2"></i>
         {{ 'DossierDetailSection.ViewInvoice' | translate }}
       </button>
 
-      <button class="btn btn-outline-secondary" (click)="onViewQuote()">
+      <button class="btn btn-outline-secondary" (click)="onViewQuote()"
+              [appTooltip]="'DossierDetailSection.ViewQuote' | translate">
         <i class="bi bi-file-earmark-ruled me-2"></i>
         {{ 'DossierDetailSection.ViewQuote' | translate }}
       </button>
 
-      <button class="btn btn-primary" (click)="onEvaluate()">
+      <button class="btn btn-primary" (click)="onEvaluate()"
+              [appTooltip]="'DossierDetailSection.Evaluate' | translate">
         <i class="bi bi-star me-2"></i>
         {{ 'DossierDetailSection.Evaluate' | translate }}
+      </button>
+
+      <button *ngIf="!getAppointmentDate() && !loadingAppointment" class="btn btn-outline-primary" (click)="openCreateAppointment()"
+              [appTooltip]="'DossierDetailSection.AddAppointment' | translate">
+        <i class="bi bi-calendar-plus me-2"></i>
+        {{ 'DossierDetailSection.AddAppointment' | translate }}
       </button>
     </div>
 
@@ -114,16 +123,96 @@
           <label class="form-label text-muted small text-uppercase fw-semibold">
             {{ 'DossierDetailSection.AppointmentDate' | translate }}
           </label>
-          <p class="mb-0 fw-medium" *ngIf="getAppointmentDate(); else noAppointment">
-            <i class="bi bi-calendar-check me-2 text-success"></i>
-            {{ getAppointmentDate() | date:'dd/MM/yyyy HH:mm' }}
-          </p>
-          <ng-template #noAppointment>
-            <p class="mb-0 text-muted fst-italic">
-              <i class="bi bi-calendar-x me-2"></i>
-              {{ 'DossierDetailSection.NoAppointment' | translate }}
+          <div *ngIf="loadingAppointment" class="text-muted fst-italic">
+            <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+            {{ 'CommonSection.Loading' | translate }}
+          </div>
+          <ng-container *ngIf="!loadingAppointment">
+            <p class="mb-0 fw-medium" *ngIf="getAppointmentDate(); else noAppointment">
+              <i class="bi bi-calendar-check me-2 text-success"></i>
+              {{ getAppointmentDate() | date:'dd/MM/yyyy HH:mm' }}
             </p>
-          </ng-template>
+            <ng-container *ngIf="getAppointmentDate() && appointment">
+              <p class="mb-0 mt-1 text-muted small" *ngIf="appointment.address">
+                <i class="bi bi-geo-alt me-1"></i>
+                {{ appointment.address.number ? appointment.address.number + ' ' : '' }}{{ appointment.address.addressLine }}, {{ appointment.address.zipCode }} {{ appointment.address.city }}
+                <span *ngIf="appointment.address.region">, {{ appointment.address.region }}</span>
+              </p>
+              <p class="mb-0 mt-1 text-muted small" *ngIf="appointment.comment">
+                <i class="bi bi-chat-left-text me-1"></i>{{ appointment.comment }}
+              </p>
+              <div class="d-flex gap-2 mt-2">
+                <button class="btn btn-sm btn-outline-primary" (click)="openEditAppointment()"
+                        [appTooltip]="'DossierDetailSection.EditAppointment' | translate">
+                  <i class="bi bi-pencil me-1"></i>
+                  {{ 'DossierDetailSection.EditAppointment' | translate }}
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="openDeleteAppointment()"
+                        [appTooltip]="'DossierDetailSection.DeleteAppointment' | translate">
+                  <i class="bi bi-trash me-1"></i>
+                  {{ 'DossierDetailSection.DeleteAppointment' | translate }}
+                </button>
+              </div>
+            </ng-container>
+            <ng-template #noAppointment>
+              <p class="mb-0 text-muted fst-italic">
+                <i class="bi bi-calendar-x me-2"></i>
+                {{ 'DossierDetailSection.NoAppointment' | translate }}
+              </p>
+              <button class="btn btn-sm btn-outline-primary mt-2" (click)="openCreateAppointment()"
+                      [appTooltip]="'DossierDetailSection.AddAppointment' | translate">
+                <i class="bi bi-calendar-plus me-1"></i>
+                {{ 'DossierDetailSection.AddAppointment' | translate }}
+              </button>
+            </ng-template>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique des évaluations -->
+    <div class="rounded p-4 bg-secondary-light">
+      <h5 class="mb-3">
+        <i class="bi bi-clock-history me-2 text-primary"></i>
+        {{ 'DossierDetailSection.EvaluationHistory' | translate }}
+      </h5>
+
+      <!-- Chargement -->
+      <div *ngIf="loadingHistory" class="text-center py-3">
+        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+        {{ 'CommonSection.Loading' | translate }}
+      </div>
+
+      <!-- Aucun résultat -->
+      <div *ngIf="!loadingHistory && assessmentResults.length === 0" class="text-muted fst-italic">
+        <i class="bi bi-inbox me-2"></i>
+        {{ 'DossierDetailSection.NoEvaluationHistory' | translate }}
+      </div>
+
+      <!-- Liste -->
+      <div *ngIf="!loadingHistory && assessmentResults.length > 0" class="d-flex flex-column gap-2">
+        <div *ngFor="let result of assessmentResults"
+             class="d-flex align-items-center justify-content-between flex-wrap gap-2 border rounded px-3 py-2 bg-white">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi fs-5"
+               [class.bi-check-circle-fill]="result.isAccepted"
+               [class.text-success]="result.isAccepted"
+               [class.bi-x-circle-fill]="!result.isAccepted"
+               [class.text-danger]="!result.isAccepted"></i>
+            <span class="fw-semibold">
+              {{ (result.isAccepted ? 'DossierDetailSection.EvaluationAccepted' : 'DossierDetailSection.EvaluationRefused') | translate }}
+            </span>
+          </div>
+          <div class="d-flex align-items-center gap-3 text-muted small">
+            <span>
+              <i class="bi bi-calendar-event me-1"></i>
+              {{ result.createdDate | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+            <button class="btn btn-sm btn-outline-primary" (click)="onViewEvaluationDetail(result)"
+                    [appTooltip]="'DossierDetailSection.ViewDetail' | translate">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -137,3 +226,38 @@
   </div>
 
 </div>
+
+<!-- Popup : création / modification d'un rendez-vous -->
+<app-popup
+  [visible]="popupVisible"
+  [title]="(isEditMode ? 'DossierDetailSection.EditAppointment' : 'DossierDetailSection.AddAppointment') | translate"
+  [confirmLabel]="'PopupSection.Validate' | translate"
+  [cancelLabel]="'PopupSection.Cancel' | translate"
+  [errorMessage]="popupError"
+  [loading]="popupLoading"
+  [icon]="isEditMode ? 'bi bi-pencil' : 'bi bi-calendar-plus'"
+  (confirm)="onPopupConfirm()"
+  (cancel)="onPopupCancel()">
+
+  <app-appointment-form [appointmentForm]="appointmentForm" [countries]="countries"></app-appointment-form>
+
+</app-popup>
+
+<!-- Popup : confirmation de suppression du rendez-vous -->
+<app-popup
+  [visible]="deletePopupVisible"
+  [title]="'DossierDetailSection.DeleteAppointment' | translate"
+  [confirmLabel]="'PopupSection.Validate' | translate"
+  [cancelLabel]="'PopupSection.Cancel' | translate"
+  [errorMessage]="deletePopupError"
+  [loading]="deletePopupLoading"
+  icon="bi bi-trash"
+  (confirm)="onDeletePopupConfirm()"
+  (cancel)="onDeletePopupCancel()">
+
+  <p class="mb-0">
+    <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+    {{ 'DossierDetailSection.DeleteAppointmentConfirm' | translate }}
+  </p>
+
+</app-popup>

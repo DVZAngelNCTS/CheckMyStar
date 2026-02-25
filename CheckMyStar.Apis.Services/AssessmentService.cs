@@ -14,9 +14,37 @@ namespace CheckMyStar.Apis.Services
             return assessments;
         }
 
+        public async Task<AssessmentResponse> GetAssessment(AssessmentGetRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentBusForService.GetAssessment(request, ct);
+
+            return assessment;
+        }
+
+        public async Task<AssessmentResponse> GetAssessmentByFolder(AssessmentGetByFolderRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentBusForService.GetAssessmentByFolder(request, ct);
+
+            return assessment;
+        }
+
+        public async Task<AssessmentCriteriaResponse> GetAssessmentCriteria(AssessmentCriteriaGetRequest request, CancellationToken ct)
+        {
+            var criteria = await assessmentBusForService.GetAssessmentCriteria(request, ct);
+
+            return criteria;
+        }
+
         public async Task<AssessmentResponse> AddAssessment(AssessmentSaveRequest request, CancellationToken ct)
         {
             var assessment = await assessmentBusForService.AddAssessment(request, ct);
+
+            return assessment;
+        }
+
+        public async Task<AssessmentResponse> UpdateAssessment(AssessmentSaveRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentBusForService.UpdateAssessment(request, ct);
 
             return assessment;
         }

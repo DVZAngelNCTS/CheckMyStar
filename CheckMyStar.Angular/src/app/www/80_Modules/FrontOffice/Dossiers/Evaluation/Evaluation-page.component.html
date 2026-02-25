@@ -162,11 +162,13 @@
 
       <!-- Actions -->
       <div class="d-flex justify-content-between gap-3 pb-3">
-        <button class="btn btn-outline-secondary" (click)="step = 2">
+        <button class="btn btn-outline-secondary" (click)="step = 2"
+                [appTooltip]="'EvaluationSection.ResultBackToCriteria' | translate">
           <i class="bi bi-arrow-left me-2"></i>
           {{ 'EvaluationSection.ResultBackToCriteria' | translate }}
         </button>
-        <button class="btn btn-outline-primary" (click)="onRestart()">
+        <button class="btn btn-outline-primary" (click)="onRestart()"
+                [appTooltip]="'EvaluationSection.ResultNewEvaluation' | translate">
           <i class="bi bi-arrow-repeat me-2"></i>
           {{ 'EvaluationSection.ResultNewEvaluation' | translate }}
         </button>

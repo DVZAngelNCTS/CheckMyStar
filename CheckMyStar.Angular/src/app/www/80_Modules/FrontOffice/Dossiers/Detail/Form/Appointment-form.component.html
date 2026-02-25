@@ -1,0 +1,90 @@
+<form [formGroup]="appointmentForm" class="d-flex flex-column gap-3">
+
+  <!-- Date -->
+  <div class="form-group">
+    <label class="form-label fw-semibold">
+      {{ 'DossierDetailSection.AppointmentDate' | translate }}
+    </label>
+    <input
+      type="datetime-local"
+      class="form-control"
+      formControlName="appointmentDate"
+      [class.is-invalid]="appointmentForm.get('appointmentDate')?.invalid && appointmentForm.get('appointmentDate')?.touched">
+    <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+  </div>
+
+  <!-- Commentaire -->
+  <div class="form-group">
+    <label class="form-label fw-semibold">
+      {{ 'DossierDetailSection.AppointmentComment' | translate }}
+    </label>
+    <textarea
+      class="form-control"
+      formControlName="comment"
+      rows="2"
+      [placeholder]="'DossierDetailSection.AppointmentCommentPlaceholder' | translate"></textarea>
+  </div>
+
+  <!-- Adresse du rendez-vous -->
+  <div class="border-top pt-3">
+    <p class="fw-semibold mb-2">
+      <i class="bi bi-geo-alt me-1 text-primary"></i>
+      {{ 'DossierDetailSection.AppointmentAddressSection' | translate }}
+    </p>
+
+    <div class="row g-2">
+      <div class="col-4">
+        <label class="form-label small">{{ 'AddressSection.Number' | translate }}</label>
+        <input type="text" class="form-control" formControlName="addressNumber">
+      </div>
+      <div class="col-8">
+        <label class="form-label small">{{ 'AddressSection.ZipCode' | translate }}</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="zipCode"
+          [class.is-invalid]="appointmentForm.get('zipCode')?.invalid && appointmentForm.get('zipCode')?.touched">
+        <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+      </div>
+    </div>
+
+    <div class="form-group mt-2">
+      <label class="form-label small">{{ 'AddressSection.AddressLine' | translate }}</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="addressLine"
+        [class.is-invalid]="appointmentForm.get('addressLine')?.invalid && appointmentForm.get('addressLine')?.touched">
+      <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+    </div>
+
+    <div class="row g-2 mt-0">
+      <div class="col-6">
+        <label class="form-label small">{{ 'AddressSection.City' | translate }}</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="city"
+          [class.is-invalid]="appointmentForm.get('city')?.invalid && appointmentForm.get('city')?.touched">
+        <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+      </div>
+      <div class="col-6">
+        <label class="form-label small">{{ 'AddressSection.Region' | translate }}</label>
+        <input type="text" class="form-control" formControlName="region">
+      </div>
+    </div>
+
+    <div class="form-group mt-2">
+      <label class="form-label small">{{ 'AddressSection.Country' | translate }}</label>
+      <select
+        class="form-select"
+        formControlName="countryIdentifier"
+        [class.is-invalid]="appointmentForm.get('countryIdentifier')?.invalid && appointmentForm.get('countryIdentifier')?.touched">
+        <option [ngValue]="null" disabled>-- {{ 'AddressSection.Country' | translate }} --</option>
+        <option *ngFor="let c of countries" [ngValue]="c.identifier">{{ c.name }}</option>
+      </select>
+      <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+    </div>
+  </div>
+
+</form>

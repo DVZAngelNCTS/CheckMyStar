@@ -26,7 +26,8 @@ namespace CheckMyStar.Dal.Extensions
                 .AddScoped<IQuoteDal, QuoteDal>()
                 .AddScoped<IInvoiceDal, InvoiceDal>()
                 .AddScoped<IAppointmentDal, AppointmentDal>()
-                .AddScoped<IAssessmentDal, AssessmentDal>();
+                .AddScoped<IAssessmentDal, AssessmentDal>()
+                .AddScoped<IAssessmentResultDal, AssessmentResultDal>();
 
             return services;
         }

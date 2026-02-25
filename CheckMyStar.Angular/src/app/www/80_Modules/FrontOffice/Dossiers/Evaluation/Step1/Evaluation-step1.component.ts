@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslationModule } from '../../../../../10_Common/Translation.module';
 import { EvaluationFormData } from "../../../../../20_Models/FrontOffice/Evaluation.models";
+import { TooltipDirective } from '../../../../Components/Tooltip/Tooltip.directive';
 
 @Component({
   selector: 'app-eval-step1',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslationModule],
+  imports: [CommonModule, FormsModule, TranslationModule, TooltipDirective],
   templateUrl: './Evaluation-step1.component.html',
   styleUrl: './Evaluation-step1.component.css'
 })

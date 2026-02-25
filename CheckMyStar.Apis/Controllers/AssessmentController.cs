@@ -29,6 +29,57 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Retrieves a specific assessment by its identifier.
+        /// </summary>
+        /// <param name="request">The request containing the assessment identifier.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the assessment details.</returns>
+        [HttpGet("getassessment")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> GetAssessment([FromQuery] AssessmentGetRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentService.GetAssessment(request, ct);
+
+            return Ok(assessment);
+        }
+
+        /// <summary>
+        /// Retrieves an assessment by folder identifier.
+        /// </summary>
+        /// <param name="request">The request containing the folder identifier.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the assessment details for the specified folder.</returns>
+        [HttpGet("getassessmentbyfolder")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> GetAssessmentByFolder([FromQuery] AssessmentGetByFolderRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentService.GetAssessmentByFolder(request, ct);
+
+            return Ok(assessment);
+        }
+
+        /// <summary>
+        /// Retrieves all criteria for a specific assessment with their details (read-only).
+        /// </summary>
+        /// <remarks>
+        /// Returns a complete list of all criteria associated with the specified assessment,
+        /// including the criterion description, base points, actual points earned, status,
+        /// validation state, and any comments. This endpoint is intended for read-only purposes
+        /// to reconstruct the assessment evaluation table.
+        /// </remarks>
+        /// <param name="request">The request containing the assessment identifier.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing a list of assessment criteria with full details.</returns>
+        [HttpGet("getassessmentcriteria")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> GetAssessmentCriteria([FromQuery] AssessmentCriteriaGetRequest request, CancellationToken ct)
+        {
+            var criteria = await assessmentService.GetAssessmentCriteria(request, ct);
+
+            return Ok(criteria);
+        }
+
+        /// <summary>
         /// Creates a new assessment with its associated criteria.
         /// </summary>
         /// <remarks>
@@ -45,6 +96,27 @@ namespace CheckMyStar.Apis.Controllers
         public async Task<IActionResult> AddAssessment([FromBody] AssessmentSaveRequest request, CancellationToken ct)
         {
             var assessment = await assessmentService.AddAssessment(request, ct);
+
+            return Ok(assessment);
+        }
+
+        /// <summary>
+        /// Updates an existing assessment with its associated criteria.
+        /// </summary>
+        /// <remarks>
+        /// Updates an assessment with all required fields. The identifier must correspond to an 
+        /// existing assessment. The created date is preserved, and the updated date is set automatically. 
+        /// The request must include the complete list of assessment criteria with their respective 
+        /// criterion IDs, points, status, validation state, and optional comments.
+        /// </remarks>
+        /// <param name="request">The assessment details including criteria. Must not be null and must include a valid identifier.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the updated assessment.</returns>
+        [HttpPut("updateassessment")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> UpdateAssessment([FromBody] AssessmentSaveRequest request, CancellationToken ct)
+        {
+            var assessment = await assessmentService.UpdateAssessment(request, ct);
 
             return Ok(assessment);
         }

@@ -31,6 +31,7 @@ export class FrontFolderFilterComponent {
     this.form = this.fb.group({
       accommodationName: [''],
       ownerLastName: [''],
+      inspectorLastName: [''],
       folderStatus: [null]
     });
   }

@@ -79,6 +79,7 @@
     <Build Include="Appointment.sql" />
     <Build Include="Assessment.sql" />
     <Build Include="AssessmentCriterion.sql" />
+    <Build Include="AssessmentResult.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CheckMyStar.Database.refactorlog" />

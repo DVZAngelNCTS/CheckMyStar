@@ -1,0 +1,284 @@
+<div class="eval-scroll-container">
+<div class="eval-content d-flex flex-column gap-4">
+
+  <!-- Titre de la page -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <i class="bi bi-clipboard-data fs-4 text-primary"></i>
+      <div>
+        <h4 class="mb-0">{{ 'EvaluationViewSection.Title' | translate }}</h4>
+        <span class="text-muted small">
+          {{ 'EvaluationViewSection.Subtitle' | translate }} &mdash;
+          {{ result?.createdDate | date:'dd/MM/yyyy HH:mm' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="result">
+
+    <!-- Bandeau principal accepté / refusé -->
+    <div class="rounded p-4 text-center result-banner"
+         [class.result-accepted]="result.isAccepted"
+         [class.result-refused]="!result.isAccepted">
+      <i class="bi fs-1 d-block mb-2"
+         [class.bi-patch-check-fill]="result.isAccepted"
+         [class.bi-x-circle-fill]="!result.isAccepted"></i>
+      <h4 class="fw-bold mb-1">
+        {{ (result.isAccepted ? 'EvaluationSection.ResultAccepted' : 'EvaluationSection.ResultRefused') | translate }}
+      </h4>
+      <p class="mb-0 small opacity-75">
+        {{ (result.isAccepted ? 'EvaluationViewSection.AcceptedHint' : 'EvaluationViewSection.RefusedHint') | translate }}
+      </p>
+    </div>
+
+    <!-- Détail du calcul -->
+    <div class="rounded p-4 bg-secondary-light">
+      <h5 class="mb-3">
+        <i class="bi bi-calculator me-2 text-primary"></i>
+        {{ 'EvaluationSection.ResultDetailTitle' | translate }}
+      </h5>
+
+      <table class="table table-bordered result-detail-table mb-0">
+        <thead>
+          <tr>
+            <th>{{ 'EvaluationSection.ResultCondition' | translate }}</th>
+            <th class="text-center" style="width: 130px">{{ 'EvaluationSection.ResultObtained' | translate }}</th>
+            <th class="text-center" style="width: 130px">{{ 'EvaluationSection.ResultRequired' | translate }}</th>
+            <th class="text-center" style="width: 90px">{{ 'EvaluationSection.ResultStatus' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Obligatoires -->
+          <tr [class.table-success]="mandatoryOk" [class.table-danger]="!mandatoryOk">
+            <td>
+              <strong>{{ 'EvaluationSection.ResultMandatoryTitle' | translate }}</strong>
+            </td>
+            <td class="text-center align-middle fw-bold">{{ result.mandatoryPointsEarned }} pts</td>
+            <td class="text-center align-middle">≥ {{ result.mandatoryThreshold }} pts <span class="text-muted small">(95%)</span></td>
+            <td class="text-center align-middle">
+              <i class="bi fs-5"
+                 [class.bi-check-circle-fill]="mandatoryOk" [class.text-success]="mandatoryOk"
+                 [class.bi-x-circle-fill]="!mandatoryOk" [class.text-danger]="!mandatoryOk"></i>
+            </td>
+          </tr>
+
+          <!-- ONC -->
+          <tr [class.table-success]="oncOk" [class.table-danger]="!oncOk">
+            <td>
+              <strong>{{ 'EvaluationSection.ResultOncTitle' | translate }}</strong>
+              <div class="text-muted small">
+                <ng-container *ngIf="oncOk">{{ 'EvaluationViewSection.OncOk' | translate }}</ng-container>
+                <ng-container *ngIf="!oncOk">{{ 'EvaluationViewSection.OncFail' | translate : { count: result.oncFailedCount } }}</ng-container>
+              </div>
+            </td>
+            <td class="text-center align-middle fw-bold">{{ result.oncFailedCount }} {{ 'EvaluationViewSection.OncFailed' | translate }}</td>
+            <td class="text-center align-middle">0</td>
+            <td class="text-center align-middle">
+              <i class="bi fs-5"
+                 [class.bi-check-circle-fill]="oncOk" [class.text-success]="oncOk"
+                 [class.bi-x-circle-fill]="!oncOk" [class.text-danger]="!oncOk"></i>
+            </td>
+          </tr>
+
+          <!-- Optionnels -->
+          <tr [class.table-success]="optionalOk" [class.table-danger]="!optionalOk">
+            <td>
+              <strong>{{ 'EvaluationSection.ResultOptionalTitle' | translate }}</strong>
+            </td>
+            <td class="text-center align-middle fw-bold">{{ result.optionalPointsEarned }} pts</td>
+            <td class="text-center align-middle">≥ {{ result.optionalRequired }} pts</td>
+            <td class="text-center align-middle">
+              <i class="bi fs-5"
+                 [class.bi-check-circle-fill]="optionalOk" [class.text-success]="optionalOk"
+                 [class.bi-x-circle-fill]="!optionalOk" [class.text-danger]="!optionalOk"></i>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Informations du bien évalué -->
+    <div class="rounded p-4 bg-secondary-light">
+      <h5 class="mb-3">
+        <i class="bi bi-house-check me-2 text-primary"></i>
+        {{ 'EvaluationViewSection.PropertyInfoTitle' | translate }}
+      </h5>
+
+      <!-- Chargement -->
+      <div *ngIf="loadingAssessment" class="text-center py-3">
+        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+        {{ 'CommonSection.Loading' | translate }}
+      </div>
+
+      <ng-container *ngIf="!loadingAssessment && assessment">
+
+        <!-- Informations générales -->
+        <div class="mb-4">
+          <h6 class="text-muted text-uppercase small fw-semibold mb-2">
+            <i class="bi bi-info-circle me-1"></i>
+            {{ 'EvaluationSection.GeneralInfoTitle' | translate }}
+          </h6>
+          <div class="row g-2">
+            <div class="col-sm-4">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.TargetStarTitle' | translate }}</div>
+                <div class="fw-bold fs-5">
+                  <i class="bi bi-star-fill text-warning me-1"></i>{{ assessment.targetStarLevel }}
+                  <span class="small fw-normal text-muted ms-1">{{ 'EvaluationSection.Star' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.MaxCapacity' | translate }}</div>
+                <div class="fw-bold fs-5">{{ assessment.capacity }}
+                  <span class="small fw-normal text-muted ms-1">{{ 'EvaluationViewSection.Persons' | translate }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.Floors' | translate }}</div>
+                <div class="fw-bold fs-5">{{ assessment.numberOfFloors }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contraintes spécifiques -->
+        <div class="mb-4">
+          <h6 class="text-muted text-uppercase small fw-semibold mb-2">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            {{ 'EvaluationSection.ConstraintsTitle' | translate }}
+          </h6>
+          <div *ngIf="activeConstraints.length === 0" class="text-muted fst-italic small">
+            <i class="bi bi-check2-circle me-1 text-success"></i>
+            {{ 'EvaluationViewSection.NoConstraints' | translate }}
+          </div>
+          <div *ngIf="activeConstraints.length > 0" class="d-flex flex-wrap gap-2">
+            <span *ngFor="let c of activeConstraints" class="badge bg-warning text-dark p-2 fw-normal">
+              <i class="bi bi-check-lg me-1"></i>{{ c | translate }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Surfaces -->
+        <div>
+          <h6 class="text-muted text-uppercase small fw-semibold mb-2">
+            <i class="bi bi-rulers me-1"></i>
+            {{ 'EvaluationSection.SurfacesTitle' | translate }}
+          </h6>
+          <div class="row g-2">
+            <div class="col-sm-3">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.TotalArea' | translate }}</div>
+                <div class="fw-bold">{{ assessment.totalArea }} m²</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.RoomCount' | translate }}</div>
+                <div class="fw-bold">{{ assessment.numberOfRooms }}</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.TotalRoomsArea' | translate }}</div>
+                <div class="fw-bold">{{ assessment.totalRoomsArea }} m²</div>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="border rounded p-2 bg-white text-center">
+                <div class="text-muted small mb-1">{{ 'EvaluationSection.SmallestRoomArea' | translate }}</div>
+                <div class="fw-bold">{{ assessment.smallestRoomArea }} m²</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </ng-container>
+    </div>
+
+    <!-- Tableau des critères -->
+    <div class="rounded p-4 bg-secondary-light">
+      <h5 class="mb-3">
+        <i class="bi bi-list-check me-2 text-primary"></i>
+        {{ 'EvaluationViewSection.CriteriaTitle' | translate }}
+        <span class="badge bg-primary ms-2">{{ criteria.length }} {{ 'EvaluationSection.Criteria' | translate }}</span>
+      </h5>
+
+      <!-- Chargement -->
+      <div *ngIf="loadingCriteria" class="text-center py-3">
+        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+        {{ 'CommonSection.Loading' | translate }}
+      </div>
+
+      <!-- Barre de progression globale -->
+      <div *ngIf="!loadingCriteria && criteria.length > 0" class="mb-3 p-3 rounded bg-white border">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="fw-semibold small">
+            <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+            {{ 'EvaluationSection.Progress' | translate }}
+          </span>
+          <span class="small text-muted">
+            <strong>{{ validatedCount }}</strong> / {{ criteria.length }} {{ 'EvaluationSection.CriteriaValidated' | translate }}
+            &nbsp;—&nbsp;
+            <strong class="text-success">{{ totalPoints }} pts</strong>
+          </span>
+        </div>
+        <div class="progress" style="height: 10px; border-radius: 6px;">
+          <div class="progress-bar bg-success"
+               [style.width.%]="criteria.length ? (validatedCount / criteria.length * 100) : 0"
+               style="border-radius: 6px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div *ngIf="!loadingCriteria && criteria.length > 0" class="criteria-table-wrapper">
+        <div class="criteria-scroll-body">
+        <table class="table table-bordered table-hover criteria-table mb-0">
+          <thead>
+            <tr>
+              <th style="width: 42px" class="text-center">#</th>
+              <th>{{ 'EvaluationSection.CriteriaLabel' | translate }}</th>
+              <th style="width: 12%" class="text-center">{{ 'EvaluationSection.Type' | translate }}</th>
+              <th style="width: 8%" class="text-center">{{ 'EvaluationSection.Points' | translate }}</th>
+              <th style="width: 10%" class="text-center">{{ 'EvaluationSection.Validated' | translate }}</th>
+              <th style="width: 20%">{{ 'EvaluationSection.Comment' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of criteria; let i = index" [class.row-validated]="c.isValidated">
+              <td class="text-center align-middle text-muted small fw-semibold">{{ i + 1 }}</td>
+              <td class="align-middle">{{ c.criterionDescription }}</td>
+              <td class="text-center align-middle">
+                <span class="badge" [ngClass]="getTypeBadgeClass(c.status)">
+                  {{ c.status }}
+                </span>
+              </td>
+              <td class="text-center align-middle fw-bold">{{ c.points }}</td>
+              <td class="text-center align-middle">
+                <i class="bi fs-5"
+                   [class.bi-check-circle-fill]="c.isValidated" [class.text-success]="c.isValidated"
+                   [class.bi-circle]="!c.isValidated" [class.text-muted]="!c.isValidated"></i>
+              </td>
+              <td class="align-middle text-muted small">{{ c.comment || '&mdash;' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div *ngIf="!loadingCriteria && criteria.length === 0" class="text-muted fst-italic">
+        <i class="bi bi-inbox me-2"></i>
+        {{ 'EvaluationViewSection.NoCriteria' | translate }}
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>
+</div>
