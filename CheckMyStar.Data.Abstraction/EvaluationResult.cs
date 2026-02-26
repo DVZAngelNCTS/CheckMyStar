@@ -6,7 +6,7 @@ public partial class AssessmentResultEntity
 {
     public int Identifier { get; set; }
 
-    public int AssesmentIdentifier { get; set; }
+    public int AssessmentIdentifier { get; set; }
 
     public bool IsAccepted { get; set; }
 
@@ -18,7 +18,7 @@ public partial class AssessmentResultEntity
 
     public int OptionalRequired { get; set; }
 
-    public int OncFailedCount { get; set; }
+    public int OnceFailedCount { get; set; }
 
     public DateTime CreatedDate { get; set; }
 

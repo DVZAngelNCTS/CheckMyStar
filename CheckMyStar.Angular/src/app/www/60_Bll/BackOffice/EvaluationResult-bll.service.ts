@@ -6,13 +6,13 @@ import { EvaluationResultResponse } from '../../50_Responses/BackOffice/Evaluati
 import { EvaluationResultsResponse } from '../../50_Responses/BackOffice/EvaluationResults.response';
 
 export interface EvaluationResultPayload {
-  assesmentIdentifier: number;
+  assessmentIdentifier: number;
   isAccepted: boolean;
   mandatoryPointsEarned: number;
   mandatoryThreshold: number;
   optionalPointsEarned: number;
   optionalRequired: number;
-  oncFailedCount: number;
+  onceFailedCount: number;
 }
 
 @Injectable({
@@ -32,13 +32,13 @@ export class EvaluationResultBllService {
         return this.evaluationResultDal.addEvaluationResult$({
           assessmentResult: {
             identifier,
-            assesmentIdentifier: payload.assesmentIdentifier,
+            assessmentIdentifier: payload.assessmentIdentifier,
             isAccepted: payload.isAccepted,
             mandatoryPointsEarned: payload.mandatoryPointsEarned,
             mandatoryThreshold: payload.mandatoryThreshold,
             optionalPointsEarned: payload.optionalPointsEarned,
             optionalRequired: payload.optionalRequired,
-            oncFailedCount: payload.oncFailedCount,
+            onceFailedCount: payload.onceFailedCount,
             createdDate: new Date(),
             updatedDate: new Date()
           }

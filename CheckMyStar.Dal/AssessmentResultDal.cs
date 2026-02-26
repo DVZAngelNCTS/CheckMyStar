@@ -107,13 +107,13 @@ namespace CheckMyStar.Dal
                     return result;
                 }
 
-                existingAssessmentResult.AssesmentIdentifier = assessmentResult.AssesmentIdentifier;
+                existingAssessmentResult.AssessmentIdentifier = assessmentResult.AssessmentIdentifier;
                 existingAssessmentResult.IsAccepted = assessmentResult.IsAccepted;
                 existingAssessmentResult.MandatoryPointsEarned = assessmentResult.MandatoryPointsEarned;
                 existingAssessmentResult.MandatoryThreshold = assessmentResult.MandatoryThreshold;
                 existingAssessmentResult.OptionalPointsEarned = assessmentResult.OptionalPointsEarned;
                 existingAssessmentResult.OptionalRequired = assessmentResult.OptionalRequired;
-                existingAssessmentResult.OncFailedCount = assessmentResult.OncFailedCount;
+                existingAssessmentResult.OnceFailedCount = assessmentResult.OnceFailedCount;
                 existingAssessmentResult.UpdatedDate = DateTime.Now;
 
                 await dbContext.UpdateAsync(existingAssessmentResult, ct);
@@ -139,7 +139,7 @@ namespace CheckMyStar.Dal
             try
             {
                 var assessmentResults = await (from ar in dbContext.AssessmentResults.AsNoTracking()
-                                               join a in dbContext.Assessments.AsNoTracking() on ar.AssesmentIdentifier equals a.Identifier
+                                               join a in dbContext.Assessments.AsNoTracking() on ar.AssessmentIdentifier equals a.Identifier
                                                where a.FolderIdentifier == folderIdentifier
                                                select ar).ToListAsync(ct);
 

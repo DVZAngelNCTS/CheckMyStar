@@ -70,10 +70,10 @@
               <strong>{{ 'EvaluationSection.ResultOncTitle' | translate }}</strong>
               <div class="text-muted small">
                 <ng-container *ngIf="oncOk">{{ 'EvaluationViewSection.OncOk' | translate }}</ng-container>
-                <ng-container *ngIf="!oncOk">{{ 'EvaluationViewSection.OncFail' | translate : { count: result.oncFailedCount } }}</ng-container>
+                <ng-container *ngIf="!oncOk">{{ 'EvaluationViewSection.OncFail' | translate : { count: result.onceFailedCount } }}</ng-container>
               </div>
             </td>
-            <td class="text-center align-middle fw-bold">{{ result.oncFailedCount }} {{ 'EvaluationViewSection.OncFailed' | translate }}</td>
+            <td class="text-center align-middle fw-bold">{{ result.onceFailedCount }} {{ 'EvaluationViewSection.OncFailed' | translate }}</td>
             <td class="text-center align-middle">0</td>
             <td class="text-center align-middle">
               <i class="bi fs-5"
