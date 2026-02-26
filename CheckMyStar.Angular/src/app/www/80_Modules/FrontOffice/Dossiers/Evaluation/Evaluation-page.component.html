@@ -119,10 +119,10 @@
                 <strong>{{ 'EvaluationSection.ResultOncTitle' | translate }}</strong>
                 <div class="text-muted small">
                   <ng-container *ngIf="result.oncOk">{{ 'EvaluationSection.ResultOncOk' | translate : { count: result.oncCount } }}</ng-container>
-                  <ng-container *ngIf="!result.oncOk">{{ 'EvaluationSection.ResultOncFail' | translate : { count: result.onceFailedCount } }}</ng-container>
+                  <ng-container *ngIf="!result.oncOk">{{ 'EvaluationSection.ResultOncFail' | translate : { count: result.oncFailedCount } }}</ng-container>
                 </div>
               </td>
-              <td class="text-center align-middle fw-bold">{{ result.oncCount - result.onceFailedCount }} / {{ result.oncCount }}</td>
+              <td class="text-center align-middle fw-bold">{{ result.oncCount - result.oncFailedCount }} / {{ result.oncCount }}</td>
               <td class="text-center align-middle">{{ result.oncCount }} / {{ result.oncCount }}</td>
               <td class="text-center align-middle">
                 <i class="bi fs-5" [class.bi-check-circle-fill]="result.oncOk" [class.text-success]="result.oncOk"
