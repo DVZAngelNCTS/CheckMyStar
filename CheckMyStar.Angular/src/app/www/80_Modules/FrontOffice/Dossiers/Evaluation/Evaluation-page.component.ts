@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
@@ -399,13 +399,13 @@ export class EvaluationPageComponent implements OnInit {
       switchMap(response => {
         const assessmentId = response?.assessment?.identifier ?? this.draftAssessmentId ?? 0;
         return this.evaluationResultBll.saveEvaluationResult$({
-          assesmentIdentifier:   assessmentId,
+          assessmentIdentifier:  assessmentId,
           isAccepted:            accepted,
           mandatoryPointsEarned: earnedMandatoryPoints,
           mandatoryThreshold,
           optionalPointsEarned:  earnedOptionalPoints,
           optionalRequired:      requiredOptional,
-          oncFailedCount
+          onceFailedCount:       oncFailedCount
         });
       })
     ).subscribe({

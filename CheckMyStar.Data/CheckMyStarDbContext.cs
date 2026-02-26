@@ -377,7 +377,7 @@ public partial class CheckMyStarDbContext : DbContext
 
             entity.HasOne<Assessment>()
                 .WithMany()
-                .HasForeignKey(e => e.AssesmentIdentifier)
+                .HasForeignKey(e => e.AssessmentIdentifier)
                 .HasConstraintName("FK_AssessmentResult_Assessment")
                 .OnDelete(DeleteBehavior.NoAction);
         });

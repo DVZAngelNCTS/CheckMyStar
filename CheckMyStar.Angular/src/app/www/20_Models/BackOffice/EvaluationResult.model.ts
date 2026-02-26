@@ -1,12 +1,12 @@
 export interface EvaluationResultModel {
   identifier: number;
-  assesmentIdentifier: number;
+  assessmentIdentifier: number;
   isAccepted: boolean;
   mandatoryPointsEarned: number;
   mandatoryThreshold: number;
   optionalPointsEarned: number;
   optionalRequired: number;
-  oncFailedCount: number;
+  onceFailedCount: number;
   createdDate: Date;
   updatedDate: Date;
 }

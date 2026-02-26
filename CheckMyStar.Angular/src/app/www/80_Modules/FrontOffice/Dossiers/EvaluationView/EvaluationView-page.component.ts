@@ -34,7 +34,7 @@ export class EvaluationViewPageComponent implements OnInit {
   }
 
   get oncOk(): boolean {
-    return !!this.result && this.result.oncFailedCount === 0;
+    return !!this.result && this.result.onceFailedCount === 0;
   }
 
   get validatedCount(): number {
@@ -91,9 +91,9 @@ export class EvaluationViewPageComponent implements OnInit {
   }
 
   private loadCriteria(): void {
-    if (!this.result?.assesmentIdentifier) return;
+    if (!this.result?.assessmentIdentifier) return;
     this.loadingCriteria = true;
-    this.assessmentBll.getAssessmentCriteria$(this.result.assesmentIdentifier).subscribe({
+    this.assessmentBll.getAssessmentCriteria$(this.result.assessmentIdentifier).subscribe({
       next: (response: AssessmentCriteriaResponse) => {
         this.criteria = response.assessmentCriteria ?? [];
         this.loadingCriteria = false;
@@ -106,9 +106,9 @@ export class EvaluationViewPageComponent implements OnInit {
   }
 
   private loadAssessment(): void {
-    if (!this.result?.assesmentIdentifier) return;
+    if (!this.result?.assessmentIdentifier) return;
     this.loadingAssessment = true;
-    this.assessmentBll.getAssessment$(this.result.assesmentIdentifier).subscribe({
+    this.assessmentBll.getAssessment$(this.result.assessmentIdentifier).subscribe({
       next: (response: AssessmentResponse) => {
         this.assessment = response.assessment ?? null;
         this.loadingAssessment = false;
