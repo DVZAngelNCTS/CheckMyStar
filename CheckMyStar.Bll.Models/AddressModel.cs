@@ -9,7 +9,7 @@
         public string? ZipCode { get; set; }
         public string? Region { get; set; }
         public CountryModel? Country { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
     }
 }

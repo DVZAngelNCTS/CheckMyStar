@@ -7,6 +7,6 @@ namespace CheckMyStar.Bll.Models
         public decimal Amount { get; set; }
         public bool IsAccepted { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate {  get; set; }
+        public DateTime? UpdatedDate {  get; set; }
     }
 }

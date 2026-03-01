@@ -8,7 +8,7 @@ export interface UserModel {
     civility: EnumCivility;
     lastName: string;
     firstName: string;
-    societyIdentifier?: number | null;
+    societyIdentifier?: number;
     email: string;
     phone: string;
     password: string;
