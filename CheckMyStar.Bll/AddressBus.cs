@@ -30,9 +30,6 @@ namespace CheckMyStar.Bll
                 {
                     var dateTime = DateTime.Now;
 
-                    addressModel.CreatedDate = dateTime;
-                    addressModel.UpdatedDate = dateTime;
-
                     var addressEntity = mapper.Map<Address>(addressModel);
 
                     var addressResult = await addressDal.AddAddress(addressEntity, ct);
@@ -77,7 +74,6 @@ namespace CheckMyStar.Bll
                 {
                     var dateTime = DateTime.Now;
 
-                    addressModel.CreatedDate = address.Address.CreatedDate;
                     addressModel.UpdatedDate = dateTime;
 
                     var addressEntity = mapper.Map<Address>(addressModel);

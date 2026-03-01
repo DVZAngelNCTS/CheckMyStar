@@ -1,8 +1,8 @@
-﻿using CheckMyStar.Dal.Results;
+﻿using CheckMyStar.Data;
 
 namespace CheckMyStar.Dal.Results;
 
 public class SocietyResult : BaseResult
 {
-    public int? SocietyId { get; set; }
+    public Society? Society { get; set; }
 }

@@ -5,13 +5,14 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
 using CheckMyStar.Security;
 
 namespace CheckMyStar.Bll
 {
-    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, IMapper mapper) : IUserBus
+    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, ISocietyDal societyDal, IMapper mapper) : IUserBus
     {
         public async Task<UserResponse> GetIdentifier(CancellationToken ct)
         {
@@ -86,14 +87,11 @@ namespace CheckMyStar.Bll
 
                     if (user.IsSuccess)
                     {
-                        if (user.User == null)
+                        if (user.User == null && userModel.Password != null)
                         {
                             userModel.Password = SecurityHelper.HashPassword(userModel.Password);
 
                             var dateTime = DateTime.Now;
-
-                            userModel.Address.CreatedDate = dateTime;
-                            userModel.Address.UpdatedDate = dateTime;
 
                             var addressEntity = mapper.Map<Address>(userModel.Address);
 
@@ -101,9 +99,6 @@ namespace CheckMyStar.Bll
 
                             if (addressResult.IsSuccess)
                             {
-                                userModel.CreatedDate = dateTime;
-                                userModel.UpdatedDate = dateTime;
-
                                 var userEntity = mapper.Map<User>(userModel);
 
                                 var userResult = mapper.Map<BaseResponse>(await userDal.AddUser(userEntity, ct));
@@ -174,7 +169,6 @@ namespace CheckMyStar.Bll
 
                     var dateTime = DateTime.Now;
 
-                    userModel.CreatedDate = dateTime;
                     userModel.UpdatedDate = dateTime;
 
                     var userEntity = mapper.Map<User>(userModel);
@@ -185,10 +179,10 @@ namespace CheckMyStar.Bll
                     {
                         if (userModel.Address != null)
                         {
-                            userModel.Address.CreatedDate = dateTime;
                             userModel.Address.UpdatedDate = dateTime;
 
                             var addressEntity = mapper.Map<Address>(userModel.Address);
+
                             var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
 
                             if (addressResult.IsSuccess)
@@ -250,9 +244,57 @@ namespace CheckMyStar.Bll
 
                     if (activityResult.IsSuccess)
                     {
-                        var userEntity = mapper.Map<User>(user.User);
+                        if (user.User.SocietyIdentifier != null)
+                        {
+                            var societyResult = await societyDal.GetSociety(user.User.SocietyIdentifier.Value, ct);
 
-                        var userResult = await userDal.DeleteUser(userEntity, ct);
+                            if (societyResult.IsSuccess)
+                            {
+                                if (societyResult.Society != null)
+                                {
+                                    if (societyResult.Society.AddressIdentifier != null)
+                                    {
+                                        var addressResult = await addressDal.GetAddress(societyResult.Society.AddressIdentifier.Value, ct);
+
+                                        if (addressResult.IsSuccess)
+                                        {
+                                            if (addressResult.Address != null)
+                                            {
+                                                var deleteAddressResult = await addressDal.DeleteAddress(addressResult.Address, ct);
+
+                                                if (deleteAddressResult.IsSuccess)
+                                                {
+                                                    result.Message += "<br>" + deleteAddressResult.Message;
+                                                }
+                                                else
+                                                {
+                                                    result.IsSuccess = false;
+                                                    result.Message += "<br>" + deleteAddressResult.Message;
+                                                }
+
+                                                await activityBus.AddActivity(deleteAddressResult.Message, DateTime.Now, currentUser, deleteAddressResult.IsSuccess, ct);
+                                            }
+                                        }
+                                    }
+
+                                    var deleteSociety = await societyDal.DeleteSocity(societyResult.Society, ct);
+
+                                    if (deleteSociety.IsSuccess)
+                                    {
+                                        result.Message += "<br>" + deleteSociety.Message;
+                                    }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message += "<br>" + deleteSociety.Message;
+                                    }
+
+                                    await activityBus.AddActivity(deleteSociety.Message, DateTime.Now, currentUser, deleteSociety.IsSuccess, ct);
+                                }
+                            }
+                        }
+
+                        var userResult = await userDal.DeleteUser(user.User, ct);
 
                         if (userResult.IsSuccess)
                         {
@@ -307,6 +349,8 @@ namespace CheckMyStar.Bll
                         result.IsSuccess = false;
                         result.Message = activityResult.Message;
                     }
+
+                    await activityBus.AddActivity(activityResult.Message, DateTime.Now, currentUser, activityResult.IsSuccess, ct);
                 }
                 else
                 {

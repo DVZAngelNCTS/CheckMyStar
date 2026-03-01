@@ -26,7 +26,6 @@ h1 {
 
 /* Page */
 .page-header { 
-	padding: 20px; 
 	background: #2b8a00;
 }
 
@@ -176,14 +175,6 @@ h1 {
 .page-header h1 { 
 	margin: 0 0 16px 0; 
 	color: #fff; 
-}
-
-.column-box {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  background: #fafafa;
-  min-width: 250px; /* évite que les colonnes se compressent */
 }
 
 /* Link */

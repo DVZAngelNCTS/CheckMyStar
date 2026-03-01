@@ -1,8 +1,9 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CheckMyStar.Data;
 
-public partial class AssessmentResultEntity
+public partial class AssessmentResult
 {
     public int Identifier { get; set; }
 

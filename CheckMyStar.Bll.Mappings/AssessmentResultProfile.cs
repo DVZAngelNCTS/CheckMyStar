@@ -9,8 +9,9 @@ namespace CheckMyStar.Bll.Mappings
     {
         public AssessmentResultProfile()
         {
-            CreateMap<AssessmentResultEntity, AssessmentResultModel>();
-            CreateMap<AssessmentResultModel, AssessmentResultEntity>();
+            CreateMap<AssessmentResult, AssessmentResultModel>();
+
+            CreateMap<AssessmentResultModel, AssessmentResult>();
         }
     }
 }

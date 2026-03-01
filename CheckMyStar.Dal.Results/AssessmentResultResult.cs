@@ -1,9 +1,10 @@
+
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Dal.Results
 {
-    public class AssessmentResultEntityResult : BaseResult
+    public class AssessmentResultResult : BaseResult
     {
-        public AssessmentResultEntity? AssessmentResultEntity { get; set; }
+        public Data.AssessmentResult? AssessmentResult { get; set; }
     }
 }

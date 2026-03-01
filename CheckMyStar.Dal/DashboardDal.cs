@@ -31,21 +31,18 @@ namespace CheckMyStar.Dal
 
                 var numberUserWeeklyTrend = await (from u in dbContext.Users.AsNoTracking()
                                                    where
-                                                        u.CreatedDate != null
-                                                     && u.CreatedDate.Value >= startOfWeek
-                                                     && u.CreatedDate.Value <= endOfWeek
+                                                        u.CreatedDate >= startOfWeek
+                                                     && u.CreatedDate <= endOfWeek
                                                     select u).CountAsync();
 
                 var numberUserMonthlyTrend = await (from u in dbContext.Users.AsNoTracking()
                                                     where
-                                                        u.CreatedDate != null
-                                                     && u.CreatedDate.Value.Month == DateTime.Now.Month
+                                                        u.CreatedDate.Month == DateTime.Now.Month
                                                     select u).CountAsync();
 
                 var numberUserYearlyTrend = await (from u in dbContext.Users.AsNoTracking()
                                                    where
-                                                        u.CreatedDate != null
-                                                     && u.CreatedDate.Value.Year == DateTime.Now.Year
+                                                       u.CreatedDate.Year == DateTime.Now.Year
                                                    select u).CountAsync();
 
                 var numberRoles = await (from r in dbContext.Roles.AsNoTracking()

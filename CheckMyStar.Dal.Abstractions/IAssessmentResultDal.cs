@@ -5,9 +5,9 @@ namespace CheckMyStar.Dal.Abstractions
 {
     public interface IAssessmentResultDal
     {
-        Task<AssessmentResultEntityResult> GetNextIdentifier(CancellationToken ct);
-        Task<AssessmentResultEntityResult> AddAssessmentResult(AssessmentResultEntity assessmentResult, CancellationToken ct);
-        Task<AssessmentResultEntityResult> UpdateAssessmentResult(AssessmentResultEntity assessmentResult, CancellationToken ct);
-        Task<AssessmentResultEntitiesResult> GetAssessmentResultsByFolder(int folderIdentifier, CancellationToken ct);
+        Task<AssessmentResultResult> GetNextIdentifier(CancellationToken ct);
+        Task<AssessmentResultResult> AddAssessmentResult(Data.AssessmentResult assessmentResult, CancellationToken ct);
+        Task<AssessmentResultResult> UpdateAssessmentResult(Data.AssessmentResult assessmentResult, CancellationToken ct);
+        Task<AssessmentsResultResult> GetAssessmentResultsByFolder(int folderIdentifier, CancellationToken ct);
     }
 }

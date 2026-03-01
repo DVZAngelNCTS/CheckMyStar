@@ -5,6 +5,6 @@
     [Amount] DECIMAL(10,2) NOT NULL,
     [IsAccepted] BIT NOT NULL DEFAULT 0,
     [CreatedDate] DATETIME NOT NULL DEFAULT GETDATE(),
-
+    [UpdatedDate] DATETIME NULL, 
     CONSTRAINT [PK_Quote] PRIMARY KEY ([Identifier])
 )

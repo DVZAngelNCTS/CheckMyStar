@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
@@ -10,29 +11,31 @@ namespace CheckMyStar.Bll;
 
 public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserContextService userContext, IActivityBus activityBus) : ISocietyBus
 {
-    public async Task<SocietyCreateResponse> CreateSociety(SocietyModel societyModel, int currentUser, CancellationToken ct)
+    public async Task<SocietyResponse> AddSociety(SocietyModel societyModel, int currentUser, CancellationToken ct)
     {
-        var response = new SocietyCreateResponse();
+        var response = new SocietyResponse();
 
         try
         {
             var society = mapper.Map<Society>(societyModel);
 
-            var dalResult = await societyDal.AddSociety(society, ct);
+            var result = await societyDal.AddSociety(society, ct);
 
-            if (dalResult.IsSuccess)
+            if (result.IsSuccess)
             {
+                societyModel = mapper.Map<SocietyModel>(result.Society);
+
                 response.IsSuccess = true;
-                response.Message = dalResult.Message;
-                response.SocietyId = dalResult.SocietyId;
+                response.Message = result.Message;
+                response.Society = societyModel;
             }
             else
             {
                 response.IsSuccess = false;
-                response.Message = dalResult.Message;
+                response.Message = result.Message;
             }
             
-            await activityBus.AddActivity(dalResult.Message, DateTime.Now, currentUser, dalResult.IsSuccess, ct);
+            await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
         }
         catch (Exception ex)
         {

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Environment } from '../../../../Environment/environment';
-import { AccommodationModel } from '../../20_Models/BackOffice/Folder.model';
+import { AccommodationModel } from '../../20_Models/BackOffice/Accommodation.model';
 import { AccommodationResponse } from '../../50_Responses/BackOffice/Accommodation.response';
 
 @Injectable({

@@ -203,7 +203,7 @@ export class DossierDetailPageComponent implements OnInit {
         this.deletePopupLoading = false;
         if ((response as any)?.isSuccess !== false) {
           this.appointment = null;
-          if (this.folder) this.folder.appointment = null;
+          if (this.folder) this.folder.appointment = undefined;
           this.deletePopupVisible = false;
           this.toast.show(this.translate.instant('DossierDetailSection.AppointmentDeleted'), 'success', 3000);
         } else {

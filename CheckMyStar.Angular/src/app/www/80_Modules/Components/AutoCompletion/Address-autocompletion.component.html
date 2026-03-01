@@ -1,10 +1,10 @@
-<div class="autocomplete-wrapper">
-    <app-field controlName="search" label="" labelClass="" labelTextPosition="start" controlClass="w-100" icon="bi bi-geo-alt">
-      <input type="text" class="form-control" [formControl]="control" placeholder="Saisissez une adresse">
-    </app-field>  
-  <ul *ngIf="suggestions.length > 0" class="list-group mt-1">
-    <li class="list-group-item" *ngFor="let s of suggestions" (click)="selectAddress(s)">
-      {{ s.label}}
+<div class="autocomplete-wrapper" style="position: relative;">
+  <app-field controlName="search" label="" labelClass="" labelTextPosition="start" controlClass="w-100" icon="bi bi-geo-alt">
+    <input type="text" class="form-control" [formControl]="control" placeholder="Saisissez une adresse">
+  </app-field>  
+  <ul *ngIf="suggestions.length > 0" class="list-group mt-1" style="position: absolute; z-index: 1055; width: 100%; max-height: 450px; overflow-y: auto;">
+    <li class="list-group-item list-group-item-action" *ngFor="let s of suggestions" (click)="selectAddress(s)">
+      {{ s.label }}
     </li>
   </ul>
 </div>

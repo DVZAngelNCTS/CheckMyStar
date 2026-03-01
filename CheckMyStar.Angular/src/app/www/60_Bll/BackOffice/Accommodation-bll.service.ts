@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AccommodationDalService } from '../../70_Dal/BackOffice/Accommodation-dal.service';
-import { AccommodationModel } from '../../20_Models/BackOffice/Folder.model';
+import { AccommodationModel } from '../../20_Models/BackOffice/Accommodation.model';
 
 @Injectable({
   providedIn: 'root'

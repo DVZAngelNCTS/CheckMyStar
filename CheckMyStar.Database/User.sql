@@ -12,7 +12,7 @@
     [AddressIdentifier] INT NULL,
     [IsActive] BIT NOT NULL DEFAULT 1,
     [IsFirstConnection] BIT NOT NULL DEFAULT 1, 
-    [CreatedDate] DATETIME NULL,
+    [CreatedDate] DATETIME NOT NULL DEFAULT GETDATE(),
     [UpdatedDate] DATETIME NULL,
     CONSTRAINT [PK_User] PRIMARY KEY ([Identifier]),
     CONSTRAINT [FK_User_Address] FOREIGN KEY ([AddressIdentifier]) REFERENCES [Address]([Identifier]),

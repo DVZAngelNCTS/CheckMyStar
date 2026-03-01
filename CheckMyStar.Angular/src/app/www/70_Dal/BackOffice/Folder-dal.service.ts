@@ -9,6 +9,7 @@ import { FolderGetRequest } from '../../40_Requests/BackOffice/Folder-get.reques
 import { FolderDeleteRequest } from '../../40_Requests/BackOffice/Folder-delete.request';
 import { FolderModel } from '../../20_Models/BackOffice/Folder.model';
 import { BaseResponse } from '../../50_Responses/BaseResponse';
+import { FolderSaveRequest } from '../../40_Requests/BackOffice/Folder-save.request';
 
 @Injectable({
   providedIn: 'root'
@@ -61,33 +62,12 @@ export class FolderDalService {
     return this.http.get<FoldersResponse>(`${this.apiUrl}/Folder/getfoldersbyinspector`, { params });
   }
 
-  createFolder$(folder: FolderModel): Observable<FolderModel> {
-    const url = `${this.apiUrl}/Folder/createfolder`;
-    console.log('Creating folder with data:', folder);
-    return this.http.post<any>(url, { folder }).pipe(
-      switchMap(response => {
-        console.log('Raw API response for folder:', response);
-
-        if (!response.isSuccess) {
-          return throwError(() => new Error(response.message || 'Erreur lors de la création du dossier'));
-        }
-
-        // API only returns {isSuccess, message}, use the folder we sent
-        return of(folder);
-      })
-    );
+  addFolder$(request: FolderSaveRequest) {    
+    return this.http.post<BaseResponse>(`${this.apiUrl}/Folder/addFolder`, request);
   }
 
-  updateFolder$(folder: FolderModel): Observable<FolderModel> {
-    const url = `${this.apiUrl}/Folder/updatefolder`;
-    return this.http.put<any>(url, { folder }).pipe(
-      switchMap(response => {
-        if (!response.isSuccess) {
-          return throwError(() => new Error(response.message || 'Erreur lors de la mise à jour du dossier'));
-        }
-        return of(folder);
-      })
-    );
+  updateFolder$(request: FolderSaveRequest) {
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Folder/updateFolder`, request);
   }
 
   deleteFolder$(request: FolderDeleteRequest) {

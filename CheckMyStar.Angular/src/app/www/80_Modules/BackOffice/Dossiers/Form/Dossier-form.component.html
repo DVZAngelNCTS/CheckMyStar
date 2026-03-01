@@ -1,112 +1,123 @@
-<div class="d-flex flex-row gap-3">
+<form [formGroup]="form" class="d-flex flex-column gap-2">
+  <input type="hidden" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
+  <!-- TOP: Accommodation Creation (2 sub-columns) -->
+  <div formGroupName="accommodation">
+    <div class="d-flex flex-row flex-grow-1">
+      <div class="flex-grow-1 d-flex flex-column column-box">
+        <h5 class="fw-bold mb-3">{{ 'DossiersSection.AccommodationCreation' | translate }}</h5>   
+        <div class="d-flex flex-row flex-grow-1 gap-3">
+          <!-- Accommodation sub-col 1: general info -->      
+          <div class="d-flex flex-column flex-grow-1 w-50">
 
-  <!-- MAIN LEFT: Accommodation Creation (2 sub-columns) -->
-  <div class="d-flex flex-column" style="flex: 2; border-right: 1px solid #dee2e6; padding-right: 1.25rem;">
-    <h6 class="mb-3">{{ 'DossiersSection.AccommodationCreation' | translate }}</h6>
-    <div class="d-flex flex-row gap-3">
+            <app-field controlName="identifier" label="{{ 'DossiersSection.Identifier' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+              <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
+            </app-field>
 
-      <!-- Accommodation sub-col 1: general info -->
-      <div class="d-flex flex-column flex-grow-1">
-        <div class="form-group mb-2">
-          <label for="accommodationName" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationName' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationName" [(ngModel)]="accommodation.accommodationName" [disabled]="loading">
-        </div>
+            <app-field controlName="accommodationName" label="{{ 'DossiersSection.AccommodationName' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-house">
+              <input type="text" class="form-control" formControlName="accommodationName" required>
+            </app-field>                  
 
-        <div class="form-group mb-2">
-          <label for="accommodationPhone" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationPhone' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationPhone" [(ngModel)]="accommodation.accommodationPhone" [disabled]="loading">
-        </div>
+            <app-field controlName="accommodationPhone" label="{{ 'DossiersSection.AccommodationPhone' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-telephone">
+              <input type="text" class="form-control" formControlName="accommodationPhone">
+            </app-field>          
 
-        <div class="form-group mb-2">
-          <label for="accommodationTypeId" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationTypeIdentifier' | translate }}</label>
-          <select class="form-select form-select-sm" id="accommodationTypeId" [(ngModel)]="accommodation.accommodationType!.identifier" [disabled]="loading">
-            <option [value]="null" disabled>-- {{ 'DossiersSection.AccommodationTypeIdentifier' | translate }} --</option>
-            <option *ngFor="let type of accommodationTypes" [value]="type.identifier">{{ type.name }}</option>
-          </select>
-        </div>
+            <div formGroupName="accommodationType">
+              <app-field controlName="identifier" label="{{ 'DossiersSection.AccommodationTypeIdentifier' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-house-gear">
+                <select class="form-select form-select-sm" formControlName="identifier" required>
+                  <option [value]="null" disabled>-- {{ 'DossiersSection.AccommodationTypeIdentifier' | translate }} --</option>
+                  <option *ngFor="let type of accommodationTypes" [ngValue]="type.identifier">{{ type.label }}</option>
+                </select>
+              </app-field>  
+            </div>
 
-        <div class="form-group mb-2">
-          <label for="accommodationStar" class="form-label form-label-sm">{{ 'DossiersSection.AccommodationCurrentStar' | translate }}</label>
-          <select class="form-select form-select-sm" id="accommodationStar" [(ngModel)]="accommodation.accommodationCurrentStar" [disabled]="loading">
-            <option [value]="null" disabled>-- {{ 'DossiersSection.AccommodationCurrentStar' | translate }} --</option>
-            <option *ngFor="let star of starOptions" [value]="star">{{ star }} ★</option>
-          </select>
-        </div>
+            <app-field controlName="accommodationCurrentStar" label="{{ 'DossiersSection.AccommodationCurrentStar' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-star">
+              <select class="form-select form-select-sm" formControlName="accommodationCurrentStar" required>
+                <option [value]="null" disabled>-- {{ 'DossiersSection.AccommodationCurrentStar' | translate }} --</option>
+                <option *ngFor="let star of starOptions" [ngValue]="star">{{ star }} ★</option>
+              </select>
+            </app-field>
 
-        <div class="form-group mt-1">
-          <div class="form-check form-check-sm">
-            <input type="checkbox" class="form-check-input" id="accommodationActive" [(ngModel)]="accommodation.isActive" [disabled]="loading">
-            <label class="form-check-label" for="accommodationActive">{{ 'DossiersSection.AccommodationActive' | translate }}</label>
+            <app-field controlName="isActive" label="{{ 'DossiersSection.AccommodationActive' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-house-check">
+              <select class="form-select" formControlName="isActive" required>
+                <option [value]="true">{{ 'CommonSection.Yes' | translate }}</option>
+                <option [value]="false">{{ 'CommonSection.No' | translate }}</option>
+              </select>     
+            </app-field>
+          </div>
+
+          <!-- Accommodation sub-col 2: address -->
+          <div class="d-flex flex-column flex-grow-1 w-50" formGroupName="address">
+            <app-address-autocomplete (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
+
+            <app-field controlName="identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+              <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
+            </app-field>
+
+            <app-field controlName="number" label="{{ 'AddressSection.Number' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-1-square">
+              <input type="text" formControlName="number" class="form-control form-control-sm" id="number" required>
+            </app-field>
+
+            <app-field controlName="addressLine" label="{{ 'AddressSection.AddressLine' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-geo-alt">
+              <input type="text" formControlName="addressLine" class="form-control form-control-sm" id="addressLine" required>        
+            </app-field>
+
+            <app-field controlName="city" label="{{ 'AddressSection.City' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-building">
+              <input type="text" formControlName="city" class="form-control form-control-sm" id="city" required>        
+            </app-field>
+
+            <app-field controlName="zipCode" label="{{ 'AddressSection.ZipCode' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-mailbox">
+              <input type="text" formControlName="zipCode" class="form-control form-control-sm" id="zipCode" required>        
+            </app-field>
+
+            <app-field controlName="region" label="{{ 'AddressSection.Region' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-geo">
+              <input type="text" formControlName="region" class="form-control form-control-sm" id="region" >        
+            </app-field>
+
+            <div formGroupName="country">
+              <app-field controlName="identifier" label="{{ 'AddressSection.Country' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-globe">
+                <select class="form-select" formControlName="identifier" (change)="onCountryChange($event)" required>
+                  <option *ngFor="let c of countries" [ngValue]="c.identifier"> {{ c.name }} </option>
+                </select>
+              </app-field>
+            </div>      
           </div>
         </div>
-      </div>
-
-      <!-- Accommodation sub-col 2: address -->
-      <div class="d-flex flex-column flex-grow-1">
-        <div class="form-group mb-2">
-          <label for="accommodationNumber" class="form-label form-label-sm">{{ 'AddressSection.Number' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationNumber" [(ngModel)]="accommodation.address!.number" [disabled]="loading">
-        </div>
-
-        <div class="form-group mb-2">
-          <label for="accommodationAddressLine" class="form-label form-label-sm">{{ 'AddressSection.AddressLine' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationAddressLine" [(ngModel)]="accommodation.address!.addressLine" [disabled]="loading">
-        </div>
-
-        <div class="form-group mb-2">
-          <label for="accommodationCity" class="form-label form-label-sm">{{ 'AddressSection.City' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationCity" [(ngModel)]="accommodation.address!.city" [disabled]="loading">
-        </div>
-
-        <div class="form-group mb-2">
-          <label for="accommodationZipCode" class="form-label form-label-sm">{{ 'AddressSection.ZipCode' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationZipCode" [(ngModel)]="accommodation.address!.zipCode" [disabled]="loading">
-        </div>
-
-        <div class="form-group mb-2">
-          <label for="accommodationRegion" class="form-label form-label-sm">{{ 'AddressSection.Region' | translate }}</label>
-          <input type="text" class="form-control form-control-sm" id="accommodationRegion" [(ngModel)]="accommodation.address!.region" [disabled]="loading">
-        </div>
-
-        <div class="form-group mb-2">
-          <label for="accommodationCountry" class="form-label form-label-sm">{{ 'AddressSection.Country' | translate }}</label>
-          <select class="form-select form-select-sm" id="accommodationCountry" [(ngModel)]="accommodation.address!.country!.identifier" [disabled]="loading">
-            <option [value]="null" disabled>-- {{ 'AddressSection.Country' | translate }} --</option>
-            <option *ngFor="let country of countries" [value]="country.identifier">{{ country.name }}</option>
-          </select>
-        </div>
-      </div>
-
+      </div>        
     </div>
   </div>
 
-  <!-- MAIN RIGHT: Folder Creation -->
-  <div class="d-flex flex-column" style="flex: 1; padding-left: 1rem;">
-    <h6 class="mb-3">{{ 'DossiersSection.FolderCreation' | translate }}</h6>
+  <!-- BOTTOM: Folder Creation -->
+  <div class="d-flex flex-row flex-grow-1">
+    <div class="flex-grow-1 d-flex flex-column column-box">
+      <h5 class="fw-bold mb-3">{{ 'DossiersSection.FolderCreation' | translate }}</h5>  
 
-    <div class="form-group mb-2">
-      <label for="ownerUserId" class="form-label form-label-sm">{{ 'DossiersSection.OwnerUserIdentifier' | translate }}</label>
-      <select class="form-select form-select-sm" id="ownerUserId" [(ngModel)]="folder.ownerUserIdentifier" [disabled]="loading">
-        <option [value]="null" disabled>-- {{ 'DossiersSection.OwnerUserIdentifier' | translate }} --</option>
-        <option *ngFor="let owner of owners" [value]="owner.identifier">{{ owner.lastName }} {{ owner.firstName }}</option>
-      </select>
-    </div>
+      <div formGroupName="owner">
+        <app-field controlName="identifier" label="{{ 'DossiersSection.Owner' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+          <select formControlName="identifier" class="form-select form-select-sm" required>
+            <option [value]="null" disabled>-- {{ 'DossiersSection.Owner' | translate }} --</option>
+            <option *ngFor="let owner of owners" [ngValue]="owner.identifier">{{ owner.lastName }} {{ owner.firstName }}</option>
+          </select>          
+        </app-field>
+      </div>
 
-    <div class="form-group mb-2">
-      <label for="inspectorUserId" class="form-label form-label-sm">{{ 'DossiersSection.InspectorUserIdentifier' | translate }}</label>
-      <select class="form-select form-select-sm" id="inspectorUserId" [(ngModel)]="folder.inspectorUserIdentifier" [disabled]="loading">
-        <option [value]="null" disabled>-- {{ 'DossiersSection.InspectorUserIdentifier' | translate }} --</option>
-        <option *ngFor="let inspector of inspectors" [value]="inspector.identifier">{{ inspector.lastName }} {{ inspector.firstName }}</option>
-      </select>
-    </div>
+      <div formGroupName="inspector">
+        <app-field controlName="identifier" label="{{ 'DossiersSection.Inspector' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+          <select formControlName="identifier" class="form-select form-select-sm" required>
+            <option [value]="null" disabled>-- {{ 'DossiersSection.Inspector' | translate }} --</option>
+            <option *ngFor="let inspector of inspectors" [ngValue]="inspector.identifier">{{ inspector.lastName }} {{ inspector.firstName }}</option>
+          </select>       
+        </app-field> 
+      </div>      
 
-    <div class="form-group mb-2">
-      <label for="folderStatusId" class="form-label form-label-sm">{{ 'DossiersSection.FolderStatusIdentifier' | translate }}</label>
-      <select class="form-select form-select-sm" id="folderStatusId" [(ngModel)]="folder.folderStatusIdentifier" [disabled]="loading">
-        <option [value]="null" disabled>-- {{ 'DossiersSection.FolderStatusIdentifier' | translate }} --</option>
-        <option *ngFor="let status of folderStatuses" [value]="status.identifier">{{ status.name }}</option>
-      </select>
+      <div formGroupName="folderStatus">
+        <app-field controlName="identifier" label="{{ 'DossiersSection.Status' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+          <select formControlName="identifier" class="form-select form-select-sm" required>
+            <option [value]="null" disabled>-- {{ 'DossiersSection.FolderStatusIdentifier' | translate }} --</option>
+            <option *ngFor="let status of folderStatuses" [ngValue]="status.identifier">{{ status.label }}</option>
+          </select>     
+        </app-field>   
+      </div>
     </div>
   </div>
 
-</div>
+</form>

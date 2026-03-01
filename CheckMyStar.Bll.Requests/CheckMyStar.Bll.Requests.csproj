@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CheckMyStar.Bll.Filters\CheckMyStar.Bll.Filters.csproj" />
     <ProjectReference Include="..\CheckMyStar.Bll.Models\CheckMyStar.Bll.Models.csproj" />
   </ItemGroup>
 

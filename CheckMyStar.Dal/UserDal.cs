@@ -113,7 +113,7 @@ namespace CheckMyStar.Dal
             return userResult;
         }      
 
-        public async Task<UserResult> GetUser(string lastName, string firstName, int? SocietyIdentifier, string email, string? phone, CancellationToken ct)
+        public async Task<UserResult> GetUser(string? lastName, string? firstName, int? SocietyIdentifier, string? email, string? phone, CancellationToken ct)
         {
             UserResult userResult = new UserResult();
 
@@ -272,12 +272,11 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var evolutions = await (from u in dbContext.Users
-                                        where u.CreatedDate != null
+                var evolutions = await (from u in dbContext.Users                                        
                                         group u by new
                                         {
-                                            Year = u.CreatedDate!.Value.Year,
-                                            Month = u.CreatedDate.Value.Month
+                                            Year = u.CreatedDate.Year,
+                                            Month = u.CreatedDate.Month
                                         } into g
                                         orderby g.Key.Year, g.Key.Month
                                         select new UserEvolution()

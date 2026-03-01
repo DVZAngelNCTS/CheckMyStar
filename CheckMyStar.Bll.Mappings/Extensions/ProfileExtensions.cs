@@ -19,7 +19,10 @@ namespace CheckMyStar.Bll.Mappings.Extensions
                 .AddAutoMapper(typeof(SocietyProfile))
                 .AddAutoMapper(typeof(AccommodationProfile))
                 .AddAutoMapper(typeof(AssessmentProfile))
-                .AddAutoMapper(typeof(FolderProfile));
+                .AddAutoMapper(typeof(FolderProfile))
+                .AddAutoMapper(typeof(QuoteProfile))
+                .AddAutoMapper(typeof(InvoiceProfile))
+                .AddAutoMapper(typeof(AppointmentProfile));
 
             return services;
         }

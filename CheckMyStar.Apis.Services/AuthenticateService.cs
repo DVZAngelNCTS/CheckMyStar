@@ -37,7 +37,7 @@ public class AuthenticateService(IUserBusForService userBusForService) : IAuthen
 
         var user = await userBusForService.GetUser(request, ct);
 
-        if (user.IsSuccess && user.User != null)
+        if (user.IsSuccess && user.User != null && user.User.Password != null)
         {
             user.IsValid = SecurityHelper.VerifyPassword(password, user.User.Password);
         }

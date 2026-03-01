@@ -11,7 +11,7 @@
     <!-- Tableau extensible -->
     <div class="d-flex flex-column flex-grow-1">
       <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
-        <app-table [columns]="columns" [data]="tableRows" (detail)="onDetail($event)" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" (openCreate)="openCreate()">
+        <app-table [columns]="columns" [data]="folders" (detail)="onDetail($event)" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" (openCreate)="openCreate()">
         </app-table>
       </div>
     </div>
@@ -20,18 +20,27 @@
 
 <app-popup
   [visible]="popupVisible"
-  [title]="isDeletingFolder ? ('DossiersSection.Delete' | translate) : ('DossiersSection.Create' | translate)"
+  [title]="popupTitle"
   [confirmLabel]="'PopupSection.Validate' | translate"
   [cancelLabel]="'PopupSection.Cancel' | translate"
   [errorMessage]="popupError"
   [loading]="loading"
-  [large]="isCreatingFolder"
+  [large]="true"
   (confirm)="onPopupConfirm()"
-  (cancel)="onPopupCancel()">
-  <ng-container *ngIf="isCreatingFolder">
-    <app-dossier-form [accommodation]="newAccommodation" [folder]="newFolder" [loading]="loading"></app-dossier-form>
+  (cancel)="onPopupCancel()"
+  icon="bi bi-folder2-open">
+
+  <!-- Contenu dynamique -->
+  <ng-container *ngIf="popupMode === 'delete'">
+    <p>{{ 'DossiersSection.DeleteAsk' | translate }} <strong>{{ selectedFolder?.identifier }}</strong> ?</p>
   </ng-container>
-  <ng-container *ngIf="isDeletingFolder">
-    <p>{{ 'DossiersSection.DeleteAsk' | translate }} <strong>#{{ selectedFolderIdentifier }}</strong> ?</p>
+
+  <ng-container *ngIf="popupVisible">
+    <ng-container *ngIf="popupMode === 'edit'">
+      <app-dossier-form [folder]="selectedFolder" [readonlyIdentifier]="true"></app-dossier-form>
+    </ng-container>
+    <ng-container *ngIf="popupMode === 'create'">
+      <app-dossier-form [readonlyIdentifier]="true"></app-dossier-form>
+    </ng-container>
   </ng-container>
 </app-popup>

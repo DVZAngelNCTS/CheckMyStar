@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CheckMyStar.Data;
 
@@ -18,7 +19,7 @@ public partial class Accommodation
 
     public bool IsActive { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 }

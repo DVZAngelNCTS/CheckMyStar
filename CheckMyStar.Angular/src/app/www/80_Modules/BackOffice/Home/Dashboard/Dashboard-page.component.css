@@ -8,7 +8,7 @@
 }
 
 .activity-scroll {
-  max-height: 280px; /* ajuste selon ton design */
+  max-height: 290px; /* ajuste selon ton design */
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 4px; /* évite que la scrollbar mange le contenu */

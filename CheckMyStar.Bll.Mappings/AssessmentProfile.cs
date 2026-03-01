@@ -9,9 +9,6 @@ namespace CheckMyStar.Bll.Mappings
     {
         public AssessmentProfile()
         {
-            CreateMap<Assessment, AssessmentModel>()
-                .ForMember(dest => dest.Criteria, opts => opts.MapFrom(src => src.AssessmentCriteria));
-
             CreateMap<AssessmentModel, Assessment>()
                 .ForMember(dest => dest.Identifier, opts => opts.MapFrom(src => src.Identifier))
                 .ForMember(dest => dest.Capacity, opts => opts.MapFrom(src => src.Capacity))

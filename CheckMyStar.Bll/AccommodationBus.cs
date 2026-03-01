@@ -69,46 +69,60 @@ namespace CheckMyStar.Bll
             {
                 if (accommodation.Accommodation == null)
                 {
-                    var addressResponse = await addressDal.GetAddress(accommodationModel.Address.Identifier, ct);
-
-                    if (!addressResponse.IsSuccess || addressResponse.Address == null)
+                    if (accommodationModel.Address != null)
                     {
-                        result.IsSuccess = false;
-                        result.Message = "L'adresse spécifiée n'existe pas";
-                        return result;
-                    }
+                        var addressResponse = await addressDal.GetAddress(accommodationModel.Address.Identifier, ct);
 
-                    var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(accommodationModel.AccommodationType.Identifier, ct);
+                        if (!addressResponse.IsSuccess || addressResponse.Address == null)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "L'adresse spécifiée n'existe pas";
+                            return result;
+                        }
 
-                    if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
-                    {
-                        result.IsSuccess = false;
-                        result.Message = "Le type d'hébergement spécifié n'existe pas";
-                        return result;
-                    }
+                        if (accommodationModel.AccommodationType != null)
+                        {
+                            var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(accommodationModel.AccommodationType.Identifier, ct);
 
-                    var dateTime = DateTime.Now;
+                            if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
+                            {
+                                result.IsSuccess = false;
+                                result.Message = "Le type d'hébergement spécifié n'existe pas";
+                                return result;
+                            }
 
-                    accommodationModel.CreatedDate = dateTime;
-                    accommodationModel.UpdatedDate = dateTime;
-                    accommodationModel.IsActive = true;
+                            var dateTime = DateTime.Now;
 
-                    var accommodationEntity = mapper.Map<Accommodation>(accommodationModel);
+                            accommodationModel.IsActive = true;
 
-                    var accommodationResult = await accommodationDal.AddAccommodation(accommodationEntity, ct);
+                            var accommodationEntity = mapper.Map<Accommodation>(accommodationModel);
 
-                    if (accommodationResult.IsSuccess)
-                    {
-                        result.IsSuccess = true;
-                        result.Message = accommodationResult.Message;
+                            var accommodationResult = await accommodationDal.AddAccommodation(accommodationEntity, ct);
+
+                            if (accommodationResult.IsSuccess)
+                            {
+                                result.IsSuccess = true;
+                                result.Message = accommodationResult.Message;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = accommodationResult.Message;
+                            }
+
+                            await activityBus.AddActivity(accommodationResult.Message, dateTime, currentUser, accommodationResult.IsSuccess, ct);
+                        }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "Impossible de trouver le type d'hébergement";
+                        }
                     }
                     else
                     {
                         result.IsSuccess = false;
-                        result.Message = accommodationResult.Message;
+                        result.Message = "Impossible de trouver l'adresse";
                     }
-
-                    await activityBus.AddActivity(accommodationResult.Message, dateTime, currentUser, accommodationResult.IsSuccess, ct);
                 }
                 else
                 {
@@ -135,44 +149,61 @@ namespace CheckMyStar.Bll
             {
                 if (accommodation.Accommodation != null)
                 {
-                    var addressResponse = await addressDal.GetAddress(accommodationModel.Address.Identifier, ct);
-
-                    if (!addressResponse.IsSuccess || addressResponse.Address == null)
+                    if (accommodationModel.Address != null)
                     {
-                        result.IsSuccess = false;
-                        result.Message = "L'adresse spécifiée n'existe pas";
-                        return result;
-                    }
+                        var addressResponse = await addressDal.GetAddress(accommodationModel.Address.Identifier, ct);
 
-                    var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(accommodationModel.AccommodationType.Identifier, ct);
+                        if (!addressResponse.IsSuccess || addressResponse.Address == null)
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "L'adresse spécifiée n'existe pas";
+                            return result;
+                        }
 
-                    if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
-                    {
-                        result.IsSuccess = false;
-                        result.Message = "Le type d'hébergement spécifié n'existe pas";
-                        return result;
-                    }
+                        if (accommodationModel.AccommodationType != null)
+                        {
+                            var accommodationTypeResponse = await accommodationTypeDal.GetAccommodationType(accommodationModel.AccommodationType.Identifier, ct);
 
-                    var dateTime = DateTime.Now;
+                            if (!accommodationTypeResponse.IsSuccess || accommodationTypeResponse.AccommodationType == null)
+                            {
+                                result.IsSuccess = false;
+                                result.Message = "Le type d'hébergement spécifié n'existe pas";
+                                return result;
+                            }
 
-                    accommodationModel.UpdatedDate = dateTime;
+                            var dateTime = DateTime.Now;
 
-                    var accommodationEntity = mapper.Map<Accommodation>(accommodationModel);
+                            accommodationModel.UpdatedDate = dateTime;
 
-                    var accommodationResult = await accommodationDal.UpdateAccommodation(accommodationEntity, ct);
+                            var accommodationEntity = mapper.Map<Accommodation>(accommodationModel);
 
-                    if (accommodationResult.IsSuccess)
-                    {
-                        result.IsSuccess = true;
-                        result.Message = accommodationResult.Message;
+                            var accommodationResult = await accommodationDal.UpdateAccommodation(accommodationEntity, ct);
+
+                            if (accommodationResult.IsSuccess)
+                            {
+                                result.IsSuccess = true;
+                                result.Message = accommodationResult.Message;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = accommodationResult.Message;
+                            }
+
+                            await activityBus.AddActivity(accommodationResult.Message, dateTime, currentUser, accommodationResult.IsSuccess, ct);
+                        }
+                        else
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "Impossible de trouver le type de l'hébergement";
+
+                        }
                     }
                     else
                     {
                         result.IsSuccess = false;
-                        result.Message = accommodationResult.Message;
+                        result.Message = "Impossible de trouver l'adresse";
                     }
-
-                    await activityBus.AddActivity(accommodationResult.Message, dateTime, currentUser, accommodationResult.IsSuccess, ct);
                 }
                 else
                 {

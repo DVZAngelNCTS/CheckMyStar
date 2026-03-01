@@ -75,7 +75,6 @@ public class CriteriaController(ICriteriaService criteriaService) : ControllerBa
     /// <summary>
     /// Updates an existing criterion.
     /// </summary>
-    /// <param name="id">Criterion identifier</param>
     /// <param name="request">Updated data</param>
     /// <param name="ct">Cancellation token</param>
     [HttpPut("updatecriterion")]

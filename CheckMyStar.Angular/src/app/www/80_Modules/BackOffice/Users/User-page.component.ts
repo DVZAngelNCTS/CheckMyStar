@@ -182,19 +182,20 @@ export class UserPageComponent {
 			return;
 		}
 
-	if (this.popupMode === 'createSociety') {
-      if (this.societyForm.invalid) {
-        this.societyForm.markAllAsTouched();
-        return;
-      }
-      this.onCreateSocietyConfirmed();
-      return;
-    }
+		if (this.popupMode === 'createSociety') {
+			if (this.societyForm.invalid) {
+				this.societyForm.markAllAsTouched();
+				return;
+		}
 
-	// 👉 Ici seulement si tout est OK
-	this.popupVisible = false;
+		this.onCreateSocietyConfirmed();
+
+		return;
+		}
+
+		// 👉 Ici seulement si tout est OK
+		this.popupVisible = false;
 	}
-
 
 	onPopupCancel() {
 		this.popupVisible = false;
@@ -208,7 +209,8 @@ export class UserPageComponent {
 
 		this.loading = true;
 
-		const newUser = this.getValue();
+		const newUser = this.userForm.getValue();
+
 		newUser.role = Number(newUser.role) as EnumRole;
 		newUser.civility = Number(newUser.civility) as EnumCivility;
 
@@ -240,7 +242,8 @@ export class UserPageComponent {
 
 		this.loading = true;
 
-		const updatedUser = this.getValue();
+		const updatedUser = this.userForm.getValue();
+
 		updatedUser.role = Number(updatedUser.role) as EnumRole;
 		updatedUser.civility = Number(updatedUser.civility) as EnumCivility;
 
@@ -287,10 +290,6 @@ export class UserPageComponent {
 				this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
 			}
 		});
-	}
-
-	getValue(): UserModel {
-  		return this.userForm.form.getRawValue() as UserModel;
 	}
 
 	societyGetValue(): SocietyModel {

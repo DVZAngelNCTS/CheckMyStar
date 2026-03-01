@@ -29,7 +29,7 @@ public partial class User
 
     public bool IsFirstConnection { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 }

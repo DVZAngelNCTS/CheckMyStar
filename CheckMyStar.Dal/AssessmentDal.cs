@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
-using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
 
 namespace CheckMyStar.Dal
@@ -46,11 +45,9 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var assessments = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .ToListAsync(ct);
+                var assessments = await dbContext.Assessments.ToListAsync();
 
-                result.Assessments = assessments.Cast<Assessment>().ToList();
+                result.Assessments = assessments;
                 result.IsSuccess = true;
                 result.Message = "Évaluations récupérées avec succès";
             }
@@ -104,7 +101,7 @@ namespace CheckMyStar.Dal
                 var criteriaDetails = await (from ac in dbContext.AssessmentCriteria.AsNoTracking()
                                              join c in dbContext.Criterias.AsNoTracking() on ac.CriterionId equals c.CriterionId
                                              where ac.AssessmentIdentifier == assessmentIdentifier
-                                             select new AssessmentCriterionDetail
+                                             select new Data.AssessmentCriterionDetail
                                              {
                                                  AssessmentIdentifier = ac.AssessmentIdentifier,
                                                  CriterionId = ac.CriterionId,
@@ -129,7 +126,7 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResult> AddAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
+        public async Task<AssessmentResult> AddAssessment(Data.Assessment assessment, List<Data.AssessmentCriterion> criteria, CancellationToken ct)
         {
             AssessmentResult result = new AssessmentResult();
 
@@ -139,21 +136,21 @@ namespace CheckMyStar.Dal
                 assessment.UpdatedDate = null;
 
                 await dbContext.AddAsync(assessment, ct);
+
                 await dbContext.SaveChangesAsync(ct);
 
                 foreach (var criterion in criteria)
                 {
                     criterion.AssessmentIdentifier = assessment.Identifier;
+
                     await dbContext.AddAsync(criterion, ct);
                 }
 
                 await dbContext.SaveChangesAsync(ct);
 
-                var createdAssessment = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
+                var createdAssessment = await dbContext.Assessments.FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
 
-                result.Assessment = createdAssessment as Assessment;
+                result.Assessment = createdAssessment as Data.Assessment;
                 result.IsSuccess = true;
                 result.Message = "Évaluation créée avec succès";
             }
@@ -166,7 +163,7 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResult> UpdateAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
+        public async Task<AssessmentResult> UpdateAssessment(Data.Assessment assessment, List<Data.AssessmentCriterion> criteria, CancellationToken ct)
         {
             AssessmentResult result = new AssessmentResult();
 
@@ -195,11 +192,9 @@ namespace CheckMyStar.Dal
 
                 await dbContext.SaveChangesAsync(ct);
 
-                var updatedAssessment = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
+                var updatedAssessment = await dbContext.Assessments.FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
 
-                result.Assessment = updatedAssessment as Assessment;
+                result.Assessment = updatedAssessment as Data.Assessment;
                 result.IsSuccess = true;
                 result.Message = "Évaluation modifiée avec succès";
             }
@@ -212,7 +207,7 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<BaseResult> DeleteAssessment(Assessment assessment, CancellationToken ct)
+        public async Task<BaseResult> DeleteAssessment(Data.Assessment assessment, CancellationToken ct)
         {
             BaseResult baseResult = new BaseResult();
 

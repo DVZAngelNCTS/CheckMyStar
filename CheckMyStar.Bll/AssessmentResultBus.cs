@@ -17,11 +17,11 @@ namespace CheckMyStar.Bll
 
             var result = await assessmentResultDal.GetNextIdentifier(ct);
 
-            if (result.IsSuccess && result.AssessmentResultEntity != null)
+            if (result.IsSuccess && result.AssessmentResult != null)
             {
                 response.IsSuccess = true;
                 response.Message = result.Message;
-                response.AssessmentResult = mapper.Map<AssessmentResultModel>(result.AssessmentResultEntity);
+                response.AssessmentResult = mapper.Map<AssessmentResultModel>(result.AssessmentResult);
             }
             else
             {
@@ -36,13 +36,13 @@ namespace CheckMyStar.Bll
         {
             AssessmentResultResponse response = new AssessmentResultResponse();
 
-            var assessmentResult = mapper.Map<AssessmentResultEntity>(assessmentResultModel);
+            var assessmentResult = mapper.Map<AssessmentResult>(assessmentResultModel);
 
             var result = await assessmentResultDal.AddAssessmentResult(assessmentResult, ct);
 
             response.IsSuccess = result.IsSuccess;
             response.Message = result.Message;
-            response.AssessmentResult = result.AssessmentResultEntity != null ? mapper.Map<AssessmentResultModel>(result.AssessmentResultEntity) : null;
+            response.AssessmentResult = result.AssessmentResult != null ? mapper.Map<AssessmentResultModel>(result.AssessmentResult) : null;
 
             await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
 
@@ -53,13 +53,13 @@ namespace CheckMyStar.Bll
         {
             AssessmentResultResponse response = new AssessmentResultResponse();
 
-            var assessmentResult = mapper.Map<AssessmentResultEntity>(assessmentResultModel);
+            var assessmentResult = mapper.Map<AssessmentResult>(assessmentResultModel);
 
             var result = await assessmentResultDal.UpdateAssessmentResult(assessmentResult, ct);
 
             response.IsSuccess = result.IsSuccess;
             response.Message = result.Message;
-            response.AssessmentResult = result.AssessmentResultEntity != null ? mapper.Map<AssessmentResultModel>(result.AssessmentResultEntity) : null;
+            response.AssessmentResult = result.AssessmentResult != null ? mapper.Map<AssessmentResultModel>(result.AssessmentResult) : null;
 
             await activityBus.AddActivity(result.Message, DateTime.Now, currentUser, result.IsSuccess, ct);
 

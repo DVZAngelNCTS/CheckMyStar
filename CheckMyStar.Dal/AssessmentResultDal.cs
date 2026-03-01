@@ -2,16 +2,15 @@ using Microsoft.EntityFrameworkCore;
 
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
-using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
 
 namespace CheckMyStar.Dal
 {
     public class AssessmentResultDal(ICheckMyStarDbContext dbContext) : IAssessmentResultDal
     {
-        public async Task<AssessmentResultEntityResult> GetNextIdentifier(CancellationToken ct)
+        public async Task<AssessmentResultResult> GetNextIdentifier(CancellationToken ct)
         {
-            AssessmentResultEntityResult result = new AssessmentResultEntityResult();
+            AssessmentResultResult result = new AssessmentResultResult();
 
             try
             {
@@ -22,7 +21,7 @@ namespace CheckMyStar.Dal
                 if (existingIdentifiers.Count == 0)
                 {
                     result.IsSuccess = true;
-                    result.AssessmentResultEntity = new AssessmentResultEntity { Identifier = 1 };
+                    result.AssessmentResult = new Data.AssessmentResult { Identifier = 1 };
                     result.Message = "Identifiant récupéré avec succès";
                 }
                 else
@@ -42,7 +41,7 @@ namespace CheckMyStar.Dal
                     }
 
                     result.IsSuccess = true;
-                    result.AssessmentResultEntity = new AssessmentResultEntity { Identifier = nextIdentifier };
+                    result.AssessmentResult = new Data.AssessmentResult { Identifier = nextIdentifier };
                     result.Message = "Identifiant récupéré avec succès";
                 }
             }
@@ -55,22 +54,22 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResultEntityResult> AddAssessmentResult(AssessmentResultEntity assessmentResult, CancellationToken ct)
+        public async Task<AssessmentResultResult> AddAssessmentResult(Data.AssessmentResult assessmentResult, CancellationToken ct)
         {
-            AssessmentResultEntityResult result = new AssessmentResultEntityResult();
+            AssessmentResultResult result = new AssessmentResultResult();
 
             try
             {
                 if (assessmentResult.Identifier == 0)
                 {
                     var nextIdentifierResult = await GetNextIdentifier(ct);
-                    if (!nextIdentifierResult.IsSuccess || nextIdentifierResult.AssessmentResultEntity == null)
+                    if (!nextIdentifierResult.IsSuccess || nextIdentifierResult.AssessmentResult == null)
                     {
                         result.IsSuccess = false;
                         result.Message = "Erreur lors de la récupération de l'identifiant";
                         return result;
                     }
-                    assessmentResult.Identifier = nextIdentifierResult.AssessmentResultEntity.Identifier;
+                    assessmentResult.Identifier = nextIdentifierResult.AssessmentResult.Identifier;
                 }
 
                 assessmentResult.CreatedDate = DateTime.Now;
@@ -78,7 +77,7 @@ namespace CheckMyStar.Dal
                 await dbContext.AddAsync(assessmentResult, ct);
                 await dbContext.SaveChangesAsync(ct);
 
-                result.AssessmentResultEntity = assessmentResult;
+                result.AssessmentResult = assessmentResult;
                 result.IsSuccess = true;
                 result.Message = "Résultat de l'évaluation créé avec succès";
             }
@@ -91,9 +90,9 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResultEntityResult> UpdateAssessmentResult(AssessmentResultEntity assessmentResult, CancellationToken ct)
+        public async Task<AssessmentResultResult> UpdateAssessmentResult(Data.AssessmentResult assessmentResult, CancellationToken ct)
         {
-            AssessmentResultEntityResult result = new AssessmentResultEntityResult();
+            AssessmentResultResult result = new AssessmentResultResult();
 
             try
             {
@@ -119,7 +118,7 @@ namespace CheckMyStar.Dal
                 await dbContext.UpdateAsync(existingAssessmentResult, ct);
                 await dbContext.SaveChangesAsync(ct);
 
-                result.AssessmentResultEntity = existingAssessmentResult;
+                result.AssessmentResult = existingAssessmentResult;
                 result.IsSuccess = true;
                 result.Message = "Résultat de l'évaluation mis à jour avec succès";
             }
@@ -132,9 +131,9 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResultEntitiesResult> GetAssessmentResultsByFolder(int folderIdentifier, CancellationToken ct)
+        public async Task<AssessmentsResultResult> GetAssessmentResultsByFolder(int folderIdentifier, CancellationToken ct)
         {
-            AssessmentResultEntitiesResult result = new AssessmentResultEntitiesResult();
+            AssessmentsResultResult result = new AssessmentsResultResult();
 
             try
             {

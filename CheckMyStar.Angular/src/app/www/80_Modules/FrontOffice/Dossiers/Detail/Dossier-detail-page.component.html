@@ -56,13 +56,13 @@
         {{ 'DossierDetailSection.ClientInfo' | translate }}
       </h5>
 
-      <div class="row g-3" *ngIf="folder.ownerUser; else noClient">
+      <div class="row g-3" *ngIf="folder.owner; else noClient">
         <div class="col-md-4 col-sm-6">
           <label class="form-label text-muted small text-uppercase fw-semibold">
             {{ 'UserSection.Civility' | translate }}
           </label>
           <p class="mb-0 fw-medium">
-            {{ getCivilityLabel(folder.ownerUser.civility) || ('CommonSection.NotProvided' | translate) }}
+            {{ getCivilityLabel(folder.owner.civility) || ('CommonSection.NotProvided' | translate) }}
           </p>
         </div>
 
@@ -70,28 +70,28 @@
           <label class="form-label text-muted small text-uppercase fw-semibold">
             {{ 'UserSection.LastName' | translate }}
           </label>
-          <p class="mb-0 fw-medium">{{ folder.ownerUser.lastName || ('CommonSection.NotProvided' | translate) }}</p>
+          <p class="mb-0 fw-medium">{{ folder.owner.lastName || ('CommonSection.NotProvided' | translate) }}</p>
         </div>
 
         <div class="col-md-4 col-sm-6">
           <label class="form-label text-muted small text-uppercase fw-semibold">
             {{ 'UserSection.FirstName' | translate }}
           </label>
-          <p class="mb-0 fw-medium">{{ folder.ownerUser.firstName || ('CommonSection.NotProvided' | translate) }}</p>
+          <p class="mb-0 fw-medium">{{ folder.owner.firstName || ('CommonSection.NotProvided' | translate) }}</p>
         </div>
 
         <div class="col-md-4 col-sm-6">
           <label class="form-label text-muted small text-uppercase fw-semibold">
             {{ 'UserSection.Email' | translate }}
           </label>
-          <p class="mb-0 fw-medium">{{ folder.ownerUser.email || ('CommonSection.NotProvided' | translate) }}</p>
+          <p class="mb-0 fw-medium">{{ folder.owner.email || ('CommonSection.NotProvided' | translate) }}</p>
         </div>
 
         <div class="col-md-4 col-sm-6">
           <label class="form-label text-muted small text-uppercase fw-semibold">
             {{ 'UserSection.Phone' | translate }}
           </label>
-          <p class="mb-0 fw-medium">{{ folder.ownerUser.phone || ('CommonSection.NotProvided' | translate) }}</p>
+          <p class="mb-0 fw-medium">{{ folder.owner.phone || ('CommonSection.NotProvided' | translate) }}</p>
         </div>
       </div>
 

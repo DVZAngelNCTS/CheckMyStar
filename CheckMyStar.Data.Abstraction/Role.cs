@@ -13,7 +13,7 @@ public partial class Role
 
     public bool? IsActive { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 }
