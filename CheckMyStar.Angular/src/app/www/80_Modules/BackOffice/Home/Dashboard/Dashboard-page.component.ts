@@ -192,6 +192,14 @@ export class DashboardComponent {
     this.router.navigate(['/backhome/criteres']);
   }
 
+  openUsersModule() {
+    this.router.navigate(['/backhome/users']);
+  }
+
+  openRolesModule() {
+    this.router.navigate(['/backhome/roles']);
+  }
+
   loadCriteria() {
     this.criteresBll.getStarCriterias$().subscribe({
       next: (response) => {

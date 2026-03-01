@@ -46,11 +46,9 @@ namespace CheckMyStar.Dal
 
             try
             {
-                var assessments = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .ToListAsync(ct);
+                var assessments = await dbContext.Assessments.ToListAsync();
 
-                result.Assessments = assessments.Cast<Assessment>().ToList();
+                result.Assessments = assessments;
                 result.IsSuccess = true;
                 result.Message = "Évaluations récupérées avec succès";
             }
@@ -73,19 +71,19 @@ namespace CheckMyStar.Dal
                 assessment.UpdatedDate = null;
 
                 await dbContext.AddAsync(assessment, ct);
+
                 await dbContext.SaveChangesAsync(ct);
 
                 foreach (var criterion in criteria)
                 {
                     criterion.AssessmentIdentifier = assessment.Identifier;
+
                     await dbContext.AddAsync(criterion, ct);
                 }
 
                 await dbContext.SaveChangesAsync(ct);
 
-                var createdAssessment = await dbContext.Assessments
-                    .Include(a => ((Assessment)a).AssessmentCriteria)
-                    .FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
+                var createdAssessment = await dbContext.Assessments.FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
 
                 result.Assessment = createdAssessment as Assessment;
                 result.IsSuccess = true;

@@ -19,11 +19,31 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[Accommodation]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AccommodationType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Activity]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Address]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Appointment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Assessment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssessmentCriterion]",
          "ObjectType": 0
       },
       {
@@ -40,6 +60,22 @@
       },
       {
          "Name": "[dbo].[CriterionType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Folder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FolderStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Invoice]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Quote]",
          "ObjectType": 0
       },
       {

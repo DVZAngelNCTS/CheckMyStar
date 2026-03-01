@@ -9,9 +9,6 @@ namespace CheckMyStar.Bll.Mappings
     {
         public AssessmentProfile()
         {
-            CreateMap<Assessment, AssessmentModel>()
-                .ForMember(dest => dest.Criteria, opts => opts.MapFrom(src => src.AssessmentCriteria));
-
             CreateMap<AssessmentModel, Assessment>()
                 .ForMember(dest => dest.Identifier, opts => opts.MapFrom(src => src.Identifier))
                 .ForMember(dest => dest.Capacity, opts => opts.MapFrom(src => src.Capacity))
@@ -31,9 +28,13 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.TotalArea, opts => opts.MapFrom(src => src.TotalArea))
                 .ForMember(dest => dest.TotalRoomsArea, opts => opts.MapFrom(src => src.TotalRoomsArea)).ReverseMap();
 
-            CreateMap<AssessmentCriterion, AssessmentCriterionModel>();
-
-            CreateMap<AssessmentCriterionModel, AssessmentCriterion>();
+            CreateMap<AssessmentCriterion, AssessmentCriterionModel>()
+                .ForMember(dest => dest.AssessmentIdentifier, opts => opts.MapFrom(src => src.AssessmentIdentifier))
+                .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.CriterionId, opts => opts.MapFrom(src => src.CriterionId))
+                .ForMember(dest => dest.IsValidated, opts => opts.MapFrom(src => src.IsValidated))
+                .ForMember(dest => dest.Points, opts => opts.MapFrom(src => src.Points))
+                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status)).ReverseMap();
         }
     }
 }

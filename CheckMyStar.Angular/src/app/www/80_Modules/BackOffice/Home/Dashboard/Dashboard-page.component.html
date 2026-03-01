@@ -11,7 +11,7 @@
 
     <!-- Total utilisateurs -->
     <div class="col-md-3">
-      <div class="stat-card p-3 border rounded shadow-sm h-100">
+      <div class="stat-card p-3 border rounded shadow-sm h-100" (click)="openUsersModule()">
         <div class="d-flex justify-content-between">
           <h6 class="text-muted">{{ 'DashboardSection.Users' | translate }}</h6>
           <i class="bi bi-people fs-4 text-primary"></i>
@@ -51,7 +51,7 @@
 
     <!-- Utilisateurs actifs -->
     <div class="col-md-3">
-      <div class="stat-card p-3 border rounded shadow-sm h-100">
+      <div class="stat-card p-3 border rounded shadow-sm h-100" (click)="openUsersModule()">
         <div class="d-flex justify-content-between">
           <h6 class="text-muted">{{ 'DashboardSection.UserActive' | translate }}</h6>
           <i class="bi bi-check-circle fs-4 text-success"></i>
@@ -63,7 +63,7 @@
 
     <!-- Rôles -->
     <div class="col-md-3">
-      <div class="stat-card p-3 border rounded shadow-sm h-100">
+      <div class="stat-card p-3 border rounded shadow-sm h-100" (click)="openRolesModule()">
         <div class="d-flex justify-content-between">
           <h6 class="text-muted">{{ 'DashboardSection.Roles' | translate }}</h6>
           <i class="bi bi-shield-lock fs-4 text-warning"></i>
@@ -82,9 +82,9 @@
         </div>
         <h3 class="fw-bold">{{ totalCriteria }}</h3>
         <small class="text-muted">
-          <span *ngFor="let item of criteriaPerStar; let last = last">
-            {{ item.label }}&nbsp;({{ item.count }})<span *ngIf="!last"> · </span>
-          </span>
+          <div *ngFor="let item of criteriaPerStar; let last = last">
+            {{ item.label }}&nbsp;({{ item.count }})
+          </div>
         </small>
       </div>
     </div>

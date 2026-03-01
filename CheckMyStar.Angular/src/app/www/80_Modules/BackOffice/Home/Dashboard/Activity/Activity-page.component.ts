@@ -30,8 +30,8 @@ export class ActivityComponent {
     { icon: 'bi bi-person', field: 'firstName', header: 'UserSection.FirstName', translate: true, sortable: true, filterable: true, width: '10%',
 	  pipe: (_, row) => row.user.firstName
 	 },
-    { icon: 'bi bi-activity', field: 'description', header: 'ActivitySection.Description', translate: true, sortable: true, filterable: true, width: '45%' },
-    { icon: 'bi bi-calendar', field: 'date', header: 'ActivitySection.CreatedDate', translate: true, sortable: true, filterable: true, width: '10%' },
+    { icon: 'bi bi-activity', field: 'description', header: 'ActivitySection.Description', translate: true, sortable: true, filterable: true, width: '40%' },
+    { icon: 'bi bi-calendar', field: 'date', header: 'ActivitySection.CreatedDate', translate: true, sortable: true, filterable: true, width: '15%' },
     { icon: 'bi bi-check-circle', field: 'isSuccess', header: 'ActivitySection.IsSuccess', translate: true, sortable: true, filterable: true, width: '10%',
       pipe: (value) => this.translate.instant( value ? 'CommonSection.Yes' : 'CommonSection.No') },
     ] as TableColumn<ActivityModel>[];

@@ -8,7 +8,6 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [TranslateModule, CommonModule],
   templateUrl: './Field.component.html',
-  viewProviders: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   styleUrls: ['./Field.component.css'],
 })
 export class FieldComponent implements AfterContentInit {

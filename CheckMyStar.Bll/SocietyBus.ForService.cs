@@ -6,11 +6,11 @@ namespace CheckMyStar.Bll
 {
     public partial class SocietyBus : ISocietyBusForService
     {
-        public Task<SocietyCreateResponse> CreateSociety(SocietySaveRequest request, CancellationToken ct)
+        public Task<SocietyResponse> AddSociety(SocietySaveRequest request, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
 
-            return this.CreateSociety(request.Society!, user, ct);
+            return this.AddSociety(request.Society!, user, ct);
         }
 
         public Task<SocietiesResponse> GetSocieties(CancellationToken ct)

@@ -78,7 +78,7 @@ export class FrontDashboardComponent implements OnInit {
   }
 
   private extractStatusId(folder: FolderModel): number | null {
-    if (folder.folderStatusIdentifier != null) return folder.folderStatusIdentifier;
+    if (folder.folderStatus?.identifier != null) return folder.folderStatus?.identifier;
     if (folder.folderStatus != null) {
       const s = folder.folderStatus as any;
       return s?.identifier ?? s?.id ?? null;

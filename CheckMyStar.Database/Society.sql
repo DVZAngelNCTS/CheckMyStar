@@ -5,7 +5,7 @@
     [Phone] VARCHAR(10) NULL,
     [AddressIdentifier] INT NULL,
     [IsActive] BIT NOT NULL DEFAULT 1,
-    [CreatedDate] DATETIME NULL,
+    [CreatedDate] DATETIME NOT NULL DEFAULT GETDATE(),
     [UpdatedDate] DATETIME NULL,
     CONSTRAINT [PK_Society] PRIMARY KEY ([Identifier]),
     CONSTRAINT [FK_Society_Address] FOREIGN KEY ([AddressIdentifier]) REFERENCES [Address]([Identifier])

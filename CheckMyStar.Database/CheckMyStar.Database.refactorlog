@@ -105,4 +105,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="UpdatedDate" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="fdbca8f2-d251-41cf-b17d-3410d97aef88" ChangeDateTime="02/28/2026 09:45:16">
+    <Property Name="ElementName" Value="[dbo].[Invoice].[Reference]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Invoice]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Number" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="281f232e-089d-4112-911b-3d78f08a9d47" ChangeDateTime="02/28/2026 09:45:48">
+    <Property Name="ElementName" Value="[dbo].[Invoice].[IssuedDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Invoice]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreatedDate" />
+  </Operation>
 </Operations>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace CheckMyStar.Data;
@@ -40,6 +40,4 @@ public partial class Assessment
     public DateTime? UpdatedDate { get; set; }
 
     public bool IsComplete { get; set; }
-
-    public virtual ICollection<AssessmentCriterion> AssessmentCriteria { get; set; } = new List<AssessmentCriterion>();
 }

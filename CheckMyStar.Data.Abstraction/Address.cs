@@ -19,7 +19,7 @@ public partial class Address
 
     public int CountryIdentifier { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 }

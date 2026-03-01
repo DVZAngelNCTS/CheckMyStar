@@ -101,9 +101,9 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="request">The details of the folder to create. Must not be null.</param>
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the result of the folder creation.</returns>
-        [HttpPost("createfolder")]
+        [HttpPost("addfolder")]
         [Authorize(Roles = "Administrator, Inspector")]
-        public async Task<IActionResult> CreateFolder([FromBody] FolderSaveRequest request, CancellationToken ct)
+        public async Task<IActionResult> AddFolder([FromBody] FolderSaveRequest request, CancellationToken ct)
         {
             var result = await folderService.CreateFolder(request, ct);
 

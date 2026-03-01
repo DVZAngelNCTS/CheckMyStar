@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CheckMyStar.Data;
 
@@ -10,7 +11,9 @@ public partial class Appointment
 
     public string? Location { get; set; }
 
-    public string? Notes { get; set; }
+    public string? Comment { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
+
+    public DateTime? UpdatedDate { get; set; }
 }

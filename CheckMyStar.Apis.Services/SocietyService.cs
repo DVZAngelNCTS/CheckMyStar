@@ -7,9 +7,9 @@ namespace CheckMyStar.Apis.Services;
 
 public class SocietyService(ISocietyBusForService societyBus) : ISocietyService
 {
-    public async Task<SocietyCreateResponse> CreateSociety(SocietySaveRequest request, CancellationToken ct)
+    public async Task<SocietyResponse> AddSociety(SocietySaveRequest request, CancellationToken ct)
     {
-        var response = await societyBus.CreateSociety(request, ct);
+        var response = await societyBus.AddSociety(request, ct);
         
         return response;
     }

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CheckMyStar.Data;
 
@@ -22,7 +23,9 @@ public partial class Folder
 
     public int? AppointmentIdentifier { get; set; }
 
-    public DateTime? CreatedDate { get; set; }
+    public bool IsActive { get; set; }
+
+    public DateTime CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 }

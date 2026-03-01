@@ -13,8 +13,8 @@
           </th>
           <th class="p-3 action-col-detail" *ngIf="showDetail"></th>
           <th class="p-3 action-col-update" *ngIf="showUpdate"></th>
-          <th class="p-3 action-col-enabled" *ngIf="showEnabled"></th>
-          <th class="p-3 action-col-delete" *ngIf="showDelete"></th>
+          <th class="p-3 action-col-enabled" *ngIf="showEnabled || showCsvExport"></th>
+          <th class="p-3 action-col-delete" *ngIf="showDelete || showXlsxExport"></th>
         </tr>
         <tr>
           <th *ngFor="let col of columns()" class="p-2">

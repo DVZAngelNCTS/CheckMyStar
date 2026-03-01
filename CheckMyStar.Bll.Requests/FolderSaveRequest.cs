@@ -4,6 +4,6 @@ namespace CheckMyStar.Bll.Requests
 {
     public class FolderSaveRequest
     {
-        public required FolderCreateModel Folder { get; set; }
+        public required FolderModel Folder { get; set; }
     }
 }

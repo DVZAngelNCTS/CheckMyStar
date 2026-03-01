@@ -23,7 +23,7 @@ namespace CheckMyStar.Bll
 
         public Task<FoldersResponse> GetFoldersByInspector(FolderGetRequest request, CancellationToken ct)
         {
-            return this.GetFoldersByInspector(request.InspectorIdentifier!.Value, ct);
+            return this.GetFoldersByInspector(request.InspectorIdentifier!.Value, request.AccommodationName, request.OwnerLastName, request.InspectorLastName, request.FolderStatus, ct);
         }
 
         public Task<BaseResponse> CreateFolder(FolderSaveRequest request, CancellationToken ct)

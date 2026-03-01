@@ -45,9 +45,6 @@ namespace CheckMyStar.Bll
                         {
                             var dateTime = DateTime.Now;
 
-                            roleModel.CreatedDate = dateTime;
-                            roleModel.UpdatedDate = dateTime;
-
                             var roleEntity = mapper.Map<Role>(roleModel);
 
                             result = mapper.Map<BaseResponse>(await roleDal.AddRole(roleEntity, ct));

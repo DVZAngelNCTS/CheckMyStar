@@ -5,7 +5,7 @@ namespace CheckMyStar.Bll.Abstractions
 {
     public interface ISocietyBus
     {
-        Task<SocietyCreateResponse> CreateSociety(SocietyModel societyModel, int currentUser, CancellationToken ct);
+        Task<SocietyResponse> AddSociety(SocietyModel societyModel, int currentUser, CancellationToken ct);
         Task<SocietiesResponse> GetSocieties(CancellationToken ct);
     }
 }

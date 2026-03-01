@@ -8,7 +8,7 @@
       <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
     </app-field>
 
-    <!-- CIVILITY + ACTIVE -->
+    <!-- CIVILITY -->
     <app-field controlName="civility" label="{{ 'UserSection.Civility' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-gender-ambiguous">
       <select class="form-select" formControlName="civility">
         <option [value]="EnumCivility.Mister">{{ 'UserSection.Mister' | translate }}</option>
@@ -16,6 +16,7 @@
       </select>
     </app-field>
 
+    <!-- ACTIVE -->
     <app-field controlName="isActive" label="{{ 'UserSection.Active' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-shield-check">
       <select class="form-select" formControlName="isActive">
         <option [value]="true">{{ 'CommonSection.Yes' | translate }}</option>
@@ -23,14 +24,15 @@
       </select>
     </app-field>
 
-    <!-- LAST NAME + FIRST NAME -->
-     <app-field controlName="lastName" label="{{ 'UserSection.LastName' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-person">
-        <input type="text" class="form-control" formControlName="lastName" required>
-      </app-field>
+    <!-- LAST NAME -->
+    <app-field controlName="lastName" label="{{ 'UserSection.LastName' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-person">
+      <input type="text" class="form-control" formControlName="lastName" required>
+    </app-field>
 
-      <app-field controlName="firstName" label="{{ 'UserSection.FirstName' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-person">
-        <input type="text" class="form-control" formControlName="firstName" required>
-      </app-field>
+    <!-- FIRST NAME -->
+    <app-field controlName="firstName" label="{{ 'UserSection.FirstName' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-person">
+      <input type="text" class="form-control" formControlName="firstName" required>
+    </app-field>
 
     <!-- SOCIETY -->
     <app-field controlName="societyIdentifier" label="{{ 'UserSection.Society' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-building">
@@ -51,18 +53,19 @@
       <input type="text" class="form-control" formControlName="email" required>
     </app-field>
 
-    <!-- PHONE + ROLE sur la même ligne -->
+    <!-- PHONE -->
      <app-field controlName="phone" label="{{ 'UserSection.Phone' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-telephone">
         <input type="text" class="form-control" formControlName="phone">
       </app-field>
 
-      <app-field controlName="role" label="{{ 'RoleSection.Role' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-shield ">
-        <select class="form-select" formControlName="role">
-          <option [value]="EnumRole.Administrator">{{ 'RoleSection.Administrator' | translate }}</option>
-          <option [value]="EnumRole.User">{{ 'RoleSection.User' | translate }}</option>
-          <option [value]="EnumRole.Inspector">{{ 'RoleSection.Inspector' | translate }}</option>
-        </select>
-      </app-field>
+    <!-- ROLE -->
+    <app-field controlName="role" label="{{ 'RoleSection.Role' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-shield ">
+      <select class="form-select" formControlName="role" required>
+        <option [value]="EnumRole.Administrator">{{ 'RoleSection.Administrator' | translate }}</option>
+        <option [value]="EnumRole.User">{{ 'RoleSection.User' | translate }}</option>
+        <option [value]="EnumRole.Inspector">{{ 'RoleSection.Inspector' | translate }}</option>
+      </select>
+    </app-field>
 
     <!-- PASSWORD -->
     <app-field controlName="password" label="{{ 'UserSection.Password' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-lock">
@@ -88,7 +91,7 @@
     <!-- SEARCH ADDRESS -->
     <app-address-autocomplete (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
 
-    <!-- IDENTIFIER + NUMBER sur la même ligne -->
+    <!-- IDENTIFIER -->
     <app-field controlName="address.identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
       <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
     </app-field>
@@ -103,11 +106,12 @@
       <input type="text" class="form-control" formControlName="addressLine">
     </app-field>
 
-    <!-- CITY + ZIP CODE -->
+    <!-- CITY -->
     <app-field controlName="city" label="{{ 'AddressSection.City' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-building">
       <input type="text" class="form-control" formControlName="city">
     </app-field>
 
+    <!-- ZIP CODE -->
     <app-field controlName="zipCode" label="{{ 'AddressSection.ZipCode' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-mailbox">
       <input type="text" class="form-control" formControlName="zipCode">
     </app-field>

@@ -176,9 +176,7 @@ export class UserFormComponent implements OnInit, OnChanges {
         zipCode: [this.user?.address?.zipCode ?? ''], 
         region: [this.user?.address?.region ?? ''], 
         country: this.fb.group({ 
-          identifier: [this.user?.address?.country?.identifier ?? 0],
-          name: [this.user?.address?.country?.name ?? ''],
-          code: [this.user?.address?.country?.code ?? '']
+          identifier: [this.user?.address?.country?.identifier ?? 0]
         })
       }),
       isActive: [this.user?.isActive ?? true],

@@ -3,9 +3,8 @@
 
   <div class="main-area" [class.sidebar-open]="sidebarOpen">
     <header class="page-header">
-      <h1>{{ 'HomeSection.BackOffice' | translate }}</h1>
+      <app-breadcrumb></app-breadcrumb>
     </header>
-    <app-breadcrumb></app-breadcrumb>
     <div class="page-content d-flex flex-column flex-grow-1">
       <router-outlet></router-outlet>
     </div>
