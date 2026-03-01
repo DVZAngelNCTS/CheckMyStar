@@ -92,7 +92,7 @@
     <app-address-autocomplete (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
 
     <!-- IDENTIFIER -->
-    <app-field controlName="address.identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+    <app-field controlName="identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
       <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
     </app-field>
 

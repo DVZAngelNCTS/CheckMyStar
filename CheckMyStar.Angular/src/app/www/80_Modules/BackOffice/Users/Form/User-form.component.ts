@@ -86,7 +86,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   /** Permet au parent de récupérer les valeurs */
   getValue(): UserModel {
-    return this.form.value as UserModel;
+    return this.form.getRawValue() as UserModel;
   } 
 
   ngOnChanges(changes: SimpleChanges) {

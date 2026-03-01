@@ -57,7 +57,7 @@ export class RoleFormComponent implements OnInit, OnChanges {
 
   /** Permet au parent de récupérer les valeurs */
   getValue(): RoleModel {
-    return this.form.value as RoleModel;
+    return this.form.getRawValue() as RoleModel;
   }
 
   private buildForm() { 
