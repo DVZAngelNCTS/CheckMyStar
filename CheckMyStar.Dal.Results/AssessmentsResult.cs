@@ -1,3 +1,4 @@
+
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Dal.Results

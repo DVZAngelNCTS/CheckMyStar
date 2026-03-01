@@ -10,7 +10,7 @@ using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
-    public partial class FolderBus(IUserContextService userContext, IActivityBus activityBus, IFolderDal folderDal, IFolderStatusDal folderStatusDal, IAccommodationDal accommodationDal, IAccommodationTypeDal accommodationTypeDal, IUserDal userDal, IAddressDal addressDal, IMapper mapper) : IFolderBus
+    public partial class FolderBus(IUserContextService userContext, IActivityBus activityBus, IFolderDal folderDal, IFolderStatusDal folderStatusDal, IAccommodationDal accommodationDal, IAccommodationTypeDal accommodationTypeDal, IUserDal userDal, IAddressDal addressDal, IQuoteDal quoteDal, IInvoiceDal invoiceDal, IAppointmentDal appointmentDal,  IMapper mapper) : IFolderBus
     {
         public async Task<FolderResponse> GetIdentifier(CancellationToken ct)
         {
@@ -547,6 +547,45 @@ namespace CheckMyStar.Bll
             if (folderStatusResponse.IsSuccess && folderStatusResponse.FolderStatus != null)
             {
                 folderModel.FolderStatus = mapper.Map<FolderStatusModel>(folderStatusResponse.FolderStatus);
+            }
+
+            if (folder.QuoteIdentifier.HasValue)
+            {
+                var quoteResponse = await quoteDal.GetQuote(folder.QuoteIdentifier.Value, ct);
+
+                if (quoteResponse.IsSuccess && quoteResponse.Quote != null)
+                {
+                    folderModel.Quote = mapper.Map<QuoteModel>(quoteResponse.Quote);
+                }
+            }
+
+            if (folder.InvoiceIdentifier.HasValue)
+            {
+                var invoiceResponse = await invoiceDal.GetInvoice(folder.InvoiceIdentifier.Value, ct);
+
+                if (invoiceResponse.IsSuccess && invoiceResponse.Invoice != null)
+                {
+                    folderModel.Invoice = mapper.Map<InvoiceModel>(invoiceResponse.Invoice);
+                }
+            }
+
+            if (folder.AppointmentIdentifier.HasValue)
+            {
+                var appointmentResponse = await appointmentDal.GetAppointment(folder.AppointmentIdentifier.Value, ct);
+
+                if (appointmentResponse.IsSuccess && appointmentResponse.Appointment != null)
+                {
+                    folderModel.Appointment = mapper.Map<AppointmentModel>(appointmentResponse.Appointment);
+
+                    if (appointmentResponse.Appointment.AddressIdentifier.HasValue)
+                    {
+                        var addressResponse = await addressDal.GetAddress(appointmentResponse.Appointment.AddressIdentifier.Value, ct);
+                        if (addressResponse.IsSuccess && addressResponse.Address != null)
+                        {
+                            folderModel.Appointment.Address = mapper.Map<AddressModel>(addressResponse.Address);
+                        }
+                    }
+                }
             }
 
             return folderModel;

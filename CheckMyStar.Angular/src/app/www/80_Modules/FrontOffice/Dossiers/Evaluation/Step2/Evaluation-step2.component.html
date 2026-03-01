@@ -22,7 +22,8 @@
       <span *ngIf="form.isStationnementImpossible" class="badge bg-danger"><i class="bi bi-p-circle me-1"></i>Sans parking</span>
     </ng-container>
   </div>
-  <button class="btn btn-outline-secondary btn-sm" (click)="goBack.emit()">
+  <button class="btn btn-outline-secondary btn-sm" (click)="goBack.emit()"
+          [appTooltip]="'EvaluationSection.EditStep1' | translate">
     <i class="bi bi-pencil me-1"></i>
     {{ 'EvaluationSection.EditStep1' | translate }}
   </button>
@@ -105,13 +106,15 @@
 
 <!-- Actions -->
 <div class="d-flex justify-content-between gap-3 pb-3">
-  <button class="btn btn-outline-secondary" (click)="goBack.emit()">
+  <button class="btn btn-outline-secondary" (click)="goBack.emit()"
+          [appTooltip]="'EvaluationSection.Back' | translate">
     <i class="bi bi-arrow-left me-2"></i>
     {{ 'EvaluationSection.Back' | translate }}
   </button>
 
   <div class="d-flex flex-column align-items-center gap-1">
-    <button class="btn btn-outline-warning" (click)="saveEval.emit()">
+    <button class="btn btn-outline-warning" (click)="saveEval.emit()"
+            [appTooltip]="'EvaluationSection.Save' | translate">
       <i class="bi bi-floppy me-2"></i>
       {{ 'EvaluationSection.Save' | translate }}
     </button>
@@ -120,7 +123,8 @@
     </span>
   </div>
 
-  <button class="btn btn-success px-4" (click)="submitEval.emit()">
+  <button class="btn btn-success px-4" (click)="submitEval.emit()"
+          [appTooltip]="'EvaluationSection.Submit' | translate">
     <i class="bi bi-check-circle me-2"></i>
     {{ 'EvaluationSection.Submit' | translate }}
   </button>

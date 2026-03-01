@@ -13,6 +13,7 @@
   "CommonSection": {
     "Search": "Search",
     "Reset": "Clear",
+    "Detail": "Details",
     "Update": "Edit",
     "Delete": "Delete",
     "Add": "Add",
@@ -23,7 +24,10 @@
     "UnknownError": "Unknown error",
     "All": "All",
     "NoResults": "No results",
-    "NotProvided": "Not provided"
+    "CsvExport": "Export to CSV",
+    "ExcelExport": "Export to Excel",
+    "NotProvided": "Not provided",
+    "Loading": "Loading..."
   },
   "LoginSection": {
     "Login": "Login",
@@ -46,7 +50,8 @@
   },
   "PopupSection": {
     "Validate": "Validate",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "Close": "Close"
   },
   "RoleSection": {
     "Name": "Role name",
@@ -213,7 +218,49 @@
     "NotFound": "Case not found",
     "InvoiceNotAvailable": "Invoice viewing is not yet available",
     "QuoteNotAvailable": "Quote viewing is not yet available",
-    "EvaluationNotAvailable": "Property evaluation is not yet available"
+    "EvaluationNotAvailable": "Property evaluation is not yet available",
+    "AddAppointment": "Add an appointment",
+    "AppointmentCreated": "Appointment created successfully",
+    "AppointmentAddressSection": "Appointment location",
+    "AppointmentComment": "Comment",
+    "AppointmentCommentPlaceholder": "Additional information (optional)",
+    "EditAppointment": "Edit appointment",
+    "AppointmentUpdated": "Appointment updated successfully",
+    "DeleteAppointment": "Delete appointment",
+    "AppointmentDeleted": "Appointment deleted successfully",
+    "DeleteAppointmentConfirm": "Are you sure you want to delete this appointment?",
+    "EvaluationHistory": "Evaluation history",
+    "ViewHistory": "View history",
+    "HideHistory": "Hide history",
+    "NoEvaluationHistory": "No evaluation recorded for this case.",
+    "EvaluationAccepted": "Accepted",
+    "EvaluationRefused": "Refused",
+    "MandatoryPoints": "Mandatory points",
+    "OptionalPoints": "Optional points",
+    "ViewDetail": "View detail",
+    "EvaluationCreatedDate": "Evaluation date",
+    "EvaluationDetailTitle": "Evaluation detail",
+    "EvaluationDetailCriteria": "Criteria",
+    "EvaluationDetailObtained": "Obtained",
+    "EvaluationDetailRequired": "Required",
+    "EvaluationDetailStatus": "Status",
+    "OncCriteria": "ONC criteria",
+    "OncFailed": "failed"
+  },
+  "EvaluationViewSection": {
+    "Title": "Evaluation detail",
+    "Subtitle": "Read-only view",
+    "BackToFolder": "Back to folder",
+    "AcceptedHint": "This evaluation was successfully validated.",
+    "RefusedHint": "This evaluation did not meet the required criteria.",
+    "OncOk": "All ONC criteria are validated.",
+    "OncFail": "{{ count }} ONC criterion/criteria failed.",
+    "OncFailed": "failed",
+    "CriteriaTitle": "Evaluated criteria detail",
+    "NoCriteria": "No criteria available for this evaluation.",
+    "PropertyInfoTitle": "Evaluated property information",
+    "Persons": "pers.",
+    "NoConstraints": "No specific constraints applicable."
   },
   "EvaluationSection": {
     "Title": "Property Evaluation",
@@ -239,6 +286,8 @@
     "BatimentClasse": "Building is listed/classified",
     "StudioSansSejouur": "Studio apartment or property without living room",
     "StationnementImpossible": "Parking within 300 m is impossible due to regulations",
+    "LocalisationNonAdaptee": "Unsuitable location (sports equipment storage not required)",
+    "PasDeTri": "No selective waste sorting in the municipality",
     "SurfacesTitle": "Areas",
     "TotalArea": "Total property area",
     "RoomCount": "Number of bedrooms",

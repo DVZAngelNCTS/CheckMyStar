@@ -1,6 +1,7 @@
 import { AssessmentCriterionModel } from "./AssessmentCriterion.model";
 
 export interface AssessmentModel {
+  identifier: number;
   folderIdentifier: number;
   targetStarLevel: number;
   capacity: number;

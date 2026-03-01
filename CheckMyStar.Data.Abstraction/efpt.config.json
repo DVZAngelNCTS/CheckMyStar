@@ -47,6 +47,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[AssessmentResult]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Civility]",
          "ObjectType": 0
       },

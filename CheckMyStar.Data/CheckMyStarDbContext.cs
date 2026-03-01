@@ -27,6 +27,8 @@ public partial class CheckMyStarDbContext : DbContext
 
     public virtual DbSet<AssessmentCriterion> AssessmentCriteria { get; set; }
 
+    public virtual DbSet<AssessmentResult> AssessmentResults { get; set; }
+
     public virtual DbSet<Civility> Civilities { get; set; }
 
     public virtual DbSet<Country> Countries { get; set; }
@@ -145,9 +147,6 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Location)
-                .HasMaxLength(255)
-                .IsUnicode(false);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
@@ -178,6 +177,19 @@ public partial class CheckMyStarDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<AssessmentResult>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("AssessmentResult");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Civility>(entity =>

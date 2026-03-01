@@ -26,7 +26,8 @@
     "NoResults": "Aucun résultat",
     "CsvExport": "Exporter en CSV",
     "ExcelExport": "Exporter en Excel",    
-    "NotProvided": "Non renseigné"
+    "NotProvided": "Non renseigné",
+    "Loading": "Chargement..."
   },
   "LoginSection": {
     "Email": "E-mail",
@@ -58,7 +59,8 @@
   },
   "PopupSection": {
     "Validate": "Valider",
-    "Cancel": "Annuler"
+    "Cancel": "Annuler",
+    "Close": "Fermer"
   },
   "RoleSection": {
     "Name": "Nom du rôle",
@@ -253,7 +255,49 @@
     "NotFound": "Dossier introuvable",
     "InvoiceNotAvailable": "La consultation de la facture n'est pas encore disponible",
     "QuoteNotAvailable": "La consultation du devis n'est pas encore disponible",
-    "EvaluationNotAvailable": "L'évaluation du bien n'est pas encore disponible"
+    "EvaluationNotAvailable": "L'évaluation du bien n'est pas encore disponible",
+    "AddAppointment": "Ajouter un rendez-vous",
+    "AppointmentCreated": "Rendez-vous créé avec succès",
+    "AppointmentAddressSection": "Lieu du rendez-vous",
+    "AppointmentComment": "Commentaire",
+    "AppointmentCommentPlaceholder": "Informations complémentaires (optionnel)",
+    "EditAppointment": "Modifier le rendez-vous",
+    "AppointmentUpdated": "Rendez-vous mis à jour avec succès",
+    "DeleteAppointment": "Supprimer le rendez-vous",
+    "AppointmentDeleted": "Rendez-vous supprimé avec succès",
+    "DeleteAppointmentConfirm": "Êtes-vous sûr de vouloir supprimer ce rendez-vous ?",
+    "EvaluationHistory": "Historique des évaluations",
+    "ViewHistory": "Voir l'historique",
+    "HideHistory": "Masquer l'historique",
+    "NoEvaluationHistory": "Aucune évaluation enregistrée pour ce dossier.",
+    "EvaluationAccepted": "Accepté",
+    "EvaluationRefused": "Refusé",
+    "MandatoryPoints": "Points obligatoires",
+    "OptionalPoints": "Points optionnels",
+    "ViewDetail": "Voir le détail",
+    "EvaluationCreatedDate": "Date de l'évaluation",
+    "EvaluationDetailTitle": "Détail de l'évaluation",
+    "EvaluationDetailCriteria": "Critère",
+    "EvaluationDetailObtained": "Obtenu",
+    "EvaluationDetailRequired": "Requis",
+    "EvaluationDetailStatus": "Statut",
+    "OncCriteria": "Critères ONC",
+    "OncFailed": "non validé(s)"
+  },
+  "EvaluationViewSection": {
+    "Title": "Détail de l'évaluation",
+    "Subtitle": "Consultation en lecture seule",
+    "BackToFolder": "Retour au dossier",
+    "AcceptedHint": "Cette évaluation a été validée avec succès.",
+    "RefusedHint": "Cette évaluation n'a pas satisfait les critères requis.",
+    "OncOk": "Tous les critères ONC sont validés.",
+    "OncFail": "{{ count }} critère(s) ONC non validé(s).",
+    "OncFailed": "non validé(s)",
+    "CriteriaTitle": "Détail des critères évalués",
+    "NoCriteria": "Aucun critère disponible pour cette évaluation.",
+    "PropertyInfoTitle": "Informations du bien évalué",
+    "Persons": "pers.",
+    "NoConstraints": "Aucune contrainte spécifique applicable."
   },
   "EvaluationSection": {
     "Title": "Évaluation du bien",
@@ -279,6 +323,8 @@
     "BatimentClasse": "Le bâtiment est classé",
     "StudioSansSejouur": "Studio ou bien sans séjour",
     "StationnementImpossible": "Stationnement dans un rayon de 300 m impossible par réglementation",
+    "LocalisationNonAdaptee": "Localisation non adaptée (rangement équipement sportif non requis)",
+    "PasDeTri": "Absence de tri sélectif dans la commune",
     "SurfacesTitle": "Surfaces",
     "TotalArea": "Superficie totale du bien",
     "RoomCount": "Nombre de chambres",

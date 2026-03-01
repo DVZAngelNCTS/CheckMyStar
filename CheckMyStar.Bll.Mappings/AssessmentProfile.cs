@@ -28,13 +28,11 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.TotalArea, opts => opts.MapFrom(src => src.TotalArea))
                 .ForMember(dest => dest.TotalRoomsArea, opts => opts.MapFrom(src => src.TotalRoomsArea)).ReverseMap();
 
-            CreateMap<AssessmentCriterion, AssessmentCriterionModel>()
-                .ForMember(dest => dest.AssessmentIdentifier, opts => opts.MapFrom(src => src.AssessmentIdentifier))
-                .ForMember(dest => dest.Comment, opts => opts.MapFrom(src => src.Comment))
-                .ForMember(dest => dest.CriterionId, opts => opts.MapFrom(src => src.CriterionId))
-                .ForMember(dest => dest.IsValidated, opts => opts.MapFrom(src => src.IsValidated))
-                .ForMember(dest => dest.Points, opts => opts.MapFrom(src => src.Points))
-                .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Status)).ReverseMap();
+            CreateMap<AssessmentCriterion, AssessmentCriterionModel>();
+
+            CreateMap<AssessmentCriterionModel, AssessmentCriterion>();
+
+            CreateMap<AssessmentCriterionDetail, AssessmentCriterionDetailModel>();
         }
     }
 }

@@ -9,7 +9,7 @@ public partial class Appointment
 
     public DateTime AppointmentDate { get; set; }
 
-    public string? Location { get; set; }
+    public int? AddressIdentifier { get; set; }
 
     public string? Comment { get; set; }
 

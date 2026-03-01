@@ -1,6 +1,8 @@
+import { AddressModel } from '../Common/Address.model';
+
 export interface AppointmentModel {
-    identifier: number,
-    appointmentDate: Date,
-    location: string,
-    comment: string
+  identifier?: number;
+  appointmentDate?: string;
+  address?: AddressModel;
+  comment?: string;
 }

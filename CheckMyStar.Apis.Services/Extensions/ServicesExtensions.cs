@@ -21,7 +21,9 @@ namespace CheckMyStar.Apis.Services.Extensions
                 .AddScoped<ISocietyService, SocietyService>()
                 .AddScoped<IAccommodationService, AccommodationService>()
                 .AddScoped<IFolderService, FolderService>()
-                .AddScoped<IAssessmentService, AssessmentService>();
+                .AddScoped<IAssessmentService, AssessmentService>()
+                .AddScoped<IAppointmentService, AppointmentService>()
+                .AddScoped<IAssessmentResultService, AssessmentResultService>();
 
             return services;
         }

@@ -24,6 +24,7 @@ namespace CheckMyStar.Data
         IQueryable<Appointment> ICheckMyStarDbContext.Appointments => this.Appointments;
         IQueryable<Assessment> ICheckMyStarDbContext.Assessments => this.Assessments;
         IQueryable<AssessmentCriterion> ICheckMyStarDbContext.AssessmentCriteria => this.AssessmentCriteria;
+        IQueryable<AssessmentResult> ICheckMyStarDbContext.AssessmentResults => this.AssessmentResults;
 
         public Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default) where TEntity : class
         {

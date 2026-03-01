@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
-using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
 
 namespace CheckMyStar.Dal
@@ -61,7 +60,73 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<AssessmentResult> AddAssessment(Assessment assessment, List<AssessmentCriterion> criteria, CancellationToken ct)
+        public async Task<AssessmentResult> GetAssessmentByFolder(int folderIdentifier, CancellationToken ct)
+        {
+            AssessmentResult result = new AssessmentResult();
+
+            try
+            {
+                var assessment = await (from a in dbContext.Assessments.AsNoTracking()
+                                        where a.FolderIdentifier == folderIdentifier
+                                        orderby a.CreatedDate descending
+                                        select a).FirstOrDefaultAsync(ct);
+
+                if (assessment != null)
+                {
+                    result.IsSuccess = true;
+                    result.Assessment = assessment;
+                    result.Message = "Évaluation récupérée avec succès";
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Évaluation non trouvée pour ce dossier";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur lors de la récupération de l'évaluation : {ex.Message}";
+            }
+
+            return result;
+        }
+
+        public async Task<AssessmentCriteriaResult> GetAssessmentCriteria(int assessmentIdentifier, CancellationToken ct)
+        {
+            AssessmentCriteriaResult result = new AssessmentCriteriaResult();
+
+            try
+            {
+                var criteriaDetails = await (from ac in dbContext.AssessmentCriteria.AsNoTracking()
+                                             join c in dbContext.Criterias.AsNoTracking() on ac.CriterionId equals c.CriterionId
+                                             where ac.AssessmentIdentifier == assessmentIdentifier
+                                             select new Data.AssessmentCriterionDetail
+                                             {
+                                                 AssessmentIdentifier = ac.AssessmentIdentifier,
+                                                 CriterionId = ac.CriterionId,
+                                                 CriterionDescription = c.Description,
+                                                 BasePoints = c.BasePoints,
+                                                 Points = ac.Points,
+                                                 Status = ac.Status,
+                                                 IsValidated = ac.IsValidated,
+                                                 Comment = ac.Comment
+                                             }).ToListAsync(ct);
+
+                result.AssessmentCriteria = criteriaDetails;
+                result.IsSuccess = true;
+                result.Message = "Critères d'évaluation récupérés avec succès";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur lors de la récupération des critères d'évaluation : {ex.Message}";
+            }
+
+            return result;
+        }
+
+        public async Task<AssessmentResult> AddAssessment(Data.Assessment assessment, List<Data.AssessmentCriterion> criteria, CancellationToken ct)
         {
             AssessmentResult result = new AssessmentResult();
 
@@ -85,7 +150,7 @@ namespace CheckMyStar.Dal
 
                 var createdAssessment = await dbContext.Assessments.FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
 
-                result.Assessment = createdAssessment as Assessment;
+                result.Assessment = createdAssessment as Data.Assessment;
                 result.IsSuccess = true;
                 result.Message = "Évaluation créée avec succès";
             }
@@ -98,7 +163,51 @@ namespace CheckMyStar.Dal
             return result;
         }
 
-        public async Task<BaseResult> DeleteAssessment(Assessment assessment, CancellationToken ct)
+        public async Task<AssessmentResult> UpdateAssessment(Data.Assessment assessment, List<Data.AssessmentCriterion> criteria, CancellationToken ct)
+        {
+            AssessmentResult result = new AssessmentResult();
+
+            try
+            {
+                assessment.UpdatedDate = DateTime.Now;
+
+                await dbContext.UpdateAsync(assessment, ct);
+
+                var existingCriteria = await dbContext.AssessmentCriteria
+                    .Where(ac => ac.AssessmentIdentifier == assessment.Identifier)
+                    .ToListAsync(ct);
+
+                foreach (var existingCriterion in existingCriteria)
+                {
+                    await dbContext.RemoveAsync(existingCriterion, ct);
+                }
+
+                await dbContext.SaveChangesAsync(ct);
+
+                foreach (var criterion in criteria)
+                {
+                    criterion.AssessmentIdentifier = assessment.Identifier;
+                    await dbContext.AddAsync(criterion, ct);
+                }
+
+                await dbContext.SaveChangesAsync(ct);
+
+                var updatedAssessment = await dbContext.Assessments.FirstOrDefaultAsync(a => a.Identifier == assessment.Identifier, ct);
+
+                result.Assessment = updatedAssessment as Data.Assessment;
+                result.IsSuccess = true;
+                result.Message = "Évaluation modifiée avec succès";
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+                result.Message = $"Erreur lors de la modification de l'évaluation : {ex.Message}";
+            }
+
+            return result;
+        }
+
+        public async Task<BaseResult> DeleteAssessment(Data.Assessment assessment, CancellationToken ct)
         {
             BaseResult baseResult = new BaseResult();
 
