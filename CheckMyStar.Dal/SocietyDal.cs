@@ -1,77 +1,148 @@
-﻿using CheckMyStar.Dal.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+
+using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
-using Microsoft.EntityFrameworkCore;
-using System.Net.Sockets;
 
 namespace CheckMyStar.Dal;
 
 public class SocietyDal(ICheckMyStarDbContext dbContext) : ISocietyDal
 {
-    public async Task<SocietyResult> AddSociety(Society society, CancellationToken ct)
+    public async Task<SocietyResult> GetNextIdentifier(CancellationToken ct)
     {
-        var result = new SocietyResult();
+        SocietyResult societyResult = new SocietyResult();
 
         try
         {
-            society.CreatedDate = DateTime.Now;
-            society.UpdatedDate = DateTime.Now;
-            society.IsActive = true;
+            var existingIdentifiers = await (from r in dbContext.Societies.AsNoTracking()
+                                             orderby r.Identifier
+                                             select r.Identifier).ToListAsync(ct);
 
-            await dbContext.AddAsync(society, ct);
-
-            var affected = await dbContext.SaveChangesAsync(ct);
-
-            if (affected > 0)
+            if (existingIdentifiers.Count == 0)
             {
-                result.IsSuccess = true;
-                result.Message = "Société créée avec succès.";
-                result.Society = society;
+                societyResult.IsSuccess = true;
+                societyResult.Society = new Society { Identifier = 1 };
+                societyResult.Message = "Identifiant récupéré avec succès";
             }
             else
             {
-                result.IsSuccess = false;
-                result.Message = "Échec de la création de la société.";
+                int nextIdentifier = 1;
+
+                foreach (var id in existingIdentifiers)
+                {
+                    if (id == nextIdentifier)
+                    {
+                        nextIdentifier++;
+                    }
+                    else if (id > nextIdentifier)
+                    {
+                        break;
+                    }
+                }
+
+                societyResult.IsSuccess = true;
+                societyResult.Society = new Society { Identifier = nextIdentifier };
+                societyResult.Message = "Identifiant récupéré avec succès";
             }
         }
         catch (Exception ex)
         {
-            result.IsSuccess = false;
-            result.Message = $"Erreur lors de la création : {ex.Message}";
+            societyResult.IsSuccess = false;
+            societyResult.Message = ex.Message;
         }
 
-        return result;
+        return societyResult;
     }
 
-    public async Task<BaseResult> DeleteSocity(Society society, CancellationToken ct)
+    public async Task<BaseResult> AddSociety(Society society, CancellationToken ct)
     {
-        var result = new BaseResult();
+        BaseResult baseResult = new BaseResult();
+
+        try
+        {
+            await dbContext.AddAsync(society, ct);
+
+            bool result = await dbContext.SaveChangesAsync(ct) > 0 ? true : false;
+
+            if (result)
+            {
+                baseResult.IsSuccess = true;
+                baseResult.Message = $"La société {society.Name} ajoutée avec succès.";
+            }
+            else
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible d'ajouter la société {society.Name}";
+            }
+        }
+        catch (Exception ex)
+        {
+            baseResult.IsSuccess = false;
+            baseResult.Message = $"Impossible d'ajouter la société {society.Name} : " + ex.Message;
+        }
+
+        return baseResult;
+    }
+
+    public async Task<BaseResult> UpdateSociety(Society society, CancellationToken ct)
+    {
+        BaseResult baseResult = new BaseResult();
+
+        try
+        {
+            await dbContext.UpdateAsync(society, ct);
+
+            bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+            if (result)
+            {
+                baseResult.IsSuccess = true;
+                baseResult.Message = $"Société {society.Name} modifié avec succès";
+            }
+            else
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de modifier la société {society.Name}";
+            }
+        }
+        catch (Exception ex)
+        {
+            baseResult.IsSuccess = false;
+            baseResult.Message = $"Impossible de modifier la société {society.Name} : " + ex.Message;
+        }
+
+        return baseResult;
+    }
+
+    public async Task<BaseResult> DeleteSociety(Society society, CancellationToken ct)
+    {
+        BaseResult baseResult = new BaseResult();
 
         try
         {
             await dbContext.RemoveAsync(society, ct);
 
-            var affected = await dbContext.SaveChangesAsync(ct);
+            bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
 
-            if (affected > 0)
+            if (result)
             {
-                result.IsSuccess = true;
-                result.Message = "Société supprimée avec succès.";
+                baseResult.IsSuccess = true;
+                baseResult.Message = $"Société {society.Name} supprimé avec succès";
             }
             else
             {
-                result.IsSuccess = false;
-                result.Message = "Échec de la suppression de la société.";
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de supprimer la société {society.Name}";
             }
         }
         catch (Exception ex)
         {
-            result.IsSuccess = false;
-            result.Message = $"Erreur lors de la suppression : {ex.Message}";
+            baseResult.IsSuccess = false;
+            baseResult.Message = $"Impossible de supprimer la société {society.Name} : " + ex.Message;
         }
 
-        return (result);
+        return baseResult;
     }
 
     public async Task<SocietyResult> GetSociety(int identifier, CancellationToken ct)
@@ -97,6 +168,30 @@ public class SocietyDal(ICheckMyStarDbContext dbContext) : ISocietyDal
         return result;
     }
 
+    public async Task<SocietyResult> GetSociety(string? name, string? email, string? phone, CancellationToken ct)
+    {
+        var result = new SocietyResult();
+
+        try
+        {
+            var society = await (from s in dbContext.Societies.AsNoTracking()
+                                 where
+                                      s.Name == name
+                                   && s.Email == email
+                                   && (!string.IsNullOrEmpty(phone) && s.Phone == phone)
+                                 select s).FirstOrDefaultAsync();
+
+            result.IsSuccess = true;
+            result.Society = society;
+        }
+        catch (Exception ex)
+        {
+            result.IsSuccess = false;
+            result.Message = ex.Message;
+        }
+
+        return result;
+    }
     public async Task<SocietiesResult> GetSocieties(CancellationToken ct)
     {
         var result = new SocietiesResult();

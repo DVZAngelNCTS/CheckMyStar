@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Society] (
-    [Identifier] INT IDENTITY(1,1) NOT NULL,
+    [Identifier] INT NOT NULL,
     [Name] VARCHAR(150) NOT NULL,
     [Email] VARCHAR(100) NULL,
     [Phone] VARCHAR(10) NULL,

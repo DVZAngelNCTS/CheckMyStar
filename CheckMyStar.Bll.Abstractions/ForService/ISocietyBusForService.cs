@@ -5,6 +5,10 @@ namespace CheckMyStar.Bll.Abstractions.ForService;
 
 public interface ISocietyBusForService
 {
-    Task<SocietyResponse> AddSociety(SocietySaveRequest request, CancellationToken ct);
+    Task<SocietyResponse> GetNextIdentifier(CancellationToken ct);
+    Task<BaseResponse> AddSociety(SocietySaveRequest request, CancellationToken ct);
+    Task<BaseResponse> UpdateSociety(SocietySaveRequest request, CancellationToken ct);
+    Task<BaseResponse> DeleteSociety(SocietyDeleteRequest request, CancellationToken ct);
     Task<SocietiesResponse> GetSocieties(CancellationToken ct);
+    Task<SocietyResponse> GetSociety(SocietyGetRequest request, CancellationToken ct);
 }

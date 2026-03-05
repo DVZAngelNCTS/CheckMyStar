@@ -16,18 +16,25 @@ import { ToastService } from '../../../90_Services/Toast/Toast.service';
 import { SocietyBllService } from '../../../60_Bll/BackOffice/Society-bll.service';
 import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.service';
 import { CountryBllService } from '../../../60_Bll/BackOffice/Country-bll.service';
-import { CountryModel } from '../../../20_Models/Common/Country.model';
 import { SocietyModel } from '../../../20_Models/BackOffice/Society.model';
+import { SocietyFormComponent } from '../../BackOffice/Societies/Form/Society-form.component';
 
 @Component({
 	selector: 'app-user-page',
 	standalone: true,
-	imports: [CommonModule, UserFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, UserFormComponent],
+	imports: [CommonModule, UserFilterComponent, FormsModule, ReactiveFormsModule, TableComponent,TranslationModule, PopupComponent, UserFormComponent, SocietyFormComponent],
 	templateUrl: './User-page.component.html'
 })
 export class UserPageComponent {
+	popupSocietyVisible = false;
+	popupSocietyTitle = '';
+	popupSocietyConfirmLabel = '';
+	popupSocietyCancelLabel = '';
+	popupSocietyError: string | null = null;
+	@ViewChild(SocietyFormComponent) societyForm!: SocietyFormComponent;
+
 	popupVisible = false; 
-	popupMode: 'create' | 'edit' | 'delete' | 'createSociety' | null = null;
+	popupMode: 'create' | 'edit' | 'delete' | null = null;
 	popupTitle = ''; 
 	popupConfirmLabel = ''; 
 	popupCancelLabel = ''; 
@@ -38,7 +45,9 @@ export class UserPageComponent {
 	loading = false;
 	loadingSearch = false; 
 	loadingReset = false;
-	societyForm!: FormGroup;
+	createdSocietyId = 0;
+	
+	societies: SocietyModel[] = [];
 
 	columns = [
 		{ icon: 'bi bi-list-ol', field: 'identifier', header: 'UserSection.Identifier', sortable: true, filterable: true, width: '10%' },
@@ -57,16 +66,12 @@ export class UserPageComponent {
 		{ icon: 'bi bi-shield-check', field: 'isActive', header: 'UserSection.Active', sortable: true, filterable: false }
 		] as TableColumn<UserModel>[];
 
-	societies: any[] = [];
-	countries: CountryModel[] = [];
-
 	constructor(private fb: FormBuilder, private userBll: UserBllService, private translate: TranslateService, private toast: ToastService, private societyBll: SocietyBllService, private addressBll: AddressBllService, private countryBll: CountryBllService) { 
 	}
 
 	ngOnInit() {
 		this.loadUsers();
 		this.loadSocieties();
-		this.loadCountries();
 	}
 
 	loadUsers() {
@@ -78,22 +83,12 @@ export class UserPageComponent {
 
 	loadSocieties() {
 		this.societyBll.getSocieties$().subscribe({
-		next: (res) => {
-			this.societies = res.societies || [];
+		next: (response) => {
+			this.societies = response.societies || [];
 		},
-		error: (err) => console.error(err)
-		});
-	}
-
-	loadCountries() {
-		this.countryBll.getCountries$().subscribe({
-			next: (res) => {
-				this.countries = res.countries || [];
-				this.setDefaultSocietyCountry();
-			},
-			error: (err) => console.error(err)
-		});
-	}
+		error: (err) => console.error('Erreur chargement sociétés', err)
+    });
+  }
 
 	onFilter(filter: any) {
 
@@ -121,6 +116,7 @@ export class UserPageComponent {
 	}
 
 	openCreate() {
+		this.createdSocietyId = 0;
 		this.loading = false;
 		this.loadingSearch = false;
 		this.loadingReset = false;
@@ -180,17 +176,6 @@ export class UserPageComponent {
 		if (this.popupMode === 'delete') {
 			this.onDeleteConfirmed();
 			return;
-		}
-
-		if (this.popupMode === 'createSociety') {
-			if (this.societyForm.invalid) {
-				this.societyForm.markAllAsTouched();
-				return;
-		}
-
-		this.onCreateSocietyConfirmed();
-
-		return;
 		}
 
 		// 👉 Ici seulement si tout est OK
@@ -292,10 +277,6 @@ export class UserPageComponent {
 		});
 	}
 
-	societyGetValue(): SocietyModel {
-  		return this.societyForm.getRawValue() as SocietyModel;
-	}
-
 	toggleEnabled(user: UserModel) {
 		this.loading = true;
 
@@ -322,127 +303,79 @@ export class UserPageComponent {
 			},
 			error: err => {
 				this.loading = false;
-				console.error(err);
+				
+				this.toast.show(err, "error", 5000);	
 			}
 		});
 	}
 
 	openCreateSociety() {
-		this.societyForm = this.fb.group({
-			name: ['', Validators.required],
-			email: ['', [Validators.email]],
-			phone: [''],
-			address: this.fb.group({
-				number: [''],
-				addressLine: ['', Validators.required],
-				city: ['', Validators.required],
-				zipCode: ['', Validators.required],
-				region: [''],
-				countryIdentifier: [0, Validators.required]
-			})
-		});
-
-		this.popupMode = 'createSociety';
-		this.popupTitle = this.translate.instant('SocietySection.Create');
-		this.popupConfirmLabel = this.translate.instant('PopupSection.Validate');
-		this.popupCancelLabel = this.translate.instant('PopupSection.Cancel');
-		this.popupError = null;
 		this.loading = false;
-		this.popupVisible = true;
-		this.setDefaultSocietyCountry();
-	}
-
-	private setDefaultSocietyCountry() {
-		if (!this.societyForm) return;
-		const currentCountryId = this.societyForm.get('address.countryIdentifier')?.value;
-		const france = this.countries.find(c => c.code === 'FR');
-		if ((!currentCountryId || currentCountryId === 0) && france) {
-			this.societyForm.get('address.countryIdentifier')?.patchValue(france.identifier);
-		}
+		this.loadingSearch = false;
+		this.loadingReset = false;
+		this.popupSocietyError = null;
+		this.popupMode = 'create';
+		this.popupSocietyTitle = this.translate.instant('SocietySection.Create');
+		this.popupSocietyConfirmLabel = this.translate.instant('PopupSection.Validate');
+		this.popupSocietyCancelLabel = this.translate.instant('PopupSection.Cancel');
+		this.popupSocietyVisible = true;
+		this.popupVisible = false;
 	}
 
 	onCreateSocietyConfirmed() {
-		this.loading = true;
-		const societyValue = this.societyForm.value;
-		const addressValue = societyValue.address || {};
-		const countryId = Number(addressValue.countryIdentifier || 0);
-		const country = this.countries.find(c => c.identifier === countryId);
+		if (this.societyForm.form.invalid) {
+			this.societyForm.form.markAllAsTouched();
+			return;
+		}
 
-		this.addressBll.getNextIdentifier$().subscribe({
-			next: (nextResponse: any) => {
-				const nextId = nextResponse.address?.identifier ?? nextResponse.user?.identifier;
-				const idSuccess = nextResponse?.isSuccess !== false && !!nextId;
-				if (!idSuccess) {
-					this.loading = false;
-					this.popupError = nextResponse.message || 'Adresse: identifiant non recupere.';
-					return;
-				}
+		this.loading = true;	
 
-				const addressPayload = {
-					address: {
-						identifier: nextId,
-						number: addressValue.number || '',
-						addressLine: addressValue.addressLine || '',
-						city: addressValue.city || '',
-						zipCode: addressValue.zipCode || '',
-						region: addressValue.region || '',
-						country: country
-							? { identifier: country.identifier, code: country.code, name: country.name }
-							: { identifier: 0, code: '', name: '' }
-					}
-				};
+		const newSociety = this.societyForm.getValue();
 
-				this.addressBll.addAddress$(addressPayload).subscribe({
-					next: (addressResponse: any) => {
-						const createdAddressId = addressResponse?.address?.identifier ?? nextId;
-						const addressSuccess = addressResponse?.isSuccess !== false && !!createdAddressId;
-						if (!addressSuccess) {
-							this.loading = false;
-							this.popupError = addressResponse?.message || 'Adresse: creation impossible.';
-							return;
-						}
+		this.createdSocietyId = newSociety.identifier;
 
-						const newSociety = this.societyGetValue();
-	
-						newSociety.addressIdentifier = createdAddressId;
-
-						this.societyBll.addSociety$(newSociety).subscribe({
-							next: (response: any) => {
-								if (!response.isSuccess) {
-									this.loading = false;
-									this.popupError = response.message || 'Societe: creation impossible.';
-									return;
-								}
-
-								this.loadSocieties();
-								if (this.userForm) {
-									this.userForm.loadSocieties();
-								}
-
-								const createdSociety = response.societies?.[0];
-								if (createdSociety && this.userForm) {
-									this.userForm.form.get('societyIdentifier')?.patchValue(createdSociety.identifier);
-								}
-
-								this.toast.show(response.message, 'success', 5000);
-								this.popupVisible = false;
-							},
-							error: (err: any) => {
-								this.loading = false;
-								this.popupError = err.error?.message || 'Societe: erreur lors de la creation.';
-							}
-						});
-					},
-					error: (err: any) => {
+		this.societyBll.addSociety$(newSociety).subscribe({
+			next: response => {
+					if (!response.isSuccess) {
 						this.loading = false;
-						this.popupError = err.error?.message || 'Adresse: erreur lors de la creation.';
+						this.popupSocietyError = response.message;
+						return; // ❗ ne pas fermer la popup
 					}
-				});
-			},
-			error: (err: any) => {
-				this.loading = false;
-				this.popupError = err.error?.message || 'Adresse: erreur lors de la recuperation de l identifiant.';
-			}
+
+					this.societyBll.getSociety$(newSociety.identifier).subscribe({
+						next: response => {
+							if (!response.isSuccess) {
+								this.loading = false;
+								this.popupSocietyError = response.message;
+								return; // ❗ ne pas fermer la popup								
+							}
+
+							this.loadSocieties();
+							
+							this.userForm.loadSocieties();
+
+							this.userForm.form.get('societyIdentifier')?.patchValue(newSociety.identifier);
+						},
+						error: err => {
+							this.loading = false;
+							this.popupSocietyError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
+						}
+					});
+
+					this.popupSocietyError = null;
+					this.toast.show(response.message, "success", 5000);
+					this.popupSocietyVisible = false;
+					this.popupVisible = true;
+				},
+				error: err => {
+					this.loading = false;
+					this.popupSocietyError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
+				}
 		});
+	}
+
+	onCreatePopupSocietyCancel() {
+		this.popupSocietyVisible = false;
+		this.popupVisible = true;
 	}
 }
