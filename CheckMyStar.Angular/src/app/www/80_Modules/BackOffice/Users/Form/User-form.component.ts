@@ -25,6 +25,7 @@ import { GeolocationAddressModel } from '../../../../20_Models/Common/Geolocatio
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() user: UserModel | null = null;
   @Input() readonlyIdentifier: boolean = true;
+  @Input() createdSocietyId: number | null = null;
   @Output() createSociety = new EventEmitter<void>();
 
   form!: FormGroup;
@@ -79,6 +80,10 @@ export class UserFormComponent implements OnInit, OnChanges {
     this.societyBll.getSocieties$().subscribe({
       next: (response) => {
         this.societies = response.societies || [];
+
+        if (this.createdSocietyId) {
+          this.form.get('societyIdentifier')?.patchValue(this.createdSocietyId);
+        }
       },
       error: (err) => console.error('Erreur chargement sociétés', err)
     });
@@ -90,7 +95,11 @@ export class UserFormComponent implements OnInit, OnChanges {
   } 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['user'] && changes['user'].currentValue) {
+    if (changes['createdSocietyId'] && this.createdSocietyId && this.form) {
+      this.form.get('societyIdentifier')?.patchValue(this.createdSocietyId);
+    }
+
+    if (changes['user'] && this.user) {
 
       if (!this.form) {
         this.buildForm();

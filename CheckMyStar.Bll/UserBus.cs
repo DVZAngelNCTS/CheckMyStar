@@ -218,7 +218,7 @@ namespace CheckMyStar.Bll
                 else
                 {
                     result.IsSuccess = false;
-                    result.Message = "L'utilisateur' n'existe pas, impossible de le modifié";
+                    result.Message = "L'utilisateur n'existe pas, impossible de le modifié";
                 }
             }
             else
@@ -277,7 +277,7 @@ namespace CheckMyStar.Bll
                                         }
                                     }
 
-                                    var deleteSociety = await societyDal.DeleteSocity(societyResult.Society, ct);
+                                    var deleteSociety = await societyDal.DeleteSociety(societyResult.Society, ct);
 
                                     if (deleteSociety.IsSuccess)
                                     {

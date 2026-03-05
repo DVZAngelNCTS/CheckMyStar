@@ -206,10 +206,13 @@
     "ActionNotAvailable": "Action non disponible pour le moment"
   },
   "SocietySection": {
+    "Identifier": "Identifiant",
     "Create": "Créer une société",
     "Name": "Nom",
     "Email": "Email",
-    "Phone": "Téléphone"
+    "Phone": "Téléphone",
+    "Informations": "Imformations société",
+    "Address": "Adresse"
   },
   "FrontOfficeMenuSection": {
     "Home": "Accueil",

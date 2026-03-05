@@ -33,7 +33,6 @@ export class UserDalService {
   }
 
   addUser$(request: UserSaveRequest) {   
-    alert(JSON.stringify(request.user));
     return this.http.post<BaseResponse>(`${this.apiUrl}/User/adduser`, request);
   }
   
