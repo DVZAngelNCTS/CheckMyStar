@@ -1,0 +1,35 @@
+<div class="d-flex flex-column flex-grow-1">
+  <!-- Filtres -->
+  <div class="d-flex flex-row">
+    <div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
+      <app-society-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (filter)="onFilter($event)"></app-society-filter>
+    </div>
+  </div>
+
+  <!-- Contenu principal extensible -->
+  <div class="d-flex flex-column flex-grow-1">
+    <!-- Tableau extensible -->
+    <div class="d-flex flex-column flex-grow-1">
+      <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
+        <app-table [columns]="columns" [data]="societies!" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" (openCreate)="openCreate()" [showDetail]="false"></app-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-popup [large]="true" [visible]="popupVisible" [title]="popupTitle" [confirmLabel]="popupConfirmLabel" [cancelLabel]="popupCancelLabel" [errorMessage]="popupError" [loading]="loading" (confirm)="onPopupConfirm()" (cancel)="onPopupCancel()" icon="bi bi-shield">
+  <!-- Contenu dynamique -->
+  <ng-container *ngIf="popupMode === 'delete'">
+    <p>{{ 'SocietySection.DeleteAsk' | translate }} <strong>{{ selectedSociety?.name }}</strong> ?</p>
+  </ng-container>
+
+  <ng-container *ngIf="popupVisible">
+    <ng-container *ngIf="popupMode === 'edit'">
+      <app-society-form [society]="selectedSociety" [readonlyIdentifier]="true"></app-society-form>
+    </ng-container>
+    <ng-container *ngIf="popupMode === 'create'">
+      <app-society-form [readonlyIdentifier]="true"></app-society-form>
+    </ng-container>
+  </ng-container>
+</app-popup>
+

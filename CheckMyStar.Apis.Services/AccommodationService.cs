@@ -17,9 +17,9 @@ namespace CheckMyStar.Apis.Services
             return accommodationBusForService.GetAccommodations(ct);
         }
 
-        public Task<BaseResponse> CreateAccommodation(AccommodationSaveRequest request, CancellationToken ct)
+        public Task<BaseResponse> AddAccommodation(AccommodationSaveRequest request, CancellationToken ct)
         {
-            return accommodationBusForService.CreateAccommodation(request, ct);
+            return accommodationBusForService.AddAccommodation(request, ct);
         }
 
         public Task<BaseResponse> UpdateAccommodation(AccommodationSaveRequest request, CancellationToken ct)
@@ -30,6 +30,13 @@ namespace CheckMyStar.Apis.Services
         public Task<BaseResponse> DeleteAccommodation(AccommodationDeleteRequest request, CancellationToken ct)
         {
             return accommodationBusForService.DeleteAccommodation(request, ct);
+        }
+
+        public async Task<BaseResponse> EnabledAccommodation(AccommodationSaveRequest request, CancellationToken ct)
+        {
+            var result = await accommodationBusForService.EnabledAccommodation(request, ct);
+
+            return result;
         }
     }
 }

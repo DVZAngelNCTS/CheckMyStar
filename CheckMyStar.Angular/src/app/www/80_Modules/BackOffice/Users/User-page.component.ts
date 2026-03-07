@@ -83,12 +83,12 @@ export class UserPageComponent {
 
 	loadSocieties() {
 		this.societyBll.getSocieties$().subscribe({
-		next: (response) => {
-			this.societies = response.societies || [];
-		},
-		error: (err) => console.error('Erreur chargement sociétés', err)
-    });
-  }
+			next: (response) => {
+				this.societies = response.societies || [];
+			},
+			error: (err) => console.error('Erreur chargement sociétés', err)
+		});
+	}
 
 	onFilter(filter: any) {
 
@@ -285,7 +285,7 @@ export class UserPageComponent {
 			isActive: !user.isActive 
 		};
 
-		this.userBll.updateUser$(updatedUser).subscribe({
+		this.userBll.enabledUser$(updatedUser).subscribe({
 			next: response => {
 				this.loading = false;
 

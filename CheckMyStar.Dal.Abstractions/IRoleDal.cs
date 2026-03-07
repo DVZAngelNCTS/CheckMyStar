@@ -12,5 +12,6 @@ namespace CheckMyStar.Dal.Abstractions
         Task<BaseResult> AddRole(Role role, CancellationToken ct);
         Task<BaseResult> UpdateRole(Role role, CancellationToken ct);
         Task<BaseResult> DeleteRole(Role role, CancellationToken ct);
+        Task<BaseResult> EnabledRole(Role role, CancellationToken ct);
     }
 }

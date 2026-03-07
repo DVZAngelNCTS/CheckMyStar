@@ -5,7 +5,6 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
-using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
 using CheckMyStar.Security;
@@ -42,8 +41,6 @@ namespace CheckMyStar.Bll
         {
             UsersResponse usersResponse = new UsersResponse();
 
-            usersResponse.Users = new List<UserModel>();
-
             var users = await userDal.GetUsers(lastName, firstName, SocietyIdentifier, email, phone, address, role, ct);
 
             if (users.IsSuccess && users.Users != null)
@@ -68,6 +65,14 @@ namespace CheckMyStar.Bll
 
                     usersResponse.Users.Add(userModel);
                 }
+
+                usersResponse.IsSuccess = true;
+                usersResponse.Message = users.Message;
+            }
+            else
+            {
+                usersResponse.IsSuccess = false;
+                usersResponse.Message = users.Message;
             }
 
             return usersResponse;
@@ -168,7 +173,8 @@ namespace CheckMyStar.Bll
                     }
 
                     var dateTime = DateTime.Now;
-
+                    
+                    userModel.CreatedDate = user.User.CreatedDate;
                     userModel.UpdatedDate = dateTime;
 
                     var userEntity = mapper.Map<User>(userModel);
@@ -177,26 +183,45 @@ namespace CheckMyStar.Bll
 
                     if (userResult.IsSuccess)
                     {
-                        if (userModel.Address != null)
+                        if (userModel.Address != null && user.User.AddressIdentifier !=null)
                         {
-                            userModel.Address.UpdatedDate = dateTime;
+                            var address = await addressDal.GetAddress(user.User.AddressIdentifier.Value, ct);
 
-                            var addressEntity = mapper.Map<Address>(userModel.Address);
-
-                            var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
-
-                            if (addressResult.IsSuccess)
+                            if (address.IsSuccess)
                             {
-                                result.IsSuccess = true;
-                                result.Message = userResult.Message + "<br>" + addressResult.Message;
+                                if (address.Address != null)
+                                {
+                                    userModel.Address.CreatedDate = address.Address.CreatedDate;
+                                    userModel.Address.UpdatedDate = dateTime;
+
+                                    var addressEntity = mapper.Map<Address>(userModel.Address);
+
+                                    var addressResult = await addressDal.UpdateAddress(addressEntity, ct);
+
+                                    if (addressResult.IsSuccess)
+                                    {
+                                        result.IsSuccess = true;
+                                        result.Message = userResult.Message + "<br>" + addressResult.Message;
+                                    }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message = userResult.Message + "<br>" + addressResult.Message;
+                                    }
+
+                                    await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
+                                }
+                                else
+                                {
+                                    result.IsSuccess = false;
+                                    result.Message = userResult.Message + "<br>" + address.Message;
+                                }
                             }
                             else
                             {
                                 result.IsSuccess = false;
-                                result.Message = userResult.Message + "<br>" + addressResult.Message;
+                                result.Message = userResult.Message + "<br>" + address.Message;
                             }
-
-                            await activityBus.AddActivity(addressResult.Message, dateTime, currentUser, addressResult.IsSuccess, ct);
                         }
                         else
                         {
@@ -356,6 +381,48 @@ namespace CheckMyStar.Bll
                 {
                     result.IsSuccess = false;
                     result.Message = "L'utilisateur n'existe pas, impossible de le supprimer";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<BaseResponse> EnabledUser(int identifier, bool isActive, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await userDal.GetUser(identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                if (user.User != null)
+                {
+                    user.User.IsActive = isActive;
+
+                    var userResult = await userDal.EnabledUser(user.User, ct);
+
+                    if (userResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = userResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = userResult.Message;
+                    }
+
+                    await activityBus.AddActivity(userResult.Message, DateTime.Now, currentUser, userResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"L'utilisateur n'existe pas, impossible de {(isActive == true ? "l'activer" : "le désactiver")}";
                 }
             }
             else

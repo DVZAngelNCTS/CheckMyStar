@@ -82,4 +82,8 @@ export class FolderDalService {
 
     return this.http.delete<BaseResponse>(`${this.apiUrl}/Folder/deletefolder`, { params });
   }
+
+  enabledFolder$(request: FolderSaveRequest) {
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Folder/enabledFolder`, request);
+  }
 }

@@ -5,6 +5,8 @@ import { switchMap } from 'rxjs/operators';
 import { Environment } from '../../../../Environment/environment';
 import { AccommodationModel } from '../../20_Models/BackOffice/Accommodation.model';
 import { AccommodationResponse } from '../../50_Responses/BackOffice/Accommodation.response';
+import { BaseResponse } from '../../50_Responses/BaseResponse';
+import { AccommodationSaveRequest } from '../../40_Requests/BackOffice/Accommodation-save.request';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,7 @@ export class AccommodationDalService {
   }
 
   createAccommodation$(accommodation: AccommodationModel): Observable<AccommodationModel> {
-    const url = `${this.apiUrl}/Accommodation/createaccommodation`;
+    const url = `${this.apiUrl}/Accommodation/addaccommodation`;
     return this.http.post<any>(url, { accommodation }).pipe(
       switchMap(response => {
         console.log('Raw API response for accommodation:', response);
@@ -44,5 +46,9 @@ export class AccommodationDalService {
         return of(accommodation);
       })
     );
+  }
+
+  enabledAccommodation$(request: AccommodationSaveRequest) {
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Accommodation/enabledaccommodation`, request);
   }
 }

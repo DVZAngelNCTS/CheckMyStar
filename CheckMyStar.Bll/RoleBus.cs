@@ -5,9 +5,7 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
-using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
-using System;
 
 namespace CheckMyStar.Bll
 {
@@ -90,6 +88,7 @@ namespace CheckMyStar.Bll
                 {
                     var dateTime = DateTime.Now;
 
+                    roleModel.CreatedDate = role.Role.CreatedDate;
                     roleModel.UpdatedDate = dateTime;
 
                     var roleEntity = mapper.Map<Role>(roleModel);
@@ -139,6 +138,48 @@ namespace CheckMyStar.Bll
             {
                 result.IsSuccess = false;
                 result.Message = role.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<BaseResponse> EnabledRole(int identifier, bool isActive, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await roleDal.GetRole(identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                if (user.Role != null)
+                {
+                    user.Role.IsActive = isActive;
+
+                    var roleResult = await roleDal.EnabledRole(user.Role, ct);
+
+                    if (roleResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = roleResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = roleResult.Message;
+                    }
+
+                    await activityBus.AddActivity(roleResult.Message, DateTime.Now, currentUser, roleResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Le rôle n'existe pas, impossible de {(isActive == true ? "l'activer" : "le désactiver")}";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
             }
 
             return result;

@@ -41,5 +41,12 @@ namespace CheckMyStar.Apis.Services
         {
             return folderBusForService.DeleteFolder(request, ct);
         }
+
+        public async Task<BaseResponse> EnabledFolder(FolderSaveRequest request, CancellationToken ct)
+        {
+            var result = await folderBusForService.EnabledFolder(request, ct);
+
+            return result;
+        }
     }
 }

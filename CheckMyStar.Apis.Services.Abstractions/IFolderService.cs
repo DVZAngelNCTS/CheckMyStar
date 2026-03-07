@@ -12,5 +12,6 @@ namespace CheckMyStar.Apis.Services.Abstractions
         Task<BaseResponse> CreateFolder(FolderSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateFolder(FolderSaveRequest request, CancellationToken ct);
         Task<BaseResponse> DeleteFolder(FolderDeleteRequest request, CancellationToken ct);
+        Task<BaseResponse> EnabledFolder(FolderSaveRequest request, CancellationToken ct);
     }
 }

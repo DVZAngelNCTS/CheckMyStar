@@ -6,10 +6,11 @@ using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Data;
+using System.Net.Sockets;
 
 namespace CheckMyStar.Bll;
 
-public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserContextService userContext, IActivityBus activityBus, IAddressDal addressDal) : ISocietyBus
+public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserContextService userContext, IActivityBus activityBus, IAddressDal addressDal, ICountryDal countryDal) : ISocietyBus
 {
     public async Task<SocietyResponse> GetIdentifier(CancellationToken ct)
     {
@@ -106,6 +107,7 @@ public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserCon
             {
                 var dateTime = DateTime.Now;
 
+                societyModel.CreatedDate = societyResult.Society.CreatedDate;
                 societyModel.UpdatedDate = dateTime;
 
                 var societyEntity = mapper.Map<Society>(societyModel);
@@ -116,6 +118,7 @@ public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserCon
                 {
                     if (societyModel.Address != null)
                     {
+                        societyModel.Address.CreatedDate = societyResult.Society.CreatedDate;
                         societyModel.Address.UpdatedDate = dateTime;
 
                         var addressEntity = mapper.Map<Address>(societyModel.Address);
@@ -231,14 +234,72 @@ public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserCon
         return result;
     }
 
+    public async Task<BaseResponse> EnabledSociety(int identifier, bool isActive, int currentUser, CancellationToken ct)
+    {
+        BaseResponse result = new BaseResponse();
+
+        var user = await societyDal.GetSociety(identifier, ct);
+
+        if (user.IsSuccess)
+        {
+            if (user.Society != null)
+            {
+                user.Society.IsActive = isActive;
+
+                var socityResult = await societyDal.EnabledSociety(user.Society, ct);
+
+                if (socityResult.IsSuccess)
+                {
+                    result.IsSuccess = true;
+                    result.Message = socityResult.Message;
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = socityResult.Message;
+                }
+
+                await activityBus.AddActivity(socityResult.Message, DateTime.Now, currentUser, socityResult.IsSuccess, ct);
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = $"La société n'existe pas, impossible de {(isActive == true ? "l'activer" : "le désactiver")}";
+            }
+        }
+        else
+        {
+            result.IsSuccess = false;
+            result.Message = user.Message;
+        }
+
+        return result;
+    }
+
     public async Task<SocietyResponse> GetSociety(int identifier, CancellationToken ct)
     {
         SocietyResponse response = new SocietyResponse();
 
         var result = await societyDal.GetSociety(identifier, ct);
 
-        if (result.IsSuccess)
+        if (result.IsSuccess && result.Society != null)
         {
+            var societyModel = mapper.Map<SocietyModel>(result.Society);
+
+            if (result.Society.AddressIdentifier != null)
+            {
+                var addressReponse = await addressDal.GetAddress(result.Society.AddressIdentifier.Value, ct);
+
+                if (addressReponse.IsSuccess && addressReponse.Address != null)
+                {
+                    societyModel.Address = mapper.Map<AddressModel>(addressReponse.Address);
+
+                    var countryResponse = await countryDal.GetCountry(addressReponse.Address.CountryIdentifier, ct);
+
+                    societyModel.Address.Country = mapper.Map<CountryModel>(countryResponse.Country);
+                }
+            }
+
             response.IsSuccess = true;
             response.Society = mapper.Map<SocietyModel>(result.Society);
         }
@@ -251,16 +312,37 @@ public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserCon
         return response;
     }
 
-    public async Task<SocietiesResponse> GetAllSocieties(CancellationToken ct)
+    public async Task<SocietiesResponse> GetAllSocieties(string? name, string? email, string? phone, string? address, CancellationToken ct)
     {
         SocietiesResponse response = new SocietiesResponse();
 
-        var result = await societyDal.GetSocieties(ct);
+        var result = await societyDal.GetSocieties(name, email, phone, address, ct);
 
-        if (result.IsSuccess)
+        if (result.IsSuccess && result.Societies != null)
         {
+            foreach (Society society in result.Societies)
+            {
+                var societyModel = mapper.Map<SocietyModel>(society);
+
+                if (society.AddressIdentifier != null)
+                {
+                    var addressReponse = await addressDal.GetAddress(society.AddressIdentifier.Value, ct);
+
+                    if (addressReponse.IsSuccess && addressReponse.Address != null)
+                    {
+                        societyModel.Address = mapper.Map<AddressModel>(addressReponse.Address);
+
+                        var countryResponse = await countryDal.GetCountry(addressReponse.Address.CountryIdentifier, ct);
+
+                        societyModel.Address.Country = mapper.Map<CountryModel>(countryResponse.Country);
+                    }
+                }
+
+                response.Societies.Add(societyModel);
+            }
+
             response.IsSuccess = true;
-            response.Societies = mapper.Map<List<SocietyModel>>(result.Societies);
+            response.Message = result.Message;
         }
         else
         {

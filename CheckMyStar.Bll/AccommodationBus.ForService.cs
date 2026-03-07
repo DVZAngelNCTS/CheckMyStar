@@ -16,7 +16,7 @@ namespace CheckMyStar.Bll
             return this.GetAccommodations(ct);
         }
 
-        public Task<BaseResponse> CreateAccommodation(AccommodationSaveRequest request, CancellationToken ct)
+        public Task<BaseResponse> AddAccommodation(AccommodationSaveRequest request, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
 
@@ -35,6 +35,13 @@ namespace CheckMyStar.Bll
             var user = userContext.CurrentUser.Identifier;
 
             return this.DeleteAccommodation(request.Identifier, user, ct);
+        }
+
+        public Task<BaseResponse> EnabledAccommodation(AccommodationSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.EnabledAccommodation(request.Accommodation.Identifier, request.Accommodation.IsActive, user, ct);
         }
     }
 }

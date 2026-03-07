@@ -308,7 +308,7 @@ export class DossierDetailPageComponent implements OnInit {
         };
 
         // Étape 2 : créer l'adresse
-        return this.addressBll.addAddress$({ address }).pipe(
+        return this.addressBll.addAddress$(address).pipe(
           switchMap(addrResp => {
             if (!addrResp.isSuccess) throw new Error(addrResp.message || this.translate.instant('CommonSection.UnknownError'));
 

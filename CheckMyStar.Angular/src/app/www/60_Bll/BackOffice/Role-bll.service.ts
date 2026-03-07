@@ -36,6 +36,12 @@ export class RoleBllService {
     return this.roleDal.deleteRole$(request);
   }
 
+  enabledRole$(role: RoleModel) {
+    const request = { role: role } as RoleSaveRequest;
+
+    return this.roleDal.enabledRole$(request);
+  }
+
   getNextIdentifier$() {
     return this.roleDal.getNextIdentifier$();
   }

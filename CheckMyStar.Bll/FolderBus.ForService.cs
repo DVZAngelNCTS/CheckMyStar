@@ -46,5 +46,12 @@ namespace CheckMyStar.Bll
 
             return this.DeleteFolder(request.Identifier, user, ct);
         }
+
+        public Task<BaseResponse> EnabledFolder(FolderSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.EnabledFolder(request.Folder.Identifier, request.Folder.IsActive, user, ct);
+        }
     }
 }

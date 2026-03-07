@@ -53,6 +53,10 @@ export class UserDalService {
     return this.http.delete<BaseResponse>(`${this.apiUrl}/User/deleteuser`, { params });
   }
 
+  enabledUser$(request: UserSaveRequest) {
+    return this.http.put<BaseResponse>(`${this.apiUrl}/User/enableduser`, request);
+  }
+
   getNextIdentifier$(): Observable<UserResponse> {
     return this.http.get<UserResponse>(`${this.apiUrl}/User/getnextidentifier`, {});
   }

@@ -173,6 +173,7 @@ namespace CheckMyStar.Bll
 
                             var dateTime = DateTime.Now;
 
+                            accommodationModel.CreatedDate = accommodation.Accommodation.CreatedDate;
                             accommodationModel.UpdatedDate = dateTime;
 
                             var accommodationEntity = mapper.Map<Accommodation>(accommodationModel);
@@ -257,6 +258,48 @@ namespace CheckMyStar.Bll
             {
                 result.IsSuccess = false;
                 result.Message = accommodation.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<BaseResponse> EnabledAccommodation(int identifier, bool isActive, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await accommodationDal.GetAccommodation(identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                if (user.Accommodation != null)
+                {
+                    user.Accommodation.IsActive = isActive;
+
+                    var accommodationResult = await accommodationDal.EnabledAccommodation(user.Accommodation, ct);
+
+                    if (accommodationResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = accommodationResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = accommodationResult.Message;
+                    }
+
+                    await activityBus.AddActivity(accommodationResult.Message, DateTime.Now, currentUser, accommodationResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"l'hébergement n'existe pas, impossible de {(isActive == true ? "l'activer" : "le désactiver")}";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
             }
 
             return result;

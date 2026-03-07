@@ -11,5 +11,6 @@ namespace CheckMyStar.Bll.Abstractions
         Task<FoldersResponse> GetFoldersByInspector(int inspectorIdentifier, string? accommodationName, string? ownerLastName, string? inspectorLastName, int? folderStatus, CancellationToken ct);
         Task<BaseResponse> AddFolder(FolderModel folderModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> DeleteFolder(int folderIdentifier, int currentUser, CancellationToken ct);
+        Task<BaseResponse> EnabledFolder(int identifier, bool isActive, int currentUser, CancellationToken ct);
     }
 }

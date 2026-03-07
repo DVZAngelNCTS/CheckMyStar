@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
+﻿using Azure.Core;
 using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Requests;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
 /// 
@@ -53,7 +53,7 @@ public class SocietyController(ISocietyService societyService) : ControllerBase
     [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> UpdateSociety([FromBody] SocietySaveRequest request, CancellationToken ct)
     {
-        var result = await societyService.AddSociety(request, ct);
+        var result = await societyService.UpdateSociety(request, ct);
 
         return Ok(result);
     }
@@ -74,14 +74,30 @@ public class SocietyController(ISocietyService societyService) : ControllerBase
     }
 
     /// <summary>
+    /// Active ou désactive une société.
+    /// </summary>
+    /// <param name="request">Données de la société</param>
+    /// <param name="ct">Jeton d'annulation</param>
+    /// <returns>Résultat de la création</returns>
+    [HttpPut("enabledsociety")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> EnabledSociety([FromBody] SocietySaveRequest request, CancellationToken ct)
+    {
+        var result = await societyService.EnabledSociety(request, ct);
+
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Récupère toutes les sociétés.
     /// </summary>
     /// <param name="ct">Jeton d'annulation</param>
+    /// <param name="request">Données de la société</param>
     [HttpGet("getsocieties")]
     [Authorize(Roles = "Administrator, Inspector")]
-    public async Task<IActionResult> GetSocieties(CancellationToken ct)
+    public async Task<IActionResult> GetSocieties([FromQuery] SocietyGetRequest request, CancellationToken ct)
     {
-        var result = await societyService.GetSocieties(ct);
+        var result = await societyService.GetSocieties(request, ct);
 
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }

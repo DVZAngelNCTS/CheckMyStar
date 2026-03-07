@@ -37,5 +37,12 @@ namespace CheckMyStar.Bll
 
             return this.DeleteRole(request.Identifier, user, ct);
         }
+
+        public Task<BaseResponse> EnabledRole(RoleSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.EnabledRole(request.Role.Identifier, request.Role.IsActive, user, ct);
+        }
     }
 }

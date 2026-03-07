@@ -1,4 +1,5 @@
-﻿using CheckMyStar.Bll.Abstractions.ForService;
+﻿using Azure.Core;
+using CheckMyStar.Bll.Abstractions.ForService;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
 
@@ -32,14 +33,21 @@ namespace CheckMyStar.Bll
             return this.DeleteSociety(request.Identifier, user, ct);
         }
 
-        public Task<SocietiesResponse> GetSocieties(CancellationToken ct)
+        public Task<BaseResponse> EnabledSociety(SocietySaveRequest request, CancellationToken ct)
         {
-            return this.GetAllSocieties(ct);
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.EnabledSociety(request.Society.Identifier, request.Society.IsActive, user, ct);
+        }
+
+        public Task<SocietiesResponse> GetSocieties(SocietyGetRequest request, CancellationToken ct)
+        {
+            return this.GetAllSocieties(request.Name, request.Email, request.Phone, request.Address, ct);
         }
 
         public Task<SocietyResponse> GetSociety(SocietyGetRequest request, CancellationToken ct)
         {
-            return this.GetSociety(request.Identifier, ct);
+            return this.GetSociety(request.Identifier!.Value, ct);
         }
     }
 }
