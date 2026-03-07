@@ -9,10 +9,12 @@ export const MENU_CONFIG: Record<EnumRole, { icon: string, label: string, route?
   
   [EnumRole.Administrator]: [
     { icon: 'bi bi-house', label: 'BackOfficeMenuSection.Home', route: '/backhome' },
-    { icon: 'bi bi-shield-check', label: 'BackOfficeMenuSection.Roles', route: '/backhome/roles' },
-    { icon: 'bi bi-people', label: 'BackOfficeMenuSection.Users', route: '/backhome/users' },
+    { icon: 'bi bi-envelope', label: 'BackOfficeMenuSection.Addresses', route: '/backhome/addresses'},
     { icon: 'bi bi-star', label: 'BackOfficeMenuSection.Criteres', route: '/backhome/criteres' },
     { icon: 'bi bi-folder2-open', label: 'BackOfficeMenuSection.Dossiers', route: '/backhome/dossiers' },
+    { icon: 'bi bi-shield-check', label: 'BackOfficeMenuSection.Roles', route: '/backhome/roles' },
+    { icon: 'bi bi-building', label: 'BackOfficeMenuSection.Societies', route: '/backhome/societies'},
+    { icon: 'bi bi-people', label: 'BackOfficeMenuSection.Users', route: '/backhome/users' },
     { icon: 'bi bi-door-closed', label: 'BackOfficeMenuSection.Disconnect', action: 'logout' }
   ],
 

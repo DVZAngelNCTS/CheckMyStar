@@ -31,6 +31,22 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Get addresses matching the specified criteria. The search can be filtered by any combination of the following parameters: numéro de rue, rue, ville, code postal, région, pays.
+        /// </summary>
+        /// <param name="request">The criteria for filtering addresses. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the addresses that match the specified criteria.</returns>
+        [HttpGet("getaddresses")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> GetAddresses([FromQuery] AddressGetRequest request, CancellationToken ct)
+        {
+            var result = await addressService.GetAddresses(request, ct);
+
+            return Ok(result);
+        }
+
+
+        /// <summary>
         /// Creates a new address using the specified request data.
         /// </summary>
         /// <param name="request">The details of the address to create (numéro de rue, rue, ville, code postal, région, pays). Must not be null.</param>
@@ -59,6 +75,23 @@ namespace CheckMyStar.Apis.Controllers
         public async Task<IActionResult> UpdateAddress([FromBody] AddressSaveRequest request, CancellationToken ct)
         {
             var result = await addressService.UpdateAddress(request, ct);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Deletes the specified address from the system asynchronously.
+        /// </summary>
+        /// <remarks>This method requires the caller to have either Administrator or Inspector roles. The
+        /// operation is performed asynchronously.</remarks>
+        /// <param name="request">The address details to be deleted, provided as an AddressSaveRequest object. Cannot be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the delete operation.</param>
+        /// <returns>An IActionResult that indicates the outcome of the delete operation. Returns a success or failure status.</returns>
+        [HttpDelete("deleteaddress")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> DeleteAddress([FromQuery] AddressDeleteRequest request, CancellationToken ct)
+        {
+            var result = await addressService.DeleteAddress(request, ct);
 
             return Ok(result);
         }

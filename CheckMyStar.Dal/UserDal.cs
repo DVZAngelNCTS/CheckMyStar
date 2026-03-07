@@ -266,6 +266,36 @@ namespace CheckMyStar.Dal
             return baseResult;
         }
 
+        public async Task<BaseResult> EnabledUser(User user, CancellationToken ct)
+        {
+            BaseResult baseResult = new BaseResult();
+
+            try
+            {
+                dbContext.Entry(user).Property(x => x.IsActive).IsModified = true;
+
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
+                {
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Utilisateur {user.LastName} {user.FirstName} {(user.IsActive == true ? "activé" : "désactivé")} avec succès";
+                }
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible de {(user.IsActive == true ? "activé" : "désactivé")} l'utilisateur {user.LastName} {user.FirstName}";
+                }
+            }
+            catch (Exception ex)
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de {(user.IsActive == true ? "activé" : "désactivé")} l'utilisateur {user.LastName} {user.FirstName} : " + ex.Message;
+            }
+
+            return baseResult;
+        }
+
         public async Task<UserEvolutionResult> GetUserEvolutions(CancellationToken ct)
         {
             UserEvolutionResult userEvolutionResult = new UserEvolutionResult();

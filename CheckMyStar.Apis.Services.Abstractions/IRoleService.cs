@@ -10,5 +10,6 @@ namespace CheckMyStar.Apis.Services.Abstractions
         Task<BaseResponse> AddRole(RoleSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateRole(RoleSaveRequest request, CancellationToken ct);
         Task<BaseResponse> DeleteRole(RoleDeleteRequest request, CancellationToken ct);
+        Task<BaseResponse> EnabledRole(RoleSaveRequest request, CancellationToken ct);
     }
 }

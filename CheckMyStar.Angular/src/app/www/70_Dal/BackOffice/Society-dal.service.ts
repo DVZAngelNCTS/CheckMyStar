@@ -19,8 +19,17 @@ export class SocietyDalService {
     return this.http.get<SocietyResponse>(`${this.apiUrl}/Society/getnextidentifier`, {});
   }
 
-  getSocieties$(): Observable<SocietiesResponse> {
-    return this.http.get<SocietiesResponse>(`${this.apiUrl}/Society/getsocieties`, {});
+  getSocieties$(request: SocietyGetRequest): Observable<SocietiesResponse> {
+    let params = new HttpParams();
+
+    Object.keys(request).forEach(key => {
+      const value = (request as any)[key];
+      if (value !== undefined && value !== null) {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.http.get<SocietiesResponse>(`${this.apiUrl}/Society/getsocieties`, { params });
   }
 
   getSociety$(request: SocietyGetRequest): Observable<SocietyResponse> {
@@ -56,4 +65,8 @@ export class SocietyDalService {
 
     return this.http.delete<BaseResponse>(`${this.apiUrl}/Society/deletesociety`, { params });
   }
+
+  enabledSociety$(request: SocietySaveRequest) {
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Society/enabledsociety`, request);
+  }  
 }

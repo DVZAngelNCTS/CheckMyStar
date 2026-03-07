@@ -10,6 +10,7 @@ namespace CheckMyStar.Apis.Services.Abstractions
         Task<BaseResponse> AddUser(UserSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateUser(UserSaveRequest request, CancellationToken ct);
         Task<BaseResponse> DeleteUser(UserDeleteRequest request, CancellationToken ct);
+        Task<BaseResponse> EnabledUser(UserSaveRequest request, CancellationToken ct);
         Task<UserEvolutionResponse> GetUserEvolutions(CancellationToken ct);
     }
 }

@@ -7,8 +7,9 @@ namespace CheckMyStar.Apis.Services.Abstractions
     {
         Task<AccommodationResponse> GetNextIdentifier(CancellationToken ct);
         Task<AccommodationsResponse> GetAccommodations(CancellationToken ct);
-        Task<BaseResponse> CreateAccommodation(AccommodationSaveRequest request, CancellationToken ct);
+        Task<BaseResponse> AddAccommodation(AccommodationSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateAccommodation(AccommodationSaveRequest request, CancellationToken ct);
         Task<BaseResponse> DeleteAccommodation(AccommodationDeleteRequest request, CancellationToken ct);
+        Task<BaseResponse> EnabledAccommodation(AccommodationSaveRequest request, CancellationToken ct);
     }
 }

@@ -11,5 +11,6 @@ namespace CheckMyStar.Dal.Abstractions
         Task<BaseResult> AddAccommodation(Accommodation accommodation, CancellationToken ct);
         Task<BaseResult> UpdateAccommodation(Accommodation accommodation, CancellationToken ct);
         Task<BaseResult> DeleteAccommodation(Accommodation accommodation, CancellationToken ct);
+        Task<BaseResult> EnabledAccommodation(Accommodation accommodation, CancellationToken ct);
     }
 }

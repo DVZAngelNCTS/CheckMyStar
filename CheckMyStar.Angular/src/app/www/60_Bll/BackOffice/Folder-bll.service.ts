@@ -55,4 +55,10 @@ export class FolderBllService {
 
     return this.folderDal.deleteFolder$(request);
   }
+
+  enabledFolder$(folder: FolderModel) {
+    const request = { folder: folder } as FolderSaveRequest;
+
+    return this.folderDal.enabledFolder$(request);
+  }
 }

@@ -301,7 +301,7 @@ export class DossiersPageComponent implements OnInit {
       isActive: !folder.isActive 
     };
 
-    this.folderBll.updateFolder$(updatedFolder).subscribe({
+    this.folderBll.enabledFolder$(updatedFolder).subscribe({
       next: response => {
         this.loading = false;
 

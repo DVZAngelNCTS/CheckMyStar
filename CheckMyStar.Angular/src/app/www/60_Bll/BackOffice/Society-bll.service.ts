@@ -13,12 +13,21 @@ export class SocietyBllService {
     return this.societyDal.getNextIdentifier$();
   }
 
-  getSocieties$() {
-    return this.societyDal.getSocieties$();
+  getSocieties$(name?: string, email?: string, phone?: string, address?: string) {
+    const request = { 
+      name: name,
+      email: email,
+      phone: phone,
+      address: address      
+    } as SocietyGetRequest;
+
+    return this.societyDal.getSocieties$(request);
   }
 
   getSociety$(identifier: number) {
-    const request = { identifier: identifier } as SocietyGetRequest;
+    const request = { 
+      identifier: identifier  
+    } as SocietyGetRequest;
 
     return this.societyDal.getSociety$(request);
   }
@@ -40,4 +49,10 @@ export class SocietyBllService {
 
     return this.societyDal.deleteSociety$(request);
   }  
+
+  enabledSociety$(society: SocietyModel) {
+    const request = { society: society } as SocietySaveRequest;
+
+    return this.societyDal.enabledSociety$(request);
+  }
 }

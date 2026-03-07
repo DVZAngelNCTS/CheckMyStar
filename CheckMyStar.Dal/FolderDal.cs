@@ -226,5 +226,35 @@ namespace CheckMyStar.Dal
 
             return baseResult;
         }
+
+        public async Task<BaseResult> EnabledFolder(Folder folder, CancellationToken ct)
+        {
+            BaseResult baseResult = new BaseResult();
+
+            try
+            {
+                dbContext.Entry(folder).Property(x => x.IsActive).IsModified = true;
+
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
+                {
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Dossier {folder.Identifier} {(folder.IsActive == true ? "activé" : "désactivé")} avec succès";
+                }
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible de {(folder.IsActive == true ? "activé" : "désactivé")} le dossier {folder.Identifier}";
+                }
+            }
+            catch (Exception ex)
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de {(folder.IsActive == true ? "activé" : "désactivé")} le dossier {folder.Identifier} : " + ex.Message;
+            }
+
+            return baseResult;
+        }
     }
 }

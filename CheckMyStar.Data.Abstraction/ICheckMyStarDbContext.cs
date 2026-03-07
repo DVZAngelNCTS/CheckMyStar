@@ -1,4 +1,7 @@
-﻿namespace CheckMyStar.Data.Abstractions
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Diagnostics.CodeAnalysis;
+
+namespace CheckMyStar.Data.Abstractions
 {
     public partial interface ICheckMyStarDbContext
     {
@@ -37,5 +40,7 @@
         Task RemoveRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
 
         Task RemoveAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
+
+        EntityEntry<TEntity> Entry<TEntity>([NotNullAttribute] TEntity entity) where TEntity : class;
     }
 }

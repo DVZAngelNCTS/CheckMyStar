@@ -216,5 +216,35 @@ namespace CheckMyStar.Dal
 
             return baseResult;
         }
+
+        public async Task<BaseResult> EnabledRole(Role role, CancellationToken ct)
+        {
+            BaseResult baseResult = new BaseResult();
+
+            try
+            {
+                dbContext.Entry(role).Property(x => x.IsActive).IsModified = true;
+
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
+                {
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Le rôle {role.Name} {(role.IsActive == true ? "activé" : "désactivé")} avec succès";
+                }
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible de {(role.IsActive == true ? "activé" : "désactivé")} le rôle {role.Name}";
+                }
+            }
+            catch (Exception ex)
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de {(role.IsActive == true ? "activé" : "désactivé")} le rôle {role.Name} : " + ex.Message;
+            }
+
+            return baseResult;
+        }
     }
 }

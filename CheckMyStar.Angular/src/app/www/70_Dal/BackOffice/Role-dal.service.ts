@@ -52,6 +52,9 @@ export class RoleDalService {
     return this.http.delete<BaseResponse>(`${this.apiUrl}/Role/deleterole`, { params });
   }
 
+  enabledRole$(request: RoleSaveRequest) {
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Role/enabledrole`, request);
+  }
 
   getNextIdentifier$(): Observable<RoleResponse> {
     return this.http.get<RoleResponse>(`${this.apiUrl}/Role/getnextidentifier`, {});

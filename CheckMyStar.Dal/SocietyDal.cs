@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using CheckMyStar.Dal.Abstractions;
+﻿using CheckMyStar.Dal.Abstractions;
 using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace CheckMyStar.Dal;
 
@@ -145,6 +145,36 @@ public class SocietyDal(ICheckMyStarDbContext dbContext) : ISocietyDal
         return baseResult;
     }
 
+    public async Task<BaseResult> EnabledSociety(Society society, CancellationToken ct)
+    {
+        BaseResult baseResult = new BaseResult();
+
+        try
+        {
+            dbContext.Entry(society).Property(x => x.IsActive).IsModified = true;
+
+            bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+            if (result)
+            {
+                baseResult.IsSuccess = true;
+                baseResult.Message = $"Société {society.Name} {(society.IsActive == true ? "activé" : "désactivé")} avec succès";
+            }
+            else
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de {(society.IsActive == true ? "activé" : "désactivé")} la société {society.Name}";
+            }
+        }
+        catch (Exception ex)
+        {
+            baseResult.IsSuccess = false;
+            baseResult.Message = $"Impossible de {(society.IsActive == true ? "activé" : "désactivé")} la société {society.Name} : " + ex.Message;
+        }
+
+        return baseResult;
+    }
+
     public async Task<SocietyResult> GetSociety(int identifier, CancellationToken ct)
     {
         var result = new SocietyResult();
@@ -192,13 +222,24 @@ public class SocietyDal(ICheckMyStarDbContext dbContext) : ISocietyDal
 
         return result;
     }
-    public async Task<SocietiesResult> GetSocieties(CancellationToken ct)
+    public async Task<SocietiesResult> GetSocieties(string? name, string? email, string? phone, string? address, CancellationToken ct)
     {
         var result = new SocietiesResult();
 
         try
         {
-            var societies = await dbContext.Societies.AsNoTracking().ToListAsync(ct);
+            var societies = await ( from s in dbContext.Societies.AsNoTracking()
+                                    join a in dbContext.Addresses.AsNoTracking() on s.AddressIdentifier equals a.Identifier into ua
+                                    from a in ua.DefaultIfEmpty()
+                                    where
+                                       (string.IsNullOrEmpty(name) || s.Name.Contains(name))
+                                    && (string.IsNullOrEmpty(email) || (s.Email != null && s.Email.Contains(email)))
+                                    && (string.IsNullOrEmpty(phone) || (s.Phone != null && s.Phone.Contains(phone)))
+                                    && (string.IsNullOrEmpty(address) || a.Number.Contains(address)
+                                    || a.AddressLine.Contains(address)
+                                    || a.City.Contains(address)
+                                    || a.ZipCode.Contains(address))
+                                    select s).ToListAsync(ct);
 
             result.IsSuccess = true;
             result.Societies = societies;

@@ -47,6 +47,13 @@ namespace CheckMyStar.Bll
             return this.DeleteUser(request.Identifier, user, ct);
         }
 
+        public Task<BaseResponse> EnabledUser(UserSaveRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.EnabledUser(request.User.Identifier, request.User.IsActive, user, ct);
+        }
+
         public Task<UserEvolutionResponse> GetUserEvolutions(CancellationToken ct)
         {
             return this.GetEvolutions(ct);
