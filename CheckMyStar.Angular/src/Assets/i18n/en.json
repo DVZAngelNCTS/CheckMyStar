@@ -27,7 +27,9 @@
     "CsvExport": "Export to CSV",
     "ExcelExport": "Export to Excel",
     "NotProvided": "Not provided",
-    "Loading": "Loading..."
+    "Loading": "Loading...",
+    "Explanation": "Explanation",
+    "Close": "Close"
   },
   "LoginSection": {
     "Login": "Login",
@@ -45,6 +47,8 @@
     "Activities": "Activities",
     "Criteres": "Criteria",
     "Dossiers": "Case Management",
+    "Devis": "Quote Management",
+    "Factures": "Invoice Management",
     "Disconnect": "Disconnect",
     "Return": "Return"
   },
@@ -118,6 +122,23 @@
     "UserEvolution": "User evolution",
     "Variation": "Annual variation based on registrations and deactivations."
   },
+  "CriteresSection": {
+    "Informations": "Information",
+    "Description": "Description",
+    "Type": "Type",
+    "Points": "Points",
+    "Id": "Criterion ID",
+    "Management": "Criteria management",
+    "AddCriterion": "Add a criterion",
+    "EditCriterion": "Edit a criterion",
+    "DeleteSuccess": "Criterion deleted successfully.",
+    "EditSuccess": "Criterion updated successfully.",
+    "CreateSuccess": "Criterion created successfully.",
+    "DeleteAsk": "Are you sure you want to delete criterion:",
+    "Explanation": "Explanation",
+    "ExplanationPlaceholder": "Enter an explanation for this criterion (optional)",
+    "NoExplanation": "No explanation available for this criterion."
+  },
   "DossiersSection": {
     "Title": "Case Management",
     "Description": "Manage and track all inspection cases",
@@ -172,12 +193,15 @@
     "AppointmentIdentifier": "Appointment (ID)",
     "CreatedDate": "Created date",
     "UpdatedDate": "Updated date",
-    "ActionNotAvailable": "Action not available for now"
+    "ActionNotAvailable": "Action not available for now",
+    "NewEvaluation": "New evaluation"
   },
   "FrontOfficeMenuSection": {
     "Home": "Home",
     "Dashboard": "Dashboard",
     "Dossiers": "My Cases",
+    "Devis": "Quotes",
+    "Factures": "Invoices",
     "Disconnect": "Disconnect"
   },
   "InspectorDashboardSection": {
@@ -245,7 +269,9 @@
     "EvaluationDetailRequired": "Required",
     "EvaluationDetailStatus": "Status",
     "OncCriteria": "ONC criteria",
-    "OncFailed": "failed"
+    "OncFailed": "failed",
+    "SortNewestFirst": "Newest first",
+    "SortOldestFirst": "Oldest first"
   },
   "EvaluationViewSection": {
     "Title": "Evaluation detail",
@@ -306,6 +332,10 @@
     "Points": "Points",
     "Type": "Type",
     "Validated": "Validated",
+    "Viewed": "Viewed",
+    "CriteriaViewed": "criteria viewed",
+    "NotAllCriteriaViewed": "All criteria must be reviewed before submitting.",
+    "CheckAll": "Check all",
     "Comment": "Comment",
     "CommentPlaceholder": "Observation (optional)",
     "NoCriteriaFound": "No criteria found for this star rating.",
@@ -335,5 +365,34 @@
     "ResultOptionalHint": "Minimum required: {{min}} pts + bonus {{bonus}} pts ({{missing}} missing mandatory pts × 3) out of {{total}} available pts.",
     "ResultBackToCriteria": "Back to criteria",
     "ResultNewEvaluation": "New evaluation"
+  },
+  "FrontQuoteSection": {
+    "FormTitle": "Edit quote",
+    "PreviewTitle": "Quote preview",
+    "PreviewComingSoon": "Preview not available",
+    "PreviewComingSoonHint": "Quote preview will be available soon.",
+    "QuoteNumber": "Quote number",
+    "QuoteDate": "Quote date",
+    "ClientName": "Client name / company",
+    "ClientAddress": "Client address",
+    "CompanyName": "Your company name",
+    "CompanyAddress": "Company address",
+    "ServicesDescription": "Services / products description",
+    "Quantity": "Quantity / unit",
+    "UnitPrice": "Unit price (excl. VAT)",
+    "VatRate": "VAT rate",
+    "TotalHT": "Total amount (excl. VAT)",
+    "TotalTTC": "Total amount (incl. VAT)",
+    "AdditionalFees": "Additional fees",
+    "ValidityPeriod": "Quote validity period",
+    "ExecutionDate": "Execution date / deadline",
+    "Status": "Quote status",
+    "StatusPlaceholder": "-- Select a status --",
+    "StatusDraft": "Draft",
+    "StatusSent": "Sent",
+    "StatusAccepted": "Accepted",
+    "StatusRefused": "Refused",
+    "Optional": "Optional",
+    "Recommended": "Optional but recommended"
   }
 }

@@ -51,7 +51,6 @@ namespace CheckMyStar.Bll.Mappings
             CreateMap<Appointment, AppointmentModel>()
                 .ForMember(dest => dest.Identifier, opt => opt.MapFrom(src => src.Identifier))
                 .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
-                .ForMember(dest => dest.Address, opt => opt.Ignore())
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate));
@@ -59,7 +58,6 @@ namespace CheckMyStar.Bll.Mappings
             CreateMap<AppointmentModel, Appointment>()
                 .ForMember(dest => dest.Identifier, opt => opt.MapFrom(src => src.Identifier))
                 .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
-                .ForMember(dest => dest.AddressIdentifier, opt => opt.MapFrom(src => src.Address != null ? src.Address.Identifier : (int?)null))
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate));

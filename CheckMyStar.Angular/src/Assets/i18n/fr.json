@@ -27,7 +27,9 @@
     "CsvExport": "Exporter en CSV",
     "ExcelExport": "Exporter en Excel",    
     "NotProvided": "Non renseigné",
-    "Loading": "Chargement..."
+    "Loading": "Chargement...",
+    "Explanation": "Explication",
+    "Close": "Fermer"
   },
   "LoginSection": {
     "Email": "E-mail",
@@ -53,6 +55,8 @@
     "Activities": "Activités",
     "Criteres": "Critères",
     "Dossiers": "Gestions des dossiers",
+    "Devis": "Gestion des devis",
+    "Factures": "Gestion des factures",
     "Disconnect": "Se déconnecter",
     "Return": "Retour",
     "Management": "Gestion"
@@ -144,7 +148,10 @@
     "DeleteSuccess": "Critère supprimé avec succès.",
     "EditSuccess": "Critère mis à jour avec succès.",
     "CreateSuccess": "Critère créé avec succès.",
-    "DeleteAsk": "Êtes-vous sûr de vouloir supprimer le critère :"
+    "DeleteAsk": "Êtes-vous sûr de vouloir supprimer le critère :",
+    "Explanation": "Explication",
+    "ExplanationPlaceholder": "Saisissez une explication pour ce critère (optionnel)",
+    "NoExplanation": "Aucune explication disponible pour ce critère."
   },
   "DossiersSection": {
     "Title": "Gestion des dossiers",
@@ -203,7 +210,8 @@
     "AppointmentIdentifier": "Rendez-vous",
     "CreatedDate": "Date de création",
     "UpdatedDate": "Date de mise à jour",
-    "ActionNotAvailable": "Action non disponible pour le moment"
+    "ActionNotAvailable": "Action non disponible pour le moment",
+    "NewEvaluation": "Nouvelle évaluation"
   },
   "SocietySection": {
     "Create": "Créer une société",
@@ -215,6 +223,8 @@
     "Home": "Accueil",
     "Dashboard": "Tableau de bord",
     "Dossiers": "Mes dossiers",
+    "Devis": "Devis",
+    "Factures": "Factures",
     "Disconnect":"Se déconnecter"
   },
   "InspectorDashboardSection": {
@@ -282,7 +292,9 @@
     "EvaluationDetailRequired": "Requis",
     "EvaluationDetailStatus": "Statut",
     "OncCriteria": "Critères ONC",
-    "OncFailed": "non validé(s)"
+    "OncFailed": "non validé(s)",
+    "SortNewestFirst": "Plus récent en premier",
+    "SortOldestFirst": "Plus ancien en premier"
   },
   "EvaluationViewSection": {
     "Title": "Détail de l'évaluation",
@@ -343,6 +355,10 @@
     "Points": "Points",
     "Type": "Type",
     "Validated": "Validé",
+    "Viewed": "Vue",
+    "CriteriaViewed": "critère(s) consulté(s)",
+    "NotAllCriteriaViewed": "Tous les critères doivent être consultés avant de soumettre.",
+    "CheckAll": "Tout cocher",
     "Comment": "Commentaire",
     "CommentPlaceholder": "Observation (optionnel)",
     "NoCriteriaFound": "Aucun critère trouvé pour ce classement.",
@@ -372,5 +388,34 @@
     "ResultOptionalHint": "Minimum requis : {{min}} pts + bonus {{bonus}} pts ({{missing}} pts obligatoires manquants × 3) sur {{total}} pts disponibles.",
     "ResultBackToCriteria": "Retour aux critères",
     "ResultNewEvaluation": "Nouvelle évaluation"
+  },
+  "FrontQuoteSection": {
+    "FormTitle": "Modification du devis",
+    "PreviewTitle": "Prévisualisation du devis",
+    "PreviewComingSoon": "Prévisualisation non disponible",
+    "PreviewComingSoonHint": "La prévisualisation du devis sera bientôt disponible.",
+    "QuoteNumber": "Numéro de devis",
+    "QuoteDate": "Date du devis",
+    "ClientName": "Nom / raison sociale du client",
+    "ClientAddress": "Adresse du client",
+    "CompanyName": "Nom / raison sociale de votre entreprise",
+    "CompanyAddress": "Adresse de l'entreprise",
+    "ServicesDescription": "Description des prestations / produits",
+    "Quantity": "Quantité / unité",
+    "UnitPrice": "Prix unitaire HT",
+    "VatRate": "Taux de TVA",
+    "TotalHT": "Montant total HT",
+    "TotalTTC": "Montant total TTC",
+    "AdditionalFees": "Frais supplémentaires",
+    "ValidityPeriod": "Délai de validité du devis",
+    "ExecutionDate": "Date / délai d'exécution",
+    "Status": "Statut du devis",
+    "StatusPlaceholder": "-- Sélectionner un statut --",
+    "StatusDraft": "Brouillon",
+    "StatusSent": "Envoyé",
+    "StatusAccepted": "Accepté",
+    "StatusRefused": "Refusé",
+    "Optional": "Optionnel",
+    "Recommended": "Optionnel mais recommandé"
   }
 }

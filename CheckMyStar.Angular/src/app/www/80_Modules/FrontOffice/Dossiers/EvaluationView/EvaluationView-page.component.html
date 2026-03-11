@@ -248,11 +248,20 @@
               <th style="width: 12%" class="text-center">{{ 'EvaluationSection.Type' | translate }}</th>
               <th style="width: 8%" class="text-center">{{ 'EvaluationSection.Points' | translate }}</th>
               <th style="width: 10%" class="text-center">{{ 'EvaluationSection.Validated' | translate }}</th>
+              <th style="width: 50px" class="text-center">{{ 'CommonSection.Explanation' | translate }}</th>
               <th style="width: 20%">{{ 'EvaluationSection.Comment' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let c of criteria; let i = index" [class.row-validated]="c.isValidated">
+            <ng-container *ngFor="let c of criteria; let i = index">
+            <tr *ngIf="getCategoryHeaderForRow(i, criteria) as cat" class="category-header-row">
+              <td [attr.colspan]="7" class="category-header-cell">
+                <span class="category-section">{{ cat.section }}</span>
+                <span class="category-separator"> — </span>
+                <span class="category-label">{{ cat.category }}</span>
+              </td>
+            </tr>
+            <tr [class.row-validated]="c.isValidated">
               <td class="text-center align-middle text-muted small fw-semibold">{{ i + 1 }}</td>
               <td class="align-middle">{{ c.criterionDescription }}</td>
               <td class="text-center align-middle">
@@ -266,8 +275,14 @@
                    [class.bi-check-circle-fill]="c.isValidated" [class.text-success]="c.isValidated"
                    [class.bi-circle]="!c.isValidated" [class.text-muted]="!c.isValidated"></i>
               </td>
+              <td class="text-center align-middle">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="onShowExplanation(c)" [disabled]="!c.explanation">
+                  <i class="bi bi-info-circle"></i>
+                </button>
+              </td>
               <td class="align-middle text-muted small">{{ c.comment || '&mdash;' }}</td>
             </tr>
+            </ng-container>
           </tbody>
         </table>
         </div>
@@ -282,3 +297,19 @@
 
 </div>
 </div>
+
+<!-- EXPLANATION POPUP -->
+<app-popup 
+  [visible]="showExplanationPopup" 
+  [title]="explanationTitle" 
+  [confirmLabel]="'CommonSection.Close' | translate" 
+  [cancelLabel]="null"
+  [loading]="false" 
+  [showConfirmOnly]="true"
+  (confirm)="closeExplanationPopup()"
+  (cancel)="closeExplanationPopup()"
+  icon="bi bi-info-circle">
+  <div class="explanation-content">
+    <p>{{ explanationText }}</p>
+  </div>
+</app-popup>

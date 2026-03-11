@@ -11,6 +11,8 @@
               <span *ngIf="sortDirection === 'desc'">▼</span>
             </ng-container>
           </th>
+          <th class="p-3 action-col-detail" *ngIf="showCustomAction"></th>
+          <th class="p-3 action-col-detail" *ngIf="showExplanationBtn"></th>
           <th class="p-3 action-col-detail" *ngIf="showDetail"></th>
           <th class="p-3 action-col-update" *ngIf="showUpdate"></th>
           <th class="p-3 action-col-enabled" *ngIf="showEnabled || showCsvExport"></th>
@@ -20,6 +22,8 @@
           <th *ngFor="let col of columns()" class="p-2">
             <input *ngIf="col.filterable" type="text" class="form-control form-control-sm" placeholder="Filtrer..." (input)="onFilterChange(col, $event.target.value)" />
           </th>
+          <th class="text-end p-2" *ngIf="showCustomAction"></th>
+          <th class="text-end p-2" *ngIf="showExplanationBtn"></th>
           <th class="text-end p-2" *ngIf="showDetail"></th>
           <th class="text-end p-2" *ngIf="showUpdate"></th>
           <th class="text-end p-2 action-col-csv" *ngIf="showCsvExport">    
@@ -36,7 +40,15 @@
       </thead>
 
       <tbody class="table-scroll">
-        <tr *ngFor="let row of displayData()"
+        <ng-container *ngFor="let row of displayData(); let i = index">
+        <tr *ngIf="getCategoryHeaderForRow(i) as cat" class="category-header-row">
+          <td [attr.colspan]="totalColumns" class="category-header-cell">
+            <span class="category-section">{{ cat.section }}</span>
+            <span class="category-separator"> — </span>
+            <span class="category-label">{{ cat.category }}</span>
+          </td>
+        </tr>
+        <tr
             class="border-top"
             [class.table-row-clickable]="!!rowLink()"
             [routerLink]="getRowLink(row)"
@@ -55,6 +67,18 @@
               </span>
 
             </ng-container>
+          </td>
+
+          <td class="p-2 action-col-detail" *ngIf="showCustomAction">
+            <button class="btn btn-secondary" (click)="$event.stopPropagation(); customAction.emit(row)" [appTooltip]="customActionTooltip">
+              <i [class]="customActionIcon"></i>
+            </button>
+          </td>
+
+          <td class="p-2 action-col-detail" *ngIf="showExplanationBtn">
+            <button class="btn btn-secondary" (click)="$event.stopPropagation(); showExplanation.emit(row)" [appTooltip]="'CommonSection.Explanation' | translate">
+              <i class="bi bi-info-circle"></i>
+            </button>
           </td>
 
           <td class="p-2 action-col-detail" *ngIf="showDetail">
@@ -81,6 +105,7 @@
             </button>
           </td>
         </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

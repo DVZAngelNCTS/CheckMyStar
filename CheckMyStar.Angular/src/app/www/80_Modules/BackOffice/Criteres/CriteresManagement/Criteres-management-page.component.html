@@ -27,8 +27,11 @@
         <app-table 
           [data]="filteredCriteria" 
           [columns]="columns"
+          [categoryFn]="criterionCategoryFn"
+          [showExplanationBtn]="true"
           (delete)="onDelete($event)"
           (update)="onEdit($event)"
+          (showExplanation)="onShowExplanation($event)"
           (openCreate)="onAdd()"
           [showDetail]="false"> 
         </app-table>
@@ -66,4 +69,20 @@
       [readonlyIdentifier]="popupMode === 'edit'">
     </app-criteres-form>
   </ng-container>
+</app-popup>
+
+<!-- EXPLANATION POPUP -->
+<app-popup 
+  [visible]="showExplanationPopup" 
+  [title]="explanationTitle" 
+  [confirmLabel]="'CommonSection.Close' | translate" 
+  [cancelLabel]="null"
+  [loading]="false" 
+  [showConfirmOnly]="true"
+  (confirm)="closeExplanationPopup()"
+  (cancel)="closeExplanationPopup()"
+  icon="bi bi-info-circle">
+  <div class="explanation-content">
+    <p>{{ explanationText }}</p>
+  </div>
 </app-popup>

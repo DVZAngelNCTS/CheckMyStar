@@ -31,6 +31,7 @@ namespace CheckMyStar.Bll
                             CriterionId = r.CriterionId,
                             Description = r.Description,
                             BasePoints = r.BasePoints,
+                            Explanation = r.Explanation,
                             TypeCode = r.TypeCode,
                             TypeLabel = r.TypeLabel
                         }).OrderBy(c => c.CriterionId).ToList()

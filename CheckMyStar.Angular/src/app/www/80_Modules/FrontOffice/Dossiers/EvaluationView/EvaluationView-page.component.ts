@@ -8,11 +8,13 @@ import { AssessmentModel } from '../../../../20_Models/BackOffice/Assessment.mod
 import { AssessmentBllService } from '../../../../60_Bll/BackOffice/Assessment-bll.service';
 import { AssessmentCriteriaResponse } from '../../../../50_Responses/BackOffice/AssessmentCriteria.response';
 import { AssessmentResponse } from '../../../../50_Responses/BackOffice/Assessment.response';
+import { PopupComponent } from '../../../Components/Popup/Popup.component';
+import { getCriterionCategory, CriterionCategory } from '../../../../10_Common/Utils/Criterion-category.util';
 
 @Component({
   selector: 'app-evaluation-view-page',
   standalone: true,
-  imports: [CommonModule, TranslationModule, RouterModule],
+  imports: [CommonModule, TranslationModule, RouterModule, PopupComponent],
   templateUrl: './EvaluationView-page.component.html',
   styleUrl: './EvaluationView-page.component.css'
 })
@@ -25,6 +27,11 @@ export class EvaluationViewPageComponent implements OnInit {
 
   assessment: AssessmentModel | null = null;
   loadingAssessment = false;
+
+  // Explanation popup state
+  showExplanationPopup = false;
+  explanationTitle = '';
+  explanationText = '';
   get mandatoryOk(): boolean {
     return !!this.result && this.result.mandatoryPointsEarned >= this.result.mandatoryThreshold;
   }
@@ -95,7 +102,12 @@ export class EvaluationViewPageComponent implements OnInit {
     this.loadingCriteria = true;
     this.assessmentBll.getAssessmentCriteria$(this.result.assessmentIdentifier).subscribe({
       next: (response: AssessmentCriteriaResponse) => {
-        this.criteria = response.assessmentCriteria ?? [];
+        this.criteria = (response.assessmentCriteria ?? [])
+          .sort((a, b) => a.criterionId - b.criterionId)
+          .map(c => {
+            const cat = getCriterionCategory(c.criterionId);
+            return { ...c, category: cat?.category, section: cat?.section };
+          });
         this.loadingCriteria = false;
       },
       error: () => {
@@ -135,5 +147,31 @@ export class EvaluationViewPageComponent implements OnInit {
     } else {
       this.router.navigate(['/fronthome/dossiers']);
     }
+  }
+
+  getCategoryHeaderForRow(index: number, criteria: AssessmentCriterionModel[]): CriterionCategory | null {
+    const current = criteria[index];
+    const currentCat = current.category
+      ? { category: current.category, section: current.section ?? '' }
+      : getCriterionCategory(current.criterionId);
+    if (!currentCat) return null;
+    if (index === 0) return currentCat;
+    const previous = criteria[index - 1];
+    const previousCat = previous.category
+      ? { category: previous.category, section: previous.section ?? '' }
+      : getCriterionCategory(previous.criterionId);
+    if (!previousCat || previousCat.category !== currentCat.category) return currentCat;
+    return null;
+  }
+
+  onShowExplanation(criterion: AssessmentCriterionModel): void {
+    this.explanationTitle = `${criterion.criterionDescription}`;
+    this.explanationText = criterion.explanation || 'Aucune explication disponible';
+    this.showExplanationPopup = true;
+  }
+
+  closeExplanationPopup(): void {
+    this.showExplanationPopup = false;
+    this.explanationText = '';
   }
 }

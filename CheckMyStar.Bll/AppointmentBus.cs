@@ -9,7 +9,7 @@ using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
 {
-    public partial class AppointmentBus(IUserContextService userContext, IAppointmentDal appointmentDal, IFolderDal folderDal, IAddressDal addressDal, IMapper mapper, IActivityBus activityBus) : IAppointmentBus
+    public partial class AppointmentBus(IUserContextService userContext, IAppointmentDal appointmentDal, IFolderDal folderDal, IMapper mapper, IActivityBus activityBus) : IAppointmentBus
     {
         public async Task<AppointmentResponse> GetNextIdentifier(CancellationToken ct)
         {
@@ -43,15 +43,6 @@ namespace CheckMyStar.Bll
             if (appointment.IsSuccess && appointment.Appointment != null)
             {
                 var appointmentModel = mapper.Map<AppointmentModel>(appointment.Appointment);
-
-                if (appointment.Appointment.AddressIdentifier.HasValue)
-                {
-                    var addressResponse = await addressDal.GetAddress(appointment.Appointment.AddressIdentifier.Value, ct);
-                    if (addressResponse.IsSuccess && addressResponse.Address != null)
-                    {
-                        appointmentModel.Address = mapper.Map<AddressModel>(addressResponse.Address);
-                    }
-                }
 
                 appointmentResponse.IsSuccess = true;
                 appointmentResponse.Message = appointment.Message;

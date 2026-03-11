@@ -141,6 +141,10 @@ export class FrontDossiersPageComponent implements OnInit {
     this.router.navigate(['/fronthome/dossiers', model.identifier]);
   }
 
+  onNewEvaluation(folder: FolderModel) {
+    this.router.navigate(['/fronthome/dossiers', folder.identifier, 'evaluation']);
+  }
+
   openCreate() {
 		this.loading = false;
 		this.loadingSearch = false;

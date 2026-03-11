@@ -1,0 +1,187 @@
+<div class="quotes-layout" [formGroup]="quoteForm">
+
+  <!-- Colonne gauche : formulaire -->
+  <div class="quotes-panel quotes-form-panel">
+    <div class="quotes-panel-header">
+      <i class="bi bi-pencil-square me-2"></i>
+      <span>{{ 'FrontQuoteSection.FormTitle' | translate }}</span>
+    </div>
+    <div class="quotes-panel-body">
+      <form [formGroup]="quoteForm" autocomplete="off" class="quote-form">
+
+        <!-- Numéro de devis -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.QuoteNumber' | translate }}</label>
+          <input type="text" class="form-control" formControlName="quoteNumber"
+            [class.is-invalid]="isInvalid('quoteNumber')" />
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <!-- Date du devis -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.QuoteDate' | translate }}</label>
+          <input type="date" class="form-control" formControlName="quoteDate"
+            [class.is-invalid]="isInvalid('quoteDate')" />
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Nom / raison sociale du client -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.ClientName' | translate }}</label>
+          <input type="text" class="form-control" formControlName="clientName"
+            [class.is-invalid]="isInvalid('clientName')" />
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <!-- Adresse du client -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.ClientAddress' | translate }}</label>
+          <textarea class="form-control" formControlName="clientAddress" rows="2"
+            [class.is-invalid]="isInvalid('clientAddress')"></textarea>
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Nom / raison sociale de l'entreprise -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.CompanyName' | translate }}</label>
+          <input type="text" class="form-control" formControlName="companyName"
+            [class.is-invalid]="isInvalid('companyName')" />
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <!-- Adresse de l'entreprise -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.CompanyAddress' | translate }}</label>
+          <textarea class="form-control" formControlName="companyAddress" rows="2"
+            [class.is-invalid]="isInvalid('companyAddress')"></textarea>
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Description des prestations / produits -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.ServicesDescription' | translate }}</label>
+          <textarea class="form-control" formControlName="servicesDescription" rows="3"
+            [class.is-invalid]="isInvalid('servicesDescription')"></textarea>
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <!-- Quantité / unité -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.Quantity' | translate }}</label>
+          <input type="text" class="form-control" formControlName="quantity"
+            [class.is-invalid]="isInvalid('quantity')" />
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <!-- Prix unitaire HT -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.UnitPrice' | translate }}</label>
+          <div class="input-group">
+            <input type="number" min="0" step="0.01" class="form-control" formControlName="unitPrice"
+              [class.is-invalid]="isInvalid('unitPrice')" />
+            <span class="input-group-text">€</span>
+            <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+          </div>
+        </div>
+
+        <!-- Taux de TVA -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.VatRate' | translate }}</label>
+          <div class="input-group">
+            <input type="number" min="0" max="100" step="0.1" class="form-control" formControlName="vatRate"
+              [class.is-invalid]="isInvalid('vatRate')" />
+            <span class="input-group-text">%</span>
+            <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Montant total HT -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.TotalHT' | translate }}</label>
+          <div class="input-group">
+            <input type="number" min="0" step="0.01" class="form-control" formControlName="totalHT"
+              [class.is-invalid]="isInvalid('totalHT')" />
+            <span class="input-group-text">€</span>
+            <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+          </div>
+        </div>
+
+        <!-- Montant total TTC -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.TotalTTC' | translate }}</label>
+          <div class="input-group">
+            <input type="number" min="0" step="0.01" class="form-control" formControlName="totalTTC"
+              [class.is-invalid]="isInvalid('totalTTC')" />
+            <span class="input-group-text">€</span>
+            <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+          </div>
+        </div>
+
+        <!-- Frais supplémentaires -->
+        <div class="mb-3">
+          <label class="form-label">{{ 'FrontQuoteSection.AdditionalFees' | translate }}</label>
+          <textarea class="form-control" formControlName="additionalFees" rows="2"></textarea>
+          <div class="form-text">{{ 'FrontQuoteSection.Optional' | translate }}</div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Délai de validité du devis -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.ValidityPeriod' | translate }}</label>
+          <input type="text" class="form-control" formControlName="validityPeriod"
+            [class.is-invalid]="isInvalid('validityPeriod')" />
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+        <!-- Date / délai d'exécution -->
+        <div class="mb-3">
+          <label class="form-label">{{ 'FrontQuoteSection.ExecutionDate' | translate }}</label>
+          <input type="text" class="form-control" formControlName="executionDate" />
+          <div class="form-text">{{ 'FrontQuoteSection.Recommended' | translate }}</div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <!-- Statut du devis -->
+        <div class="mb-3">
+          <label class="form-label required-label">{{ 'FrontQuoteSection.Status' | translate }}</label>
+          <select class="form-select" formControlName="status"
+            [class.is-invalid]="isInvalid('status')">
+            <option value="">{{ 'FrontQuoteSection.StatusPlaceholder' | translate }}</option>
+            <option value="draft">{{ 'FrontQuoteSection.StatusDraft' | translate }}</option>
+            <option value="sent">{{ 'FrontQuoteSection.StatusSent' | translate }}</option>
+            <option value="accepted">{{ 'FrontQuoteSection.StatusAccepted' | translate }}</option>
+            <option value="refused">{{ 'FrontQuoteSection.StatusRefused' | translate }}</option>
+          </select>
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Colonne droite : prévisualisation -->
+  <div class="quotes-panel quotes-preview-panel">
+    <div class="quotes-panel-header">
+      <i class="bi bi-eye me-2"></i>
+      <span>{{ 'FrontQuoteSection.PreviewTitle' | translate }}</span>
+    </div>
+    <div class="quotes-panel-body preview-placeholder">
+      <div class="preview-coming-soon">
+        <i class="bi bi-file-earmark-text preview-icon"></i>
+        <p class="mt-3 mb-1 fw-semibold">{{ 'FrontQuoteSection.PreviewComingSoon' | translate }}</p>
+        <p class="text-muted small">{{ 'FrontQuoteSection.PreviewComingSoonHint' | translate }}</p>
+      </div>
+    </div>
+  </div>
+
+</div>

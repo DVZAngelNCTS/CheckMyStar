@@ -13,12 +13,16 @@ export const MENU_CONFIG: Record<EnumRole, { icon: string, label: string, route?
     { icon: 'bi bi-people', label: 'BackOfficeMenuSection.Users', route: '/backhome/users' },
     { icon: 'bi bi-star', label: 'BackOfficeMenuSection.Criteres', route: '/backhome/criteres' },
     { icon: 'bi bi-folder2-open', label: 'BackOfficeMenuSection.Dossiers', route: '/backhome/dossiers' },
+    { icon: 'bi bi-file-earmark-text', label: 'BackOfficeMenuSection.Devis', route: '/backhome/devis' },
+    { icon: 'bi bi-receipt', label: 'BackOfficeMenuSection.Factures', route: '/backhome/factures' },
     { icon: 'bi bi-door-closed', label: 'BackOfficeMenuSection.Disconnect', action: 'logout' }
   ],
 
   [EnumRole.Inspector]: [
     { icon: 'bi bi-house', label: 'FrontOfficeMenuSection.Home', route: '/fronthome' },
     { icon: 'bi bi-clipboard-check', label: 'FrontOfficeMenuSection.Dossiers', route: '/fronthome/dossiers' },
+    { icon: 'bi bi-file-earmark-text', label: 'FrontOfficeMenuSection.Devis', route: '/fronthome/devis' },
+    { icon: 'bi bi-receipt', label: 'FrontOfficeMenuSection.Factures', route: '/fronthome/factures' },
     { icon: 'bi bi-door-closed', label: 'FrontOfficeMenuSection.Disconnect', action: 'logout' }
   ],
 
