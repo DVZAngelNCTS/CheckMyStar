@@ -54,12 +54,14 @@
     "Roles": "Rôles",
     "Activities": "Activités",
     "Criteres": "Critères",
-    "Dossiers": "Gestions des dossiers",
+    "Dossiers": "Dossiers",
     "Devis": "Gestion des devis",
     "Factures": "Gestion des factures",
     "Disconnect": "Se déconnecter",
     "Return": "Retour",
-    "Management": "Gestion"
+    "Management": "Gestion",
+    "Societies": "Sociétés",
+    "Addresses": "Adresses"
   },
   "PopupSection": {
     "Validate": "Valider",
@@ -108,7 +110,11 @@
     "City": "Ville",
     "ZipCode": "Code postal",
     "Region": "Région",
-    "Country": "Pays"
+    "Country": "Pays",
+    "DeleteAsk": "Voulez-vous vraiment supprimer l'adresse",
+    "Create": "Créer une addresse",
+    "Update": "Modifier une addresse",
+    "Delete": "Supprimer une addresse"
   },
   "DashboardSection": {
     "Title": "Tableau de bord",
@@ -214,10 +220,17 @@
     "NewEvaluation": "Nouvelle évaluation"
   },
   "SocietySection": {
+    "Identifier": "Identifiant",
     "Create": "Créer une société",
     "Name": "Nom",
     "Email": "Email",
-    "Phone": "Téléphone"
+    "Phone": "Téléphone",
+    "Informations": "Imformations société",
+    "Address": "Adresse",
+    "DeleteAsk": "Êtes-vous sûr de vouloir supprimer la société :",
+    "Update": "Modifier une société",
+    "Delete": "Supprimer une société",
+    "Active": "Société active"
   },
   "FrontOfficeMenuSection": {
     "Home": "Accueil",

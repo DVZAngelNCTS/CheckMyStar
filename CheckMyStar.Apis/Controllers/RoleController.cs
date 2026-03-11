@@ -91,5 +91,20 @@ namespace CheckMyStar.Apis.Controllers
 
             return Ok(role);
         }
+
+        /// <summary>
+        /// Enabled or disabled a role using the specified request data.
+        /// </summary>
+        /// <param name="request">The details of the role to create. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the created role.</returns>
+        [HttpPut("enabledrole")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> EnabledRole([FromBody] RoleSaveRequest request, CancellationToken ct)
+        {
+            var role = await roleService.EnabledRole(request, ct);
+
+            return Ok(role);
+        }
     }
 }

@@ -4,6 +4,6 @@ namespace CheckMyStar.Bll.Requests
 {
     public class SocietySaveRequest
     {
-        public SocietyModel? Society { get; set; }
+        public required SocietyModel Society { get; set; }
     }
 }

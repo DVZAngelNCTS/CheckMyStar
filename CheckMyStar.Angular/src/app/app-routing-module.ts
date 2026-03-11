@@ -22,6 +22,8 @@ import { DossierDetailPageComponent } from './www/80_Modules/FrontOffice/Dossier
 import { EvaluationPageComponent } from './www/80_Modules/FrontOffice/Dossiers/Evaluation/Evaluation-page.component';
 import { EvaluationViewPageComponent } from './www/80_Modules/FrontOffice/Dossiers/EvaluationView/EvaluationView-page.component';
 import { FrontDashboardComponent } from './www/80_Modules/FrontOffice/Home/Dashboard/Dashboard-page.component';
+import { SocietyPageComponent } from './www/80_Modules/BackOffice/Societies/Society-page.component';
+import { AddressPageComponent } from './www/80_Modules/BackOffice/Addresses/Address-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -56,6 +58,8 @@ const routes: Routes = [
       { path: 'criteres', component: CriteresPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Criteres', icon: 'bi bi-star' }},
       { path: 'criteres/management', component: CriteresManagementPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Management', icon: 'bi bi-gear', parent: 'BackOfficeMenuSection.Criteres' }},
       { path: 'dossiers', component: DossiersPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Dossiers', icon: 'bi bi-folder2-open' }},
+      { path: 'societies', component: SocietyPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Societies', icon: 'bi bi-building'}},
+      { path: "addresses", component: AddressPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Addresses', icon: 'bi-envelmope'}}
       { path: 'devis', component: QuotesPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Devis', icon: 'bi bi-file-earmark-text' }},
       { path: 'factures', component: InvoicesPageComponent, data: { breadcrumb: 'BackOfficeMenuSection.Factures', icon: 'bi bi-receipt' }}          
     ]

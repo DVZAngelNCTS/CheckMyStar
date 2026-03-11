@@ -33,6 +33,9 @@ namespace CheckMyStar.Bll.Mappings
 
             CreateMap<AddressResult, AddressResponse>()
                     .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address ?? null));
+
+            CreateMap<AddressesResult, AddressesResponse>()
+                    .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses ?? null));
         }
     }
 }

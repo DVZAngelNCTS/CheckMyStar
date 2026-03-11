@@ -1,0 +1,43 @@
+<form [formGroup]="form" class="d-flex flex-column column-box">
+    <!-- SEARCH ADDRESS -->
+    <app-address-autocomplete (addressSelected)="onAddressSelected($event)"></app-address-autocomplete>
+
+    <!-- IDENTIFIER -->
+    <app-field controlName="identifier" label="{{ 'AddressSection.Identifier' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
+        <input type="text" digitsOnly class="form-control" formControlName="identifier" [readonly]="readonlyIdentifier" required>
+    </app-field>
+
+    <!-- NUMBER -->
+    <app-field controlName="number" label="{{ 'AddressSection.Number' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-1-square">
+        <input type="text" class="form-control" formControlName="number">
+    </app-field>
+
+    <!-- ADDRESS LINE -->
+    <app-field controlName="addressLine" label="{{ 'AddressSection.AddressLine' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-geo-alt">
+        <input type="text" class="form-control" formControlName="addressLine">
+    </app-field>
+
+    <!-- CITY -->
+    <app-field controlName="city" label="{{ 'AddressSection.City' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-building">
+        <input type="text" class="form-control" formControlName="city">
+    </app-field>
+
+    <!-- ZIP CODE -->
+    <app-field controlName="zipCode" label="{{ 'AddressSection.ZipCode' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-mailbox">
+        <input type="text" class="form-control" formControlName="zipCode">
+    </app-field>
+
+    <!-- REGION -->
+    <app-field controlName="region" label="{{ 'AddressSection.Region' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-geo">
+        <input type="text" class="form-control" formControlName="region">
+    </app-field>
+
+    <!-- COUNTRY -->
+    <div formGroupName="country">
+        <app-field controlName="identifier" label="{{ 'AddressSection.Country' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-globe">
+        <select class="form-select" formControlName="identifier" (change)="onCountryChange($event)">
+            <option *ngFor="let c of countries" [value]="c.identifier"> {{ c.name }} </option>
+        </select>
+        </app-field>
+    </div>
+</form>

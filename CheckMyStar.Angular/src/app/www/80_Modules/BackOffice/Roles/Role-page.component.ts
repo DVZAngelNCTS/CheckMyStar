@@ -243,7 +243,7 @@ export class RolePageComponent {
 		isActive: !role.isActive 
 	};
 
-	this.roleBll.updateRole$(updatedRole).subscribe({
+	this.roleBll.enabledRole$(updatedRole).subscribe({
 			next: response => {
 				this.loading = false;
 

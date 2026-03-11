@@ -5,6 +5,6 @@ export interface SocietyModel {
     name: string,
     email: string,
     phone: string,
-    addressIdentifier: number,
+    address: AddressModel,
     isActive: boolean
 }

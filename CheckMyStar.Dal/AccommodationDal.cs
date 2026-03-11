@@ -189,5 +189,35 @@ namespace CheckMyStar.Dal
 
             return baseResult;
         }
+
+        public async Task<BaseResult> EnabledAccommodation(Accommodation accommodation, CancellationToken ct)
+        {
+            BaseResult baseResult = new BaseResult();
+
+            try
+            {
+                dbContext.Entry(accommodation).Property(x => x.IsActive).IsModified = true;
+
+                bool result = await dbContext.SaveChangesAsync() > 0 ? true : false;
+
+                if (result)
+                {
+                    baseResult.IsSuccess = true;
+                    baseResult.Message = $"Hébergement {accommodation.AccommodationName} {(accommodation.IsActive == true ? "activé" : "désactivé")} avec succès";
+                }
+                else
+                {
+                    baseResult.IsSuccess = false;
+                    baseResult.Message = $"Impossible de {(accommodation.IsActive == true ? "activé" : "désactivé")} l'hébergement {accommodation.AccommodationName}";
+                }
+            }
+            catch (Exception ex)
+            {
+                baseResult.IsSuccess = false;
+                baseResult.Message = $"Impossible de {(accommodation.IsActive == true ? "activé" : "désactivé")} l'hébergement {accommodation.AccommodationName} : " + ex.Message;
+            }
+
+            return baseResult;
+        }
     }
 }

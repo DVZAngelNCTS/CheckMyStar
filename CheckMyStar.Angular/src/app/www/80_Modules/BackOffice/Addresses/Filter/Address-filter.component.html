@@ -1,0 +1,36 @@
+<div class="ms-3 w-100" (keydown.enter)="search()">
+    <app-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (searchClicked)="search()" (resetClicked)="reset()">
+        <div class="d-flex flex-column" [formGroup]="form">
+            <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+                <app-field controlName="number" icon="bi bi-person" label="{{ 'AddressSection.Number' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="number">               
+                </app-field>
+                <app-field controlName="addressLine" icon="bi bi-person" label="{{ 'AddressSection.AddressLine' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="addressLine">               
+                </app-field>
+                <app-field controlName="city" icon="bi bi-person" label="{{ 'AddressSection.City' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="city">               
+                </app-field>                
+            </div>
+            <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+                <app-field controlName="zipCode" icon="bi bi-envelope-at" label="{{ 'AddressSection.ZipCode' | translate }}" labelClass="w-8rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="zipCode">               
+                </app-field>
+                <app-field controlName="region" icon="bi bi-geo" label="{{ 'AddressSection.Region' | translate }}" labelClass="w-7rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+                    <input type="text" class="form-control" formControlName="region">               
+                </app-field>
+                <app-field controlName="countryIdentifier"
+                        icon="bi bi-globe"
+                        label="{{ 'AddressSection.Country' | translate }}"
+                        labelClass="w-7rem start fw-bold"
+                        labelTextPosition="start"
+                        controlClass="w-100">
+                    <select class="form-select" formControlName="countryIdentifier">
+                        <option [value]="null">{{ 'CommonSection.All' | translate }}</option>
+                        <option *ngFor="let country of countries" [value]="country.identifier">{{ country.name }}</option>
+                    </select>
+                </app-field>           
+            </div>                            
+        </div>
+    </app-filter>
+</div>

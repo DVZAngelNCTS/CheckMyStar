@@ -24,7 +24,9 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.Civility, opts => opts.MapFrom(src => src.CivilityIdentifier.ToEnum<EnumCivility>()))
                 .ForMember(dest => dest.Role, opts => opts.MapFrom(src => src.RoleIdentifier.ToEnum<EnumRole>()))
                 .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.IsFirstConnection, opts => opts.MapFrom(src => src.IsFirstConnection));
+                .ForMember(dest => dest.IsFirstConnection, opts => opts.MapFrom(src => src.IsFirstConnection))
+                .ForMember(dest => dest.CreatedDate, opts => opts.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.UpdatedDate, opts => opts.MapFrom(src => src.UpdatedDate));
 
             CreateMap<UserModel, User>()
                 .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
@@ -37,7 +39,9 @@ namespace CheckMyStar.Bll.Mappings
                 .ForMember(dest => dest.CivilityIdentifier, opts => opts.MapFrom(src => src.Civility.ToInt()))
                 .ForMember(dest => dest.RoleIdentifier, opts => opts.MapFrom(src => src.Role.ToInt()))
                 .ForMember(dest => dest.IsActive, opts => opts.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.IsFirstConnection, opts => opts.MapFrom(src => src.IsFirstConnection));
+                .ForMember(dest => dest.IsFirstConnection, opts => opts.MapFrom(src => src.IsFirstConnection))
+                .ForMember(dest => dest.CreatedDate, opts => opts.MapFrom(src => src.CreatedDate))
+                .ForMember(dest => dest.UpdatedDate, opts => opts.MapFrom(src => src.UpdatedDate));
 
             CreateMap<UserResult, UserResponse>()
                 .ForMember(dest => dest.User, opts => opts.MapFrom(src => src.User ?? null));

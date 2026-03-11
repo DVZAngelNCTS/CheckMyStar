@@ -152,5 +152,20 @@ namespace CheckMyStar.Apis.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Enabled or disabled folder
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [HttpPut("enabledfolder")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> EnabledFolder([FromBody] FolderSaveRequest request, CancellationToken ct)
+        {
+            var result = await folderService.EnabledFolder(request, ct);
+
+            return Ok(result);
+        }
     }
 }

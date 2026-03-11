@@ -12,6 +12,11 @@ namespace CheckMyStar.Apis.Services
             return addressBusForService.GetNextIdentifier(ct);
         }
 
+        public Task<AddressesResponse> GetAddresses(AddressGetRequest request, CancellationToken ct)
+        {
+            return addressBusForService.GetAddresses(request, ct);
+        }
+
         public Task<BaseResponse> AddAddress(AddressSaveRequest request, CancellationToken ct)
         {
             return addressBusForService.AddAddress(request, ct);
@@ -22,6 +27,10 @@ namespace CheckMyStar.Apis.Services
             return addressBusForService.UpdateAddress(request, ct);
         }
 
+        public Task<BaseResponse> DeleteAddress(AddressDeleteRequest request, CancellationToken ct)
+        {
+            return addressBusForService.DeleteAddress(request, ct);
+        }
         public Task<GeolocationResponse> SearchAddress(GeolocationGetRequest request, CancellationToken ct)
         {
             return geolocationBusForService.SearchAddress(request, ct);

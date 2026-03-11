@@ -12,5 +12,6 @@ namespace CheckMyStar.Dal.Abstractions
         Task<BaseResult> AddFolder(Folder folder, CancellationToken ct);
         Task<BaseResult> UpdateFolder(Folder folder, CancellationToken ct);
         Task<BaseResult> DeleteFolder(Folder folder, CancellationToken ct);
+        Task<BaseResult> EnabledFolder(Folder folder, CancellationToken ct);
     }
 }

@@ -14,8 +14,8 @@
           <th class="p-3 action-col-detail" *ngIf="showCustomAction"></th>
           <th class="p-3 action-col-detail" *ngIf="showExplanationBtn"></th>
           <th class="p-3 action-col-detail" *ngIf="showDetail"></th>
-          <th class="p-3 action-col-update" *ngIf="showUpdate"></th>
-          <th class="p-3 action-col-enabled" *ngIf="showEnabled || showCsvExport"></th>
+          <th class="p-3 action-col-update" *ngIf="showEnabled"></th>
+          <th class="p-3 action-col-enabled" *ngIf="showUpdate || showCsvExport"></th>
           <th class="p-3 action-col-delete" *ngIf="showDelete || showXlsxExport"></th>
         </tr>
         <tr>
@@ -25,7 +25,7 @@
           <th class="text-end p-2" *ngIf="showCustomAction"></th>
           <th class="text-end p-2" *ngIf="showExplanationBtn"></th>
           <th class="text-end p-2" *ngIf="showDetail"></th>
-          <th class="text-end p-2" *ngIf="showUpdate"></th>
+          <th class="text-end p-2" *ngIf="showEnabled"></th>
           <th class="text-end p-2 action-col-csv" *ngIf="showCsvExport">    
             <button class="btn btn-primary btn-sm me-2" (click)="exportCsv()" [appTooltip]="'CommonSection.CsvExport' | translate">
               <i class="bi bi-filetype-csv"></i>
@@ -87,15 +87,15 @@
             </button>
           </td>
 
-          <td class="p-2 action-col-update" *ngIf="showUpdate">
-            <button class="btn btn-primary" (click)="$event.stopPropagation(); update.emit(row)" [appTooltip]="'CommonSection.Update' | translate">
-              <i class="bi bi-pencil"></i>
-            </button>
-          </td>
-
           <td class="p-2 action-col-enabled" *ngIf="showEnabled">
             <button class="btn btn-tertiary" (click)="$event.stopPropagation(); enabled.emit(row)" [appTooltip]="'CommonSection.Enabled' | translate">
               <i class="bi" [ngClass]="$any(row).isActive ? 'bi-x-square' : 'bi-check-square'"></i>
+            </button>
+          </td>
+
+          <td class="p-2 action-col-update" *ngIf="showUpdate">
+            <button class="btn btn-primary" (click)="$event.stopPropagation(); update.emit(row)" [appTooltip]="'CommonSection.Update' | translate">
+              <i class="bi bi-pencil"></i>
             </button>
           </td>
 

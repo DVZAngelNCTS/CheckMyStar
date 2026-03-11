@@ -44,6 +44,12 @@ export class UserBllService {
     return this.userDal.deleteUser$(request);
   }
 
+  enabledUser$(user: UserModel) {
+    const request = { user: user } as UserSaveRequest;
+
+    return this.userDal.enabledUser$(request);
+  }
+
   getNextIdentifier$() {
     return this.userDal.getNextIdentifier$();
   }

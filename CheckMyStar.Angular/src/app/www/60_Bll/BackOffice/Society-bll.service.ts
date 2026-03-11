@@ -2,18 +2,57 @@ import { Injectable } from '@angular/core';
 import { SocietyDalService } from '../../70_Dal/BackOffice/Society-dal.service';
 import { SocietySaveRequest } from '../../40_Requests/BackOffice/Society-save.request';
 import { SocietyModel } from '../../20_Models/BackOffice/Society.model';
+import { SocietyDeleteRequest } from '../../40_Requests/BackOffice/Society-delete.request';
+import { SocietyGetRequest} from '../../40_Requests/BackOffice/Society-get.request';
 
 @Injectable({ providedIn: 'root' })
 export class SocietyBllService {
   constructor(private societyDal: SocietyDalService) {}
 
-  getSocieties$() {
-    return this.societyDal.getSocieties$();
+  getNextIdentifier$() {
+    return this.societyDal.getNextIdentifier$();
+  }
+
+  getSocieties$(name?: string, email?: string, phone?: string, address?: string) {
+    const request = { 
+      name: name,
+      email: email,
+      phone: phone,
+      address: address      
+    } as SocietyGetRequest;
+
+    return this.societyDal.getSocieties$(request);
+  }
+
+  getSociety$(identifier: number) {
+    const request = { 
+      identifier: identifier  
+    } as SocietyGetRequest;
+
+    return this.societyDal.getSociety$(request);
   }
 
   addSociety$(society: SocietyModel) {    
     const request = { society: society } as SocietySaveRequest;
 
     return this.societyDal.addSociety$(request);
+  }
+
+  updateSociety$(society: SocietyModel) {
+    const request = { society: society } as SocietySaveRequest;
+
+    return this.societyDal.updateSociety$(request);
+  }
+
+  deleteSociety$(identifier: number) {
+    const request = { identifier: identifier } as SocietyDeleteRequest;
+
+    return this.societyDal.deleteSociety$(request);
+  }  
+
+  enabledSociety$(society: SocietyModel) {
+    const request = { society: society } as SocietySaveRequest;
+
+    return this.societyDal.enabledSociety$(request);
   }
 }

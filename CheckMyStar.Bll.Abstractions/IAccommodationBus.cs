@@ -9,5 +9,7 @@ namespace CheckMyStar.Bll.Abstractions
         Task<AccommodationsResponse> GetAccommodations(CancellationToken ct);
         Task<BaseResponse> AddAccommodation(AccommodationModel accommodationModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> DeleteAccommodation(int accommodationIdentifier, int currentUser, CancellationToken ct);
+        Task<BaseResponse> UpdateAccommodation(AccommodationModel accommodationModel, int currentUser, CancellationToken ct);
+        Task<BaseResponse> EnabledAccommodation(int identifier, bool isActive, int currentUser, CancellationToken ct);
     }
 }

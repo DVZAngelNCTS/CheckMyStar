@@ -256,11 +256,40 @@ export class DossierDetailPageComponent implements OnInit {
     this.popupError = null;
 
     const f = this.appointmentForm.value;
-    const appointmentModel: AppointmentModel = {
-      identifier: 0,
-      appointmentDate: f.appointmentDate,
-      comment: f.comment || null
-    };
+    const selectedCountry = this.countries.find(c => c.identifier === +f.countryIdentifier)
+      ?? { identifier: +f.countryIdentifier, name: '', code: '' };
+
+    // Étape 1 : obtenir le prochain identifiant d'adresse
+    this.addressBll.getNextIdentifier$().pipe(
+      switchMap(addrIdResp => {
+        const addressId = addrIdResp.address?.identifier;
+        if (addressId == null) throw new Error(this.translate.instant('CommonSection.UnknownError'));
+
+        const address: AddressModel = {
+          identifier: addressId,
+          number: f.addressNumber || '',
+          addressLine: f.addressLine,
+          city: f.city,
+          zipCode: f.zipCode,
+          region: f.region || undefined,
+          country: selectedCountry
+        };
+
+        // Étape 2 : créer l'adresse
+        return this.addressBll.addAddress$(address).pipe(
+          switchMap(addrResp => {
+            if (!addrResp.isSuccess) throw new Error(addrResp.message || this.translate.instant('CommonSection.UnknownError'));
+
+            // Étape 3 : obtenir le prochain identifiant de rendez-vous
+            return this.appointmentBll.getNextIdentifier$().pipe(
+              switchMap(apptIdResp => {
+                const appointmentId = apptIdResp.identifier;
+
+                const appointmentModel: AppointmentModel = {
+                  identifier: appointmentId,
+                  appointmentDate: f.appointmentDate,
+                  comment: f.comment || null,
+                };
 
     this.appointmentBll.addAppointment$(appointmentModel, this.folderId!).subscribe({
       next: response => {

@@ -42,6 +42,13 @@ namespace CheckMyStar.Apis.Services
             return result;
         }
 
+        public async Task<BaseResponse> EnabledUser(UserSaveRequest request, CancellationToken ct)
+        {
+            var result = await userBusForService.EnabledUser(request, ct);
+
+            return result;
+        }
+
         public async Task<UserEvolutionResponse> GetUserEvolutions(CancellationToken ct)
         {
             var result = await userBusForService.GetUserEvolutions(ct);

@@ -28,77 +28,16 @@
       <app-user-form [user]="selectedUser" [readonlyIdentifier]="true" (createSociety)="openCreateSociety()"></app-user-form>
     </ng-container>
     <ng-container *ngIf="popupMode === 'create'">
-      <app-user-form [readonlyIdentifier]="true" (createSociety)="openCreateSociety()"></app-user-form>
+      <app-user-form [readonlyIdentifier]="true" (createSociety)="openCreateSociety()" [createdSocietyId]="createdSocietyId"></app-user-form>
     </ng-container>
-  </ng-container>
-
-  <ng-container *ngIf="popupMode === 'createSociety'">
-    <form [formGroup]="societyForm" class="d-flex flex-column gap-2">
-      <!-- NAME (pleine largeur) -->
-      <div class="form-group">
-        <label>{{ 'SocietySection.Name' | translate }}</label>
-        <input type="text" class="form-control" formControlName="name" required>
-      </div>
-      <!-- EMAIL + PHONE sur la même ligne -->
-      <div class="row g-2">
-        <div class="col-6">
-          <div class="form-group">
-            <label>{{ 'SocietySection.Email' | translate }}</label>
-            <input type="email" class="form-control" formControlName="email">
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="form-group">
-            <label>{{ 'SocietySection.Phone' | translate }}</label>
-            <input type="text" class="form-control" formControlName="phone">
-          </div>
-        </div>
-      </div>
-      <div class="border-top pt-2" formGroupName="address">
-        <!-- NUMBER + ZIP CODE sur la même ligne -->
-        <div class="row g-2">
-          <div class="col-6">
-            <div class="form-group">
-              <label>{{ 'AddressSection.Number' | translate }}</label>
-              <input type="text" class="form-control" formControlName="number">
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="form-group">
-              <label>{{ 'AddressSection.ZipCode' | translate }}</label>
-              <input type="text" class="form-control" formControlName="zipCode" required>
-            </div>
-          </div>
-        </div>
-        <!-- ADDRESS LINE (pleine largeur) -->
-        <div class="form-group">
-          <label>{{ 'AddressSection.AddressLine' | translate }}</label>
-          <input type="text" class="form-control" formControlName="addressLine" required>
-        </div>
-        <!-- CITY + REGION sur la même ligne -->
-        <div class="row g-2">
-          <div class="col-6">
-            <div class="form-group">
-              <label>{{ 'AddressSection.City' | translate }}</label>
-              <input type="text" class="form-control" formControlName="city" required>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="form-group">
-              <label>{{ 'AddressSection.Region' | translate }}</label>
-              <input type="text" class="form-control" formControlName="region">
-            </div>
-          </div>
-        </div>
-        <!-- COUNTRY (pleine largeur) -->
-        <div class="form-group">
-          <label>{{ 'AddressSection.Country' | translate }}</label>
-          <select class="form-select" formControlName="countryIdentifier" required>
-            <option *ngFor="let c of countries" [value]="c.identifier">{{ c.name }}</option>
-          </select>
-        </div>
-      </div>
-    </form>
   </ng-container>
 </app-popup>
 
+<app-popup [large]="true" [visible]="popupSocietyVisible" [title]="popupSocietyTitle" [confirmLabel]="popupSocietyConfirmLabel" [cancelLabel]="popupSocietyCancelLabel" [errorMessage]="popupSocietyError" [loading]="loading" (confirm)="onCreateSocietyConfirmed()" (cancel)="onCreatePopupSocietyCancel()" icon="bi bi-building">
+  <!-- Contenu dynamique -->
+  <ng-container [class.d-none]="!popupVisible">
+    <ng-container *ngIf="popupMode === 'create'">
+      <app-society-form [readonlyIdentifier]="true"></app-society-form> 
+    </ng-container>
+  </ng-container>
+</app-popup>

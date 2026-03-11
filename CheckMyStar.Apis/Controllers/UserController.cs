@@ -93,6 +93,23 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Enabled or disabled an existing user based on the specified request.
+        /// </summary>
+        /// <remarks>This action is restricted to users with the Administrator role. The request must
+        /// include valid user information in the request body.</remarks>
+        /// <param name="request">The details of the user to delete. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>An IActionResult indicating the result of the delete operation.</returns>
+        [HttpPut("enableduser")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> EnabledUser([FromBody] UserSaveRequest request, CancellationToken ct)
+        {
+            var user = await userService.EnabledUser(request, ct);
+
+            return Ok(user);
+        }
+
+        /// <summary>
         /// Get user evolutions
         /// </summary>
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>

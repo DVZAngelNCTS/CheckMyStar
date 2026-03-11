@@ -6,7 +6,9 @@ namespace CheckMyStar.Bll.Abstractions.ForService
     public interface IAddressBusForService
     {
         Task<AddressResponse> GetNextIdentifier(CancellationToken ct);
+        Task<AddressesResponse> GetAddresses(AddressGetRequest request, CancellationToken ct);
         Task<BaseResponse> AddAddress(AddressSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateAddress(AddressSaveRequest request, CancellationToken ct);
+        Task<BaseResponse> DeleteAddress(AddressDeleteRequest request, CancellationToken ct);
     }
 }

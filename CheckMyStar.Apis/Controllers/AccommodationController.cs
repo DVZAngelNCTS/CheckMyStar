@@ -57,11 +57,11 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="request">The details of the accommodation to create. Must not be null.</param>
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the result of the accommodation creation.</returns>
-        [HttpPost("createaccommodation")]
+        [HttpPost("addaccommodation")]
         [Authorize(Roles = "Administrator, Inspector")]
-        public async Task<IActionResult> CreateAccommodation([FromBody] AccommodationSaveRequest request, CancellationToken ct)
+        public async Task<IActionResult> AddAccommodation([FromBody] AccommodationSaveRequest request, CancellationToken ct)
         {
-            var result = await accommodationService.CreateAccommodation(request, ct);
+            var result = await accommodationService.AddAccommodation(request, ct);
 
             return Ok(result);
         }
@@ -101,6 +101,21 @@ namespace CheckMyStar.Apis.Controllers
         public async Task<IActionResult> DeleteAccommodation(AccommodationDeleteRequest request, CancellationToken ct)
         {
             var result = await accommodationService.DeleteAccommodation(request, ct);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Enables or disabled accommodation
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [HttpPut("enabledaccommodation")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> EnabledAccommodation([FromBody] AccommodationSaveRequest request, CancellationToken ct)
+        {
+            var result = await accommodationService.EnabledAccommodation(request, ct);
 
             return Ok(result);
         }

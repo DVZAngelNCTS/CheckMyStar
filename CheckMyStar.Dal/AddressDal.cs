@@ -77,6 +77,35 @@ namespace CheckMyStar.Dal
             return addressResult;
         }
 
+        public async Task<AddressesResult> GetAddresses(string? number, string? addressLine, string? city, string? zipCode, string? region, int? countryIdentifier, CancellationToken ct)
+
+        {
+            AddressesResult addressesResult = new AddressesResult();
+
+            try
+            {
+                var addresses = await (from a in dbContext.Addresses.AsNoTracking()
+                                     where 
+                                           (string.IsNullOrEmpty(number) || a.Number == number)
+                                        && (string.IsNullOrEmpty(addressLine) || a.AddressLine == addressLine)
+                                        && (string.IsNullOrEmpty(city) || a.City == city)
+                                        && (string.IsNullOrEmpty(zipCode) || a.ZipCode == zipCode)
+                                        && (string.IsNullOrEmpty(region) || a.Region == region)
+                                        && (countryIdentifier == null || a.CountryIdentifier == countryIdentifier)
+                                     select a).ToListAsync(ct);
+
+                addressesResult.IsSuccess = true;
+                addressesResult.Addresses = addresses;
+            }
+            catch (Exception ex)
+            {
+                addressesResult.IsSuccess = false;
+                addressesResult.Message = ex.Message;
+            }
+
+            return addressesResult;
+        }
+
         public async Task<BaseResult> AddAddress(Address address, CancellationToken ct)
         {
             BaseResult baseResult = new BaseResult();

@@ -11,6 +11,11 @@ namespace CheckMyStar.Bll
             return this.GetIdentifier(ct);
         }
 
+        public Task<AddressesResponse> GetAddresses(AddressGetRequest request, CancellationToken ct)
+        {
+            return this.GetAddresses(request.Number, request.AddressLine, request.City, request.ZipCode, request.Region, request.CountryIdentifier, ct);
+        }
+
         public Task<BaseResponse> AddAddress(AddressSaveRequest request, CancellationToken ct)
         {
             var user = userContext.CurrentUser.Identifier;
@@ -23,6 +28,13 @@ namespace CheckMyStar.Bll
             var user = userContext.CurrentUser.Identifier;
 
             return this.UpdateAddress(request.Address, user, ct);
+        }
+
+        public Task<BaseResponse> DeleteAddress(AddressDeleteRequest request, CancellationToken ct)
+        {
+            var user = userContext.CurrentUser.Identifier;
+
+            return this.DeleteAddress(request.Identifier, user, ct);
         }
     }
 }

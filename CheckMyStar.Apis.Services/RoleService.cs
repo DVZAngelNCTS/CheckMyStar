@@ -41,5 +41,12 @@ namespace CheckMyStar.Apis.Services
 
             return result;
         }
+
+        public async Task<BaseResponse> EnabledRole(RoleSaveRequest request, CancellationToken ct)
+        {
+            var result = await roleBusForService.EnabledRole(request, ct);
+
+            return result;
+        }
     }
 }

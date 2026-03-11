@@ -10,5 +10,6 @@ namespace CheckMyStar.Bll.Abstractions
         Task<BaseResponse> AddRole(RoleModel roleModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> UpdateRole(RoleModel roleModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> DeleteRole(int identifier, int currentUser, CancellationToken ct);
+        Task<BaseResponse> EnabledRole(int identifier, bool isActive, int currentUser, CancellationToken ct);
     }
 }

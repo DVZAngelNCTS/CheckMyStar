@@ -5,7 +5,6 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
-using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 
 namespace CheckMyStar.Bll
@@ -481,6 +480,48 @@ namespace CheckMyStar.Bll
             {
                 result.IsSuccess = false;
                 result.Message = folderResult.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<BaseResponse> EnabledFolder(int identifier, bool isActive, int currentUser, CancellationToken ct)
+        {
+            BaseResponse result = new BaseResponse();
+
+            var user = await folderDal.GetFolder(identifier, ct);
+
+            if (user.IsSuccess)
+            {
+                if (user.Folder != null)
+                {
+                    user.Folder.IsActive = isActive;
+
+                    var folderResult = await folderDal.EnabledFolder(user.Folder, ct);
+
+                    if (folderResult.IsSuccess)
+                    {
+                        result.IsSuccess = true;
+                        result.Message = folderResult.Message;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = folderResult.Message;
+                    }
+
+                    await activityBus.AddActivity(folderResult.Message, DateTime.Now, currentUser, folderResult.IsSuccess, ct);
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = $"Le dossier n'existe pas, impossible de {(isActive == true ? "l'activer" : "le désactiver")}";
+                }
+            }
+            else
+            {
+                result.IsSuccess = false;
+                result.Message = user.Message;
             }
 
             return result;
