@@ -7,6 +7,7 @@ import { CsvExportService } from '../../../90_Services/Export/Csv-export.service
 import { XlsxExportService } from '../../../90_Services/Export/Xlsx-export.service';
 import { DeviceService } from '../../../90_Services/Device/Device.service';
 import { TooltipDirective } from '../Tooltip/Tooltip.directive';
+import { CriterionCategory } from '../../../10_Common/Utils/Criterion-category.util';
 
 @Component({ 
   selector: 'app-table', 
@@ -23,6 +24,8 @@ export class TableComponent<T> implements OnChanges {
   enabled = output<T>();
   rowClick = output<T>();
   openCreate = output<void>();
+  showExplanation = output<T>();
+  customAction = output<T>();
 
   @Input() showDetail = true;
   @Input() showUpdate = true;
@@ -31,10 +34,17 @@ export class TableComponent<T> implements OnChanges {
   @Input() showCsvExport = true;
   @Input() showXlsxExport = true;
   @Input() showAdd = true;
+  @Input() showExplanationBtn = false;
+  @Input() showCustomAction = false;
+  @Input() customActionIcon = 'bi bi-star';
+  @Input() customActionTooltip = '';
   
   columns = input<TableColumn<T>[]>([]);
   data = input<T[]>([]);
   rowLink = input<((row: T) => any[]) | null>(null);
+  categoryFn = input<((row: T) => CriterionCategory | null) | null>(null);
+  /** When set, category headers are only shown while sorting by this field ascending. */
+  categoryField = input<string | null>(null);
 
   displayData = signal<T[]>([]);
 
@@ -137,5 +147,35 @@ export class TableComponent<T> implements OnChanges {
   getRowLink(row: T): any[] | null {
     const fn = this.rowLink();
     return fn ? fn(row) : null;
+  }
+
+  /**
+   * Returns the category header for the row at given index if it differs from the previous row's category.
+   * Returns null if categoryFn is not set or if the category hasn't changed.
+   * When categoryField is set, categories are only shown while sorting by that field ascending.
+   */
+  getCategoryHeaderForRow(index: number): CriterionCategory | null {
+    const fn = this.categoryFn();
+    if (!fn) return null;
+    const field = this.categoryField();
+    if (field && (this.sortField !== field || this.sortDirection !== 'asc')) return null;
+    const items = this.displayData();
+    const current = fn(items[index]);
+    if (!current) return null;
+    if (index === 0) return current;
+    const previous = fn(items[index - 1]);
+    if (!previous || previous.category !== current.category) return current;
+    return null;
+  }
+
+  get totalColumns(): number {
+    let count = this.columns().length;
+    if (this.showCustomAction) count++;
+    if (this.showExplanationBtn) count++;
+    if (this.showDetail) count++;
+    if (this.showUpdate) count++;
+    if (this.showEnabled || this.showCsvExport) count++;
+    if (this.showDelete || this.showXlsxExport) count++;
+    return count;
   }
 }

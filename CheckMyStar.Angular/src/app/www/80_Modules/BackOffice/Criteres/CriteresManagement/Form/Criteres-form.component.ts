@@ -36,7 +36,8 @@ export class CriteresFormComponent implements OnInit, OnChanges {
         criterionId: this.criterion?.criterionId ?? 0,
         description: this.criterion?.description ?? '',
         basePoints: this.criterion?.basePoints ?? 0,
-        typeCode: this.criterion?.typeCode ?? 'X'
+        typeCode: this.criterion?.typeCode ?? 'X',
+        explanation: this.criterion?.explanation ?? ''
       });
       
       if (this.criterion !== null) {
@@ -64,7 +65,8 @@ export class CriteresFormComponent implements OnInit, OnChanges {
         this.criterion?.basePoints ?? 1,
         [Validators.required, Validators.min(1), Validators.max(10)]
       ],
-      typeCode: [this.criterion?.typeCode ?? 'X', Validators.required]
+      typeCode: [this.criterion?.typeCode ?? 'X', Validators.required],
+      explanation: [this.criterion?.explanation ?? '']
     });
   }
 }

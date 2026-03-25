@@ -6,6 +6,7 @@ namespace CheckMyStar.Apis.Services.Abstractions
     public interface IUserService
     {
         Task<UserResponse> GetNextIdentifier(CancellationToken ct);
+        Task<UserResponse> GetUser(UserGetByIdentifierRequest request, CancellationToken ct);
         Task<UsersResponse> GetUsers(UserGetRequest request, CancellationToken ct);
         Task<UserResponse> GetUser(EmailGetRequest request, CancellationToken ct);
         Task<UserResponse> GetUser(UserGetRequest request, CancellationToken ct);

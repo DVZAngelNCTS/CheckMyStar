@@ -10,7 +10,7 @@
        {{ errorMessage }}
     </div>
     <div class="popup-footer">
-      <button class="btn btn-tertiary mt-1 d-flex align-items-center justify-content-center gap-2 w-12rem" (click)="onCancel()">
+      <button *ngIf="!showConfirmOnly && cancelLabel !== null" class="btn btn-tertiary mt-1 d-flex align-items-center justify-content-center gap-2 w-12rem" (click)="onCancel()">
         <i class="bi bi-x-circle me-2"></i>
         {{ cancelLabel }}
     </button>

@@ -17,6 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { StarCriterionModel } from '../../../../20_Models/BackOffice//Criterion.model';
 import { StarLevelModel } from '../../../../20_Models/BackOffice/StarLevel.model';
 import { StarLevelCriterionModel } from '../../../../20_Models/BackOffice/StarLevelCriterion.model';
+import { getCriterionCategory, CriterionCategory } from '../../../../10_Common/Utils/Criterion-category.util';
 
 @Component({
   selector: 'app-criteres-management-page',
@@ -48,11 +49,14 @@ export class CriteresManagementPageComponent implements OnInit
   
   columns: TableColumn<StarCriterionDetailModel>[] = 
   [
-    { field: 'criterionId', header: 'Id', icon: '', sortable: true, width: '80px' },
+    { field: 'criterionId', header: 'Id', icon: '', sortable: true, width: '80px', defaultSort: true, sortDirection: 'asc' },
     { field: 'description', header: 'Description', icon: '', sortable: true },
     { field: 'basePoints', header: 'Points', icon: '', sortable: true, width: '100px' },
     { field: 'typeCode', header: 'Type', icon: '', sortable: true, width: '120px' }
   ];
+
+  readonly criterionCategoryFn = (row: StarCriterionDetailModel): CriterionCategory | null =>
+    row.category ? { category: row.category, section: row.section ?? '' } : getCriterionCategory(row.criterionId);
 
   // Popup state
   showPopup = false;
@@ -66,6 +70,11 @@ export class CriteresManagementPageComponent implements OnInit
   popupHeight = 'auto';
   currentCriterion: StarCriterionDetailModel | null = null;
   isEdit = false;
+
+  // Explanation popup state
+  showExplanationPopup = false;
+  explanationTitle = '';
+  explanationText = '';
 
   constructor(
     private criteresBll: CriteresBllService, 
@@ -104,7 +113,13 @@ export class CriteresManagementPageComponent implements OnInit
       next: details => 
         {
         const detailsForStar = details.starCriterias?.find(d => d.rating === this.starRating);
-        this.allCriteria = detailsForStar ? detailsForStar.criteria : [];
+        const sorted = detailsForStar
+          ? detailsForStar.criteria.slice().sort((a, b) => a.criterionId - b.criterionId)
+          : [];
+        this.allCriteria = sorted.map(c => {
+          const cat = getCriterionCategory(c.criterionId);
+          return { ...c, category: cat?.category, section: cat?.section };
+        });
         this.filteredCriteria = [...this.allCriteria];
       },
       error: err => console.error('Erreur getStarCriteriaDetails', err)
@@ -220,7 +235,8 @@ export class CriteresManagementPageComponent implements OnInit
     const criterion: StarCriterionModel = {
         criterionId: this.currentCriterion ? this.currentCriterion.criterionId : 0,        
         description: formValue.description,
-        basePoints: formValue.basePoints
+        basePoints: formValue.basePoints,
+        explanation: formValue.explanation || undefined
       };
     
     const starLevelCriterion: StarLevelCriterionModel = {
@@ -242,7 +258,8 @@ export class CriteresManagementPageComponent implements OnInit
       const criterion: StarCriterionModel = {
           criterionId: this.currentCriterion.criterionId,
           description: formValue.description,
-          basePoints: formValue.basePoints
+          basePoints: formValue.basePoints,
+          explanation: formValue.explanation || undefined
       };
       
       const starLevel: StarLevelModel = {
@@ -307,5 +324,16 @@ export class CriteresManagementPageComponent implements OnInit
     this.showPopup = false;
     this.currentCriterion = null;
     this.popupMode = null;
+  }
+
+  onShowExplanation(criterion: StarCriterionDetailModel): void {
+    this.explanationTitle = `${this.translate.instant('CriteresSection.Explanation')} - ${criterion.description}`;
+    this.explanationText = criterion.explanation || this.translate.instant('CriteresSection.NoExplanation');
+    this.showExplanationPopup = true;
+  }
+
+  closeExplanationPopup(): void {
+    this.showExplanationPopup = false;
+    this.explanationText = '';
   }
 }

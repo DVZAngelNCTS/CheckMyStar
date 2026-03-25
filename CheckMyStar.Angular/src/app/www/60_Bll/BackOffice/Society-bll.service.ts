@@ -32,14 +32,14 @@ export class SocietyBllService {
     return this.societyDal.getSociety$(request);
   }
 
-  addSociety$(society: SocietyModel) {    
-    const request = { society: society } as SocietySaveRequest;
+  addSociety$(society: SocietyModel, logoFile?: File | null) {
+    const request = { society: society, logoFile: logoFile ?? null } as SocietySaveRequest;
 
     return this.societyDal.addSociety$(request);
   }
 
-  updateSociety$(society: SocietyModel) {
-    const request = { society: society } as SocietySaveRequest;
+  updateSociety$(society: SocietyModel, logoFile?: File | null) {
+    const request = { society: society, logoFile: logoFile ?? null } as SocietySaveRequest;
 
     return this.societyDal.updateSociety$(request);
   }

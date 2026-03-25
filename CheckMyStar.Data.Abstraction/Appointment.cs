@@ -9,8 +9,6 @@ public partial class Appointment
 
     public DateTime AppointmentDate { get; set; }
 
-    public int? AddressIdentifier { get; set; }
-
     public string? Comment { get; set; }
 
     public DateTime CreatedDate { get; set; }

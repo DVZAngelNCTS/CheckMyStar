@@ -10,4 +10,6 @@ public partial class Criterion
     public string Description { get; set; } = null!;
 
     public int BasePoints { get; set; }
+
+    public string? Explanation { get; set; }
 }

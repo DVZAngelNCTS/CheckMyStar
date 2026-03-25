@@ -22,8 +22,12 @@ export interface CriterionEvaluation {
   basePoints: number;
   typeCode: string;
   typeLabel: string;
+  viewed: boolean;
   validated: boolean;
   comment: string;
+  explanation?: string;
+  category?: string;
+  section?: string;
 }
 
 export interface EvaluationResult {

@@ -17,6 +17,8 @@ import { AddressBllService } from '../../../60_Bll/BackOffice/Address-bll.servic
 import { AuthenticateService } from '../../../90_Services/Authenticate/Authenticate.service';
 import { UserModel } from '../../../20_Models/Common/User.model';
 import { Router } from '@angular/router';
+import { AssessmentBllService } from '../../../60_Bll/BackOffice/Assessment-bll.service';
+import { AssessmentModel } from '../../../20_Models/BackOffice/Assessment.model';
 
 @Component({
   selector: 'app-front-dossiers-page',
@@ -61,6 +63,9 @@ export class FrontDossiersPageComponent implements OnInit {
         if (!accommodation) return '';
         const accommodationCurrentStar = accommodation.accommodationCurrentStar;        
         if (accommodationCurrentStar == null) return ''; 
+        if (Number(accommodationCurrentStar) <= 0) {
+          return this.translate.instant('DossiersSection.NoCurrentStar');
+        }
         return accommodationCurrentStar?.toString() + ' étoile(s)' }
      },
     { icon: 'bi bi-geo-alt', field: 'accommodationAddress', header: 'DossiersSection.AccommodationAddress', sortable: true, filterable: true,
@@ -96,7 +101,7 @@ export class FrontDossiersPageComponent implements OnInit {
      }
   ] as TableColumn<FolderModel>[];
 
-  constructor(private authService: AuthenticateService, private folderBll: FolderBllService, private accommodationBll: AccommodationBllService, private addressBll: AddressBllService, private translate: TranslateService, private toast: ToastService, private router: Router) {}
+  constructor(private authService: AuthenticateService, private folderBll: FolderBllService, private accommodationBll: AccommodationBllService, private addressBll: AddressBllService, private assessmentBll: AssessmentBllService, private translate: TranslateService, private toast: ToastService, private router: Router) {}
 
   ngOnInit(): void {
     this.currentInspector = this.authService.getCurrentUser();
@@ -139,6 +144,10 @@ export class FrontDossiersPageComponent implements OnInit {
 
   onDetail(model: FolderModel) {
     this.router.navigate(['/fronthome/dossiers', model.identifier]);
+  }
+
+  onNewEvaluation(folder: FolderModel) {
+    this.router.navigate(['/fronthome/dossiers', folder.identifier, 'evaluation']);
   }
 
   openCreate() {
@@ -221,6 +230,7 @@ export class FrontDossiersPageComponent implements OnInit {
 
     const newFolder = this.folderForm.getValue();
     newFolder.inspector = this.currentInspector ?? undefined;
+    const initialAssessmentData = this.folderForm.getInitialAssessmentData();
 
     this.folderBll.addFolder$(newFolder).subscribe({
       next: response => {
@@ -230,7 +240,14 @@ export class FrontDossiersPageComponent implements OnInit {
             return; // ❗ ne pas fermer la popup
           }
 
+          const createdFolderIdentifier = newFolder.identifier;
+          const parsedCurrentStar = Number(newFolder.accommodation?.accommodationCurrentStar ?? 0);
+          const targetStarLevel = Number.isFinite(parsedCurrentStar) && parsedCurrentStar > 0 ? parsedCurrentStar : 0;
+
+          this.createInitialAssessment(createdFolderIdentifier, targetStarLevel, initialAssessmentData);
+
           this.popupError = null;
+          this.loading = false;
           this.loadFolders();
           this.toast.show(response.message, "success", 5000);
           this.popupVisible = false;
@@ -239,6 +256,44 @@ export class FrontDossiersPageComponent implements OnInit {
           this.loading = false;
           this.popupError = err.error?.message || this.translate.instant('CommonSection.UnknownError');
         }
+    });
+  }
+
+  private createInitialAssessment(folderIdentifier: number, targetStarLevel: number, initialData: {
+    maxCapacity: number | null;
+    floors: number | null;
+    totalArea: number | null;
+    roomCount: number | null;
+    totalRoomsArea: number | null;
+    smallestRoomArea: number | null;
+  }): void {
+    if (!folderIdentifier || folderIdentifier <= 0) return;
+
+    const initialAssessment: AssessmentModel = {
+      identifier: 0,
+      folderIdentifier,
+      targetStarLevel,
+      capacity: initialData.maxCapacity ?? 0,
+      numberOfFloors: initialData.floors ?? 0,
+      isWhiteZone: false,
+      isDromTom: false,
+      isHighMountain: false,
+      isBuildingClassified: false,
+      isStudioNoLivingRoom: false,
+      isParkingImpossible: false,
+      totalArea: initialData.totalArea ?? 0,
+      numberOfRooms: initialData.roomCount ?? 0,
+      totalRoomsArea: initialData.totalRoomsArea ?? 0,
+      smallestRoomArea: initialData.smallestRoomArea ?? 0,
+      isComplete: false,
+      criteria: []
+    };
+
+    this.assessmentBll.addAssessment$(initialAssessment).subscribe({
+      error: err => {
+        console.error('Failed to create initial assessment', err);
+        this.toast.show(this.translate.instant('DossiersSection.InitialAssessmentCreateError'), 'warning', 5000);
+      }
     });
   }
 

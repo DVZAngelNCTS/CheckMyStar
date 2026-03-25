@@ -80,6 +80,10 @@
     <Build Include="Assessment.sql" />
     <Build Include="AssessmentCriterion.sql" />
     <Build Include="AssessmentResult.sql" />
+    <Build Include="QuoteStatus.sql" />
+    <Build Include="QuoteLine.sql" />
+    <Build Include="InvoiceLine.sql" />
+    <Build Include="InvoiceStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CheckMyStar.Database.refactorlog" />

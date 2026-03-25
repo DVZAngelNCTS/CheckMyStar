@@ -72,6 +72,23 @@ namespace CheckMyStar.Bll
             return userResult;
         }
 
+        public async Task<UserResponse> GetUser(int identifier, CancellationToken ct)
+        {
+            UserResponse userResult = new UserResponse();
+
+            var user = await userDal.GetUser(identifier, ct);
+
+            if (user.IsSuccess && user.User != null)
+            {
+                userResult.User = await LoadUser(user.User, ct);
+            }
+
+            userResult.IsSuccess = user.IsSuccess;
+            userResult.Message = user.Message;
+
+            return userResult;
+        }
+
         public async Task<UsersResponse> GetUsers(string? lastName, string? firstName, int? SocietyIdentifier, string? email, string? phone, string? address, int? role, CancellationToken ct)
         {
             UsersResponse usersResponse = new UsersResponse();

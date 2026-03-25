@@ -301,7 +301,7 @@ public partial class SocietyBus(ISocietyDal societyDal, IMapper mapper, IUserCon
             }
 
             response.IsSuccess = true;
-            response.Society = mapper.Map<SocietyModel>(result.Society);
+            response.Society = societyModel;
         }
         else
         {

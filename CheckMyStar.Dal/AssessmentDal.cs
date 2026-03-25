@@ -107,6 +107,7 @@ namespace CheckMyStar.Dal
                                                  CriterionId = ac.CriterionId,
                                                  CriterionDescription = c.Description,
                                                  BasePoints = c.BasePoints,
+                                                 Explanation = c.Explanation,
                                                  Points = ac.Points,
                                                  Status = ac.Status,
                                                  IsValidated = ac.IsValidated,

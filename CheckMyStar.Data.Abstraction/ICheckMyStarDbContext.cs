@@ -21,7 +21,10 @@ namespace CheckMyStar.Data.Abstractions
         IQueryable<Folder> Folders { get; }
         IQueryable<FolderStatus> FolderStatuses { get; }
         IQueryable<Quote> Quotes { get; }
+        IQueryable<QuoteLine> QuoteLines { get; }
         IQueryable<Invoice> Invoices { get; }
+        IQueryable<InvoiceLine> InvoiceLines { get; }
+        IQueryable<InvoiceStatus> InvoiceStatuses { get; }
         IQueryable<Appointment> Appointments { get; }
         IQueryable<Assessment> Assessments { get; }
         IQueryable<AssessmentCriterion> AssessmentCriteria { get; }
@@ -31,13 +34,13 @@ namespace CheckMyStar.Data.Abstractions
 
         Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
 
-        Task AddRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+        Task AddRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
 
         Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
 
-        Task UpdateRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
 
-        Task RemoveRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken));
+        Task RemoveRangeAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
 
         Task RemoveAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default(CancellationToken)) where TEntity : class;
 

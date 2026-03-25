@@ -9,9 +9,17 @@ public partial class Society
 
     public string Name { get; set; } = null!;
 
+    public string? LogoPath { get; set; }
+
     public string? Email { get; set; }
 
     public string? Phone { get; set; }
+
+    public string? SiretCode { get; set; }
+
+    public string? VatNumber { get; set; }
+
+    public string? LegalInformation { get; set; }
 
     public int? AddressIdentifier { get; set; }
 

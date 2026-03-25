@@ -1,0 +1,252 @@
+/* ─── Rendre le composant transparent dans le flex parent ─── */
+:host { display: contents; }
+
+/* ─── Panneau générique ─── */
+.quotes-panel {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+}
+
+/* ─── En-tête de panneau ─── */
+.quotes-panel-header {
+  background: #2b8a00;
+  color: #fff;
+  padding: 0 1.25rem;
+  height: 48px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* ─── Corps de panneau ─── */
+.quotes-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+}
+
+/* ─── Barre d'actions prévisualisation ─── */
+.preview-action-btns {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+/* ─── Corps de prévisualisation ─── */
+.preview-body {
+  background: #e8eaf0;
+  padding: 0.75rem !important;
+}
+
+/* ─── Feuille de devis ─── */
+.quote-doc {
+  background: #fff;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, .18);
+  border-radius: 4px;
+  padding: 2rem 2.5rem;
+  max-width: 660px;
+  margin: 0 auto;
+}
+
+/* ─── En-tête du document ─── */
+.doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.doc-company-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.2rem;
+}
+
+.doc-company-address {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: pre-line;
+  line-height: 1.5;
+}
+
+.doc-quote-block {
+  text-align: right;
+  min-width: 190px;
+}
+
+.doc-quote-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #2b8a00;
+  letter-spacing: 3px;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.doc-quote-number {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 0.25rem;
+}
+
+.doc-meta-line {
+  font-size: 0.78rem;
+  color: #555;
+  margin-top: 0.15rem;
+}
+
+.doc-meta-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.doc-hr {
+  border: none;
+  border-top: 2px solid #2b8a00;
+  margin: 1.25rem 0;
+  opacity: 1;
+}
+
+/* ─── Bloc destinataire ─── */
+.doc-client-section {
+  background: #f8f9fa;
+  border-left: 4px solid #2b8a00;
+  padding: 0.75rem 1rem;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 1.5rem;
+}
+
+.doc-client-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+  margin-bottom: 0.2rem;
+}
+
+.doc-client-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.doc-client-address {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: pre-line;
+  line-height: 1.5;
+  margin-top: 0.2rem;
+}
+
+/* ─── Tableau des prestations ─── */
+.doc-services-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+
+.doc-services-table thead th {
+  background: #2b8a00;
+  color: #fff;
+  padding: 0.5rem 0.6rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.doc-services-table tbody td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+  color: #333;
+}
+
+.doc-services-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.doc-services-table .col-desc { width: 40%; }
+.doc-services-table .col-qty  { width: 10%; text-align: right; }
+.doc-services-table .col-unit { width: 12%; }
+.doc-services-table .col-up   { width: 18%; text-align: right; }
+.doc-services-table .col-tot  { width: 20%; text-align: right; font-weight: 600; }
+
+/* ─── Bloc totaux ─── */
+.doc-totals {
+  width: 260px;
+  margin-left: auto;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.doc-totals table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.doc-totals td {
+  padding: 0.3rem 0.5rem;
+}
+
+.tot-label {
+  color: #555;
+}
+
+.tot-value {
+  text-align: right;
+  font-weight: 600;
+  color: #222;
+}
+
+.tot-total-row {
+  border-top: 2px solid #2b8a00;
+}
+
+.tot-total-row td {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2b8a00;
+  padding-top: 0.5rem;
+}
+
+/* ─── Pied du document ─── */
+.doc-footer {
+  display: flex;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  font-size: 0.8rem;
+  color: #666;
+  min-height: 42px;
+}
+
+.doc-footer-label {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 0.1rem;
+}
+
+/* ─── Badge statut ─── */
+.doc-status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}

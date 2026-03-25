@@ -24,6 +24,7 @@ namespace CheckMyStar.Dal.Extensions
                 .AddScoped<IFolderDal, FolderDal>()
                 .AddScoped<IFolderStatusDal, FolderStatusDal>()
                 .AddScoped<IQuoteDal, QuoteDal>()
+                .AddScoped<IQuoteLineDal, QuoteLineDal>()
                 .AddScoped<IInvoiceDal, InvoiceDal>()
                 .AddScoped<IAppointmentDal, AppointmentDal>()
                 .AddScoped<IAssessmentDal, AssessmentDal>()

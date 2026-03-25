@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslationModule } from '../../../../10_Common/Translation.module';
 import { FolderModel } from '../../../../20_Models/BackOffice/Folder.model';
 import { AccommodationTypeModel } from '../../../../20_Models/BackOffice/AccommodationType.model';
@@ -17,18 +17,29 @@ import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll.ser
 import { FolderBllService } from '../../../../60_Bll/BackOffice/Folder-bll.service';
 import { AccommodationBllService } from '../../../../60_Bll/BackOffice/Accommodation-bll.service';
 import { EnumCivility } from '../../../../10_Common/Enumerations/EnumCivility';
+import { OwnerAutocompleteComponent } from '../../../Components/AutoCompletion/Owner-autocompletion.component';
 
 @Component({
   selector: 'app-front-dossier-form',
   standalone: true,
-  imports: [CommonModule, TranslationModule, FieldComponent, ReactiveFormsModule, AddressAutocompleteComponent],
+  imports: [CommonModule, TranslationModule, FieldComponent, FormsModule, ReactiveFormsModule, AddressAutocompleteComponent, OwnerAutocompleteComponent],
   templateUrl: './Front-Dossier-form.component.html'
 })
 export class FrontDossierFormComponent implements OnInit {
   @Input() folder: FolderModel | null = null;
   @Input() readonlyIdentifier: boolean = true;
 
+  private readonly defaultAccommodationTypeIdentifier = 1;
+  private readonly defaultAccommodationCurrentStar = 0;
+  private readonly defaultFolderStatusIdentifier = 1;
+
   form!: FormGroup;
+  initialMaxCapacity: number | null = null;
+  initialFloors: number | null = null;
+  initialTotalArea: number | null = null;
+  initialRoomCount: number | null = null;
+  initialTotalRoomsArea: number | null = null;
+  initialSmallestRoomArea: number | null = null;
 
   countries: CountryModel[] = [];
   owners: UserModel[] = [];
@@ -71,7 +82,25 @@ export class FrontDossierFormComponent implements OnInit {
   
   getValue(): FolderModel {
     return this.form.getRawValue() as FolderModel;
-  } 
+  }
+
+  getInitialAssessmentData(): {
+    maxCapacity: number | null;
+    floors: number | null;
+    totalArea: number | null;
+    roomCount: number | null;
+    totalRoomsArea: number | null;
+    smallestRoomArea: number | null;
+  } {
+    return {
+      maxCapacity: this.initialMaxCapacity,
+      floors: this.initialFloors,
+      totalArea: this.initialTotalArea,
+      roomCount: this.initialRoomCount,
+      totalRoomsArea: this.initialTotalRoomsArea,
+      smallestRoomArea: this.initialSmallestRoomArea
+    };
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['folder'] && changes['folder'].currentValue) {
@@ -92,7 +121,7 @@ export class FrontDossierFormComponent implements OnInit {
             name : this.folder?.accommodation?.accommodationType?.label ?? '',
             description: this.folder?.accommodation?.accommodationType?.description ?? ''
           },
-          accommodationCurrentStar: this.folder?.accommodation?.accommodationCurrentStar ?? '',
+          accommodationCurrentStar: this.folder?.accommodation?.accommodationCurrentStar ?? null,
           address: {
             identifier: this.folder?.accommodation?.address?.identifier ?? null,
             number: this.folder?.accommodation?.address?.number ?? '', 
@@ -166,6 +195,13 @@ export class FrontDossierFormComponent implements OnInit {
         },
         isActive: true
       });
+
+      this.initialMaxCapacity = null;
+      this.initialFloors = null;
+      this.initialTotalArea = null;
+      this.initialRoomCount = null;
+      this.initialTotalRoomsArea = null;
+      this.initialSmallestRoomArea = null;
     }
   }
 
@@ -177,9 +213,9 @@ export class FrontDossierFormComponent implements OnInit {
         accommodationName: [this.folder?.accommodation?.accommodationName ?? '', Validators.required],
         accommodationPhone: [this.folder?.accommodation?.accommodationPhone ?? '', this.phoneValidator],
         accommodationType: this.fb.group({
-          identifier: [this.folder?.accommodation?.accommodationType?.identifier ?? null, Validators.required]       
+          identifier: [this.folder?.accommodation?.accommodationType?.identifier ?? this.defaultAccommodationTypeIdentifier, Validators.required]       
         }),
-        accommodationCurrentStar: [this.folder?.accommodation?.accommodationCurrentStar ?? null, Validators.required],
+        accommodationCurrentStar: [this.folder?.accommodation?.accommodationCurrentStar ?? this.defaultAccommodationCurrentStar, Validators.required],
         address: this.fb.group({
           identifier: [{ value: this.folder?.accommodation?.address?.identifier ?? null, disabled: this.readonlyIdentifier }, Validators.required],
           number: [this.folder?.accommodation?.address?.number ?? '', Validators.required], 
@@ -197,7 +233,7 @@ export class FrontDossierFormComponent implements OnInit {
         identifier: [this.folder?.owner?.identifier ?? null, Validators.required],
       }),
       folderStatus: this.fb.group({
-        identifier: [this.folder?.folderStatus?.identifier ?? null, Validators.required]
+        identifier: [this.folder?.folderStatus?.identifier ?? this.defaultFolderStatusIdentifier, Validators.required]
       }),
       isActive: true  
     });
@@ -247,6 +283,11 @@ export class FrontDossierFormComponent implements OnInit {
       },
       error: err => console.error('Failed to load users', err)
     });
+  }
+
+  onOwnerSelected(ownerIdentifier: number): void {
+    this.form.get('owner.identifier')?.patchValue(ownerIdentifier);
+    this.form.get('owner.identifier')?.markAsTouched();
   }
 
   onAddressSelected(address: GeolocationAddressModel) {

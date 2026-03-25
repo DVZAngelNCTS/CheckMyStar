@@ -31,6 +31,21 @@ namespace CheckMyStar.Apis.Controllers
         }
 
         /// <summary>
+        /// Get a user by identifier
+        /// </summary>
+        /// <param name="request">The identifier for retrieving a user. Must not be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>A user matching the specified identifier.</returns>
+        [HttpGet("getuser")]
+        [Authorize(Roles = "Administrator, Inspector")]
+        public async Task<IActionResult> GetUser([FromQuery] UserGetByIdentifierRequest request, CancellationToken ct)
+        {
+            var user = await userService.GetUser(request, ct);
+
+            return Ok(user);
+        }
+
+        /// <summary>
         /// Get users
         /// </summary>
         /// <param name="request">The criteria for retrieving users. Must not be null.</param>
@@ -41,7 +56,7 @@ namespace CheckMyStar.Apis.Controllers
         public async Task<IActionResult> GetUsers([FromQuery] UserGetRequest request, CancellationToken ct)
         {
             var users = await userService.GetUsers(request, ct);
-            
+
             return Ok(users);
         }
 

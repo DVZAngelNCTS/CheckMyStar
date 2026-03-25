@@ -2,6 +2,7 @@
     [CriterionId]   INT NOT NULL ,
     [Description]   VARCHAR(500) NOT NULL,
     [BasePoints]    int NOT NULL,
+    [explanation]   VARCHAR(500) NULL,
     CONSTRAINT [CK_Criterion_PointsNonNeg] CHECK ([BasePoints] >= 0), 
     CONSTRAINT [PK_Criterion] PRIMARY KEY ([CriterionId])
 );
