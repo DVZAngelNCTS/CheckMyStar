@@ -5,7 +5,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
+    dockerfile: Dockerfile
     container_name: checkmystar-api
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -18,7 +18,9 @@ services:
     restart: always
 
   nginx:
-    image: nginx:latest
+    build:
+      context: ./CheckMyStar.Angular
+      dockerfile: Dockerfile
     container_name: checkmystar-nginx
     ports:
       - "80:80"
