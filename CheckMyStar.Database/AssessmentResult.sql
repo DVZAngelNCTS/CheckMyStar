@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[AssessmentResult] (
     [Identifier] INT NOT NULL,
-    [AssessmentIdentifier] int NOT NULL,
-    [IsAccepted] BIT NOT NULL,
+    [AssessmentIdentifier] int NULL,
+    [IsAccepted] BIT NOT NULL DEFAULT 0,
     [MandatoryPointsEarned] INT NOT NULL,
     [MandatoryThreshold] INT NOT NULL,
     [OptionalPointsEarned] INT NOT NULL,
