@@ -89,6 +89,29 @@ namespace CheckMyStar.Dal
             return userResult;
         }
 
+        public async Task<UserResult> GetUser(string email, CancellationToken ct)
+        {
+            UserResult userResult = new UserResult();
+
+            try
+            {
+                var user = await (from u in dbContext.Users.AsNoTracking()
+                                  where
+                                      u.Email == email
+                                  select u).FirstOrDefaultAsync(ct);
+
+                userResult.IsSuccess = true;
+                userResult.User = user;
+            }
+            catch (Exception ex)
+            {
+                userResult.IsSuccess = false;
+                userResult.Message = ex.Message;
+            }
+
+            return userResult;
+        }
+
         public async Task<UserResult> GetUser(int identifier, CancellationToken ct)
         {
             UserResult userResult = new UserResult();

@@ -66,7 +66,7 @@ public class SocietyController(ISocietyService societyService) : ControllerBase
     /// <returns>Résultat de la création</returns>
     [HttpDelete("deletesociety")]
     [Authorize(Roles = "Administrator")]
-    public async Task<IActionResult> DeleteSociety([FromBody] SocietyDeleteRequest request, CancellationToken ct)
+    public async Task<IActionResult> DeleteSociety([FromQuery] SocietyDeleteRequest request, CancellationToken ct)
     {
         var result = await societyService.DeleteSociety(request, ct);
 

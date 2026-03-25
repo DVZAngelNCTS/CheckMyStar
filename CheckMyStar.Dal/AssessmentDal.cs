@@ -236,5 +236,10 @@ namespace CheckMyStar.Dal
 
             return baseResult;
         }
+
+        public async Task<BaseResult> DeleteAssesmentCriteria(Data.AssessmentCriterion assessmentCriterion, CancellationToken ct)
+        {
+
+        }
     }
 }

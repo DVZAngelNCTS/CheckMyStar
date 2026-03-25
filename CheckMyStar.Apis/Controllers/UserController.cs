@@ -85,7 +85,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <returns>An IActionResult indicating the result of the delete operation.</returns>
         [HttpDelete("deleteuser")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> DeleteUser([FromBody] UserDeleteRequest request, CancellationToken ct)
+        public async Task<IActionResult> DeleteUser([FromQuery] UserDeleteRequest request, CancellationToken ct)
         {
             var user = await userService.DeleteUser(request, ct);
 

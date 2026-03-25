@@ -10,10 +10,12 @@ namespace CheckMyStar.Bll.Services.Extensions
         public static IServiceCollection AddService(this IServiceCollection services)
         {
             services
-                .AddScoped<IGeolocationService, GeolocationService>();
+                .AddScoped<IGeolocationService, GeolocationService>()
+                .AddScoped<ISendMailService, SendMailService>();
 
             services
-                .AddScoped<IGeolocationBusForService>(x => (GeolocationService)x.GetRequiredService<IGeolocationService>());
+                .AddScoped<IGeolocationForService>(x => (GeolocationService)x.GetRequiredService<IGeolocationService>())
+                .AddScoped<ISendMailForService>(x => (SendMailService)x.GetRequiredService<ISendMailService>());
 
             return services;
         }

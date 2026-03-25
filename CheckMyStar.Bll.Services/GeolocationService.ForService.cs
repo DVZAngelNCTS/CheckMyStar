@@ -4,7 +4,7 @@ using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Bll.Services
 {
-    public partial class GeolocationService : IGeolocationBusForService
+    public partial class GeolocationService : IGeolocationForService
     {
         public Task<GeolocationResponse> SearchAddress(GeolocationGetRequest request, CancellationToken ct)
         {

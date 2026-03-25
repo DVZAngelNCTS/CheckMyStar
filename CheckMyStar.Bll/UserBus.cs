@@ -5,19 +5,54 @@ using CheckMyStar.Bll.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Responses;
 using CheckMyStar.Dal.Abstractions;
+using CheckMyStar.Dal.Results;
 using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
 using CheckMyStar.Security;
 
 namespace CheckMyStar.Bll
 {
-    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, ISocietyDal societyDal, IMapper mapper) : IUserBus
+    public partial class UserBus(IUserContextService userContext, IActivityBus activityBus, IUserDal userDal, ICivilityDal civilityDal, IRoleDal roleDal, IAddressDal addressDal, ICountryDal countryDal, ISocietyDal societyDal, IFolderDal folderDal, IAssessmentDal assessmentDal, IMapper mapper) : IUserBus
     {
         public async Task<UserResponse> GetIdentifier(CancellationToken ct)
         {
             var user = await userDal.GetNextIdentifier(ct);
 
             return mapper.Map<UserResponse>(user);
+        }
+
+        public async Task<UserResponse> GetUserById(int identifier, CancellationToken ct)
+        {
+            UserResponse userResult = new UserResponse();
+
+            var user = await userDal.GetUser(identifier, ct);
+
+            if (user.IsSuccess && user.User != null)
+            {
+                userResult.User = await LoadUser(user.User, ct);
+            }
+
+            userResult.IsSuccess = user.IsSuccess;
+            userResult.Message = user.Message;
+
+            return userResult;
+        }
+
+        public async Task<UserResponse> GetUser(string email, CancellationToken ct)
+        {
+            UserResponse userResult = new UserResponse();
+
+            var user = await userDal.GetUser(email, ct);
+
+            if (user.IsSuccess && user.User != null)
+            {
+                userResult.User = await LoadUser(user.User, ct);
+            }
+
+            userResult.IsSuccess = user.IsSuccess;
+            userResult.Message = user.Message;
+
+            return userResult;
         }
 
         public async Task<UserResponse> GetUser(string login, string password, CancellationToken ct)
@@ -269,52 +304,42 @@ namespace CheckMyStar.Bll
 
                     if (activityResult.IsSuccess)
                     {
-                        if (user.User.SocietyIdentifier != null)
+                        var foldersResult = await folderDal.GetFolders(identifier, ct);
+
+                        if (foldersResult.IsSuccess)
                         {
-                            var societyResult = await societyDal.GetSociety(user.User.SocietyIdentifier.Value, ct);
-
-                            if (societyResult.IsSuccess)
+                            if (foldersResult.Folders != null)
                             {
-                                if (societyResult.Society != null)
+                                foreach (Folder folder in foldersResult.Folders)
                                 {
-                                    if (societyResult.Society.AddressIdentifier != null)
+                                    var assesmentResult = await assessmentDal.GetAssessmentByFolder(folder.Identifier, ct);
+
+                                    if (assesmentResult.IsSuccess)
                                     {
-                                        var addressResult = await addressDal.GetAddress(societyResult.Society.AddressIdentifier.Value, ct);
-
-                                        if (addressResult.IsSuccess)
+                                        if (assesmentResult.Assessment != null)
                                         {
-                                            if (addressResult.Address != null)
+                                            var assesmentCriterias = await assessmentDal.GetAssessmentCriteria(assesmentResult.Assessment.Identifier, ct);
+
+                                            if (assesmentCriterias.IsSuccess)
                                             {
-                                                var deleteAddressResult = await addressDal.DeleteAddress(addressResult.Address, ct);
-
-                                                if (deleteAddressResult.IsSuccess)
+                                                if (assesmentCriterias.AssessmentCriteria != null)
                                                 {
-                                                    result.Message += "<br>" + deleteAddressResult.Message;
-                                                }
-                                                else
-                                                {
-                                                    result.IsSuccess = false;
-                                                    result.Message += "<br>" + deleteAddressResult.Message;
-                                                }
+                                                    foreach (AssessmentCriterionDetail assessmentCriterion in assesmentCriterias.AssessmentCriteria)
+                                                    {
 
-                                                await activityBus.AddActivity(deleteAddressResult.Message, DateTime.Now, currentUser, deleteAddressResult.IsSuccess, ct);
+                                                    }
+                                                }
                                             }
+
+                                            var baseResult = await assessmentDal.DeleteAssessment(assesmentResult.Assessment, ct);
+
+                                            await activityBus.AddActivity(baseResult.Message, DateTime.Now, currentUser, baseResult.IsSuccess, ct);
                                         }
                                     }
 
-                                    var deleteSociety = await societyDal.DeleteSociety(societyResult.Society, ct);
+                                    var folderResult = await folderDal.DeleteFolder(folder, ct);
 
-                                    if (deleteSociety.IsSuccess)
-                                    {
-                                        result.Message += "<br>" + deleteSociety.Message;
-                                    }
-                                    else
-                                    {
-                                        result.IsSuccess = false;
-                                        result.Message += "<br>" + deleteSociety.Message;
-                                    }
-
-                                    await activityBus.AddActivity(deleteSociety.Message, DateTime.Now, currentUser, deleteSociety.IsSuccess, ct);
+                                    await activityBus.AddActivity(folderResult.Message, DateTime.Now, currentUser, folderResult.IsSuccess, ct);
                                 }
                             }
                         }
@@ -367,6 +392,56 @@ namespace CheckMyStar.Bll
                         {
                             result.IsSuccess = false;
                             result.Message = userResult.Message;
+                        }
+
+                        if (user.User.SocietyIdentifier != null)
+                        {
+                            var societyResult = await societyDal.GetSociety(user.User.SocietyIdentifier.Value, ct);
+
+                            if (societyResult.IsSuccess)
+                            {
+                                if (societyResult.Society != null)
+                                {
+                                    var deleteSociety = await societyDal.DeleteSociety(societyResult.Society, ct);
+
+                                    if (deleteSociety.IsSuccess)
+                                    {
+                                        result.Message += "<br>" + deleteSociety.Message;
+                                    }
+                                    else
+                                    {
+                                        result.IsSuccess = false;
+                                        result.Message += "<br>" + deleteSociety.Message;
+                                    }
+
+                                    await activityBus.AddActivity(deleteSociety.Message, DateTime.Now, currentUser, deleteSociety.IsSuccess, ct);
+
+                                    if (societyResult.Society.AddressIdentifier != null)
+                                    {
+                                        var addressResult = await addressDal.GetAddress(societyResult.Society.AddressIdentifier.Value, ct);
+
+                                        if (addressResult.IsSuccess)
+                                        {
+                                            if (addressResult.Address != null)
+                                            {
+                                                var deleteAddressResult = await addressDal.DeleteAddress(addressResult.Address, ct);
+
+                                                if (deleteAddressResult.IsSuccess)
+                                                {
+                                                    result.Message += "<br>" + deleteAddressResult.Message;
+                                                }
+                                                else
+                                                {
+                                                    result.IsSuccess = false;
+                                                    result.Message += "<br>" + deleteAddressResult.Message;
+                                                }
+
+                                                await activityBus.AddActivity(deleteAddressResult.Message, DateTime.Now, currentUser, deleteAddressResult.IsSuccess, ct);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     else

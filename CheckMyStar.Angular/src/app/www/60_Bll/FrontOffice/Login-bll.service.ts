@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { LoginDalService } from '../../70_Dal/FrontOffice/Login-dal.service';
 import { LoginGetRequest } from '../../40_Requests/FrontOffice/Login-get.request';
 import { PasswordGetRequest } from '../../40_Requests/FrontOffice/Password-get.request';
+import { ForgotPasswordGetRequest } from '../../40_Requests/FrontOffice/ForgotPassword-get.request';
+import { ResetPasswordGetRequest } from '../../40_Requests/FrontOffice/ResetPassword-get.request';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +22,13 @@ export class LoginBllService {
   
   refresh$(refreshToken: string) {
     return this.loginDal.refresh$(refreshToken);
+  }
+
+  forgotPassword$(email: string) {
+    return this.loginDal.forgotPassword$({ email: email} as ForgotPasswordGetRequest);
+  }
+
+  resetPassword$(token: string, newPassword: string) {
+    return this.loginDal.resetPassword$({ token: token, newPassword: newPassword } as ResetPasswordGetRequest);
   }
 }

@@ -3,7 +3,7 @@ using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Bll.Abstractions.ForService
 {
-    public interface IGeolocationBusForService
+    public interface IGeolocationForService
     {
         Task<GeolocationResponse> SearchAddress(GeolocationGetRequest request, CancellationToken ct);
     }

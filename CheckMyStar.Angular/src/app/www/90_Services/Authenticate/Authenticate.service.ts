@@ -17,6 +17,10 @@ export class AuthenticateService {
     return this.loginBllService.updatePassword$(login, oldPassword, newPassword);
   }
 
+  resetPassword$(token: string, newPassword: string) {
+    return this.loginBllService.resetPassword$(token, newPassword);
+  }
+
   generatePassword() {
     const length = 12;
 

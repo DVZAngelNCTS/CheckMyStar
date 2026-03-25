@@ -77,6 +77,30 @@ namespace CheckMyStar.Dal
             return folderResult;
         }
 
+        public async Task<FoldersResult> GetFolders(int userIdentifier, CancellationToken ct)
+        {
+            FoldersResult foldersResult = new FoldersResult();
+
+            try
+            {
+                var folders = await (from f in dbContext.Folders.AsNoTracking()
+                                    where 
+                                           f.InspectorUserIdentifier == userIdentifier
+                                        || f.OwnerUserIdentifier == userIdentifier
+                                     select f).ToListAsync(ct);
+
+                foldersResult.IsSuccess = true;
+                foldersResult.Folders = folders;
+            }
+            catch (Exception ex)
+            {
+                foldersResult.IsSuccess = false;
+                foldersResult.Message = ex.Message;
+            }
+
+            return foldersResult;
+        }
+
         public async Task<FoldersResult> GetFoldersByInspector(int inspectorIdentifier, string? accommodationName, string? ownerLastName, string? inspectorLastName, int? folderStatus, CancellationToken ct)
         {
             FoldersResult foldersResult = new FoldersResult();

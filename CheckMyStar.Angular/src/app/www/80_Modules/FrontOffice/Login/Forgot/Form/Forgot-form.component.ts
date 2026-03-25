@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TranslationModule } from '../../../../../10_Common/Translation.module';
 import { FieldComponent } from '../../../../Components/Field/Field.component';
+import { LoginBllService } from '../../../../../60_Bll/FrontOffice/Login-bll.service';
+import { ToastService } from '../../../../../90_Services/Toast/Toast.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -13,7 +15,7 @@ import { FieldComponent } from '../../../../Components/Field/Field.component';
 export class ForgotPasswordComponent {
     form: FormGroup;
 
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder, private loginBll: LoginBllService, private toast: ToastService) {
         this.form = this.fb.group({
         email: ['', [Validators.required, this.emailValidator]]
         });
@@ -22,6 +24,15 @@ export class ForgotPasswordComponent {
     submit() {
         if (this.form.valid) {
             const email = this.form.value.email;
+
+            this.loginBll.forgotPassword$(email).subscribe({
+                next: (response) => {
+                    this.toast.show(response.message, "success", 5000);
+                },
+                error: (err) => {
+                    this.toast.show(err.message, "error", 5000);
+                }
+            });
         }
     }
 

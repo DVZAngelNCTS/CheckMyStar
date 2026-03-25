@@ -1,5 +1,4 @@
-﻿using CheckMyStar.Bll.Models;
-using CheckMyStar.Bll.Responses;
+﻿using CheckMyStar.Bll.Responses;
 
 namespace CheckMyStar.Bll.Abstractions
 {

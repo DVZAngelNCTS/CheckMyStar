@@ -98,7 +98,7 @@ namespace CheckMyStar.Apis.Controllers
         /// accommodation is deleted; otherwise, returns an error response.</returns>
         [HttpDelete("deleteaccommodation")]
         [Authorize(Roles = "Administrator, Inspector")]
-        public async Task<IActionResult> DeleteAccommodation(AccommodationDeleteRequest request, CancellationToken ct)
+        public async Task<IActionResult> DeleteAccommodation([FromQuery] AccommodationDeleteRequest request, CancellationToken ct)
         {
             var result = await accommodationService.DeleteAccommodation(request, ct);
 

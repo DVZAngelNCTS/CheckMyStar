@@ -131,7 +131,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <returns>An IActionResult that indicates the outcome of the delete operation.</returns>
         [HttpDelete("deleteassessment")]
         [Authorize(Roles = "Administrator, Inspector")]
-        public async Task<IActionResult> DeleteAssessment(AssessmentDeleteRequest request, CancellationToken ct)
+        public async Task<IActionResult> DeleteAssessment([FromQuery] AssessmentDeleteRequest request, CancellationToken ct)
         {
             var result = await assessmentService.DeleteAssessment(request, ct);
 
