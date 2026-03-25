@@ -14,6 +14,9 @@ FROM nginx:alpine
 # Supprime la config par défaut
 RUN rm /etc/nginx/conf.d/default.conf
 
+# IMPORTANT : créer le dossier pour le volume avant montage
+RUN mkdir -p /etc/letsencrypt/live/neosoftware.fr
+
 # Copie du build Angular
 COPY --from=build /app/dist /usr/share/nginx/html
 
