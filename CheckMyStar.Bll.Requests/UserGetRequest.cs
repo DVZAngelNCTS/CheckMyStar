@@ -1,9 +1,8 @@
-﻿using CheckMyStar.Enumerations;
-
-namespace CheckMyStar.Bll.Requests
+﻿namespace CheckMyStar.Bll.Requests
 {
     public class UserGetRequest
     {
+        public int? Identifier { get; set; }
         public string? LastName { get; set; }
         public string? FirstName { get; set; }
         public int? SocietyIdentifier { get; set; }

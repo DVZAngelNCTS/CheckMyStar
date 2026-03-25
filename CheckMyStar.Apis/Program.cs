@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 string[] allowedOrigins = builder.Environment.IsDevelopment()
     ? new[] { "http://checkmystar.site.local:50477" }
-    : new[] { "http://51.38.33.23" };
+    : new[] { "https://neosoftware.fr", "https://www.neosoftware.fr" };
 
 builder.Services.AddCors(options =>
 {
@@ -138,7 +138,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

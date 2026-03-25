@@ -10,6 +10,8 @@ namespace CheckMyStar.Bll.Abstractions.ForService
         Task<UserResponse> GetUser(UserGetByIdentifierRequest request, CancellationToken ct);
         Task<UsersResponse> GetUsers(UserGetRequest request, CancellationToken ct);
         Task<UserResponse> GetUser(PasswordGetRequest request, CancellationToken ct);
+        Task<UserResponse> GetUser(EmailGetRequest request, CancellationToken ct);
+        Task<UserResponse> GetUser(UserGetRequest request, CancellationToken ct);
         Task<BaseResponse> AddUser(UserSaveRequest request, CancellationToken ct);
         Task<BaseResponse> UpdateUser(UserSaveRequest request, CancellationToken ct);
         Task<BaseResponse> DeleteUser(UserDeleteRequest request, CancellationToken ct);

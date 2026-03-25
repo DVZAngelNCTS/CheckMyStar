@@ -1,12 +1,13 @@
-using CheckMyStar.Apis.Services;
-using CheckMyStar.Apis.Services.Abstractions;
+ï»¿using CheckMyStar.Apis.Services.Abstractions;
 using CheckMyStar.Bll.Models;
 using CheckMyStar.Bll.Requests;
 using CheckMyStar.Bll.Responses;
+using CheckMyStar.Data;
 using CheckMyStar.Enumerations;
 using CheckMyStar.Security;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -24,7 +25,7 @@ namespace CheckMyStar.Apis.Controllers;
 /// return standard HTTP status codes such as 200 (OK) or 401 (Unauthorized) based on authentication results.</remarks>
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticateController(ILogger<AuthenticateController> logger, IConfiguration configuration, IAuthenticateService authenticateService, IUserService userService) : ControllerBase
+public class AuthenticateController(ILogger<AuthenticateController> logger, IConfiguration configuration, IAuthenticateService authenticateService, IUserService userService, IUserContextService userContext) : ControllerBase
 {
     /// <summary>
     /// Authenticates a user based on the provided credentials and returns a JWT token if authentication is successful.
@@ -47,8 +48,9 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
                 IsSuccess = false,
                 IsValid = false,
                 Message = $"Utilisateur ou mot de passe incorrect",
-                Login = new LoginModel { 
-                    Token = string.Empty, 
+                Login = new LoginModel
+                {
+                    Token = string.Empty,
                     User = null
                 }
             });
@@ -66,9 +68,9 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
 
         authenticateService.StoreRefreshToken(refreshToken, user);
 
-        var message = $"Connexion réussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
-        
-        logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
+        var message = $"Connexion rÃ©ussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
+
+        logger.LogInformation("Connexion rÃ©ussie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
 
         return Ok(new LoginResponse
         {
@@ -111,12 +113,12 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
 
         if (user.IsValid != true || user.User == null)
         {
-            logger.LogWarning("Échec de connexion pour l'utilisateur, impossible de valider l'utilisateur");
+            logger.LogWarning("Ã‰chec de connexion pour l'utilisateur, impossible de valider l'utilisateur");
 
             return Unauthorized(new { message = "Nom d'utilisateur ou mot de passe incorrect" });
         }
 
-        user.User.Password = SecurityHelper.HashPassword(request.NewPassword); 
+        user.User.Password = SecurityHelper.HashPassword(request.NewPassword);
         user.User.IsFirstConnection = false;
 
         UserSaveRequest updateSaveRequest = new UserSaveRequest
@@ -133,9 +135,9 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
 
             authenticateService.StoreRefreshToken(refreshToken, user);
 
-            var message = $"Connexion réussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
+            var message = $"Connexion rÃ©ussie pour l'utilisateur: {user.User.LastName} {user.User.FirstName}";
 
-            logger.LogInformation("Connexion réussie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
+            logger.LogInformation("Connexion rÃ©ussie pour l'utilisateur: {LastName} {FirstName}", user.User.LastName, user.User.FirstName);
 
             return Ok(new PasswordResponse
             {
@@ -159,13 +161,93 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
                 IsSuccess = false,
                 IsValid = false,
                 Message = $"Erreur lors de la tentative de changement de mot de passe pour l'utilisateur: {request.Login}",
-                Login = new LoginModel 
-                { 
-                    Token = string.Empty, 
-                    User = null 
+                Login = new LoginModel
+                {
+                    Token = string.Empty,
+                    User = null
                 }
             });
         }
+    }
+
+    /// <summary>
+    /// Authenticates a user based on the provided credentials and returns a JWT token if authentication is successful.
+    /// </summary>
+    /// <param name="request">The user credentials to authenticate. Must include a valid username and password.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>An HTTP 200 response containing a JWT token and user information if authentication succeeds; otherwise, an HTTP
+    /// 401 response indicating invalid credentials.</returns>
+    [HttpPost("resetpassword")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordGetRequest request, CancellationToken ct)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);
+
+        try
+        {
+            var principal = tokenHandler.ValidateToken(request.Token, new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateLifetime = true
+            }, out var validatedToken);
+
+            var type = principal.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
+
+            if (type != "reset")
+            {
+                return Unauthorized("Token invalide");
+            }
+
+            var userId = principal.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
+
+            var user = await userService.GetUser(new UserGetRequest() { Identifier = int.Parse(userId) }, ct);
+
+            if (user.IsSuccess && user.User != null)
+            {
+                user.User.Password = SecurityHelper.HashPassword(request.NewPassword!);
+
+                await userService.UpdateUser(new UserSaveRequest() { User = user.User }, ct);
+
+                return Ok(new BaseResponse { IsSuccess = true });
+            }
+
+            return Unauthorized("Utilisateur introuvable");
+        }
+        catch
+        {
+            return Unauthorized("Token expirÃ© ou invalide");
+        }
+    }
+
+    /// <summary>
+    /// Forgot password
+    /// </summary>
+    /// <param name="request">Send mail request</param>
+    /// <param name="ct">The cancellation token</param>
+    /// <returns></returns>
+    [HttpPost("forgotpassword")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordGetRequest request, CancellationToken ct)
+    {
+        UserResponse userResponse = await userService.GetUser(new EmailGetRequest() { Email = request.Email }, ct);
+
+        if (userResponse.IsSuccess && userResponse.User != null)
+        {
+            var newAccessToken = GenerateResetPasswordToken(userResponse.User);
+
+            BaseResponse response = await authenticateService.SendMail(new SendMailGetRequest() { To = request.Email, ResetLink = configuration.GetSection("Email")["Link"] + $"?token={newAccessToken}" }, ct);
+
+            return Ok(response);
+        }
+
+        return Ok(new BaseResponse
+        {
+            IsSuccess = false,
+            Message = "Impossible d'envoyer l'email"
+        });
     }
 
     /// <summary>
@@ -186,8 +268,8 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
         var newRefreshToken = GenerateSecureRefreshToken();
 
         // Supprimer l'ancien
-        authenticateService.RemoveRefreshToken(request.RefreshToken); 
-        
+        authenticateService.RemoveRefreshToken(request.RefreshToken);
+
         // Stocker le nouveau
         authenticateService.StoreRefreshToken(newRefreshToken, user);
 
@@ -227,7 +309,7 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
             new Claim(ClaimTypes.Surname, user.LastName!)
         };
 
-        // Ajouter les rôles comme claims
+        // Ajouter les rÃ´les comme claims
         claims.Add(new Claim(ClaimTypes.Role, user.Role.ToStringValue()));
 
         var token = new JwtSecurityToken(
@@ -236,6 +318,30 @@ public class AuthenticateController(ILogger<AuthenticateController> logger, ICon
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(
                 Convert.ToDouble(configuration["Jwt:ExpiryInMinutes"])),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateResetPasswordToken(UserModel user)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
+
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Identifier.ToString()),
+            new Claim("type", "reset"), // ðŸ”¥ Claim spÃ©cial reset password
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(15), // ðŸ”¥ expiration courte
             signingCredentials: credentials
         );
 

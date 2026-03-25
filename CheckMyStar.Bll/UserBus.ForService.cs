@@ -26,6 +26,16 @@ namespace CheckMyStar.Bll
             return this.GetUser(request.Login, request.OldPassword, ct);
         }
 
+        public Task<UserResponse> GetUser(UserGetRequest request, CancellationToken ct)
+        {
+            return this.GetUserById(request.Identifier!.Value, ct);
+        }
+
+        public Task<UserResponse> GetUser(EmailGetRequest request, CancellationToken ct)
+        {
+            return this.GetUser(request.Email!, ct);
+        }
+
         public Task<UsersResponse> GetUsers(UserGetRequest request, CancellationToken ct)
         {
             return this.GetUsers(request.LastName, request.FirstName, request.SocietyIdentifier, request.Email, request.Phone, request.Address, request.Role, ct);

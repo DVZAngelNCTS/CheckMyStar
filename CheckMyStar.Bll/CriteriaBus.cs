@@ -96,56 +96,77 @@ namespace CheckMyStar.Bll
 
                 var starCriterion = mapper.Map<Criterion>(starCriterionModel);
 
-                var addCriterionResult = await criteresDal.AddCriterion(starCriterion, ct);
+                var nextNumberResult = await criteresDal.GetNextIdentifier(ct);
 
-                if (!addCriterionResult.IsSuccess)
+                if (nextNumberResult.IsSuccess)
+                {
+                    if (nextNumberResult.Criterion != null)
+                    {
+                        starCriterion.CriterionId = nextNumberResult.Criterion.CriterionId;
+
+                        var addCriterionResult = await criteresDal.AddCriterion(starCriterion, ct);
+
+                        if (!addCriterionResult.IsSuccess)
+                        {
+                            baseResponse.IsSuccess = false;
+                            baseResponse.Message = addCriterionResult.Message;
+
+                            await activityBus.AddActivity(addCriterionResult.Message, dateTime, currentUser, addCriterionResult.IsSuccess, ct);
+
+                            return baseResponse;
+                        }
+
+                        await activityBus.AddActivity(addCriterionResult.Message, dateTime, currentUser, addCriterionResult.IsSuccess, ct);
+
+                        int newCriterionId = starCriterion.CriterionId;
+
+                        var starLevelCriterion = mapper.Map<StarLevelCriterion>(starLevelCriterionModel);
+
+                        starLevelCriterion.CriterionId = newCriterionId;
+
+                        var addLinkResult = await criteresDal.AddStarLevelCriterion(starLevelCriterion, ct);
+
+                        if (!addLinkResult.IsSuccess)
+                        {
+                            baseResponse.IsSuccess = false;
+                            baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message;
+
+                            await activityBus.AddActivity(addLinkResult.Message, dateTime, currentUser, addLinkResult.IsSuccess, ct);
+
+                            return baseResponse;
+                        }
+
+                        await activityBus.AddActivity(addLinkResult.Message, dateTime, currentUser, addLinkResult.IsSuccess, ct);
+
+                        var updateLastUpdateResult = await criteresDal.UpdateStarLevelLastUpdate(starLevelCriterionModel.StarLevelId, ct);
+
+                        if (!updateLastUpdateResult.IsSuccess)
+                        {
+                            baseResponse.IsSuccess = false;
+                            baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message + "<br>" + updateLastUpdateResult.Message;
+
+                            await activityBus.AddActivity(updateLastUpdateResult.Message, dateTime, currentUser, updateLastUpdateResult.IsSuccess, ct);
+
+                            return baseResponse;
+                        }
+
+                        await activityBus.AddActivity(updateLastUpdateResult.Message, dateTime, currentUser, updateLastUpdateResult.IsSuccess, ct);
+
+                        baseResponse.IsSuccess = true;
+                        baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message;
+                    }
+                    else
+                    {
+                        baseResponse.IsSuccess = false;
+                        baseResponse.Message = nextNumberResult.Message;
+                    }
+                }
+                else
                 {
                     baseResponse.IsSuccess = false;
-                    baseResponse.Message = addCriterionResult.Message;
-
-                    await activityBus.AddActivity(addCriterionResult.Message, dateTime, currentUser, addCriterionResult.IsSuccess, ct);
-
-                    return baseResponse;
+                    baseResponse.Message = nextNumberResult.Message;
                 }
 
-                await activityBus.AddActivity(addCriterionResult.Message, dateTime, currentUser, addCriterionResult.IsSuccess, ct);
-
-                int newCriterionId = starCriterion.CriterionId;
-
-                var starLevelCriterion = mapper.Map<StarLevelCriterion>(starLevelCriterionModel);
-
-                starLevelCriterion.CriterionId = newCriterionId;
-
-                var addLinkResult = await criteresDal.AddStarLevelCriterion(starLevelCriterion, ct);
-
-                if (!addLinkResult.IsSuccess)
-                {
-                    baseResponse.IsSuccess = false;
-                    baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message;
-
-                    await activityBus.AddActivity(addLinkResult.Message, dateTime, currentUser, addLinkResult.IsSuccess, ct);
-
-                    return baseResponse;
-                }
-
-                await activityBus.AddActivity(addLinkResult.Message, dateTime, currentUser, addLinkResult.IsSuccess, ct);
-
-                var updateLastUpdateResult = await criteresDal.UpdateStarLevelLastUpdate(starLevelCriterionModel.StarLevelId, ct);
-
-                if (!updateLastUpdateResult.IsSuccess)
-                {
-                    baseResponse.IsSuccess = false;
-                    baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message + "<br>" + updateLastUpdateResult.Message;
-                    
-                    await activityBus.AddActivity(updateLastUpdateResult.Message, dateTime, currentUser, updateLastUpdateResult.IsSuccess, ct);
-
-                    return baseResponse;
-                }
-
-                await activityBus.AddActivity(updateLastUpdateResult.Message, dateTime, currentUser, updateLastUpdateResult.IsSuccess, ct);
-
-                baseResponse.IsSuccess = true;
-                baseResponse.Message = addCriterionResult.Message + "<br>" + addLinkResult.Message;
             }
             catch (Exception ex)
             {

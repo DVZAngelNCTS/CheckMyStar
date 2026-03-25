@@ -5,6 +5,9 @@ import { LoginGetRequest } from '../../40_Requests/FrontOffice/Login-get.request
 import { Environment } from '../../../../Environment/environment';
 import { LoginResponse } from '../../50_Responses/FrontOffice/LoginResponse';
 import { PasswordGetRequest } from '../../40_Requests/FrontOffice/Password-get.request';
+import { ForgotPasswordGetRequest } from '../../40_Requests/FrontOffice/ForgotPassword-get.request';
+import { BaseResponse } from '../../50_Responses/BaseResponse';
+import { ResetPasswordGetRequest } from '../../40_Requests/FrontOffice/ResetPassword-get.request';
 
 @Injectable({
   providedIn: 'root'
@@ -25,5 +28,13 @@ export class LoginDalService {
 
   refresh$(refreshToken: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/authenticate/refresh`, { refreshToken });
+  }
+
+  forgotPassword$(request: ForgotPasswordGetRequest) {
+    return this.http.post<BaseResponse>(`${this.apiUrl}/authenticate/forgotpassword`, request);
+  }
+
+  resetPassword$(request: ResetPasswordGetRequest) {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/authenticate/resetpassword`, request);
   }
 }

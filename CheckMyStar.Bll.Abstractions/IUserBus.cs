@@ -7,6 +7,8 @@ namespace CheckMyStar.Bll.Abstractions
     {
         Task<UserResponse> GetIdentifier(CancellationToken ct);
         Task<UserResponse> GetUser(string login, string password, CancellationToken ct);
+        Task<UserResponse> GetUser(string email, CancellationToken ct);
+        Task<UserResponse> GetUserById(int identifier, CancellationToken ct);
         Task<UsersResponse> GetUsers(string? lastName, string? firstName, int? SocietyIdentifier, string? email, string? phone, string? address, int? role, CancellationToken ct);
         Task<BaseResponse> AddUser(UserModel userModel, int currentUser, CancellationToken ct);
         Task<BaseResponse> UpdateUser(UserModel userModel, int currentUser, CancellationToken ct);

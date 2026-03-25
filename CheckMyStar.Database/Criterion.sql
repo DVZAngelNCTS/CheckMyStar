@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Criterion] (
-    [CriterionId]   INT IDENTITY(1,1) NOT NULL ,
+    [CriterionId]   INT NOT NULL ,
     [Description]   VARCHAR(500) NOT NULL,
     [BasePoints]    int NOT NULL,
     [explanation]   VARCHAR(500) NULL,

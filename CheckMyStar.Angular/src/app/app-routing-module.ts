@@ -27,12 +27,14 @@ import { EvaluationViewPageComponent } from './www/80_Modules/FrontOffice/Dossie
 import { FrontDashboardComponent } from './www/80_Modules/FrontOffice/Home/Dashboard/Dashboard-page.component';
 import { SocietyPageComponent } from './www/80_Modules/BackOffice/Societies/Society-page.component';
 import { AddressPageComponent } from './www/80_Modules/BackOffice/Addresses/Address-page.component';
+import { ResetFormComponent } from './www/80_Modules/FrontOffice/Login/Reset/Form/Reset-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginPageComponent },
   { path: 'password', component: PasswordPageComponent },
   { path: 'forgot-password', component: ForgotPageComponent },
+  { path: 'reset-password', component: ResetFormComponent },
   {
     path: 'fronthome',
     component: FrontHomePageComponent,

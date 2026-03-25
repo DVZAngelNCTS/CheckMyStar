@@ -45,4 +45,11 @@ public interface IAuthenticateService
     /// </summary>
     /// <param name="refreshToken">The refreshToken</param>
     void RemoveRefreshToken(string refreshToken);
+    /// <summary>
+    /// Send mail
+    /// </summary>
+    /// <param name="request">Request</param>
+    /// <param name="ct">The cancellation operation token</param>
+    /// <returns></returns>
+    Task<BaseResponse> SendMail(SendMailGetRequest request, CancellationToken ct);
 }
