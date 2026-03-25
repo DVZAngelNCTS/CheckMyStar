@@ -240,6 +240,33 @@ namespace CheckMyStar.Dal
 
         public async Task<BaseResult> DeleteAssesmentCriteria(Data.AssessmentCriterion assessmentCriterion, CancellationToken ct)
         {
+            var result = new BaseResult();
+
+            //try
+            //{
+            //    var assessment = await dbContext.AssessmentCriteria
+            //        .FirstOrDefaultAsync(c => c.CriterionId == assessmentCriterion.CriterionId, ct);
+
+            //    if (assessment == null)
+            //    {
+            //        result.IsSuccess = false;
+            //        result.Message = $"Critère d'hebergement {assessmentCriterion.cr} introuvable.";
+            //        return result;
+            //    }
+
+            //    await dbContext.RemoveAsync<Criterion>(criterion, ct);
+            //    await dbContext.SaveChangesAsync(ct);   // ← AJOUT OBLIGATOIRE
+
+            //    result.IsSuccess = true;
+            //    result.Message = $"Critère {criterionId} supprimé.";
+            //}
+            //catch (Exception ex)
+            //{
+            //    result.IsSuccess = false;
+            //    result.Message = $"Erreur suppression critère : {ex.Message}";
+            //}
+
+            return result;
 
         }
     }

@@ -193,6 +193,7 @@ namespace CheckMyStar.Dal
         public async Task<BaseResult> DeleteStarLevelCriterionByCriterionId(int criterionId, CancellationToken ct)
         {
             var result = new BaseResult();
+
             try
             {
                 var links = await dbContext.StarLevelCriterias
@@ -205,7 +206,7 @@ namespace CheckMyStar.Dal
                     {
                         await dbContext.RemoveAsync<StarLevelCriterion>(link, ct);
                     }
-                    await dbContext.SaveChangesAsync(ct);   // ← AJOUT OBLIGATOIRE
+                    await dbContext.SaveChangesAsync(ct);
                 }
 
                 result.IsSuccess = true;
@@ -216,12 +217,14 @@ namespace CheckMyStar.Dal
                 result.IsSuccess = false;
                 result.Message = $"Erreur suppression liaisons : {ex.Message}";
             }
+
             return result;
         }
 
         public async Task<BaseResult> DeleteCriterion(int criterionId, CancellationToken ct)
         {
             var result = new BaseResult();
+
             try
             {
                 var criterion = await dbContext.Criterias
@@ -245,12 +248,14 @@ namespace CheckMyStar.Dal
                 result.IsSuccess = false;
                 result.Message = $"Erreur suppression critère : {ex.Message}";
             }
+
             return result;
         }
 
         public async Task<BaseResult> UpdateCriterion(Criterion criterion, CancellationToken ct)
         {
             var result = new BaseResult();
+
             try
             {
                 var existing = await dbContext.Criterias
@@ -278,12 +283,14 @@ namespace CheckMyStar.Dal
                 result.IsSuccess = false;
                 result.Message = $"Erreur mise à jour critère : {ex.Message}";
             }
+
             return result;
         }
 
         public async Task<BaseResult> UpdateStarLevelCriterionType(int criterionId, byte starLevelId, string typeCode, CancellationToken ct)
         {
             var result = new BaseResult();
+
             try
             {
                 var link = await dbContext.StarLevelCriterias
@@ -309,6 +316,7 @@ namespace CheckMyStar.Dal
                 result.IsSuccess = false;
                 result.Message = $"Erreur mise à jour type : {ex.Message}";
             }
+
             return result;
         }
 
