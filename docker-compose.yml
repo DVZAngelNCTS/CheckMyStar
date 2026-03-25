@@ -5,7 +5,7 @@ services:
   api:
     build:
       context: .
-    dockerfile: Dockerfile
+      dockerfile: Dockerfile
     container_name: checkmystar-api
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
