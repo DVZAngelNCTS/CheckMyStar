@@ -1,3 +1,4 @@
+
 version: '3.9'
 
 services:
@@ -18,31 +19,17 @@ services:
     restart: always
 
   nginx:
-    image: nginx:latest
+    build:
+      context: ./CheckMyStar.Angular
+      dockerfile: Dockerfile
     container_name: checkmystar-nginx
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - certbot-etc:/etc/letsencrypt
-      - certbot-www:/var/www/certbot
     depends_on:
       - api
     restart: always
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-www:/var/www/certbot
-    entrypoint: >
-      sh -c "trap exit TERM;
-             while :; do
-               certbot renew --webroot -w /var/www/certbot;
-               sleep 12h;
-             done"
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -58,5 +45,3 @@ services:
 
 volumes:
   sql_data:
-  certbot-etc:
-  certbot-www:
