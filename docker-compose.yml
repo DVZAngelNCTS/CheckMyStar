@@ -20,7 +20,7 @@ services:
   nginx:
     build:
       context: ./CheckMyStar.Angular
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     container_name: checkmystar-nginx
     ports:
       - "80:80"
