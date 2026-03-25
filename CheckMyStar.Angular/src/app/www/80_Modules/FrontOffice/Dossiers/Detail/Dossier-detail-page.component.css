@@ -7,11 +7,46 @@
   overflow: hidden;
 }
 
-.detail-header {
+.detail-card {
+  background: linear-gradient(160deg, #f8faff 0%, #ffffff 80%);
+  border: 1px solid #e3e9f5;
+  box-shadow: 0 8px 24px rgba(13, 66, 134, 0.08);
+}
+
+.detail-header-card {
   border-left: 4px solid var(--bs-primary, #0d6efd);
 }
 
-.badge {
-  font-weight: 500;
-  letter-spacing: 0.03em;
+.metric-box {
+  background-color: rgba(13, 110, 253, 0.05);
+  border: 1px solid rgba(13, 110, 253, 0.14);
+  border-radius: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  height: 100%;
+}
+
+.metric-title {
+  color: #5d6f88;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+}
+
+.star-group {
+  color: #f2b01e;
+  display: inline-flex;
+  gap: 0.2rem;
+}
+
+.detail-card .badge {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+  .metric-box {
+    padding: 0.65rem 0.75rem;
+  }
 }

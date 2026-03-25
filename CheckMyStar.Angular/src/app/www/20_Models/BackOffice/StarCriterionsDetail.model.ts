@@ -4,4 +4,7 @@ export interface StarCriterionDetailModel {
   basePoints: number;
   typeCode: string;
   typeLabel: string;
+  explanation?: string;
+  category?: string;
+  section?: string;
 }

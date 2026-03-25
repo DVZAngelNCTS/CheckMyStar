@@ -17,11 +17,13 @@ namespace CheckMyStar.Bll.Mappings
             CreateMap<StarCriterionModel, Criterion>()
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.BasePoints, opt => opt.MapFrom(src => src.BasePoints))
+                .ForMember(dest => dest.Explanation, opt => opt.MapFrom(src => src.Explanation))
                 .ForMember(dest => dest.CriterionId, opt => opt.MapFrom(src => src.CriterionId));
 
             CreateMap<CriterionModel, Criterion>()
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.BasePoints, opt => opt.MapFrom(src => src.BasePoints))
+                .ForMember(dest => dest.Explanation, opt => opt.MapFrom(src => src.Explanation))
                 .ForMember(dest => dest.CriterionId, opt => opt.MapFrom(src => src.CriterionId));
 
             CreateMap<StarLevelModel, StarLevel>()

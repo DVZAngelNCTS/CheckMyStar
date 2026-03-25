@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,7 @@ import { AssessmentModel } from '../../../../20_Models/BackOffice/Assessment.mod
 import { AssessmentCriterionModel } from '../../../../20_Models/BackOffice/AssessmentCriterion.model';
 import { EvaluationResultBllService } from '../../../../60_Bll/BackOffice/EvaluationResult-bll.service';
 import { TooltipDirective } from '../../../Components/Tooltip/Tooltip.directive';
+import { getCriterionCategory } from '../../../../10_Common/Utils/Criterion-category.util';
 
 @Component({
   selector: 'app-evaluation-page',
@@ -23,13 +24,14 @@ import { TooltipDirective } from '../../../Components/Tooltip/Tooltip.directive'
   templateUrl: './Evaluation-page.component.html',
   styleUrl: './Evaluation-page.component.css'
 })
-export class EvaluationPageComponent implements OnInit {
+export class EvaluationPageComponent implements OnInit, OnDestroy {
   folderId: number | null = null;
   step = 1;
   loading = false;
   result: EvaluationResult | null = null;
   lastSavedAt: string | null = null;
   draftAssessmentId: number | null = null;
+  private autoSaveInterval: ReturnType<typeof setInterval> | null = null;
 
   private get storageKey(): string {
     return `evaluation_draft_${this.folderId}`;
@@ -68,6 +70,13 @@ export class EvaluationPageComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.folderId = id ? +id : null;
     this.tryRestoreDraft();
+    this.autoSaveInterval = setInterval(() => this.onSave(), 60_000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoSaveInterval !== null) {
+      clearInterval(this.autoSaveInterval);
+    }
   }
 
   private tryRestoreDraft(): void {
@@ -78,7 +87,18 @@ export class EvaluationPageComponent implements OnInit {
         const draft = JSON.parse(raw);
         if (draft?.form) this.form = draft.form;
         if (draft?.criteriaEvaluations?.length) {
-          this.criteriaEvaluations = draft.criteriaEvaluations;
+          this.criteriaEvaluations = (draft.criteriaEvaluations as CriterionEvaluation[])
+            .slice()
+            .sort((a, b) => a.criterionId - b.criterionId)
+            .map(c => {
+              if (!c.category) {
+                const cat = getCriterionCategory(c.criterionId);
+                c.category = cat?.category;
+                c.section  = cat?.section;
+              }
+              if (c.viewed === undefined) c.viewed = false;
+              return c;
+            });
           this.step = draft.step === 2 ? 2 : 1;
         }
         if (draft?.savedAt) {
@@ -146,15 +166,22 @@ export class EvaluationPageComponent implements OnInit {
   }
 
   private mapCriteriaToEvaluations(criteria: AssessmentCriterionModel[]): CriterionEvaluation[] {
-    return criteria.map(c => ({
-      criterionId: c.criterionId,
-      description: c.criterionDescription,
-      basePoints:  c.basePoints,
-      typeCode:    c.status,
-      typeLabel:   '',
-      validated:   c.isValidated,
-      comment:     c.comment
-    }));
+    return criteria.map(c => {
+      const cat = getCriterionCategory(c.criterionId);
+      return {
+        criterionId: c.criterionId,
+        description: c.criterionDescription,
+        basePoints:  c.basePoints,
+        typeCode:    c.status,
+        typeLabel:   '',
+        viewed:      false,
+        validated:   c.isValidated,
+        comment:     c.comment,
+        explanation: c.explanation,
+        category:    cat?.category,
+        section:     cat?.section
+      };
+    }).sort((a, b) => a.criterionId - b.criterionId);
   }
 
   onSave(): void {
@@ -227,19 +254,34 @@ export class EvaluationPageComponent implements OnInit {
 
   onStep1Validated(): void {
     this.loading = true;
+
+    // Snapshot de l'état utilisateur (cochages + commentaires) pour le restaurer
+    // si l'on revient de l'étape 2 en arrière puis que l'on re-valide l'étape 1.
+    const previousStateById = new Map<number, { viewed: boolean; validated: boolean; comment: string }>(
+      this.criteriaEvaluations.map(c => [c.criterionId, { viewed: c.viewed ?? false, validated: c.validated, comment: c.comment ?? '' }])
+    );
+
     this.criteresBll.getStarCriteriaDetails$().subscribe({
       next: response => {
         const star = response.starCriterias?.find(s => s.rating === this.form.targetStar);
         if (star) {
-          const raw = star.criteria.map(c => ({
-            criterionId: c.criterionId,
-            description: c.description,
-            basePoints: c.basePoints,
-            typeCode: c.typeCode,
-            typeLabel: c.typeLabel,
-            validated: false,
-            comment: ''
-          }));
+          const raw = star.criteria.map(c => {
+            const cat = getCriterionCategory(c.criterionId);
+            const prev = previousStateById.get(c.criterionId);
+            return {
+              criterionId: c.criterionId,
+              description: c.description,
+              basePoints: c.basePoints,
+              typeCode: c.typeCode,
+              typeLabel: c.typeLabel,
+              viewed: prev?.viewed ?? false,
+              validated: prev?.validated ?? false,
+              comment: prev?.comment ?? '',
+              explanation: c.explanation,
+              category: cat?.category,
+              section: cat?.section
+            };
+          }).sort((a, b) => a.criterionId - b.criterionId);
           this.criteriaEvaluations = this.applyConstraints(raw);
           this.step = 2;
         } else {

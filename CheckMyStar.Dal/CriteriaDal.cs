@@ -74,6 +74,7 @@ namespace CheckMyStar.Dal
                                        CriterionId = c.CriterionId,
                                        Description = c.Description,
                                        BasePoints = c.BasePoints,
+                                       Explanation = c.Explanation,
                                        TypeCode = slc.TypeCode,
                                        TypeLabel = crt.Label
                                    }).ToListAsync(ct);
@@ -264,6 +265,7 @@ namespace CheckMyStar.Dal
 
                 existing.Description = criterion.Description;
                 existing.BasePoints = criterion.BasePoints;
+                existing.Explanation = criterion.Explanation;
 
                 await dbContext.UpdateAsync(existing, ct);
                 await dbContext.SaveChangesAsync(ct);

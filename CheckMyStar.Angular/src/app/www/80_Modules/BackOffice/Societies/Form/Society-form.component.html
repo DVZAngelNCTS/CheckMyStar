@@ -13,6 +13,35 @@
             <input type="text" class="form-control" formControlName="name" required>
         </app-field>
 
+        <!-- LOGO -->
+        <app-field controlName="logoPath" label="{{ 'SocietySection.Logo' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-image">
+            <div class="d-flex flex-column gap-2 w-100">
+                <input type="file" class="form-control" accept="image/*" (change)="onLogoSelected($event)">
+                <input type="text" class="form-control" formControlName="logoPath" [placeholder]="'SocietySection.LogoPathPlaceholder' | translate" readonly>
+                <div *ngIf="logoPreviewUrl" class="d-flex flex-column gap-2">
+                    <img [src]="logoPreviewUrl" alt="Society logo" class="rounded border" style="max-height: 80px; max-width: 220px; object-fit: contain;">
+                    <button type="button" class="btn btn-outline-danger btn-sm align-self-start" (click)="clearLogoSelection()">
+                        <i class="bi bi-trash"></i> {{ 'SocietySection.RemoveLogo' | translate }}
+                    </button>
+                </div>
+            </div>
+        </app-field>
+
+        <!-- SIRET -->
+        <app-field controlName="siretCode" label="{{ 'SocietySection.Siret' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-card-list">
+            <input type="text" digitsOnly class="form-control" formControlName="siretCode" maxlength="14" [placeholder]="'SocietySection.SiretPlaceholder' | translate">
+        </app-field>
+
+        <!-- VAT NUMBER -->
+        <app-field controlName="vatNumber" label="{{ 'SocietySection.VatNumber' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-receipt">
+            <input type="text" class="form-control" formControlName="vatNumber" maxlength="22" [placeholder]="'SocietySection.VatNumberPlaceholder' | translate">
+        </app-field>
+
+        <!-- ADMIN INFORMATION -->
+        <app-field controlName="legalInformation" label="{{ 'SocietySection.AdministrativeInformation' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-file-earmark-text">
+            <textarea class="form-control" formControlName="legalInformation" rows="3" [placeholder]="'SocietySection.AdministrativeInformationPlaceholder' | translate"></textarea>
+        </app-field>
+
         <!-- EMAIL -->
         <app-field controlName="email" label="{{ 'SocietySection.Email' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-envelope-at">
         <input type="text" class="form-control" formControlName="email" required>

@@ -103,15 +103,17 @@ public class SocietyController(ISocietyService societyService) : ControllerBase
     }
 
     /// <summary>
-    /// Récupère une société
+    /// Récupère une société par son identifiant.
     /// </summary>
-    /// <param name="request"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    /// <param name="request">Requête contenant l'identifiant de la société</param>
+    /// <param name="ct">Jeton d'annulation</param>
+    /// <returns>Les détails de la société</returns>
+    [HttpGet("getsociety")]
+    [Authorize(Roles = "Administrator, Inspector")]
     public async Task<IActionResult> GetSociety([FromQuery] SocietyGetRequest request, CancellationToken ct)
     {
         var result = await societyService.GetSociety(request, ct);
 
-        return Ok(result);
+        return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 }

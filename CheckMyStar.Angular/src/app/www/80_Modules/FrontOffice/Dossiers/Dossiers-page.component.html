@@ -11,7 +11,12 @@
     <!-- Tableau extensible -->
     <div class="d-flex flex-column flex-grow-1">
       <div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
-        <app-table [columns]="columns" [data]="folders" (detail)="onDetail($event)" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" (openCreate)="openCreate()">
+        <app-table [columns]="columns" [data]="folders"
+          [showCustomAction]="true"
+          customActionIcon="bi bi-star"
+          [customActionTooltip]="'DossiersSection.NewEvaluation' | translate"
+          (customAction)="onNewEvaluation($event)"
+          (detail)="onDetail($event)" (update)="openUpdate($event)" (delete)="openDelete($event)" (enabled)="toggleEnabled($event)" (openCreate)="openCreate()">
         </app-table>
       </div>
     </div>

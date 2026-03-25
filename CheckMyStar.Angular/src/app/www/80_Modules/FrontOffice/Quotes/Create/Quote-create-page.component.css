@@ -1,0 +1,17 @@
+/* ─── Hôte : s'étire pour remplir page-content ─── */
+:host {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ─── Layout principal : deux colonnes à parts égales ─── */
+.quotes-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

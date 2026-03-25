@@ -33,8 +33,69 @@
             <app-field controlName="accommodationCurrentStar" label="{{ 'DossiersSection.AccommodationCurrentStar' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-star">
               <select class="form-select form-select-sm" formControlName="accommodationCurrentStar" required>
                 <option [value]="null" disabled>-- {{ 'DossiersSection.AccommodationCurrentStar' | translate }} --</option>
+                <option [ngValue]="0">{{ 'DossiersSection.NoCurrentStar' | translate }}</option>
                 <option *ngFor="let star of starOptions" [ngValue]="star">{{ star }} ★</option>
               </select>
+            </app-field>
+
+            <app-field *ngIf="!folder" controlName="accommodationName" label="{{ 'DossiersSection.InitialMaxCapacity' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-people">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'DossiersSection.InitialMaxCapacityPlaceholder' | translate"
+                [(ngModel)]="initialMaxCapacity"
+                [ngModelOptions]="{ standalone: true }"
+                min="1">
+            </app-field>
+
+            <app-field *ngIf="!folder" controlName="accommodationName" label="{{ 'DossiersSection.InitialFloors' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-building">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'DossiersSection.InitialFloorsPlaceholder' | translate"
+                [(ngModel)]="initialFloors"
+                [ngModelOptions]="{ standalone: true }"
+                min="0">
+            </app-field>
+
+            <app-field *ngIf="!folder" controlName="accommodationName" label="{{ 'DossiersSection.InitialTotalArea' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-rulers">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'DossiersSection.InitialTotalAreaPlaceholder' | translate"
+                [(ngModel)]="initialTotalArea"
+                [ngModelOptions]="{ standalone: true }"
+                min="1">
+            </app-field>
+
+            <app-field *ngIf="!folder" controlName="accommodationName" label="{{ 'DossiersSection.InitialRoomCount' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-door-open">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'DossiersSection.InitialRoomCountPlaceholder' | translate"
+                [(ngModel)]="initialRoomCount"
+                [ngModelOptions]="{ standalone: true }"
+                min="1">
+            </app-field>
+
+            <app-field *ngIf="!folder" controlName="accommodationName" label="{{ 'DossiersSection.InitialTotalRoomsArea' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-aspect-ratio">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'DossiersSection.InitialTotalRoomsAreaPlaceholder' | translate"
+                [(ngModel)]="initialTotalRoomsArea"
+                [ngModelOptions]="{ standalone: true }"
+                min="1">
+            </app-field>
+
+            <app-field *ngIf="!folder" controlName="accommodationName" label="{{ 'DossiersSection.InitialSmallestRoomArea' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-arrows-collapse">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'DossiersSection.InitialSmallestRoomAreaPlaceholder' | translate"
+                [(ngModel)]="initialSmallestRoomArea"
+                [ngModelOptions]="{ standalone: true }"
+                min="1">
             </app-field>
 
             <app-field controlName="isActive" label="{{ 'DossiersSection.AccommodationActive' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-house-check">
@@ -93,10 +154,11 @@
 
       <div formGroupName="owner">
         <app-field controlName="identifier" label="{{ 'DossiersSection.Owner' | translate }}" labelClass="w-10rem start fw-bold" labelTextPosition="start" controlClass="w-100" icon="bi bi-list-ol">
-          <select formControlName="identifier" class="form-select form-select-sm" required>
-            <option [value]="null" disabled>-- {{ 'DossiersSection.Owner' | translate }} --</option>
-            <option *ngFor="let owner of owners" [ngValue]="owner.identifier">{{ owner.lastName }} {{ owner.firstName }}</option>
-          </select>          
+          <app-owner-autocomplete
+            [users]="owners"
+            [selectedIdentifier]="form.get('owner.identifier')?.value ?? null"
+            (ownerSelected)="onOwnerSelected($event)">
+          </app-owner-autocomplete>
         </app-field>
       </div>    
 

@@ -7,4 +7,7 @@ export interface AssessmentCriterionModel {
   status: string;
   isValidated: boolean;
   comment: string;
-}  
+  explanation?: string;
+  category?: string;
+  section?: string;
+}

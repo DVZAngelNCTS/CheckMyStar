@@ -118,3 +118,35 @@ thead tr:nth-child(2) th {
   background: #c48f00;
 }
 
+/* Category header rows */
+.category-header-row {
+  background-color: #f0f4f8 !important;
+  cursor: default;
+}
+
+.category-header-cell {
+  padding: 6px 12px !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  border-top: 2px solid #dee2e6 !important;
+}
+
+.category-section {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.category-separator {
+  color: #adb5bd;
+  font-size: 0.72rem;
+}
+
+.category-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3a3a5c;
+}

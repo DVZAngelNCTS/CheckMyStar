@@ -1,0 +1,118 @@
+<div class="d-flex flex-column flex-grow-1">
+	<div class="d-flex flex-row">
+		<div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
+			<app-front-invoice-filter
+				[loadingSearch]="loadingSearch"
+				[loadingReset]="loadingReset"
+				(filter)="onFilter($event)">
+			</app-front-invoice-filter>
+		</div>
+	</div>
+
+	<div class="d-flex flex-column flex-grow-1">
+		<div class="d-flex flex-column flex-grow-1">
+			<div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
+				<app-table
+					[columns]="columns"
+					[data]="invoices"
+					(detail)="onDetail($event)"
+					(update)="onUpdate($event)"
+					(delete)="onDelete($event)"
+					(enabled)="toggleEnabled($event)"
+					(openCreate)="onCreate()">
+				</app-table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<app-popup
+	[visible]="popupVisible"
+	[title]="popupTitle"
+	[confirmLabel]="getPopupConfirmLabel()"
+	[cancelLabel]="popupMode === 'detail' ? null : ('PopupSection.Cancel' | translate)"
+	[errorMessage]="popupError"
+	[loading]="loading"
+	(confirm)="onPopupConfirm()"
+	(cancel)="onPopupCancel()"
+	icon="bi bi-receipt">
+
+	<ng-container *ngIf="popupMode === 'detail'">
+		<div class="d-flex flex-column gap-2">
+			<div><strong>{{ 'FrontInvoiceListSection.InvoiceNumber' | translate }}:</strong> {{ selectedInvoice ? selectedInvoice.invoiceNumber : '' }}</div>
+			<div><strong>{{ 'FrontInvoiceListSection.InvoiceDate' | translate }}:</strong> {{ selectedInvoice?.invoiceDate | date:'dd/MM/yyyy' }}</div>
+			<div><strong>{{ 'FrontInvoiceListSection.DueDate' | translate }}:</strong> {{ selectedInvoice?.dueDate | date:'dd/MM/yyyy' }}</div>
+			<div><strong>{{ 'FrontInvoiceListSection.TotalAmountHT' | translate }}:</strong> {{ selectedInvoice?.totalAmountHT | number:'1.2-2' }} €</div>
+			<div><strong>{{ 'FrontInvoiceListSection.TotalVATAmount' | translate }}:</strong> {{ selectedInvoice?.totalVATAmount | number:'1.2-2' }} €</div>
+			<div><strong>{{ 'FrontInvoiceListSection.TotalAmountTTC' | translate }}:</strong> {{ selectedInvoice?.totalAmountTTC | number:'1.2-2' }} €</div>
+			<div><strong>{{ 'FrontInvoiceListSection.PaymentStatus' | translate }}:</strong> {{ selectedInvoice?.paymentStatusIdentifier === 2 ? ('FrontInvoiceListSection.PaymentPaid' | translate) : ('FrontInvoiceListSection.PaymentPending' | translate) }}</div>
+		</div>
+	</ng-container>
+
+	<ng-container *ngIf="popupMode === 'update'">
+		<form [formGroup]="invoiceForm" class="d-flex flex-column gap-3">
+			<div>
+				<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.InvoiceNumber' | translate }}</label>
+				<input class="form-control" type="text" formControlName="invoiceNumber">
+			</div>
+
+			<div class="d-flex gap-3">
+				<div class="flex-grow-1">
+					<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.InvoiceDate' | translate }}</label>
+					<input class="form-control" type="date" formControlName="invoiceDate">
+				</div>
+				<div class="flex-grow-1">
+					<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.DueDate' | translate }}</label>
+					<input class="form-control" type="date" formControlName="dueDate">
+				</div>
+			</div>
+
+			<div class="d-flex gap-3">
+				<div class="flex-grow-1">
+					<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.TotalAmountHT' | translate }}</label>
+					<input class="form-control" type="number" step="0.01" min="0" formControlName="totalAmountHT">
+				</div>
+				<div class="flex-grow-1">
+					<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.TotalVATAmount' | translate }}</label>
+					<input class="form-control" type="number" step="0.01" min="0" formControlName="totalVATAmount">
+				</div>
+				<div class="flex-grow-1">
+					<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.TotalAmountTTC' | translate }}</label>
+					<input class="form-control" type="number" step="0.01" min="0" formControlName="totalAmountTTC">
+				</div>
+			</div>
+
+			<div class="d-flex gap-3">
+				<div class="flex-grow-1">
+					<label class="form-label fw-bold">{{ 'FrontInvoiceListSection.PaymentStatus' | translate }}</label>
+					<select class="form-select" formControlName="paymentStatusIdentifier">
+						<option [ngValue]="1">{{ 'FrontInvoiceListSection.PaymentPending' | translate }}</option>
+						<option [ngValue]="2">{{ 'FrontInvoiceListSection.PaymentPaid' | translate }}</option>
+					</select>
+				</div>
+				<div class="flex-grow-1 d-flex align-items-end">
+					<div class="form-check mb-2">
+						<input class="form-check-input" type="checkbox" formControlName="isActive" id="invoiceActiveCheckbox">
+						<label class="form-check-label fw-bold" for="invoiceActiveCheckbox">
+							{{ 'FrontInvoiceListSection.Active' | translate }}
+						</label>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ng-container>
+
+	<ng-container *ngIf="popupMode === 'delete'">
+		<p>
+			{{ 'FrontInvoiceListSection.DeleteAsk' | translate }}
+			<strong>{{ selectedInvoice?.invoiceNumber }}</strong> ?
+		</p>
+	</ng-container>
+
+	<ng-container *ngIf="popupMode === 'enabled'">
+		<p>
+			{{ (selectedInvoice?.isActive ? 'FrontInvoiceListSection.DisableAsk' : 'FrontInvoiceListSection.EnableAsk') | translate }}
+			<strong>{{ selectedInvoice?.invoiceNumber }}</strong> ?
+		</p>
+	</ng-container>
+</app-popup>

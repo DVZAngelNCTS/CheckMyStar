@@ -54,6 +54,10 @@ export class UserBllService {
     return this.userDal.getNextIdentifier$();
   }
 
+  getUser$() {
+    return this.userDal.getUser$();
+  }
+
   getUserEvolutions$() {
     return this.userDal.getUserEvolutions$();
   }
