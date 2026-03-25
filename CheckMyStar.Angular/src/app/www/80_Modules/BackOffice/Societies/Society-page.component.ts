@@ -35,6 +35,9 @@ export class SocietyPageComponent {
 	columns = [
 		{ icon: 'bi bi-list-ol', field: 'identifier', header: 'SocietySection.Identifier', sortable: true, filterable: true, width: '9%' },
 		{ icon: 'bi bi-shield', field: 'name', header: 'SocietySection.Name', translate: true, sortable: true, filterable: true, width: '12%' },
+		{ icon: 'bi bi-image', field: 'logoPath', header: 'SocietySection.Logo', sortable: false, filterable: true, width: '10%' },
+		{ icon: 'bi bi-card-list', field: 'siretCode', header: 'SocietySection.Siret', sortable: true, filterable: true, width: '10%' },
+		{ icon: 'bi bi-receipt', field: 'vatNumber', header: 'SocietySection.VatNumber', sortable: true, filterable: true, width: '10%' },
 		{ icon: 'bi bi-envelope-at', field: 'email', header: 'SocietySection.Email', translate: true, sortable: true, filterable: true, width: '12%' },
 		{ icon: 'bi bi-telephone', field: 'phone', header: 'SocietySection.Phone', translate: true, sortable: true, filterable: true, width: '7%' },
 		{ icon: 'bi bi-envelope', field: 'address', header: 'SocietySection.Address', translate: true, sortable: true, filterable: true,
@@ -161,8 +164,9 @@ export class SocietyPageComponent {
 	this.loading = true;
 
 	const newSociety = this.societyForm.getValue();
+	const logoFile = this.societyForm.getLogoFile();
 
-	this.societyBll.addSociety$(newSociety).subscribe({
+	this.societyBll.addSociety$(newSociety, logoFile).subscribe({
 		next: response => {
 				if (!response.isSuccess) {
 					this.loading = false;
@@ -191,8 +195,9 @@ export class SocietyPageComponent {
 		this.loading = true;
 
 		const updatedSociety = this.societyForm.getValue();
+		const logoFile = this.societyForm.getLogoFile();
 
-		this.societyBll.updateSociety$(updatedSociety).subscribe({
+		this.societyBll.updateSociety$(updatedSociety, logoFile).subscribe({
 			next: response => {
 				if (!response.isSuccess) {
 					this.loading = false;

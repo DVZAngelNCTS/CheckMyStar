@@ -1,5 +1,31 @@
 ﻿IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES 
            WHERE TABLE_SCHEMA = 'dbo' 
+           AND TABLE_NAME = 'Society')
+BEGIN
+    IF COL_LENGTH('dbo.Society', 'LogoPath') IS NULL
+    BEGIN
+        ALTER TABLE dbo.Society ADD LogoPath VARCHAR(500) NULL;
+    END
+
+    IF COL_LENGTH('dbo.Society', 'SiretCode') IS NULL
+    BEGIN
+        ALTER TABLE dbo.Society ADD SiretCode VARCHAR(14) NULL;
+    END
+
+    IF COL_LENGTH('dbo.Society', 'VatNumber') IS NULL
+    BEGIN
+        ALTER TABLE dbo.Society ADD VatNumber VARCHAR(20) NULL;
+    END
+
+    IF COL_LENGTH('dbo.Society', 'LegalInformation') IS NULL
+    BEGIN
+        ALTER TABLE dbo.Society ADD LegalInformation VARCHAR(500) NULL;
+    END
+END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES 
+           WHERE TABLE_SCHEMA = 'dbo' 
            AND TABLE_NAME = 'Country')
 BEGIN
     INSERT INTO dbo.Country (Identifier, Code, [Name])
@@ -1567,5 +1593,201 @@ BEGIN
         REFERENCES [Assessment]([Identifier])
     );
 
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'QuoteStatus'
+)
+BEGIN
+    CREATE TABLE [dbo].[QuoteStatus]
+    (
+        [Identifier] INT NOT NULL,
+        [Label]      VARCHAR(50) NOT NULL,
+        CONSTRAINT [PK_QuoteStatus] PRIMARY KEY ([Identifier])
+    );
+
+    INSERT INTO [dbo].[QuoteStatus] ([Identifier], [Label]) VALUES
+    (1, 'Brouillon'),
+    (2, 'Envoyé'),
+    (3, 'Accepté'),
+    (4, 'Refusé'),
+    (5, 'Expiré');
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Quote'
+)
+BEGIN
+    CREATE TABLE [dbo].[Quote]
+    (
+        [Identifier]               INT           NOT NULL,
+        [Reference]                VARCHAR(50)   NOT NULL,
+        [ClientUserIdentifier]     INT           NULL,
+        [ClientAddressIdentifier]  INT           NULL,
+        [InspectorIdentifier]      INT           NULL,
+        [CompanySocietyIdentifier] INT           NULL,
+        [CompanyAddressIdentifier] INT           NULL,
+        [TotalAmountHT]            DECIMAL(10,2) NOT NULL DEFAULT 0,
+        [TotalAmountTTC]           DECIMAL(10,2) NOT NULL DEFAULT 0,
+        [ValidityDate]             DATE          NULL,
+        [ExecutionDate]            DATE          NULL,
+        [QuoteStatusIdentifier]    INT           NULL,
+        [IsEditable]              BIT           NOT NULL DEFAULT 1,
+        [CreatedDate]              DATETIME      NOT NULL DEFAULT GETDATE(),
+        [UpdatedDate]              DATETIME      NULL,
+
+        CONSTRAINT [PK_Quote] PRIMARY KEY ([Identifier]),
+        CONSTRAINT [FK_Quote_ClientUser]
+            FOREIGN KEY ([ClientUserIdentifier]) REFERENCES [User]([Identifier]),
+        CONSTRAINT [FK_Quote_ClientAddress]
+            FOREIGN KEY ([ClientAddressIdentifier]) REFERENCES [Address]([Identifier]),
+        CONSTRAINT [FK_Quote_CompanySociety]
+            FOREIGN KEY ([CompanySocietyIdentifier]) REFERENCES [Society]([Identifier]),
+        CONSTRAINT [FK_Quote_CompanyAddress]
+            FOREIGN KEY ([CompanyAddressIdentifier]) REFERENCES [Address]([Identifier]),
+        CONSTRAINT [FK_Quote_QuoteStatus]
+            FOREIGN KEY ([QuoteStatusIdentifier]) REFERENCES [QuoteStatus]([Identifier]),
+        CONSTRAINT [FK_Quote_Inspector] 
+            FOREIGN KEY ([InspectorIdentifier]) REFERENCES [User]([Identifier]),
+    );
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'QuoteLine'
+)
+BEGIN
+    CREATE TABLE [dbo].[QuoteLine]
+    (
+        [Identifier]      INT           NOT NULL,
+        [QuoteIdentifier] INT           NOT NULL,
+        [Description]     VARCHAR(500)  NOT NULL,
+        [Quantity]        DECIMAL(10,2) NOT NULL,
+        [Unit]            VARCHAR(50)   NOT NULL,
+        [UnitPriceHT]     DECIMAL(10,2) NOT NULL,
+        [VATRate]         DECIMAL(5,2)  NOT NULL DEFAULT 20.00,
+        [CreatedDate]     DATETIME      NOT NULL DEFAULT GETDATE(),
+        [UpdatedDate]     DATETIME      NULL,
+
+        CONSTRAINT [PK_QuoteLine] PRIMARY KEY ([Identifier]),
+        CONSTRAINT [FK_QuoteLine_Quote]
+            FOREIGN KEY ([QuoteIdentifier]) REFERENCES [Quote]([Identifier])
+    );
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'InvoiceStatus'
+)
+BEGIN
+    CREATE TABLE [dbo].[InvoiceStatus]
+    (
+        [Identifier] INT NOT NULL,
+        [Label]      VARCHAR(50) NOT NULL,
+        CONSTRAINT [PK_InvoiceStatus] PRIMARY KEY ([Identifier])
+    );
+
+    INSERT INTO [dbo].[InvoiceStatus] ([Identifier], [Label]) VALUES
+    (1, 'Brouillon'),
+    (2, 'Envoyée'),
+    (3, 'Payée'),
+    (4, 'En retard'),
+    (5, 'Annulée');
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Invoice'
+)
+BEGIN
+    CREATE TABLE [dbo].[Invoice]
+    (
+        [Identifier]               INT           NOT NULL,
+        [Reference]                VARCHAR(50)   NOT NULL, -- FAC-2026-0001
+
+        [QuoteIdentifier]          INT           NULL,
+
+        [ClientUserIdentifier]     INT           NULL,
+        [ClientAddressIdentifier]  INT           NULL,
+
+        [CompanySocietyIdentifier] INT           NULL,
+        [CompanyAddressIdentifier] INT           NULL,
+
+        [InvoiceDate]              DATE          NOT NULL,
+        [DueDate]                  DATE          NULL,
+
+        [TotalAmountHT]            DECIMAL(10,2) NOT NULL DEFAULT 0,
+        [TotalVATAmount]           DECIMAL(10,2) NOT NULL DEFAULT 0,
+        [TotalAmountTTC]           DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+        [InvoiceStatusIdentifier]  INT           NULL,
+
+        [CreatedDate]              DATETIME      NOT NULL DEFAULT GETDATE(),
+        [UpdatedDate]              DATETIME      NULL,
+
+        CONSTRAINT [PK_Invoice] PRIMARY KEY ([Identifier]),
+
+        CONSTRAINT [FK_Invoice_Quote]
+            FOREIGN KEY ([QuoteIdentifier])
+            REFERENCES [Quote]([Identifier]),
+
+        CONSTRAINT [FK_Invoice_ClientUser]
+            FOREIGN KEY ([ClientUserIdentifier])
+            REFERENCES [User]([Identifier]),
+
+        CONSTRAINT [FK_Invoice_ClientAddress]
+            FOREIGN KEY ([ClientAddressIdentifier])
+            REFERENCES [Address]([Identifier]),
+
+        CONSTRAINT [FK_Invoice_CompanySociety]
+            FOREIGN KEY ([CompanySocietyIdentifier])
+            REFERENCES [Society]([Identifier]),
+
+        CONSTRAINT [FK_Invoice_CompanyAddress]
+            FOREIGN KEY ([CompanyAddressIdentifier])
+            REFERENCES [Address]([Identifier]),
+
+        CONSTRAINT [FK_Invoice_Status]
+            FOREIGN KEY ([InvoiceStatusIdentifier])
+            REFERENCES [InvoiceStatus]([Identifier])
+    );
+END
+GO
+
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'InvoiceLine'
+)
+BEGIN
+    CREATE TABLE [dbo].[InvoiceLine]
+    (
+        [Identifier]      INT           NOT NULL,
+        [InvoiceIdentifier] INT         NOT NULL,
+
+        [Description]     VARCHAR(500)  NOT NULL,
+        [Quantity]        DECIMAL(10,2) NOT NULL,
+        [Unit]            VARCHAR(50)   NOT NULL,
+
+        [UnitPriceHT]     DECIMAL(10,2) NOT NULL,
+        [VATRate]         DECIMAL(5,2)  NOT NULL DEFAULT 20.00,
+
+        [CreatedDate]     DATETIME      NOT NULL DEFAULT GETDATE(),
+        [UpdatedDate]     DATETIME      NULL,
+
+        CONSTRAINT [PK_InvoiceLine] PRIMARY KEY ([Identifier]),
+
+        CONSTRAINT [FK_InvoiceLine_Invoice]
+            FOREIGN KEY ([InvoiceIdentifier])
+            REFERENCES [Invoice]([Identifier])
+    );
 END
 GO

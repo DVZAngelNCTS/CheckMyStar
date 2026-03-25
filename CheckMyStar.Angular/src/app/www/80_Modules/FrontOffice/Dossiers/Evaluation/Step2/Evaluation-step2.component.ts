@@ -60,6 +60,64 @@ export class EvaluationStep2Component {
     });
   }
 
+  onCriterionRowClick(criterion: CriterionEvaluation, event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button, input, textarea, select, a, label')) {
+      return;
+    }
+
+    if (!criterion.viewed && !criterion.validated) {
+      criterion.viewed = true;
+      criterion.validated = true;
+      return;
+    }
+
+    if (criterion.viewed && criterion.validated) {
+      criterion.viewed = true;
+      criterion.validated = false;
+      return;
+    }
+
+    criterion.viewed = false;
+    criterion.validated = false;
+  }
+
+  getCriterionStateClass(criterion: CriterionEvaluation): string {
+    if (criterion.viewed && criterion.validated) {
+      return 'criterion-state-validated';
+    }
+
+    if (criterion.viewed && !criterion.validated) {
+      return 'criterion-state-viewed-not-validated';
+    }
+
+    return 'criterion-state-initial';
+  }
+
+  getCriterionStatusLabelKey(criterion: CriterionEvaluation): string {
+    if (criterion.viewed && criterion.validated) {
+      return 'EvaluationSection.StatusViewedValidated';
+    }
+
+    if (criterion.viewed && !criterion.validated) {
+      return 'EvaluationSection.StatusViewedNotValidated';
+    }
+
+    return 'EvaluationSection.StatusNotViewedNotValidated';
+  }
+
+  getCriterionStatusBadgeClass(criterion: CriterionEvaluation): string {
+    if (criterion.viewed && criterion.validated) {
+      return 'badge bg-success-subtle text-success-emphasis border border-success-subtle';
+    }
+
+    if (criterion.viewed && !criterion.validated) {
+      return 'badge bg-danger-subtle text-danger-emphasis border border-danger-subtle';
+    }
+
+    return 'badge bg-light text-secondary border';
+  }
+
   getTotalPoints(): number {
     return this.criteriaEvaluations
       .filter(c => c.validated)

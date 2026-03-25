@@ -33,15 +33,25 @@ export class BreadcrumbComponent {
           return;
         }
 
-        // 3. Parent logique via data.parent
+        // 3. Parent logique via data.parent ou data.parents
         const deepest = this.getDeepestRoute(this.route);
         const parentLabel = deepest.snapshot.data['parent'];
-   
+        const parentsData = deepest.snapshot.data['parents'] as Array<{ label: string; icon: string; urlOffset: number }> | undefined;
+
         if (parentLabel) {
           const parentCrumb = this.breadcrumbs.find(b => b.label === parentLabel);
-          
           if (parentCrumb) {
-            this.parentUrl = parentCrumb.url;        
+            this.parentUrl = parentCrumb.url;
+            return;
+          }
+        }
+
+        if (parentsData && parentsData.length > 0) {
+          // Use the closest ancestor (last entry in the parents array)
+          const immediateParent = parentsData[parentsData.length - 1];
+          const parentCrumb = this.breadcrumbs.find(b => b.label === immediateParent.label);
+          if (parentCrumb) {
+            this.parentUrl = parentCrumb.url;
             return;
           }
         }

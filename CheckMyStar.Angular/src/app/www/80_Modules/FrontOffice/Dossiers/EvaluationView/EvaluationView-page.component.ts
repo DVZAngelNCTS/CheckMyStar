@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { TranslationModule } from '../../../../10_Common/Translation.module';
@@ -11,6 +11,9 @@ import { AssessmentResponse } from '../../../../50_Responses/BackOffice/Assessme
 import { PopupComponent } from '../../../Components/Popup/Popup.component';
 import { getCriterionCategory, CriterionCategory } from '../../../../10_Common/Utils/Criterion-category.util';
 
+type CriteriaSortColumn = 'criterionId' | 'criterionDescription' | 'status' | 'points' | 'isValidated' | 'explanation' | 'comment';
+type SortDirection = 'asc' | 'desc';
+
 @Component({
   selector: 'app-evaluation-view-page',
   standalone: true,
@@ -18,7 +21,7 @@ import { getCriterionCategory, CriterionCategory } from '../../../../10_Common/U
   templateUrl: './EvaluationView-page.component.html',
   styleUrl: './EvaluationView-page.component.css'
 })
-export class EvaluationViewPageComponent implements OnInit {
+export class EvaluationViewPageComponent implements OnInit, OnDestroy {
   result: EvaluationResultModel | null = null;
   folderId: number | null = null;
 
@@ -32,6 +35,39 @@ export class EvaluationViewPageComponent implements OnInit {
   showExplanationPopup = false;
   explanationTitle = '';
   explanationText = '';
+  highlightedCriterionId: number | null = null;
+  showInvalidCriteriaByCategory = false;
+  criteriaSearchTerm = '';
+  criteriaSortColumn: CriteriaSortColumn = 'criterionId';
+  criteriaSortDirection: SortDirection = 'asc';
+  private highlightTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  get invalidCriteriaByCategory(): { section: string; category: string; items: AssessmentCriterionModel[] }[] {
+    const groups: { section: string; category: string; items: AssessmentCriterionModel[] }[] = [];
+    const groupMap = new Map<string, { section: string; category: string; items: AssessmentCriterionModel[] }>();
+
+    for (const criterion of this.criteria) {
+      if (criterion.isValidated) continue;
+
+      const categoryInfo = criterion.category
+        ? { category: criterion.category, section: criterion.section ?? '' }
+        : getCriterionCategory(criterion.criterionId);
+
+      const section = categoryInfo?.section || 'Section non categorisee';
+      const category = categoryInfo?.category || 'Categorie non categorisee';
+      const key = `${section}|||${category}`;
+
+      if (!groupMap.has(key)) {
+        const group = { section, category, items: [] as AssessmentCriterionModel[] };
+        groupMap.set(key, group);
+        groups.push(group);
+      }
+
+      groupMap.get(key)!.items.push(criterion);
+    }
+
+    return groups;
+  }
   get mandatoryOk(): boolean {
     return !!this.result && this.result.mandatoryPointsEarned >= this.result.mandatoryThreshold;
   }
@@ -50,6 +86,71 @@ export class EvaluationViewPageComponent implements OnInit {
 
   get totalPoints(): number {
     return this.criteria.filter(c => c.isValidated).reduce((s, c) => s + c.points, 0);
+  }
+
+  get invalidCriteriaCount(): number {
+    return this.criteria.filter(c => !c.isValidated).length;
+  }
+
+  get filteredCriteria(): AssessmentCriterionModel[] {
+    const term = this.criteriaSearchTerm.trim().toLowerCase();
+    if (!term) return this.criteria;
+
+    return this.criteria.filter(c => {
+      const searchText = [
+        c.criterionId?.toString() ?? '',
+        c.criterionDescription ?? '',
+        c.status ?? '',
+        c.category ?? '',
+        c.section ?? '',
+        c.comment ?? ''
+      ].join(' ').toLowerCase();
+
+      return searchText.includes(term);
+    });
+  }
+
+  get sortedFilteredCriteria(): AssessmentCriterionModel[] {
+    const list = [...this.filteredCriteria];
+    const direction = this.criteriaSortDirection === 'asc' ? 1 : -1;
+
+    return list.sort((a, b) => {
+      let result = 0;
+
+      switch (this.criteriaSortColumn) {
+        case 'criterionId':
+          result = a.criterionId - b.criterionId;
+          break;
+        case 'criterionDescription':
+          result = (a.criterionDescription ?? '').localeCompare(b.criterionDescription ?? '', 'fr', { sensitivity: 'base' });
+          break;
+        case 'status':
+          result = (a.status ?? '').localeCompare(b.status ?? '', 'fr', { sensitivity: 'base' });
+          break;
+        case 'points':
+          result = a.points - b.points;
+          break;
+        case 'isValidated':
+          result = Number(a.isValidated) - Number(b.isValidated);
+          break;
+        case 'explanation':
+          result = (a.explanation ?? '').localeCompare(b.explanation ?? '', 'fr', { sensitivity: 'base' });
+          break;
+        case 'comment':
+          result = (a.comment ?? '').localeCompare(b.comment ?? '', 'fr', { sensitivity: 'base' });
+          break;
+      }
+
+      if (result === 0) {
+        result = a.criterionId - b.criterionId;
+      }
+
+      return result * direction;
+    });
+  }
+
+  get showCategoryHeaders(): boolean {
+    return this.criteriaSortColumn === 'criterionId' && this.criteriaSortDirection === 'asc';
   }
 
   get activeConstraints(): string[] {
@@ -97,6 +198,13 @@ export class EvaluationViewPageComponent implements OnInit {
     this.loadAssessment();
   }
 
+  ngOnDestroy(): void {
+    if (this.highlightTimeout) {
+      clearTimeout(this.highlightTimeout);
+      this.highlightTimeout = null;
+    }
+  }
+
   private loadCriteria(): void {
     if (!this.result?.assessmentIdentifier) return;
     this.loadingCriteria = true;
@@ -139,6 +247,54 @@ export class EvaluationViewPageComponent implements OnInit {
       case 'O':     return 'bg-info text-dark';
       default:      return 'bg-secondary';
     }
+  }
+
+  getCriterionRowId(criterionId: number): string {
+    return `criterion-row-${criterionId}`;
+  }
+
+  scrollToCriterion(criterionId: number): void {
+    const row = document.getElementById(this.getCriterionRowId(criterionId));
+    if (!row) return;
+
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    this.highlightedCriterionId = criterionId;
+
+    if (this.highlightTimeout) {
+      clearTimeout(this.highlightTimeout);
+    }
+
+    this.highlightTimeout = setTimeout(() => {
+      this.highlightedCriterionId = null;
+      this.highlightTimeout = null;
+    }, 2000);
+  }
+
+  toggleInvalidCriteriaByCategory(): void {
+    this.showInvalidCriteriaByCategory = !this.showInvalidCriteriaByCategory;
+  }
+
+  onCriteriaSearch(value: string): void {
+    this.criteriaSearchTerm = value;
+  }
+
+  clearCriteriaSearch(): void {
+    this.criteriaSearchTerm = '';
+  }
+
+  setCriteriaSort(column: CriteriaSortColumn): void {
+    if (this.criteriaSortColumn === column) {
+      this.criteriaSortDirection = this.criteriaSortDirection === 'asc' ? 'desc' : 'asc';
+      return;
+    }
+
+    this.criteriaSortColumn = column;
+    this.criteriaSortDirection = 'asc';
+  }
+
+  getSortIconClass(column: CriteriaSortColumn): string {
+    if (this.criteriaSortColumn !== column) return 'bi-arrow-down-up';
+    return this.criteriaSortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down';
   }
 
   onBack(): void {

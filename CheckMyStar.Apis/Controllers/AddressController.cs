@@ -37,7 +37,7 @@ namespace CheckMyStar.Apis.Controllers
         /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the addresses that match the specified criteria.</returns>
         [HttpGet("getaddresses")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Inspector")]
         public async Task<IActionResult> GetAddresses([FromQuery] AddressGetRequest request, CancellationToken ct)
         {
             var result = await addressService.GetAddresses(request, ct);

@@ -5,6 +5,10 @@ export interface SocietyModel {
     name: string,
     email: string,
     phone: string,
+    logoPath?: string,
+    siretCode?: string,
+    vatNumber?: string,
+    legalInformation?: string,
     address: AddressModel,
     isActive: boolean
 }

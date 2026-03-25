@@ -1,0 +1,102 @@
+<div class="quotes-panel quotes-preview-panel">
+  <div class="quotes-panel-header">
+    <i class="bi bi-eye me-2"></i>
+    <span>{{ 'FrontQuoteSection.PreviewTitle' | translate }}</span>
+    <button type="button" class="btn btn-sm btn-primary ms-auto" (click)="saveQuote()">
+      <i class="bi bi-floppy me-1"></i>{{ 'FrontQuoteSection.SaveChanges' | translate }}
+    </button>
+  </div>
+  <div class="quotes-panel-body preview-body">
+    <div class="quote-doc">
+
+      <!-- En-tête document -->
+      <div class="doc-header">
+        <div class="doc-company-block">
+          <div *ngIf="companyLogoUrl" class="mb-2">
+            <img [src]="companyLogoUrl" alt="Logo entreprise" style="max-height: 48px; max-width: 180px; object-fit: contain;" />
+          </div>
+          <div class="doc-company-name">{{ quoteForm.get('companyName')?.value || 'Votre entreprise' }}</div>
+          <div class="doc-company-address">{{ quoteForm.get('companyAddress')?.value }}</div>
+          <div class="doc-company-address" *ngIf="quoteForm.get('companyEmail')?.value">{{ quoteForm.get('companyEmail')?.value }}</div>
+          <div class="doc-company-address" *ngIf="quoteForm.get('companyPhone')?.value">{{ quoteForm.get('companyPhone')?.value }}</div>
+          <div class="doc-company-address" *ngIf="quoteForm.get('companySiretCode')?.value">SIRET: {{ quoteForm.get('companySiretCode')?.value }}</div>
+          <div class="doc-company-address" *ngIf="quoteForm.get('companyVatNumber')?.value">TVA: {{ quoteForm.get('companyVatNumber')?.value }}</div>
+          <div class="doc-company-address" *ngIf="quoteForm.get('companyLegalInformation')?.value">{{ quoteForm.get('companyLegalInformation')?.value }}</div>
+        </div>
+        <div class="doc-quote-block">
+          <div class="doc-quote-title">DEVIS</div>
+          <div class="doc-quote-number">N° {{ quoteForm.get('quoteNumber')?.value || '—' }}</div>
+          <div class="doc-meta-line">
+            <span class="doc-meta-label">{{ 'FrontQuoteSection.QuoteDate' | translate }} :</span> {{ formatDate(quoteForm.get('quoteDate')?.value) }}
+          </div>
+          <div class="doc-meta-line" *ngIf="quoteForm.get('validityPeriod')?.value">
+            <span class="doc-meta-label">{{ 'FrontQuoteSection.PreviewValidUntil' | translate }}</span> {{ formatDate(quoteForm.get('validityPeriod')?.value) }}
+          </div>
+        </div>
+      </div>
+
+      <hr class="doc-hr" />
+
+      <!-- Destinataire -->
+      <div class="doc-client-section">
+        <div class="doc-client-label">{{ 'FrontQuoteSection.PreviewIssuedTo' | translate }}</div>
+        <div class="doc-client-name">{{ quoteForm.get('clientName')?.value || '—' }}</div>
+        <div class="doc-client-address">{{ quoteForm.get('clientAddress')?.value }}</div>
+      </div>
+
+      <!-- Tableau des prestations -->
+      <table class="doc-services-table">
+        <thead>
+          <tr>
+            <th class="col-desc">{{ 'FrontQuoteSection.PreviewDescription' | translate }}</th>
+            <th class="col-qty">{{ 'FrontQuoteSection.PreviewQty' | translate }}</th>
+            <th class="col-unit">{{ 'FrontQuoteSection.Unit' | translate }}</th>
+            <th class="col-up">{{ 'FrontQuoteSection.PreviewUnitPrice' | translate }}</th>
+            <th class="col-tot">{{ 'FrontQuoteSection.PreviewLineTotal' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let svc of services.controls">
+            <td class="col-desc">{{ svc.get('description')?.value || '—' }}</td>
+            <td class="col-qty">{{ svc.get('quantity')?.value }}</td>
+            <td class="col-unit">{{ svc.get('unit')?.value }}</td>
+            <td class="col-up">{{ (+svc.get('unitPrice')?.value || 0) | number:'1.2-2' }} €</td>
+            <td class="col-tot">{{ ((+svc.get('quantity')?.value || 0) * (+svc.get('unitPrice')?.value || 0)) | number:'1.2-2' }} €</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Totaux -->
+      <div class="doc-totals">
+        <table>
+          <tbody>
+            <tr>
+              <td class="tot-label">{{ 'FrontQuoteSection.TotalHT' | translate }}</td>
+              <td class="tot-value">{{ totalHT | number:'1.2-2' }} €</td>
+            </tr>
+            <tr>
+              <td class="tot-label">TVA ({{ quoteForm.get('vatRate')?.value || 0 }}%)</td>
+              <td class="tot-value">{{ vatAmount | number:'1.2-2' }} €</td>
+            </tr>
+            <tr class="tot-total-row">
+              <td class="tot-label">{{ 'FrontQuoteSection.TotalTTC' | translate }}</td>
+              <td class="tot-value">{{ totalTTC | number:'1.2-2' }} €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pied du document -->
+      <div class="doc-footer">
+        <div *ngIf="quoteForm.get('executionDate')?.value">
+          <div class="doc-footer-label">{{ 'FrontQuoteSection.ExecutionDate' | translate }}</div>
+          <div>{{ formatDate(quoteForm.get('executionDate')?.value) }}</div>
+        </div>
+        <div class="ms-auto" *ngIf="statusLabel">
+          <span class="doc-status-badge" [ngClass]="statusClass">{{ statusLabel }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

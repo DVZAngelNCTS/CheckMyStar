@@ -28,19 +28,25 @@
   background-color: rgba(0, 0, 0, 0.02);
 }
 
-.criteria-table tbody tr.row-validated {
-  background-color: rgba(25, 135, 84, 0.06);
+.criteria-table tbody tr.criterion-row {
+  cursor: pointer;
+}
+
+.criteria-table tbody tr.criterion-row.criterion-state-validated {
+  background-color: rgba(25, 135, 84, 0.16);
+}
+
+.criteria-table tbody tr.criterion-row.criterion-state-viewed-not-validated {
+  background-color: rgba(220, 53, 69, 0.14);
+}
+
+.criteria-table tbody tr.criterion-row.criterion-state-initial {
+  background-color: transparent;
 }
 
 .criteria-table td {
   vertical-align: middle;
   font-size: 14px;
-}
-
-.criteria-checkbox {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
 }
 
 /* ─── Editable points input ──────────────────────────── */

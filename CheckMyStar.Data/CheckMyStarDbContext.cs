@@ -43,7 +43,13 @@ public partial class CheckMyStarDbContext : DbContext
 
     public virtual DbSet<Invoice> Invoices { get; set; }
 
+    public virtual DbSet<InvoiceLine> InvoiceLines { get; set; }
+
+    public virtual DbSet<InvoiceStatus> InvoiceStatuses { get; set; }
+
     public virtual DbSet<Quote> Quotes { get; set; }
+
+    public virtual DbSet<QuoteLine> QuoteLines { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -281,12 +287,50 @@ public partial class CheckMyStarDbContext : DbContext
             entity.ToTable("Invoice");
 
             entity.Property(e => e.Identifier).ValueGeneratedNever();
-            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.InvoiceNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceDate).HasColumnType("date");
+            entity.Property(e => e.DueDate).HasColumnType("date");
+            entity.Property(e => e.TotalAmountHT).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalVATAmount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalAmountTTC).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.DueDate).HasColumnType("datetime");
-            entity.Property(e => e.Number)
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<InvoiceLine>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("InvoiceLine");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.Quantity).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Unit)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UnitPriceHT).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.VATRate).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<InvoiceStatus>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("InvoiceStatus");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.Label)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
@@ -297,14 +341,42 @@ public partial class CheckMyStarDbContext : DbContext
 
             entity.ToTable("Quote");
 
+            entity.Ignore(e => e.CompanyEmail);
+            entity.Ignore(e => e.CompanyLegalInformation);
+            entity.Ignore(e => e.CompanyLogoPath);
+            entity.Ignore(e => e.CompanyPhone);
+            entity.Ignore(e => e.CompanySiretCode);
+            entity.Ignore(e => e.CompanyVatNumber);
             entity.Property(e => e.Identifier).ValueGeneratedNever();
-            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalAmountHT).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.TotalAmountTTC).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.ValidityDate).HasColumnType("date");
+            entity.Property(e => e.ExecutionDate).HasColumnType("date");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Reference)
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<QuoteLine>(entity =>
+        {
+            entity.HasKey(e => e.Identifier);
+
+            entity.ToTable("QuoteLine");
+
+            entity.Property(e => e.Identifier).ValueGeneratedNever();
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.Quantity).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Unit)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.UnitPriceHT).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.VATRate).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
@@ -341,13 +413,25 @@ public partial class CheckMyStarDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.LegalInformation)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.LogoPath)
+                .HasMaxLength(500)
+                .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.Phone)
                 .HasMaxLength(10)
                 .IsUnicode(false);
+            entity.Property(e => e.SiretCode)
+                .HasMaxLength(14)
+                .IsUnicode(false);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            entity.Property(e => e.VatNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<StarLevel>(entity =>

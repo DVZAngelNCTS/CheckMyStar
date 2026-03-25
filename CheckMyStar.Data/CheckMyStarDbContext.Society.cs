@@ -25,8 +25,24 @@ public partial class CheckMyStarDbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
+            entity.Property(e => e.LogoPath)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
             entity.Property(e => e.Phone)
                 .HasMaxLength(10)
+                .IsUnicode(false);
+
+            entity.Property(e => e.SiretCode)
+                .HasMaxLength(14)
+                .IsUnicode(false);
+
+            entity.Property(e => e.VatNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+
+            entity.Property(e => e.LegalInformation)
+                .HasMaxLength(500)
                 .IsUnicode(false);
 
             entity.Property(e => e.IsActive)

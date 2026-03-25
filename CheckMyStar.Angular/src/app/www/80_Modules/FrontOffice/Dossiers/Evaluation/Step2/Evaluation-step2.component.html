@@ -37,14 +37,14 @@
       {{ 'EvaluationSection.Progress' | translate }}
     </span>
     <span class="small text-muted">
-      <strong>{{ getValidatedCount() }}</strong> / {{ criteriaEvaluations.length }} {{ 'EvaluationSection.CriteriaValidated' | translate }}
+      <strong>{{ getViewedCount() }}</strong> / {{ criteriaEvaluations.length }} {{ 'EvaluationSection.CriteriaViewed' | translate }}
       &nbsp;—&nbsp;
       <strong class="text-success">{{ getTotalPoints() }} pts</strong>
     </span>
   </div>
   <div class="progress" style="height: 10px; border-radius: 6px;">
     <div class="progress-bar bg-success"
-         [style.width.%]="criteriaEvaluations.length ? (getValidatedCount() / criteriaEvaluations.length * 100) : 0"
+         [style.width.%]="criteriaEvaluations.length ? (getViewedCount() / criteriaEvaluations.length * 100) : 0"
          style="transition: width 0.4s ease; border-radius: 6px;">
     </div>
   </div>
@@ -65,6 +65,11 @@
     </button>
   </div>
 
+  <div class="small text-muted mb-3">
+    <i class="bi bi-mouse me-1"></i>
+    {{ 'EvaluationSection.RowClickCycleHint' | translate }}
+  </div>
+
   <div class="criteria-table-wrapper">
     <table class="table table-bordered table-hover criteria-table mb-0">
       <thead>
@@ -73,8 +78,7 @@
           <th style="width: 38%">{{ 'EvaluationSection.CriteriaLabel' | translate }}</th>
           <th style="width: 8%" class="text-center">{{ 'EvaluationSection.Points' | translate }}</th>
           <th style="width: 12%" class="text-center">{{ 'EvaluationSection.Type' | translate }}</th>
-          <th style="width: 10%" class="text-center">{{ 'EvaluationSection.Viewed' | translate }}</th>
-          <th style="width: 10%" class="text-center">{{ 'EvaluationSection.Validated' | translate }}</th>
+          <th style="width: 18%" class="text-center">{{ 'EvaluationSection.ResultStatus' | translate }}</th>
           <th style="width: 50px" class="text-center">{{ 'CommonSection.Explanation' | translate }}</th>
           <th>{{ 'EvaluationSection.Comment' | translate }}</th>
         </tr>
@@ -82,13 +86,15 @@
       <tbody>
         <ng-container *ngFor="let c of criteriaEvaluations; let i = index">
         <tr *ngIf="getCategoryHeaderForRow(i, criteriaEvaluations) as cat" class="category-header-row">
-          <td [attr.colspan]="8" class="category-header-cell">
+          <td [attr.colspan]="7" class="category-header-cell">
             <span class="category-section">{{ cat.section }}</span>
             <span class="category-separator"> — </span>
             <span class="category-label">{{ cat.category }}</span>
           </td>
         </tr>
-        <tr [class.row-validated]="c.validated">
+        <tr class="criterion-row"
+            [ngClass]="getCriterionStateClass(c)"
+            (click)="onCriterionRowClick(c, $event)">
           <td class="text-center align-middle text-muted small fw-semibold">{{ i + 1 }}</td>
           <td class="align-middle">
             <span [class.fw-semibold]="c.validated">{{ c.description }}</span>
@@ -98,6 +104,7 @@
               <input type="number" class="form-control form-control-sm text-center points-input"
                      [(ngModel)]="c.basePoints"
                      min="1" max="5"
+                     (click)="$event.stopPropagation()"
                      style="width: 64px; margin: 0 auto;">
             </ng-container>
             <ng-template #staticPoints>{{ c.basePoints }}</ng-template>
@@ -106,23 +113,19 @@
             <span [class]="getTypeBadgeClass(c.typeCode)" [title]="c.typeLabel">{{ c.typeCode }}</span>
           </td>
           <td class="text-center align-middle">
-            <div class="form-check d-flex justify-content-center m-0">
-              <input class="form-check-input criteria-checkbox" type="checkbox" [(ngModel)]="c.viewed">
-            </div>
+            <span [class]="getCriterionStatusBadgeClass(c)">
+              {{ getCriterionStatusLabelKey(c) | translate }}
+            </span>
           </td>
           <td class="text-center align-middle">
-            <div class="form-check d-flex justify-content-center m-0">
-              <input class="form-check-input criteria-checkbox" type="checkbox" [(ngModel)]="c.validated">
-            </div>
-          </td>
-          <td class="text-center align-middle">
-            <button type="button" class="btn btn-sm btn-secondary" (click)="onShowExplanation(c)" [disabled]="!c.explanation">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onShowExplanation(c); $event.stopPropagation()" [disabled]="!c.explanation">
               <i class="bi bi-info-circle"></i>
             </button>
           </td>
           <td class="align-middle">
             <input type="text" class="form-control form-control-sm"
                    [(ngModel)]="c.comment"
+                   (click)="$event.stopPropagation()"
                    [placeholder]="'EvaluationSection.CommentPlaceholder' | translate">
           </td>
         </tr>

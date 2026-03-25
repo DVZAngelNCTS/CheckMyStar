@@ -14,6 +14,8 @@ import { AppointmentFormComponent } from './Form/Appointment-form.component';
 import { EvaluationResultBllService } from '../../../../60_Bll/BackOffice/EvaluationResult-bll.service';
 import { EvaluationResultModel } from '../../../../20_Models/BackOffice/EvaluationResult.model';
 import { TooltipDirective } from '../../../Components/Tooltip/Tooltip.directive';
+import { AssessmentBllService } from '../../../../60_Bll/BackOffice/Assessment-bll.service';
+import { catchError, forkJoin, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-dossier-detail-page',
@@ -45,6 +47,7 @@ export class DossierDetailPageComponent implements OnInit {
 
   // Historique des évaluations
   assessmentResults: EvaluationResultModel[] = [];
+  targetStarByAssessmentIdentifier: Record<number, number | null> = {};
   loadingHistory = false;
   sortOrder: 'asc' | 'desc' = 'desc';
 
@@ -66,6 +69,7 @@ export class DossierDetailPageComponent implements OnInit {
     private folderBll: FolderBllService,
     private appointmentBll: AppointmentBllService,
     private evaluationResultBll: EvaluationResultBllService,
+    private assessmentBll: AssessmentBllService,
     private translate: TranslateService,
     private toast: ToastService,
     private fb: FormBuilder
@@ -130,13 +134,51 @@ export class DossierDetailPageComponent implements OnInit {
     this.evaluationResultBll.getAssessmentResultsByFolder$(this.folderId).subscribe({
       next: response => {
         this.assessmentResults = response.assessmentResults ?? [];
+        this.loadAssessmentHistoryDetails(this.assessmentResults);
         this.loadingHistory = false;
       },
       error: () => {
         this.assessmentResults = [];
+        this.targetStarByAssessmentIdentifier = {};
         this.loadingHistory = false;
       }
     });
+  }
+
+  private loadAssessmentHistoryDetails(results: EvaluationResultModel[]): void {
+    const assessmentIdentifiers = [...new Set(
+      results
+        .map(result => result.assessmentIdentifier)
+        .filter((identifier): identifier is number => typeof identifier === 'number' && identifier > 0)
+    )];
+
+    if (assessmentIdentifiers.length === 0) {
+      this.targetStarByAssessmentIdentifier = {};
+      return;
+    }
+
+    forkJoin(
+      assessmentIdentifiers.map(identifier =>
+        this.assessmentBll.getAssessment$(identifier).pipe(
+          map(response => ({ identifier, targetStarLevel: response.assessment?.targetStarLevel ?? null })),
+          catchError(() => of({ identifier, targetStarLevel: null }))
+        )
+      )
+    ).subscribe(entries => {
+      const targetStarMap: Record<number, number | null> = {};
+      for (const entry of entries) {
+        targetStarMap[entry.identifier] = entry.targetStarLevel;
+      }
+      this.targetStarByAssessmentIdentifier = targetStarMap;
+    });
+  }
+
+  getTargetStarForResult(result: EvaluationResultModel): number | null {
+    const targetStar = this.targetStarByAssessmentIdentifier[result.assessmentIdentifier];
+    if (targetStar == null) return null;
+
+    const sanitizedStar = Math.trunc(targetStar);
+    return sanitizedStar > 0 ? sanitizedStar : null;
   }
 
   onViewEvaluationDetail(result: EvaluationResultModel): void {
@@ -256,51 +298,32 @@ export class DossierDetailPageComponent implements OnInit {
     this.popupError = null;
 
     const f = this.appointmentForm.value;
-    const selectedCountry = this.countries.find(c => c.identifier === +f.countryIdentifier)
-      ?? { identifier: +f.countryIdentifier, name: '', code: '' };
 
-    // Étape 1 : obtenir le prochain identifiant d'adresse
-    this.addressBll.getNextIdentifier$().pipe(
-      switchMap(addrIdResp => {
-        const addressId = addrIdResp.address?.identifier;
-        if (addressId == null) throw new Error(this.translate.instant('CommonSection.UnknownError'));
-
-        const address: AddressModel = {
-          identifier: addressId,
-          number: f.addressNumber || '',
-          addressLine: f.addressLine,
-          city: f.city,
-          zipCode: f.zipCode,
-          region: f.region || undefined,
-          country: selectedCountry
+    this.appointmentBll.getNextIdentifier$().subscribe({
+      next: apptIdResp => {
+        const appointmentModel: AppointmentModel = {
+          identifier: apptIdResp.identifier,
+          appointmentDate: f.appointmentDate,
+          comment: f.comment || null,
         };
 
-        // Étape 2 : créer l'adresse
-        return this.addressBll.addAddress$(address).pipe(
-          switchMap(addrResp => {
-            if (!addrResp.isSuccess) throw new Error(addrResp.message || this.translate.instant('CommonSection.UnknownError'));
-
-            // Étape 3 : obtenir le prochain identifiant de rendez-vous
-            return this.appointmentBll.getNextIdentifier$().pipe(
-              switchMap(apptIdResp => {
-                const appointmentId = apptIdResp.identifier;
-
-                const appointmentModel: AppointmentModel = {
-                  identifier: appointmentId,
-                  appointmentDate: f.appointmentDate,
-                  comment: f.comment || null,
-                };
-
-    this.appointmentBll.addAppointment$(appointmentModel, this.folderId!).subscribe({
-      next: response => {
-        this.popupLoading = false;
-        if (response?.isSuccess) {
-          this.loadAppointment();
-          this.popupVisible = false;
-          this.toast.show(this.translate.instant('DossierDetailSection.AppointmentCreated'), 'success', 3000);
-        } else {
-          this.popupError = response?.message || this.translate.instant('CommonSection.UnknownError');
-        }
+        this.appointmentBll.addAppointment$(appointmentModel, this.folderId!).subscribe({
+          next: response => {
+            this.popupLoading = false;
+            if (response?.isSuccess) {
+              this.loadAppointment();
+              this.popupVisible = false;
+              this.toast.show(this.translate.instant('DossierDetailSection.AppointmentCreated'), 'success', 3000);
+            } else {
+              this.popupError = response?.message || this.translate.instant('CommonSection.UnknownError');
+            }
+          },
+          error: err => {
+            this.popupLoading = false;
+            console.error(err);
+            this.popupError = err?.message || this.translate.instant('CommonSection.UnknownError');
+          }
+        });
       },
       error: err => {
         this.popupLoading = false;
@@ -308,6 +331,43 @@ export class DossierDetailPageComponent implements OnInit {
         this.popupError = err?.message || this.translate.instant('CommonSection.UnknownError');
       }
     });
+  }
+
+  getAccommodationCurrentStar(): number | null {
+    const rawStar = this.folder?.accommodation?.accommodationCurrentStar;
+    if (rawStar == null) return null;
+
+    if (typeof rawStar === 'number') {
+      const sanitizedStar = Math.trunc(rawStar);
+      return sanitizedStar > 0 ? sanitizedStar : null;
+    }
+
+    const parsedStar = parseInt(String(rawStar), 10);
+    return Number.isNaN(parsedStar) || parsedStar <= 0 ? null : parsedStar;
+  }
+
+  getStarRange(starCount: number | null): number[] {
+    if (!starCount || starCount <= 0) return [];
+    return Array.from({ length: starCount }, (_, index) => index);
+  }
+
+  getAccommodationAddressLabel(): string {
+    const address = this.folder?.accommodation?.address;
+    if (!address) return this.translate.instant('CommonSection.NotProvided');
+
+    const street = [address.number, address.addressLine].filter(Boolean).join(' ').trim();
+    const cityLine = [address.zipCode, address.city].filter(Boolean).join(' ').trim();
+    const country = address.country?.name?.trim();
+
+    return [street, cityLine, country].filter(Boolean).join(', ') || this.translate.instant('CommonSection.NotProvided');
+  }
+
+  getInspectorFullName(): string {
+    const inspector = this.folder?.inspector;
+    if (!inspector) return this.translate.instant('CommonSection.NotProvided');
+
+    const fullName = [inspector.firstName, inspector.lastName].filter(Boolean).join(' ').trim();
+    return fullName || this.translate.instant('CommonSection.NotProvided');
   }
 
   getStatusLabel(): string {

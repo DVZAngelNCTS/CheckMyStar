@@ -10,18 +10,65 @@
   <div *ngIf="!loading && folder" class="d-flex flex-column gap-4">
 
     <!-- En-tête du dossier -->
-    <div class="d-flex flex-row rounded p-4 bg-secondary-light justify-content-between align-items-center flex-wrap gap-3">
-      <div>
-        <h4 class="mb-1">
-          <i class="bi bi-folder2-open me-2 text-primary"></i>
-          {{ 'DossierDetailSection.Folder' | translate }} <strong>#{{ folder.identifier }}</strong>
-        </h4>
-        <span class="text-muted">{{ folder.accommodation?.accommodationName }}</span>
+    <div class="rounded p-4 detail-card detail-header-card">
+      <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+        <div>
+          <h4 class="mb-1 d-flex align-items-center flex-wrap gap-2">
+            <i class="bi bi-folder2-open text-primary"></i>
+            <span>{{ 'DossierDetailSection.Folder' | translate }} <strong>#{{ folder.identifier }}</strong></span>
+          </h4>
+          <p class="text-muted mb-0">{{ folder.accommodation?.accommodationName || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+        <span class="badge px-3 py-2 fs-6 align-self-start" [ngClass]="getStatusBadgeClass()">
+          {{ getStatusLabel() }}
+        </span>
+      </div>
+
+      <div class="row g-3 mt-1">
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-box">
+            <div class="metric-title">{{ 'DossiersSection.AccommodationCurrentStar' | translate }}</div>
+            <ng-container *ngIf="getAccommodationCurrentStar() as currentStar; else noStarTop">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="star-group">
+                  <i class="bi bi-star-fill text-warning" *ngFor="let _ of getStarRange(currentStar)"></i>
+                </span>
+                <span class="fw-semibold">{{ currentStar }} {{ 'EvaluationSection.Star' | translate }}</span>
+              </div>
+            </ng-container>
+            <ng-template #noStarTop>
+              <span class="text-muted fst-italic">{{ 'CommonSection.NotProvided' | translate }}</span>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-box">
+            <div class="metric-title">{{ 'DossiersSection.UpdatedDate' | translate }}</div>
+            <div class="fw-semibold">{{ folder.updatedDate ? (folder.updatedDate | date:'dd/MM/yyyy HH:mm') : ('CommonSection.NotProvided' | translate) }}</div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-box">
+            <div class="metric-title">{{ 'DossiersSection.Inspector' | translate }}</div>
+            <div class="fw-semibold">{{ getInspectorFullName() }}</div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="metric-box">
+            <div class="metric-title">{{ 'DossierDetailSection.AppointmentDate' | translate }}</div>
+            <div class="fw-semibold">
+              {{ getAppointmentDate() ? (getAppointmentDate() | date:'dd/MM/yyyy HH:mm') : ('DossierDetailSection.NoAppointment' | translate) }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Actions -->
-    <div class="d-flex flex-row flex-wrap gap-3 p-4 rounded bg-secondary-light">
+    <div class="d-flex flex-row flex-wrap gap-3 p-4 rounded detail-card">
       <h5 class="w-100 mb-2">{{ 'DossierDetailSection.Actions' | translate }}</h5>
 
       <button class="btn btn-outline-secondary" (click)="onViewInvoice()"
@@ -49,8 +96,56 @@
       </button>
     </div>
 
+    <!-- Informations du bien -->
+    <div class="rounded p-4 detail-card">
+      <h5 class="mb-3">
+        <i class="bi bi-house-door me-2 text-primary"></i>
+        {{ 'DossierDetailSection.PropertyInfo' | translate }}
+      </h5>
+
+      <div class="row g-3">
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'DossiersSection.AccommodationCurrentStar' | translate }}
+          </label>
+          <ng-container *ngIf="getAccommodationCurrentStar() as currentStar; else noStarInfo">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="star-group">
+                <i class="bi bi-star-fill text-warning" *ngFor="let _ of getStarRange(currentStar)"></i>
+              </span>
+              <span class="fw-medium">{{ currentStar }} {{ 'EvaluationSection.Star' | translate }}</span>
+            </div>
+          </ng-container>
+          <ng-template #noStarInfo>
+            <p class="mb-0 fw-medium">{{ 'CommonSection.NotProvided' | translate }}</p>
+          </ng-template>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'DossierDetailSection.AccommodationType' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ folder.accommodation?.accommodationType?.label || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+
+        <div class="col-md-4 col-sm-6">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'DossiersSection.AccommodationPhone' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ folder.accommodation?.accommodationPhone || ('CommonSection.NotProvided' | translate) }}</p>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label text-muted small text-uppercase fw-semibold">
+            {{ 'DossiersSection.AccommodationAddress' | translate }}
+          </label>
+          <p class="mb-0 fw-medium">{{ getAccommodationAddressLabel() }}</p>
+        </div>
+      </div>
+    </div>
+
     <!-- Informations client -->
-    <div class="rounded p-4 bg-secondary-light">
+    <div class="rounded p-4 detail-card">
       <h5 class="mb-3">
         <i class="bi bi-person me-2 text-primary"></i>
         {{ 'DossierDetailSection.ClientInfo' | translate }}
@@ -101,7 +196,7 @@
     </div>
 
     <!-- Statut et rendez-vous -->
-    <div class="rounded p-4 bg-secondary-light">
+    <div class="rounded p-4 detail-card">
       <h5 class="mb-3">
         <i class="bi bi-info-circle me-2 text-primary"></i>
         {{ 'DossierDetailSection.FolderInfo' | translate }}
@@ -166,7 +261,7 @@
     </div>
 
     <!-- Historique des évaluations -->
-    <div class="rounded p-4 bg-secondary-light">
+    <div class="rounded p-4 detail-card">
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h5 class="mb-0">
           <i class="bi bi-clock-history me-2 text-primary"></i>
@@ -195,16 +290,54 @@
       <div *ngIf="!loadingHistory && assessmentResults.length > 0" class="d-flex flex-column gap-2">
         <div *ngFor="let result of sortedAssessmentResults"
              class="d-flex align-items-center justify-content-between flex-wrap gap-2 border rounded px-3 py-2 bg-white">
-          <div class="d-flex align-items-center gap-2">
-            <i class="bi fs-5"
-               [class.bi-check-circle-fill]="result.isAccepted"
-               [class.text-success]="result.isAccepted"
-               [class.bi-x-circle-fill]="!result.isAccepted"
-               [class.text-danger]="!result.isAccepted"></i>
-            <span class="fw-semibold">
-              {{ (result.isAccepted ? 'DossierDetailSection.EvaluationAccepted' : 'DossierDetailSection.EvaluationRefused') | translate }}
-            </span>
+          <div class="d-flex flex-column gap-1">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi fs-5"
+                 [class.bi-check-circle-fill]="result.isAccepted"
+                 [class.text-success]="result.isAccepted"
+                 [class.bi-x-circle-fill]="!result.isAccepted"
+                 [class.text-danger]="!result.isAccepted"></i>
+              <span class="fw-semibold">
+                {{ (result.isAccepted ? 'DossierDetailSection.EvaluationAccepted' : 'DossierDetailSection.EvaluationRefused') | translate }}
+              </span>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-3 text-muted small">
+              <span class="d-inline-flex align-items-center">
+                {{ 'EvaluationSection.TargetStarTitle' | translate }}:
+                <ng-container *ngIf="getTargetStarForResult(result) as targetStar; else noTargetStar">
+                  <span class="ms-1 d-inline-flex align-items-center gap-1">
+                    <i *ngFor="let _ of getStarRange(targetStar)" class="bi bi-star-fill text-warning"></i>
+                    <span>{{ targetStar }}</span>
+                  </span>
+                </ng-container>
+                <ng-template #noTargetStar>
+                  <span class="ms-1 fst-italic">{{ 'DossierDetailSection.NoTargetStar' | translate }}</span>
+                </ng-template>
+              </span>
+
+              <span>
+                <i class="bi bi-list-check me-1"></i>
+                {{ 'DossierDetailSection.MandatoryPoints' | translate }}: {{ result.mandatoryPointsEarned }} / {{ result.mandatoryThreshold }}
+              </span>
+
+              <span>
+                <i class="bi bi-plus-circle me-1"></i>
+                {{ 'DossierDetailSection.OptionalPoints' | translate }}: {{ result.optionalPointsEarned }} / {{ result.optionalRequired }}
+              </span>
+
+              <span>
+                <i class="bi bi-shield-exclamation me-1"></i>
+                {{ 'DossierDetailSection.OncCriteria' | translate }}: {{ result.onceFailedCount }} {{ 'DossierDetailSection.OncFailed' | translate }}
+              </span>
+
+              <span>
+                <i class="bi bi-hash me-1"></i>
+                {{ 'DossierDetailSection.AssessmentNumber' | translate }} {{ result.assessmentIdentifier }}
+              </span>
+            </div>
           </div>
+
           <div class="d-flex align-items-center gap-3 text-muted small">
             <span>
               <i class="bi bi-calendar-event me-1"></i>

@@ -46,11 +46,11 @@ export class SocietyDalService {
   }
 
   addSociety$(request: SocietySaveRequest) {
-    return this.http.post<BaseResponse>(`${this.apiUrl}/Society/addsociety`, request);
+    return this.http.post<BaseResponse>(`${this.apiUrl}/Society/addsociety`, this.buildSavePayload(request));
   }
 
   updateSociety$(request: SocietySaveRequest) {
-    return this.http.put<BaseResponse>(`${this.apiUrl}/Society/updatesociety`, request);
+    return this.http.put<BaseResponse>(`${this.apiUrl}/Society/updatesociety`, this.buildSavePayload(request));
   }
   
   deleteSociety$(request: SocietyDeleteRequest) {
@@ -68,5 +68,10 @@ export class SocietyDalService {
 
   enabledSociety$(request: SocietySaveRequest) {
     return this.http.put<BaseResponse>(`${this.apiUrl}/Society/enabledsociety`, request);
-  }  
+  }
+
+  private buildSavePayload(request: SocietySaveRequest): { society: SocietySaveRequest['society'] } {
+    // Backend contract expects JSON body with only the society object.
+    return { society: request.society };
+  }
 }

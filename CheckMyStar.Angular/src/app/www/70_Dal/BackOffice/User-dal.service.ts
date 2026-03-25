@@ -61,6 +61,10 @@ export class UserDalService {
     return this.http.get<UserResponse>(`${this.apiUrl}/User/getnextidentifier`, {});
   }
 
+  getUser$(): Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${this.apiUrl}/User/getuser`);
+  }
+
   getUserEvolutions$(): Observable<UserEvolutionsResponse> {
     return this.http.get<UserEvolutionsResponse>(`${this.apiUrl}/User/getuserevolutions`, {});
   }

@@ -71,7 +71,18 @@ namespace CheckMyStar.Bll
                 return response;
             }
 
+            var nextIdentifier = await appointmentDal.GetNextIdentifier(ct);
+
+            if (!nextIdentifier.IsSuccess || nextIdentifier.Appointment == null)
+            {
+                response.IsSuccess = false;
+                response.Message = "Impossible de générer l'identifiant du rendez-vous";
+                await activityBus.AddActivity(response.Message, DateTime.Now, currentUser, false, ct);
+                return response;
+            }
+
             var appointment = mapper.Map<Appointment>(appointmentModel);
+            appointment.Identifier = nextIdentifier.Appointment.Identifier;
             appointment.CreatedDate = DateTime.Now;
 
             var result = await appointmentDal.AddAppointment(appointment, ct);

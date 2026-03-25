@@ -1,0 +1,25 @@
+<div class="owner-autocomplete-wrapper">
+  <app-field controlName="search" label="" labelClass="" labelTextPosition="start" controlClass="w-100" icon="bi bi-person-search">
+    <input
+      type="text"
+      class="form-control"
+      [formControl]="searchControl"
+      [placeholder]="('CommonSection.Search' | translate) + ' ' + (placeholderLabelKey | translate)"
+      (focus)="onFocus()"
+      (blur)="onBlur()">
+  </app-field>
+
+  <ul *ngIf="suggestions.length > 0" class="owner-suggestions list-group mt-1">
+    <li class="owner-suggestion-item list-group-item list-group-item-action" *ngFor="let owner of suggestions" (mousedown)="selectOwner(owner)">
+      <div class="owner-suggestion-main">
+        <span class="owner-name">{{ owner.lastName }} {{ owner.firstName }}</span>
+        <span class="owner-id" *ngIf="owner.identifier">#{{ owner.identifier }}</span>
+      </div>
+
+      <div class="owner-suggestion-meta" *ngIf="owner.email || owner.phone">
+        <small class="owner-contact" *ngIf="owner.email">{{ owner.email }}</small>
+        <small class="owner-contact" *ngIf="owner.phone">{{ owner.phone }}</small>
+      </div>
+    </li>
+  </ul>
+</div>

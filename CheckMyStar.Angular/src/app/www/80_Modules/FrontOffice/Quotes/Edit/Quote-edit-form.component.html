@@ -1,0 +1,201 @@
+<div class="quotes-panel quotes-form-panel">
+  <div class="quotes-panel-header">
+    <i class="bi bi-pencil-square me-2"></i>
+    <span>{{ 'FrontQuoteSection.EditFormTitle' | translate }}</span>
+  </div>
+  <div class="quotes-panel-body">
+    <form [formGroup]="quoteForm" autocomplete="off" class="quote-form">
+
+      <!-- Numéro de devis -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.QuoteNumber' | translate }}</label>
+        <input type="text" class="form-control bg-light" formControlName="quoteNumber" readonly />
+      </div>
+
+      <!-- Date du devis -->
+      <div class="mb-3">
+        <label class="form-label required-label">{{ 'FrontQuoteSection.QuoteDate' | translate }}</label>
+        <input type="date" #quoteDateInput class="form-control date-picker-input" formControlName="quoteDate"
+          [class.is-invalid]="isInvalid('quoteDate')"
+          (click)="quoteDateInput.showPicker()" />
+        <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+      </div>
+
+      <div class="form-section-title"><i class="bi bi-person-lines-fill me-1"></i>{{ 'FrontQuoteSection.SectionClient' | translate }}</div>
+
+      <!-- Nom / raison sociale du client -->
+      <div class="mb-3">
+        <label class="form-label required-label">{{ 'FrontQuoteSection.ClientName' | translate }}</label>
+        <input type="hidden" formControlName="clientName" />
+        <app-owner-autocomplete
+          [users]="clients"
+          [selectedIdentifier]="selectedClientIdentifier"
+          [placeholderLabelKey]="'FrontQuoteSection.ClientName'"
+          (ownerSelected)="onClientSelected($event)">
+        </app-owner-autocomplete>
+        <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        <div class="text-danger small mt-1" *ngIf="isInvalid('clientName')">{{ 'ValidationSection.Required' | translate }}</div>
+      </div>
+
+      <!-- Adresse du client -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.ClientAddress' | translate }}</label>
+        <textarea class="form-control bg-light" formControlName="clientAddress" rows="2" readonly></textarea>
+      </div>
+
+      <div class="form-section-title"><i class="bi bi-building me-1"></i>{{ 'FrontQuoteSection.SectionCompany' | translate }}</div>
+
+      <!-- Nom / raison sociale de l'entreprise -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.CompanyName' | translate }}</label>
+        <input type="text" class="form-control bg-light" formControlName="companyName" readonly />
+      </div>
+
+      <!-- Adresse de l'entreprise -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.CompanyAddress' | translate }}</label>
+        <textarea class="form-control bg-light" formControlName="companyAddress" rows="2" readonly></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ 'SocietySection.Email' | translate }}</label>
+        <input type="text" class="form-control bg-light" formControlName="companyEmail" readonly />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ 'SocietySection.Phone' | translate }}</label>
+        <input type="text" class="form-control bg-light" formControlName="companyPhone" readonly />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ 'SocietySection.Siret' | translate }}</label>
+        <input type="text" class="form-control bg-light" formControlName="companySiretCode" readonly />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ 'SocietySection.VatNumber' | translate }}</label>
+        <input type="text" class="form-control bg-light" formControlName="companyVatNumber" readonly />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ 'SocietySection.AdministrativeInformation' | translate }}</label>
+        <textarea class="form-control bg-light" formControlName="companyLegalInformation" rows="3" readonly></textarea>
+      </div>
+
+      <div class="form-section-title"><i class="bi bi-list-task me-1"></i>{{ 'FrontQuoteSection.SectionServices' | translate }}</div>
+
+      <!-- Prestations -->
+      <div class="mb-3">
+        <label class="form-label required-label">{{ 'FrontQuoteSection.Services' | translate }}</label>
+
+        <div formArrayName="services">
+          <div *ngFor="let service of services.controls; let i = index"
+               [formGroupName]="i" class="service-row">
+            <div class="service-row-header">
+              <span class="service-row-index">{{ 'FrontQuoteSection.ServiceItem' | translate }} {{ i + 1 }}</span>
+              <button type="button" class="btn btn-sm btn-outline-danger"
+                (click)="removeService(i)" [disabled]="services.length === 1">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label form-label-sm required-label">{{ 'FrontQuoteSection.ServicesDescription' | translate }}</label>
+              <textarea class="form-control form-control-sm" formControlName="description" rows="2"
+                [class.is-invalid]="isServiceInvalid(i, 'description')"></textarea>
+              <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-4">
+                <label class="form-label form-label-sm required-label">{{ 'FrontQuoteSection.Quantity' | translate }}</label>
+                <input type="number" min="0" step="1" class="form-control form-control-sm"
+                  formControlName="quantity"
+                  [class.is-invalid]="isServiceInvalid(i, 'quantity')" />
+                <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+              </div>
+              <div class="col-4">
+                <label class="form-label form-label-sm">{{ 'FrontQuoteSection.Unit' | translate }}</label>
+                <input type="text" class="form-control form-control-sm" formControlName="unit" />
+              </div>
+              <div class="col-4">
+                <label class="form-label form-label-sm required-label">{{ 'FrontQuoteSection.UnitPrice' | translate }}</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" min="0" step="0.01" class="form-control" formControlName="unitPrice"
+                    [class.is-invalid]="isServiceInvalid(i, 'unitPrice')" />
+                  <span class="input-group-text">€</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-sm btn-outline-success mt-2" (click)="addService()">
+          <i class="bi bi-plus-circle me-1"></i>{{ 'FrontQuoteSection.AddService' | translate }}
+        </button>
+      </div>
+
+      <!-- Taux de TVA -->
+      <div class="mb-3">
+        <label class="form-label required-label">{{ 'FrontQuoteSection.VatRate' | translate }}</label>
+        <div class="input-group">
+          <input type="number" min="0" max="100" step="0.1" class="form-control" formControlName="vatRate"
+            [class.is-invalid]="isInvalid('vatRate')" />
+          <span class="input-group-text">%</span>
+          <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+        </div>
+      </div>
+
+      <hr class="form-divider" />
+
+      <!-- Montant total HT -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.TotalHT' | translate }}</label>
+        <div class="input-group">
+          <input type="text" class="form-control bg-light" [value]="totalHT.toFixed(2)" readonly />
+          <span class="input-group-text">€</span>
+        </div>
+      </div>
+
+      <!-- Montant total TTC -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.TotalTTC' | translate }}</label>
+        <div class="input-group">
+          <input type="text" class="form-control bg-light" [value]="totalTTC.toFixed(2)" readonly />
+          <span class="input-group-text">€</span>
+        </div>
+      </div>
+
+      <div class="form-section-title"><i class="bi bi-calendar-check me-1"></i>{{ 'FrontQuoteSection.SectionConditions' | translate }}</div>
+
+      <!-- Délai de validité du devis -->
+      <div class="mb-3">
+        <label class="form-label required-label">{{ 'FrontQuoteSection.ValidityPeriod' | translate }}</label>
+        <input type="date" #validityPeriodInput class="form-control date-picker-input" formControlName="validityPeriod"
+          [class.is-invalid]="isInvalid('validityPeriod')"
+          (click)="validityPeriodInput.showPicker()" />
+        <div class="invalid-feedback">{{ 'ValidationSection.Required' | translate }}</div>
+      </div>
+
+      <!-- Date / délai d'exécution -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.ExecutionDate' | translate }}</label>
+        <input type="date" #executionDateInput class="form-control date-picker-input" formControlName="executionDate"
+          (click)="executionDateInput.showPicker()" />
+        <div class="form-text">{{ 'FrontQuoteSection.Recommended' | translate }}</div>
+      </div>
+
+      <div class="form-section-title"><i class="bi bi-flag me-1"></i>{{ 'FrontQuoteSection.SectionStatus' | translate }}</div>
+
+      <!-- Statut géré automatiquement -->
+      <div class="mb-3">
+        <label class="form-label">{{ 'FrontQuoteSection.Status' | translate }}</label>
+        <div class="d-flex align-items-center gap-2">
+          <span class="doc-status-badge" [ngClass]="statusClass">{{ statusLabel }}</span>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

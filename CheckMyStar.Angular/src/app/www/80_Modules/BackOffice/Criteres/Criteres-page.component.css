@@ -2,8 +2,3 @@
   max-width: 260px;
 }
 
-.criteres-scroll {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-  overflow-x: hidden;
-}

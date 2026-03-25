@@ -1,2 +1,25 @@
-<div class="page-container">
+<div class="d-flex flex-column flex-grow-1">
+	<div class="d-flex flex-row">
+		<div class="d-flex flex-column rounded p-4 flex-grow-1 bg-secondary-light">
+			<app-quote-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (filter)="onFilter($event)"></app-quote-filter>
+		</div>
+	</div>
+
+	<div class="d-flex flex-column flex-grow-1">
+		<div class="d-flex flex-column flex-grow-1">
+			<div class="d-flex flex-column rounded p-4 flex-grow-1 overflow-auto bg-secondary-light">
+				<app-table
+					[columns]="columns"
+					[data]="quotes"
+					[showDetail]="false"
+					[showUpdate]="false"
+					[showDelete]="false"
+					[showEnabled]="false"
+					[showAdd]="false"
+					[showCsvExport]="false"
+					[showXlsxExport]="false">
+				</app-table>
+			</div>
+		</div>
+	</div>
 </div>

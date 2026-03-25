@@ -17,16 +17,21 @@ import { AddressBllService } from '../../../../60_Bll/BackOffice/Address-bll.ser
 import { FolderBllService } from '../../../../60_Bll/BackOffice/Folder-bll.service';
 import { AccommodationBllService } from '../../../../60_Bll/BackOffice/Accommodation-bll.service';
 import { EnumCivility } from '../../../../10_Common/Enumerations/EnumCivility';
+import { OwnerAutocompleteComponent } from '../../../Components/AutoCompletion/Owner-autocompletion.component';
 
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, TranslationModule, FieldComponent, ReactiveFormsModule, AddressAutocompleteComponent],
+  imports: [CommonModule, TranslationModule, FieldComponent, ReactiveFormsModule, AddressAutocompleteComponent, OwnerAutocompleteComponent],
   templateUrl: './Dossier-form.component.html'
 })
 export class DossierFormComponent implements OnInit {
   @Input() folder: FolderModel | null = null;
   @Input() readonlyIdentifier: boolean = true;
+
+  private readonly defaultAccommodationTypeIdentifier = 1;
+  private readonly defaultAccommodationCurrentStar = 0;
+  private readonly defaultFolderStatusIdentifier = 1;
 
   form!: FormGroup;
   
@@ -180,9 +185,9 @@ export class DossierFormComponent implements OnInit {
         accommodationName: [this.folder?.accommodation?.accommodationName ?? '', Validators.required],
         accommodationPhone: [this.folder?.accommodation?.accommodationPhone ?? '', this.phoneValidator],
         accommodationType: this.fb.group({
-          identifier: [this.folder?.accommodation?.accommodationType?.identifier ?? null, Validators.required]       
+          identifier: [this.folder?.accommodation?.accommodationType?.identifier ?? this.defaultAccommodationTypeIdentifier, Validators.required]       
         }),
-        accommodationCurrentStar: [this.folder?.accommodation?.accommodationCurrentStar ?? null, Validators.required],
+        accommodationCurrentStar: [this.folder?.accommodation?.accommodationCurrentStar ?? this.defaultAccommodationCurrentStar, Validators.required],
         address: this.fb.group({
           identifier: [{ value: this.folder?.accommodation?.address?.identifier ?? null, disabled: this.readonlyIdentifier }, Validators.required],
           number: [this.folder?.accommodation?.address?.number ?? '', Validators.required], 
@@ -203,7 +208,7 @@ export class DossierFormComponent implements OnInit {
         identifier: [this.folder?.inspector?.identifier ?? null, Validators.required]
       }),
       folderStatus: this.fb.group({
-        identifier: [this.folder?.folderStatus?.identifier ?? null, Validators.required]
+        identifier: [this.folder?.folderStatus?.identifier ?? this.defaultFolderStatusIdentifier, Validators.required]
       }),
       isActive: true  
     });
@@ -262,6 +267,11 @@ export class DossierFormComponent implements OnInit {
       },
       error: err => console.error('Failed to load users', err)
     });
+  }
+
+  onOwnerSelected(ownerIdentifier: number): void {
+    this.form.get('owner.identifier')?.patchValue(ownerIdentifier);
+    this.form.get('owner.identifier')?.markAsTouched();
   }
 
   onAddressSelected(address: GeolocationAddressModel) {

@@ -64,6 +64,20 @@
   z-index: 1;
 }
 
+.sortable-header {
+  color: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+}
+
+.sortable-header:hover,
+.sortable-header:focus {
+  color: #0d6efd;
+  text-decoration: none;
+}
+
 .criteria-table td {
   font-size: 0.9rem;
   vertical-align: middle;
@@ -71,6 +85,50 @@
 
 .row-validated {
   background-color: rgba(25, 135, 84, 0.04);
+}
+
+.row-focused {
+  animation: criterion-focus-pulse 1.2s ease-in-out;
+  box-shadow: inset 0 0 0 2px rgba(13, 110, 253, 0.35);
+}
+
+@keyframes criterion-focus-pulse {
+  0% {
+    background-color: rgba(13, 110, 253, 0.22);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.invalid-by-category-box {
+  border: 1px solid #f0d5d9;
+  border-radius: 8px;
+  background-color: #fff7f8;
+  padding: 12px;
+}
+
+.invalid-category-group {
+  border: 1px solid #eadce0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 8px;
+}
+
+.invalid-category-title {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #6c2332;
+}
+
+.invalid-criterion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px dashed #ece2e4;
+  padding-top: 6px;
+  margin-top: 6px;
 }
 /* ── Category header rows ────────────────────────────── */
 .category-header-row {

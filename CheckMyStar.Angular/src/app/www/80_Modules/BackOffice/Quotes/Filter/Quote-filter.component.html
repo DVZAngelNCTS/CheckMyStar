@@ -1,0 +1,18 @@
+<div class="ms-3 w-100" (keydown.enter)="search()">
+  <app-filter [loadingSearch]="loadingSearch" [loadingReset]="loadingReset" (searchClicked)="search()" (resetClicked)="reset()">
+    <div class="d-flex flex-column" [formGroup]="form">
+      <div class="d-flex flex-row flex-nowrap align-items-center row-fields">
+        <app-field controlName="reference" icon="bi bi-tag" label="{{ 'FrontQuoteListSection.FilterReference' | translate }}" labelClass="w-14rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+          <input type="text" class="form-control" formControlName="reference">
+        </app-field>
+        <app-field controlName="isAccepted" icon="bi bi-info-circle" label="{{ 'FrontQuoteListSection.FilterStatus' | translate }}" labelClass="w-12rem start fw-bold" labelTextPosition="start" controlClass="w-100">
+          <select class="form-select" formControlName="isAccepted">
+            <option [ngValue]="null">{{ 'CommonSection.All' | translate }}</option>
+            <option [ngValue]="true">{{ 'FrontQuoteListSection.StatusAccepted' | translate }}</option>
+            <option [ngValue]="false">{{ 'FrontQuoteListSection.StatusPending' | translate }}</option>
+          </select>
+        </app-field>
+      </div>
+    </div>
+  </app-filter>
+</div>
